@@ -1,0 +1,1253 @@
+openapi: 3.0.0
+info:
+  title: Moov API
+  contact:
+    name: Moov Developer Support
+    email: help@moov.io
+    url: https://moov.io
+  license:
+    name: Unlicensed
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  description: |-
+    Moov is a platform that enables developers to integrate all aspects of money movement with ease and speed.
+    The Moov API makes it simple for platforms to send, receive, and store money. Our API is based upon REST
+    principles, returns JSON responses, and uses standard HTTP response codes. To learn more about how Moov
+    works at a high level, read our [concepts](https://docs.moov.io/guides/get-started/glossary/) guide.
+  version: latest
+tags:
+  - name: Authentication
+  - name: Accounts
+  - name: Capabilities
+paths:
+  /accounts:
+    post:
+      operationId: Accounts_createAccount
+      description: |-
+        You can create **business** or **individual** accounts for your users (i.e., customers, merchants) by passing the required
+        information to Moov. Requirements differ per account type and requested [capabilities](https://docs.moov.io/guides/accounts/capabilities/requirements/).
+
+        If you're requesting the `wallet`, `send-funds`, `collect-funds`, or `card-issuing` capabilities, you'll need to:
+          + Send Moov the user [platform terms of service agreement](https://docs.moov.io/guides/accounts/requirements/platform-agreement/) acceptance.
+            This can be done upon account creation, or by [patching](https://docs.moov.io/api/moov-accounts/accounts/patch/) the account using the `termsOfService` field.
+        If you're creating a business account with the business type `llc`, `partnership`, or `privateCorporation`, you'll need to:
+          + Provide [business representatives](https://docs.moov.io/api/moov-accounts/representatives/) after creating the account.
+          + [Patch](https://docs.moov.io/api/moov-accounts/accounts/patch/) the account to indicate that business representative ownership information is complete.
+
+        Visit our documentation to read more about [creating accounts](https://docs.moov.io/guides/accounts/create-accounts/) and [verification requirements](https://docs.moov.io/guides/accounts/requirements/identity-verification/).
+        Note that the `mode` field (for production or sandbox) is only required when creating a _facilitator_ account. All non-facilitator account requests will ignore the mode field and be set to the calling facilitator's mode.
+      parameters:
+        - $ref: '#/components/parameters/Common.Headers'
+      responses:
+        '200':
+          description: The request completed successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Accounts.Account'
+        '400':
+          description: The server could not understand the request due to invalid syntax.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Common.GenericError'
+        '401':
+          description: The request contained missing or expired authentication.
+        '403':
+          description: The user is not authorized to make the request.
+        '404':
+          description: The server cannot find the requested resource.
+        '409':
+          description: The request conflicted with the current state of the target resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Common.GenericError'
+        '422':
+          description: The request was well-formed, but the contents failed validation. Check the request for missing or invalid fields.
+          content:
+            application/json:
+              schema: {}
+        '429':
+          description: Request was refused due to rate limiting.
+      tags:
+        - Accounts
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Accounts.CreateAccount'
+      security:
+        - OAuth2Auth:
+            - /accounts.write
+        - BasicAuth: []
+    get:
+      operationId: Accounts_listAccounts
+      description: |-
+        List or search accounts to which the caller is connected.
+
+        All supported query parameters are optional. If none are provided the response will include all connected accounts.
+        Pagination is supported via the `skip` and `count` query parameters.
+        Searching by name and email will overlap and return results based on relevance.
+      parameters:
+        - $ref: '#/components/parameters/Common.Headers'
+        - $ref: '#/components/parameters/Accounts.AccountsQuery.name'
+        - $ref: '#/components/parameters/Accounts.AccountsQuery.email'
+        - $ref: '#/components/parameters/Accounts.AccountsQuery.type'
+        - $ref: '#/components/parameters/Accounts.AccountsQuery.foreignID'
+        - $ref: '#/components/parameters/Accounts.AccountsQuery.includeDisconnected'
+        - $ref: '#/components/parameters/Accounts.AccountsQuery.capability'
+        - $ref: '#/components/parameters/Accounts.AccountsQuery.capabilityStatus'
+        - name: skip
+          in: query
+          required: true
+          schema:
+            $ref: '#/components/schemas/Common.Skip'
+          explode: false
+        - name: count
+          in: query
+          required: true
+          schema:
+            $ref: '#/components/schemas/Common.Count'
+          explode: false
+      responses:
+        '200':
+          description: The request completed successfully.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Accounts.Account'
+        '401':
+          description: The request contained missing or expired authentication.
+        '403':
+          description: The user is not authorized to make the request.
+        '429':
+          description: Request was refused due to rate limiting.
+      tags:
+        - Accounts
+      security:
+        - OAuth2Auth:
+            - /accounts.read
+        - BasicAuth: []
+  /accounts/{accountID}:
+    get:
+      operationId: Accounts_getAccount
+      description: Retrieves details for the account with the specified ID.
+      parameters:
+        - $ref: '#/components/parameters/Common.Headers'
+        - name: accountID
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: The request completed successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Accounts.Account'
+        '401':
+          description: The request contained missing or expired authentication.
+        '403':
+          description: The user is not authorized to make the request.
+        '404':
+          description: The server cannot find the requested resource.
+        '429':
+          description: Request was refused due to rate limiting.
+      tags:
+        - Accounts
+      security:
+        - OAuth2Auth:
+            - /accounts/{accountID}/profile.read
+        - BasicAuth: []
+  /accounts/{accountID}/capabilities:
+    get:
+      operationId: Capabilities_listAccountCapabilities
+      description: |-
+        Retrieve all the capabilities an account has requested.
+
+        Read our [capabilities guide](https://docs.moov.io/guides/accounts/capabilities/) to learn more.
+      parameters:
+        - $ref: '#/components/parameters/Common.Headers'
+        - name: accountID
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: The request completed successfully.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Capabilities.Capability'
+        '401':
+          description: The request contained missing or expired authentication.
+        '403':
+          description: The user is not authorized to make the request.
+        '429':
+          description: Request was refused due to rate limiting.
+      tags:
+        - Capabilities
+      security:
+        - OAuth2Auth:
+            - /accounts/{accountID}/capabilities.read
+        - BasicAuth: []
+  /oauth2/token:
+    post:
+      operationId: Auth_createAuthToken
+      description: Use the `client_id` and `client_secret` to generate an access token.
+      parameters: []
+      responses:
+        '200':
+          description: The request completed successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Auth.AccessToken'
+        '400':
+          description: The server could not understand the request due to invalid syntax.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Common.GenericError'
+        '401':
+          description: The request contained missing or expired authentication.
+        '403':
+          description: The user is not authorized to make the request.
+        '404':
+          description: The server cannot find the requested resource.
+        '409':
+          description: The request conflicted with the current state of the target resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Common.GenericError'
+        '422':
+          description: The request was well-formed, but the contents failed validation. Check the request for missing or invalid fields.
+          content:
+            application/json:
+              schema: {}
+        '429':
+          description: Request was refused due to rate limiting.
+      tags:
+        - Authentication
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Auth.AuthTokenRequest'
+      security:
+        - BasicAuth: []
+components:
+  parameters:
+    Accounts.AccountsQuery.capability:
+      name: capability
+      in: query
+      required: false
+      description: '  Filter connected accounts by the capability.'
+      schema:
+        $ref: '#/components/schemas/CommonCapabilities.CapabilityID'
+      explode: false
+    Accounts.AccountsQuery.capabilityStatus:
+      name: capabilityStatus
+      in: query
+      required: false
+      description: '  Filter connected accounts by the capability.'
+      schema:
+        $ref: '#/components/schemas/CommonCapabilities.CapabilityStatus'
+      explode: false
+    Accounts.AccountsQuery.email:
+      name: email
+      in: query
+      required: false
+      description: |2-
+          Filter connected accounts by email address.
+
+          Provide the full email address to filter by email.
+      schema:
+        type: string
+      explode: false
+    Accounts.AccountsQuery.foreignID:
+      name: foreignID
+      in: query
+      required: false
+      description: '  Serves as an optional alias from a foreign/external system which can be used to reference this resource.'
+      schema:
+        type: string
+      explode: false
+    Accounts.AccountsQuery.includeDisconnected:
+      name: includeDisconnected
+      in: query
+      required: false
+      description: |-
+        Filter disconnected accounts.
+
+        If true, the response will include disconnected accounts.
+      schema:
+        type: boolean
+      explode: false
+    Accounts.AccountsQuery.name:
+      name: name
+      in: query
+      required: false
+      description: |-
+        Filter connected accounts by name.
+
+        If provided, this query will attempt to find matches against the following Account and Profile fields:
+        <ul>
+          <li>Account `displayName`</li>
+          <li>Individual Profile `firstName`, `middleName`, and `lastName`</li>
+          <li>Business Profile `legalBusinessName`</li>
+        </ul>
+      schema:
+        type: string
+      explode: false
+    Accounts.AccountsQuery.type:
+      name: type
+      in: query
+      required: false
+      description: |2-
+          Filter connected accounts by AccountType.
+
+          If the `type` parameter is used in combination with `name`, only the corresponding type's name fields will
+          be searched. For example, if `type=business` and `name=moov`, the search will attempt to find matches against
+          the display name and Business Profile name fields (`legalBusinessName`, and `doingBusinessAs`).
+      schema:
+        $ref: '#/components/schemas/Accounts.AccountType'
+      explode: false
+    Common.Headers:
+      name: x-moov-version
+      in: header
+      required: false
+      description: Specify an API version.
+      schema:
+        $ref: '#/components/schemas/Versions'
+  schemas:
+    Accounts.ACHPaymentSettings:
+      type: object
+      required:
+        - companyName
+      properties:
+        companyName:
+          type: string
+          example: WholeBodyFitness
+          minLength: 1
+          maxLength: 16
+          pattern: '[a-zA-Z0-9.!*-+_\- ]+'
+          description: The description that shows up on ACH transactions. This will default to the account's display name on account creation.
+    Accounts.Account:
+      type: object
+      required:
+        - accountID
+        - mode
+        - accountType
+        - displayName
+        - profile
+        - verification
+        - createdOn
+        - updatedOn
+      properties:
+        accountID:
+          type: string
+          example: c520f1b9-0ba7-42f5-b977-248cdbe41c69
+          format: uuid
+          description: Unique identifier for this account.
+        mode:
+          $ref: '#/components/schemas/Accounts.Mode'
+        accountType:
+          $ref: '#/components/schemas/Accounts.AccountType'
+        displayName:
+          type: string
+          example: Whole Body Fitness
+          maxLength: 64
+        profile:
+          $ref: '#/components/schemas/Accounts.Profile'
+        metadata:
+          type: object
+          additionalProperties:
+            type: string
+          description: Free-form key-value pair list. Useful for storing information that is not captured elsewhere.
+        termsOfService:
+          $ref: '#/components/schemas/Accounts.TermsOfService'
+        capabilities:
+          type: array
+          items:
+            $ref: '#/components/schemas/Accounts.Capability'
+        verification:
+          $ref: '#/components/schemas/Accounts.Verification'
+        foreignID:
+          type: string
+          maxLength: 64
+          description: Optional alias from a foreign/external system which can be used to reference this resource.
+        customerSupport:
+          $ref: '#/components/schemas/Accounts.CustomerSupport'
+        settings:
+          $ref: '#/components/schemas/Accounts.Settings'
+        createdOn:
+          type: string
+          format: date-time
+          example: 2024-05-06T12:20:38.184Z
+        updatedOn:
+          type: string
+          format: date-time
+          example: 2024-05-06T12:20:38.184Z
+        disconnectedOn:
+          type: string
+          format: date-time
+          example: 2024-05-06T12:20:38.184Z
+    Accounts.AccountType:
+      type: string
+      enum:
+        - individual
+        - business
+      example: business
+      description: The type of entity represented by this account.
+    Accounts.AccountVerificationStatus:
+      type: string
+      enum:
+        - unverified
+        - pending
+        - resubmit
+        - review
+        - verified
+        - failed
+      description: Possible states an account verification can be in.
+      deprecated: true
+    Accounts.Address:
+      type: object
+      required:
+        - addressLine1
+        - city
+        - stateOrProvince
+        - postalCode
+        - country
+      properties:
+        addressLine1:
+          type: string
+          example: 123 Main Street
+          maxLength: 60
+        addressLine2:
+          type: string
+          example: Apt 302
+          maxLength: 32
+        city:
+          type: string
+          example: Boulder
+          maxLength: 24
+        stateOrProvince:
+          type: string
+          example: CO
+          maxLength: 2
+        postalCode:
+          type: string
+          example: '80301'
+          maxLength: 5
+        country:
+          type: string
+          example: US
+          maxLength: 2
+    Accounts.BusinessProfile:
+      type: object
+      required:
+        - legalBusinessName
+        - description
+        - ownersProvided
+      properties:
+        legalBusinessName:
+          type: string
+          example: Classbooker, LLC
+          maxLength: 64
+          description: The legal name under which the entity is registered.
+        doingBusinessAs:
+          type: string
+          maxLength: 64
+          description: A registered trade name under which the business operates, if different from its legal name.
+        businessType:
+          $ref: '#/components/schemas/Accounts.BusinessType'
+        address:
+          $ref: '#/components/schemas/Accounts.Address'
+        phone:
+          $ref: '#/components/schemas/Accounts.PhoneNumber'
+        email:
+          $ref: '#/components/schemas/Accounts.Email'
+        website:
+          type: string
+          format: uri
+          maxLength: 100
+        description:
+          type: string
+          example: Local fitness gym paying out instructors
+          minLength: 10
+          maxLength: 100
+        taxIDProvided:
+          type: boolean
+          description: Indicates whether a tax ID has been provided for this business.
+        representatives:
+          type: array
+          items:
+            $ref: '#/components/schemas/Accounts.Representative'
+        ownersProvided:
+          type: boolean
+        industryCodes:
+          $ref: '#/components/schemas/Accounts.IndustryCodes'
+        primaryRegulator:
+          $ref: '#/components/schemas/Accounts.PrimaryRegulator'
+      description: Describes a business.
+    Accounts.BusinessType:
+      type: string
+      enum:
+        - soleProprietorship
+        - unincorporatedAssociation
+        - trust
+        - publicCorporation
+        - privateCorporation
+        - llc
+        - partnership
+        - unincorporatedNonProfit
+        - incorporatedNonProfit
+        - governmentEntity
+      example: llc
+      description: The type of entity represented by this business.
+    Accounts.Capability:
+      type: object
+      required:
+        - capability
+        - status
+      properties:
+        capability:
+          type: string
+        status:
+          type: string
+      description: Describes an action or set of actions that an account is permitted to perform.
+    Accounts.CardPaymentSettings:
+      type: object
+      properties:
+        statementDescriptor:
+          type: string
+          example: Whole Body Fitness
+          minLength: 4
+          maxLength: 22
+          pattern: '[a-zA-Z0-9.!*-+_\- ]+'
+          description: The description that shows up on credit card transactions. This will default to the accounts display name on account creation.
+      description: User provided settings to manage card payments. This data is only allowed on a business account.
+    Accounts.CreateAccount:
+      type: object
+      required:
+        - mode
+        - accountType
+        - profile
+      properties:
+        mode:
+          $ref: '#/components/schemas/Accounts.Mode'
+        accountType:
+          $ref: '#/components/schemas/Accounts.AccountType'
+        profile:
+          $ref: '#/components/schemas/Accounts.CreateProfile'
+        metadata:
+          type: object
+          additionalProperties:
+            type: string
+          description: Free-form key-value pair list. Useful for storing information that is not captured elsewhere.
+        termsOfService:
+          oneOf:
+            - $ref: '#/components/schemas/Accounts.TermsOfServiceToken'
+            - $ref: '#/components/schemas/Accounts.ManualTermsOfService'
+        foreignID:
+          type: string
+          maxLength: 64
+          description: Optional alias from a foreign/external system which can be used to reference this resource.
+        customerSupport:
+          $ref: '#/components/schemas/Accounts.CustomerSupport'
+        settings:
+          $ref: '#/components/schemas/Accounts.Settings'
+        capabilities:
+          type: array
+          items:
+            $ref: '#/components/schemas/CommonCapabilities.CapabilityID'
+    Accounts.CreateBusinessProfile:
+      type: object
+      required:
+        - legalBusinessName
+        - description
+      properties:
+        legalBusinessName:
+          type: string
+          example: Classbooker, LLC
+          maxLength: 64
+          description: The legal name under which the entity is registered.
+        doingBusinessAs:
+          type: string
+          maxLength: 64
+          description: A registered trade name under which the business operates, if different from its legal name.
+        businessType:
+          $ref: '#/components/schemas/Accounts.BusinessType'
+        address:
+          $ref: '#/components/schemas/Accounts.Address'
+        phone:
+          $ref: '#/components/schemas/Accounts.PhoneNumber'
+        email:
+          $ref: '#/components/schemas/Accounts.Email'
+        website:
+          type: string
+          format: uri
+          maxLength: 100
+        description:
+          type: string
+          example: Local fitness gym paying out instructors
+          minLength: 10
+          maxLength: 100
+        taxID:
+          $ref: '#/components/schemas/Accounts.TaxID'
+        industryCodes:
+          $ref: '#/components/schemas/Accounts.IndustryCodes'
+        primaryRegulator:
+          $ref: '#/components/schemas/Accounts.PrimaryRegulator'
+    Accounts.CreateIndividualProfile:
+      type: object
+      required:
+        - name
+      properties:
+        name:
+          $ref: '#/components/schemas/Accounts.IndividualName'
+        phone:
+          $ref: '#/components/schemas/Accounts.PhoneNumber'
+        email:
+          $ref: '#/components/schemas/Accounts.Email'
+        address:
+          $ref: '#/components/schemas/Accounts.Address'
+        birthDate:
+          type: object
+          properties:
+            day:
+              type: integer
+              example: 9
+            month:
+              type: integer
+              example: 11
+            year:
+              type: integer
+              example: 1989
+          required:
+            - day
+            - month
+            - year
+        governmentID:
+          $ref: '#/components/schemas/Accounts.GovernmentID'
+    Accounts.CreateProfile:
+      type: object
+      properties:
+        individual:
+          $ref: '#/components/schemas/Accounts.CreateIndividualProfile'
+        business:
+          $ref: '#/components/schemas/Accounts.CreateBusinessProfile'
+    Accounts.CustomerSupport:
+      type: object
+      properties:
+        phone:
+          $ref: '#/components/schemas/Accounts.PhoneNumber'
+        email:
+          $ref: '#/components/schemas/Accounts.Email'
+        address:
+          type: string
+        website:
+          type: string
+          format: uri
+      description: |-
+        User-provided information that can be displayed on credit card transactions for customers to use when
+        contacting a customer support team. This data is only allowed on a business account.
+    Accounts.Document:
+      type: object
+      required:
+        - documentID
+        - type
+        - contentType
+        - uploadedAt
+      properties:
+        documentID:
+          type: string
+          example: e07e83e8-9429-4e99-ac99-c941f719eb39
+          format: uuid
+        type:
+          $ref: '#/components/schemas/Accounts.DocumentType'
+        contentType:
+          type: string
+          example: application/pdf
+          description: The document's MIME type.
+        parseErrors:
+          type: array
+          items:
+            type: string
+          description: Optional array of errors encountered during automated parsing.
+        uploadedAt:
+          type: string
+          format: date-time
+          example: 2024-05-06T12:20:38.184Z
+    Accounts.DocumentType:
+      type: string
+      enum:
+        - DriversLicense
+        - Passport
+        - UtilityBill
+        - BankStatement
+      example: BankStatement
+      description: Types of documents that can be uploaded.
+    Accounts.Email:
+      type: string
+      example: jordan.lee@classbooker.dev
+      maxLength: 255
+      format: email
+    Accounts.GovernmentID:
+      type: object
+      properties:
+        ssn:
+          type: object
+          properties:
+            full:
+              type: string
+              pattern: ^\d{3}[-]?\d{2}[-]?\d{4}$
+            lastFour:
+              type: string
+        itin:
+          type: object
+          properties:
+            full:
+              type: string
+              pattern: ^\d{3}[-]?\d{2}[-]?\d{4}$
+            lastFour:
+              type: string
+    Accounts.IndividualName:
+      type: object
+      required:
+        - firstName
+        - lastName
+      properties:
+        firstName:
+          type: string
+          example: Jordan
+          maxLength: 64
+          description: The individual's first given name.
+        middleName:
+          type: string
+          example: Reese
+          maxLength: 64
+          description: The individual's second given name, if any.
+        lastName:
+          type: string
+          example: Lee
+          maxLength: 64
+          description: The individual's family name.
+        suffix:
+          type: string
+          example: Jr
+          maxLength: 20
+          description: Suffix of a given name.
+    Accounts.IndividualProfile:
+      type: object
+      required:
+        - name
+      properties:
+        name:
+          $ref: '#/components/schemas/Accounts.IndividualName'
+        phone:
+          $ref: '#/components/schemas/Accounts.PhoneNumber'
+        email:
+          $ref: '#/components/schemas/Accounts.Email'
+        address:
+          $ref: '#/components/schemas/Accounts.Address'
+        birthDateProvided:
+          type: boolean
+          description: Indicates whether this individual's birth date has been provided.
+        governmentIDProvided:
+          type: boolean
+          description: Indicates whether a government ID (SSN, ITIN, etc.) has been provided for this individual.
+      description: Describes an individual.
+    Accounts.IndustryCodes:
+      type: object
+      required:
+        - naics
+        - sic
+        - mcc
+      properties:
+        naics:
+          type: string
+          example: '713940'
+          minLength: 2
+          maxLength: 6
+        sic:
+          type: string
+          example: '7991'
+          minLength: 4
+          maxLength: 4
+        mcc:
+          type: string
+          example: '7997'
+          minLength: 4
+          maxLength: 4
+    Accounts.ManualTermsOfService:
+      type: object
+      required:
+        - acceptedDate
+        - acceptedIP
+        - acceptedUserAgent
+        - acceptedDomain
+      properties:
+        acceptedDate:
+          type: string
+          format: date-time
+          description: The date and time the terms of service were accepted.
+        acceptedIP:
+          type: string
+          example: 172.217.2.46
+          format: ipv4
+          description: The IP address from which the terms of service were accepted.
+        acceptedUserAgent:
+          type: string
+          example: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.71 Safari/537.36
+          maxLength: 255
+          description: The user-agent of the user making the request.
+        acceptedDomain:
+          type: string
+          format: uri
+      description: Describes the acceptance of the Terms of Service. All data is required, and must be from the user.
+    Accounts.Mode:
+      type: string
+      enum:
+        - sandbox
+        - production
+      example: production
+      description: The operating mode for an account.
+    Accounts.PhoneNumber:
+      type: object
+      properties:
+        number:
+          type: string
+          example: '8185551212'
+          maxLength: 10
+        countryCode:
+          type: string
+          example: '1'
+          maxLength: 1
+    Accounts.PrimaryRegulator:
+      type: string
+      enum:
+        - OCC
+        - FDIC
+        - NCUA
+        - FRB
+      description: If the business is a financial institution, this field describes its primary regulator.
+    Accounts.Profile:
+      type: object
+      properties:
+        individual:
+          $ref: '#/components/schemas/Accounts.IndividualProfile'
+        business:
+          $ref: '#/components/schemas/Accounts.BusinessProfile'
+      description: Describes a Moov account profile. A profile will have a business or an individual, depending on the account's type.
+    Accounts.Representative:
+      type: object
+      required:
+        - representativeID
+        - name
+        - email
+        - createdOn
+        - updatedOn
+      properties:
+        representativeID:
+          type: string
+          format: uuid
+          description: Unique identifier for this representative.
+        name:
+          $ref: '#/components/schemas/Accounts.IndividualName'
+        phone:
+          $ref: '#/components/schemas/Accounts.PhoneNumber'
+        email:
+          type: string
+          maxLength: 255
+          format: email
+        address:
+          $ref: '#/components/schemas/Accounts.Address'
+        birthDateProvided:
+          type: boolean
+          description: Indicates whether this representative's birth date has been provided.
+        governmentIDProvided:
+          type: boolean
+          description: Indicates whether a government ID (SSN, ITIN, etc.) has been provided for this representative.
+        responsibilities:
+          $ref: '#/components/schemas/Accounts.RepresentativeResponsibilities'
+        createdOn:
+          type: string
+          format: date-time
+        updatedOn:
+          type: string
+          format: date-time
+        disabledOn:
+          type: string
+          format: date-time
+          nullable: true
+      description: Describes a business representative.
+    Accounts.RepresentativeResponsibilities:
+      type: object
+      required:
+        - ownershipPercentage
+        - jobTitle
+      properties:
+        isController:
+          type: boolean
+          description: Indicates whether this individual has significant management responsibilities within the business.
+        isOwner:
+          type: boolean
+          description: |-
+            If `true`, this field indicates that the individual has a business ownership stake of at least 25% in the
+            business. If the representative does not own at least 25% of the business, this field should be `false`.
+        ownershipPercentage:
+          type: integer
+          example: 38
+          description: The percentage of ownership this individual has in the business (required if `isOwner` is `true`).
+        jobTitle:
+          type: string
+          example: CEO
+          maxLength: 64
+      description: Describes the job responsibilities of a business representative.
+    Accounts.Settings:
+      type: object
+      properties:
+        cardPayment:
+          $ref: '#/components/schemas/Accounts.CardPaymentSettings'
+        achPayment:
+          $ref: '#/components/schemas/Accounts.ACHPaymentSettings'
+      description: User provided settings to manage an account.
+    Accounts.TaxID:
+      type: object
+      required:
+        - ein
+      properties:
+        ein:
+          type: object
+          properties:
+            number:
+              type: string
+              example: 12-3456789
+          required:
+            - number
+      description: An EIN (employer identification number) for the business. For sole proprietors, an SSN can be used as the EIN.
+    Accounts.TermsOfService:
+      type: object
+      required:
+        - acceptedDate
+        - acceptedIP
+      properties:
+        acceptedDate:
+          type: string
+          format: date-time
+          description: The date and time the terms of service were accepted.
+        acceptedIP:
+          type: string
+          example: 172.217.2.46
+          format: ipv4
+          description: The IP address from which the terms of service were accepted.
+      description: Describes the acceptance of the Terms of Service.
+    Accounts.TermsOfServiceToken:
+      type: object
+      required:
+        - token
+      properties:
+        token:
+          type: string
+          example: kgT1uxoMAk7QKuyJcmQE8nqW_HjpyuXBabiXPi6T83fUQoxsyWYPcYzuHQTqrt7YRp4gCwyDQvb6U5REM9Pgl2EloCe35t-eiMAbUWGo3Kerxme6aqNcKrP_6-v0MTXViOEJ96IBxPFTvMV7EROI2dq3u4e-x4BbGSCedAX-ViAQND6hcreCDXwrO6sHuzh5Xi2IzSqZHxaovnWEboaxuZKRJkA3dsFID6fzitMpm2qrOh4
+      description: An encrypted value used to record acceptance of Moov's Terms of Service.
+    Accounts.Verification:
+      type: object
+      required:
+        - status
+      properties:
+        verificationStatus:
+          $ref: '#/components/schemas/Accounts.AccountVerificationStatus'
+        status:
+          $ref: '#/components/schemas/Accounts.VerificationStatus'
+        details:
+          $ref: '#/components/schemas/Accounts.VerificationStatusDetail'
+        documents:
+          type: array
+          items:
+            $ref: '#/components/schemas/Accounts.Document'
+      description: Describes identity verification status and relevant identity verification documents.
+    Accounts.VerificationStatus:
+      type: string
+      enum:
+        - unverified
+        - pending
+        - verified
+        - errored
+      description: Possible states an account verification can be in.
+      deprecated: true
+    Accounts.VerificationStatusDetail:
+      type: string
+      enum:
+        - failedAutoVerify
+        - docDobMismatch
+        - docNameMismatch
+        - docAddressMismatch
+        - docNumberMismatch
+        - docIncomplete
+        - docFailedRisk
+        - potentialAccountSanctionsMatch
+        - potentialRepresentativeSanctionsMatch
+        - failedOther
+      description: Additional detail for a verification status.
+      deprecated: true
+    Auth.AccessToken:
+      type: object
+      required:
+        - access_token
+        - expires_in
+        - refresh_token
+        - scope
+        - token_type
+      properties:
+        access_token:
+          type: string
+          example: i1qxz68gu50zp4i8ceyxqogmq7y0yienm52351c6...
+          description: String passed to the authorization server to gain access to the system.
+        expires_in:
+          type: integer
+          format: int32
+          example: 900
+          description: Number of seconds for which the token is valid.
+        refresh_token:
+          type: string
+          example: i1qxz68gu50zp4i8ceyxqogmq7y0yienm52351c6...
+          description: String passed to the authorization server to gain access to the system.
+        scope:
+          type: string
+          example: /accounts.write
+          description: A space-delimited list of [scopes](https://docs.moov.io/api/authentication/scopes/) that are allowed.
+        token_type:
+          $ref: '#/components/schemas/Auth.TokenType'
+    Auth.AuthTokenRequest:
+      type: object
+      required:
+        - grant_type
+        - scopes
+      properties:
+        grant_type:
+          $ref: '#/components/schemas/Auth.GrantType'
+        scopes:
+          type: string
+          example: /moov/support.read /moov/support.write
+          description: A space delimited list of scopes
+    Auth.GrantType:
+      type: string
+      enum:
+        - client_credentials
+        - refresh_token
+      description: The type of grant being requested.
+    Auth.TokenType:
+      type: string
+      enum:
+        - opaque
+        - jwt
+      example: opaque
+      description: Type of token returned.
+    Capabilities.Capability:
+      type: object
+      required:
+        - capability
+        - accountID
+        - status
+        - createdOn
+        - updatedOn
+      properties:
+        capability:
+          $ref: '#/components/schemas/CommonCapabilities.CapabilityID'
+        accountID:
+          type: string
+          format: uuid
+        status:
+          $ref: '#/components/schemas/CommonCapabilities.CapabilityStatus'
+        requirements:
+          type: array
+          items:
+            $ref: '#/components/schemas/Capabilities.Requirement'
+        disabledReason:
+          type: string
+        createdOn:
+          type: string
+          format: date-time
+        updatedOn:
+          type: string
+          format: date-time
+        disabledOn:
+          type: string
+          format: date-time
+          nullable: true
+    Capabilities.Requirement:
+      type: object
+      required:
+        - currentlyDue
+      properties:
+        currentlyDue:
+          type: array
+          items:
+            $ref: '#/components/schemas/Capabilities.RequirementID'
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Capabilities.RequirementError'
+      description: Represents individual and business data necessary to facilitate the enabling of a capability for an account.
+    Capabilities.RequirementError:
+      type: object
+      required:
+        - requirement
+      properties:
+        requirement:
+          $ref: '#/components/schemas/Capabilities.RequirementID'
+        errorCode:
+          $ref: '#/components/schemas/Capabilities.RequirementErrorCode'
+    Capabilities.RequirementErrorCode:
+      type: string
+      enum:
+        - invalid-value
+        - failed-automatic-verification
+        - failed-other
+        - invalid-address
+        - address-restricted
+        - tax-id-mismatch
+        - document-id-mismatch
+        - document-date-of-birth-mismatch
+        - document-name-mismatch
+        - document-address.mismatch
+        - document-number-mismatch
+        - document-incomplete
+        - document-failed-risk
+        - document-illegible
+        - document-unsupported
+        - document-not-uploaded
+        - document-corrupt
+        - document-expired
+    Capabilities.RequirementID:
+      type: string
+      enum:
+        - account.tos-acceptance
+        - individual.mobile
+        - individual.email
+        - individual.email-or-mobile
+        - individual.firstname
+        - individual.lastname
+        - individual.address
+        - individual.ssn-last4
+        - individual.ssn
+        - individual.birthdate
+        - business.legalname
+        - business.description-or-website
+        - business.entity-type
+        - business.business-type
+        - business.dba
+        - business.ein
+        - business.address
+        - business.phone
+        - business.admins
+        - business.controllers
+        - business.owners
+        - business.classification
+        - business.industry-code-mcc
+        - business.indicate-owners-provided
+        - business.average-transaction-size
+        - business.max-transaction-size
+        - business.average-monthly-transaction-volume
+        - business.volume-by-customer-type
+        - business.card-volume-distribution
+        - business.fulfillment
+        - business.description
+        - business.underwriting-documents-tier-one
+        - bank-accounts.name
+        - bank-accounts.routing-number
+        - bank-accounts.account-number
+        - document.business.verification
+        - document.individual.tin
+        - document.individual.verification
+        - document.representative.{rep-uuid}.tin
+        - document.representative.{rep-uuid}.verification
+        - representative.{rep-uuid}.mobile
+        - representative.{rep-uuid}.email
+        - representative.{rep-uuid}.email-or-mobile
+        - representative.{rep-uuid}.firstname
+        - representative.{rep-uuid}.lastname
+        - representative.{rep-uuid}.address
+        - representative.{rep-uuid}.ssn-last4
+        - representative.{rep-uuid}.ssn
+        - representative.{rep-uuid}.birthdate
+        - representative.{rep-uuid}.job-title
+        - representative.{rep-uuid}.is-controller
+        - representative.{rep-uuid}.is-owner
+        - representative.{rep-uuid}.ownership
+        - document.{doc-uuid}
+      description: The unique ID of what the requirement is asking to be filled out.
+    Common.Count:
+      type: integer
+      format: int64
+      example: 20
+      description: Limits the maximum number of results returned, or determines the page size when used with `skip` for pagination.
+    Common.GenericError:
+      type: object
+      required:
+        - error
+      properties:
+        error:
+          type: string
+    Common.Skip:
+      type: integer
+      format: int64
+      example: 60
+      description: The number of entries to skip when paginating a large result set.
+    CommonCapabilities.CapabilityID:
+      type: string
+      enum:
+        - transfers
+        - send-funds
+        - collect-funds
+        - wallet
+        - card-issuing
+      description: Moov account capabilities.
+    CommonCapabilities.CapabilityStatus:
+      type: string
+      enum:
+        - enabled
+        - disabled
+        - pending
+        - in-review
+      description: The status of the capability requested for an account.
+    Versions:
+      type: string
+      enum:
+        - ''
+        - latest
+      description: Moov API versions. Version strings are formatted as `vYYYY.MM.DD`, except preVerioned and latest.
+  securitySchemes:
+    BasicAuth:
+      type: http
+      scheme: basic
+    OAuth2Auth:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: /oauth2/authorize
+          tokenUrl: /oauth2/token
+          refreshUrl: /oauth2/token
+          scopes:
+            /accounts.write: ''
+            /accounts.read: ''
+            /accounts/{accountID}/profile.read: ''
+            /accounts/{accountID}/capabilities.read: ''
+servers:
+  - url: https://api.moov.io
+    description: Production API host
+    variables: {}

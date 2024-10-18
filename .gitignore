@@ -1,0 +1,28 @@
+# MacOS
+.DS_Store
+
+# IDE
+.idea
+.vscode
+
+# Default TypeSpec output
+tsp-output/
+dist/
+
+# Dependency directories
+node_modules/
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts
+
+# local env files
+.env*.local
+
+# .npmrc
+**/__generated-types__/**
+
+# debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*

@@ -1,0 +1,20 @@
+{
+  "name": "moov-api",
+  "version": "0.1.0",
+  "type": "module",
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "scripts": {
+    "start": "make watch",
+    "build": "make compile"
+  },
+  "devDependencies": {
+    "@typespec/compiler": "0.61.2",
+    "@typespec/http": "0.61.0",
+    "@typespec/openapi3": "0.61.0",
+    "@typespec/rest": "0.61.0",
+    "@typespec/versioning": "0.61.0"
+  },
+  "private": true
+}
