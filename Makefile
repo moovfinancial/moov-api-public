@@ -1,3 +1,6 @@
+setup:
+	npm i
+
 all: format compile
 
 format:

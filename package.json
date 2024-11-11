@@ -3,9 +3,11 @@
   "version": "0.1.0",
   "type": "module",
   "engines": {
-    "node": ">=20.0.0"
+    "node": "22.10.0"
   },
   "scripts": {
+    "preinstall": "./scripts/checkNodeVersion.sh",
+    "prepare": "chmod +x ./scripts/*.sh && husky",
     "start": "make watch",
     "build": "make compile"
   },
@@ -14,7 +16,8 @@
     "@typespec/http": "0.62.0",
     "@typespec/openapi3": "0.62.0",
     "@typespec/rest": "0.62.0",
-    "@typespec/versioning": "0.62.0"
+    "@typespec/versioning": "0.62.0",
+    "husky": "9.1.6"
   },
   "private": true
 }
