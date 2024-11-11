@@ -8,6 +8,11 @@ model CreateProfile {
   business?: CreateBusinessProfile;
 }
 
+model CreateProfileError {
+  individual?: CreateIndividualError | null;
+  business?: CreateBusinessError | null;
+}
+
 @doc("Describes a Moov account profile. A profile will have a business or an individual, depending on the account's type.")
 model Profile {
   individual?: IndividualProfile;
@@ -16,9 +21,9 @@ model Profile {
 
 model CreateIndividualProfile {
   name: IndividualName;
-  phone?: PhoneNumber;
+  phone?: PhoneNumber | null;
   email?: Email;
-  address?: Address;
+  address?: Address | null;
   birthDate?: {
     @example(9)
     day: integer;
@@ -28,8 +33,26 @@ model CreateIndividualProfile {
 
     @example(1989)
     year: integer;
-  };
-  governmentID?: GovernmentID;
+  } | null;
+  governmentID?: GovernmentID | null;
+}
+
+model CreateIndividualError {
+  name?: IndividualNameError | null;
+  phone?: PhoneNumberError | null;
+  email?: string;
+  address?: AddressError | null;
+  birthDate?: BirthDateError | null;
+  governmentID?: {
+    ssn?: {
+      full?: string;
+      lastFour?: string;
+    } | null;
+    itin?: {
+      full?: string;
+      lastFour?: string;
+    } | null;
+  } | null;
 }
 
 @doc("Describes an individual.")
@@ -44,6 +67,12 @@ model IndividualProfile {
 
   @doc("Indicates whether a government ID (SSN, ITIN, etc.) has been provided for this individual.")
   governmentIDProvided?: boolean;
+}
+
+model BirthDateError {
+  day?: string;
+  month?: string;
+  year?: string;
 }
 
 model IndividualName {
@@ -65,6 +94,13 @@ model IndividualName {
   @doc("Suffix of a given name.")
   @example("Jr")
   @maxLength(20)
+  suffix?: string;
+}
+
+model IndividualNameError {
+  firstName?: string;
+  middleName?: string;
+  lastName?: string;
   suffix?: string;
 }
 
@@ -94,6 +130,28 @@ model CreateBusinessProfile {
   taxID?: TaxID;
   industryCodes?: IndustryCodes;
   primaryRegulator?: PrimaryRegulator;
+}
+
+model CreateBusinessError {
+  legalBusinessName?: string;
+  doingBusinessAs?: string;
+  businessType?: string;
+  address?: AddressError | null;
+  phone?: PhoneNumberError | null;
+  email?: string;
+  website?: string;
+  description?: string;
+  taxID?: {
+    ein?: {
+      number?: string;
+    } | null;
+  } | null;
+  industryCodes?: {
+    naics?: string;
+    sic?: string;
+    mcc?: string;
+  } | null;
+  primaryRegulator?: string;
 }
 
 @doc("Describes a business.")

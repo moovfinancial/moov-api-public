@@ -16,7 +16,7 @@ namespace MoovAPI.Capabilities {
     Read our [capabilities guide](https://docs.moov.io/guides/accounts/capabilities/) to learn more.
     """)
   @get
-  @useAuth(Auth.OAuth2<["/accounts/{accountID}/capabilities.read"]> | BasicAuth)
+  @useAuth(BasicAuth | Auth.OAuth2<["/accounts/{accountID}/capabilities.read"]>)
   op listAccountCapabilities(
     ...Common.Headers,
 

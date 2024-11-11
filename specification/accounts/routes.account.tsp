@@ -25,11 +25,16 @@ namespace MoovAPI.Accounts {
     Note that the `mode` field (for production or sandbox) is only required when creating a _facilitator_ account. All non-facilitator account requests will ignore the mode field and be set to the calling facilitator's mode.
     """)
   @post
-  @useAuth(Auth.OAuth2<["/accounts.write"]> | BasicAuth)
+  @useAuth(BasicAuth | Auth.OAuth2<["/accounts.write"]>)
   op createAccount(
     ...Common.Headers,
     @body body: Accounts.CreateAccount,
-  ): Common.Post<Accounts.Account>;
+  ): Common.Post<
+    Accounts.Account,
+    {
+      error: Accounts.CreateAccountError;
+    }
+  >;
 
   @doc("""
     List or search accounts to which the caller is connected.
@@ -39,7 +44,7 @@ namespace MoovAPI.Accounts {
     Searching by name and email will overlap and return results based on relevance.
     """)
   @get
-  @useAuth(Auth.OAuth2<["/accounts.read"]> | BasicAuth)
+  @useAuth(BasicAuth | Auth.OAuth2<["/accounts.read"]>)
   op listAccounts(
     ...Common.Headers,
     ...Accounts.AccountsQuery,
@@ -49,7 +54,7 @@ namespace MoovAPI.Accounts {
 
   @doc("Retrieves details for the account with the specified ID.")
   @get
-  @useAuth(Auth.OAuth2<["/accounts/{accountID}/profile.read"]> | BasicAuth)
+  @useAuth(BasicAuth | Auth.OAuth2<["/accounts/{accountID}/profile.read"]>)
   op getAccount(
     ...Common.Headers,
 

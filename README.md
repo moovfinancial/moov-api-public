@@ -168,7 +168,7 @@ namespace MoovAPI.Accounts {
   @doc("Endpoint description here")
   @get
   // Can use either OAuth2 OR API key
-  @useAuth(Auth.OAuth2<["/accounts.read"]> | BasicAuth)
+  @useAuth(BasicAuth | Auth.OAuth2<["/accounts.read"]>)
   op listAccounts(): Common.List<Accounts.Account>;
 }
 ```

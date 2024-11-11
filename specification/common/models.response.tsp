@@ -22,7 +22,7 @@ model BadRequest {
   @statusCode statusCode: "400";
 
   @body
-  error: GenericError;
+  error?: GenericError;
 }
 
 @doc("The request contained missing or expired authentication.")
@@ -47,17 +47,17 @@ model StateConflict {
     In most cases this will be a GenericError, but some APIs may
     return the existing resource with which this request conflicted.
     """)
-  message?: GenericError;
+  error?: GenericError;
 }
 
 @doc("The request was well-formed, but the contents failed validation. Check the request for missing or invalid fields.")
 @error
-model UnprocessableEntity {
+model UnprocessableEntity<T> {
   @statusCode statusCode: "422";
 
   @body
-  @doc("HTTP 422 will have a body that matches the shape of the request body, or is a GenericError.")
-  message: unknown;
+  @doc("Descriptions of any field validations that failed.")
+  error?: T;
 }
 
 @doc("Request was refused due to rate limiting.")
@@ -81,36 +81,36 @@ union Get<T> {
   RateLimited,
 }
 
-union Post<T> {
-  Ok<T>,
+union Post<OK, ValidationError> {
+  Ok<OK>,
   BadRequest,
   Unauthorized,
   Forbidden,
   NotFoundResponse,
   StateConflict,
-  UnprocessableEntity,
+  UnprocessableEntity<ValidationError>,
   RateLimited,
 }
 
-union Update<T> {
-  Ok<T>,
+union Update<OK, ValidationError> {
+  Ok<OK>,
   BadRequest,
   Unauthorized,
   Forbidden,
   NotFoundResponse,
   StateConflict,
-  UnprocessableEntity,
+  UnprocessableEntity<ValidationError>,
   RateLimited,
 }
 
-union UpdateNoContent {
+union UpdateNoContent<ValidationError> {
   NoContentResponse,
   BadRequest,
   Unauthorized,
   Forbidden,
   NotFoundResponse,
   StateConflict,
-  UnprocessableEntity,
+  UnprocessableEntity<ValidationError>,
   RateLimited,
 }
 

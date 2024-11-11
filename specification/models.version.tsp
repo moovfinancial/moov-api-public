@@ -3,7 +3,7 @@ namespace MoovAPI;
 @doc("Moov API versions. Version strings are formatted as `vYYYY.MM.DD`, except preVerioned and latest.")
 enum Versions {
   @doc("The default API version when no version header is specified")
-  preVersioned: "",
+  preVersioned: "v2024.00.00",
 
   // add versions here, in chronological order
 

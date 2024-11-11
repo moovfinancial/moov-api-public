@@ -10,7 +10,8 @@ namespace MoovAPI.Auth {
   @doc("Use the `client_id` and `client_secret` to generate an access token.")
   @post
   @useAuth(BasicAuth)
-  op createAuthToken(
-    @body request: Auth.AuthTokenRequest,
-  ): Common.Post<Auth.AccessToken>;
+  op createAuthToken(@body request: Auth.AuthTokenRequest): Common.Post<
+    Auth.AccessToken,
+    unknown
+  >;
 }

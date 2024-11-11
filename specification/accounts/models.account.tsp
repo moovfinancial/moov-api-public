@@ -13,7 +13,6 @@ using TypeSpec.Versioning;
 namespace MoovAPI.Accounts;
 
 model CreateAccount {
-  mode: Mode;
   accountType: AccountType;
   profile: CreateProfile;
 
@@ -21,15 +20,33 @@ model CreateAccount {
   metadata?: Record<string>;
 
   @oneOf
-  termsOfService?: TermsOfServiceToken | ManualTermsOfService;
+  termsOfService?: TermsOfServiceToken | ManualTermsOfService | null;
 
   @doc("Optional alias from a foreign/external system which can be used to reference this resource.")
   @maxLength(64)
   foreignID?: string;
 
-  customerSupport?: CustomerSupport;
-  settings?: Settings;
+  customerSupport?: CustomerSupport | null;
+  settings?: Settings | null;
   capabilities?: CommonCapabilities.CapabilityID[];
+}
+
+model CreateAccountError {
+  accountType?: string;
+  profile?: CreateProfileError | null;
+  metadata?: string;
+  termsOfService?: TermsOfServiceError | null;
+  foreignID?: string;
+  customerSupport?: CustomerSupportError | null;
+  settings?: {
+    cardPayment?: {
+      statementDescriptor?: string;
+    } | null;
+    achPayment?: {
+      companyName?: string;
+    } | null;
+  } | null;
+  capabilities?: Record<string>;
 }
 
 model Account {
@@ -88,6 +105,16 @@ enum AccountType {
   Business: "business",
 }
 
+model TermsOfServiceError {
+  token?: string;
+  manual?: {
+    acceptedDate?: string;
+    acceptedDomain?: string;
+    acceptedIP?: string;
+    acceptedUserAgent?: string;
+  } | null;
+}
+
 @doc("An encrypted value used to record acceptance of Moov's Terms of Service.")
 model TermsOfServiceToken {
   @example("kgT1uxoMAk7QKuyJcmQE8nqW_HjpyuXBabiXPi6T83fUQoxsyWYPcYzuHQTqrt7YRp4gCwyDQvb6U5REM9Pgl2EloCe35t-eiMAbUWGo3Kerxme6aqNcKrP_6-v0MTXViOEJ96IBxPFTvMV7EROI2dq3u4e-x4BbGSCedAX-ViAQND6hcreCDXwrO6sHuzh5Xi2IzSqZHxaovnWEboaxuZKRJkA3dsFID6fzitMpm2qrOh4")
@@ -110,6 +137,13 @@ model ManualTermsOfService {
   acceptedUserAgent: string;
 
   acceptedDomain: url;
+}
+
+model ManualToSError {
+  acceptedDate?: string;
+  acceptedDomain?: string;
+  acceptedIP?: string;
+  acceptedUserAgent?: string;
 }
 
 @doc("Describes the acceptance of the Terms of Service.")
@@ -136,8 +170,15 @@ model Capability {
 model CustomerSupport {
   phone?: PhoneNumber;
   email?: Email;
-  address?: string;
+  address?: Address;
   website?: url;
+}
+
+model CustomerSupportError {
+  phone?: PhoneNumberError | null;
+  email?: string;
+  address?: AddressError | null;
+  website?: string;
 }
 
 model PhoneNumber {
@@ -147,6 +188,11 @@ model PhoneNumber {
 
   @example("1")
   @maxLength(1)
+  countryCode?: string;
+}
+
+model PhoneNumberError {
+  number?: string;
   countryCode?: string;
 }
 
@@ -174,6 +220,15 @@ model Address {
   @example("US")
   @maxLength(2)
   country: string;
+}
+
+model AddressError {
+  addressLine1?: string;
+  addressLine2?: string;
+  city?: string;
+  stateOrProvince?: string;
+  postalCode?: string;
+  country?: string;
 }
 
 @example("jordan.lee@classbooker.dev")

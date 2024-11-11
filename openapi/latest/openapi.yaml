@@ -66,7 +66,13 @@ paths:
           description: The request was well-formed, but the contents failed validation. Check the request for missing or invalid fields.
           content:
             application/json:
-              schema: {}
+              schema:
+                type: object
+                properties:
+                  error:
+                    $ref: '#/components/schemas/Accounts.CreateAccountError'
+                required:
+                  - error
         '429':
           description: Request was refused due to rate limiting.
       tags:
@@ -78,9 +84,9 @@ paths:
             schema:
               $ref: '#/components/schemas/Accounts.CreateAccount'
       security:
+        - BasicAuth: []
         - OAuth2Auth:
             - /accounts.write
-        - BasicAuth: []
     get:
       operationId: Accounts_listAccounts
       description: |-
@@ -128,9 +134,9 @@ paths:
       tags:
         - Accounts
       security:
+        - BasicAuth: []
         - OAuth2Auth:
             - /accounts.read
-        - BasicAuth: []
   /accounts/{accountID}:
     get:
       operationId: Accounts_getAccount
@@ -161,9 +167,9 @@ paths:
       tags:
         - Accounts
       security:
+        - BasicAuth: []
         - OAuth2Auth:
             - /accounts/{accountID}/profile.read
-        - BasicAuth: []
   /accounts/{accountID}/capabilities:
     get:
       operationId: Capabilities_listAccountCapabilities
@@ -197,9 +203,9 @@ paths:
       tags:
         - Capabilities
       security:
+        - BasicAuth: []
         - OAuth2Auth:
             - /accounts/{accountID}/capabilities.read
-        - BasicAuth: []
   /oauth2/token:
     post:
       operationId: Auth_createAuthToken
@@ -455,6 +461,30 @@ components:
           type: string
           example: US
           maxLength: 2
+    Accounts.AddressError:
+      type: object
+      properties:
+        addressLine1:
+          type: string
+        addressLine2:
+          type: string
+        city:
+          type: string
+        stateOrProvince:
+          type: string
+        postalCode:
+          type: string
+        country:
+          type: string
+    Accounts.BirthDateError:
+      type: object
+      properties:
+        day:
+          type: string
+        month:
+          type: string
+        year:
+          type: string
     Accounts.BusinessProfile:
       type: object
       required:
@@ -542,12 +572,9 @@ components:
     Accounts.CreateAccount:
       type: object
       required:
-        - mode
         - accountType
         - profile
       properties:
-        mode:
-          $ref: '#/components/schemas/Accounts.Mode'
         accountType:
           $ref: '#/components/schemas/Accounts.AccountType'
         profile:
@@ -558,6 +585,7 @@ components:
             type: string
           description: Free-form key-value pair list. Useful for storing information that is not captured elsewhere.
         termsOfService:
+          nullable: true
           oneOf:
             - $ref: '#/components/schemas/Accounts.TermsOfServiceToken'
             - $ref: '#/components/schemas/Accounts.ManualTermsOfService'
@@ -566,13 +594,110 @@ components:
           maxLength: 64
           description: Optional alias from a foreign/external system which can be used to reference this resource.
         customerSupport:
-          $ref: '#/components/schemas/Accounts.CustomerSupport'
+          type: object
+          allOf:
+            - $ref: '#/components/schemas/Accounts.CustomerSupport'
+          nullable: true
         settings:
-          $ref: '#/components/schemas/Accounts.Settings'
+          type: object
+          allOf:
+            - $ref: '#/components/schemas/Accounts.Settings'
+          nullable: true
         capabilities:
           type: array
           items:
             $ref: '#/components/schemas/CommonCapabilities.CapabilityID'
+    Accounts.CreateAccountError:
+      type: object
+      properties:
+        accountType:
+          type: string
+        profile:
+          type: object
+          allOf:
+            - $ref: '#/components/schemas/Accounts.CreateProfileError'
+          nullable: true
+        metadata:
+          type: string
+        termsOfService:
+          type: object
+          allOf:
+            - $ref: '#/components/schemas/Accounts.TermsOfServiceError'
+          nullable: true
+        foreignID:
+          type: string
+        customerSupport:
+          type: object
+          allOf:
+            - $ref: '#/components/schemas/Accounts.CustomerSupportError'
+          nullable: true
+        settings:
+          type: object
+          properties:
+            cardPayment:
+              type: object
+              properties:
+                statementDescriptor:
+                  type: string
+              nullable: true
+            achPayment:
+              type: object
+              properties:
+                companyName:
+                  type: string
+              nullable: true
+          nullable: true
+        capabilities:
+          type: object
+          additionalProperties:
+            type: string
+    Accounts.CreateBusinessError:
+      type: object
+      properties:
+        legalBusinessName:
+          type: string
+        doingBusinessAs:
+          type: string
+        businessType:
+          type: string
+        address:
+          type: object
+          allOf:
+            - $ref: '#/components/schemas/Accounts.AddressError'
+          nullable: true
+        phone:
+          type: object
+          allOf:
+            - $ref: '#/components/schemas/Accounts.PhoneNumberError'
+          nullable: true
+        email:
+          type: string
+        website:
+          type: string
+        description:
+          type: string
+        taxID:
+          type: object
+          properties:
+            ein:
+              type: object
+              properties:
+                number:
+                  type: string
+              nullable: true
+          nullable: true
+        industryCodes:
+          type: object
+          properties:
+            naics:
+              type: string
+            sic:
+              type: string
+            mcc:
+              type: string
+          nullable: true
+        primaryRegulator:
+          type: string
     Accounts.CreateBusinessProfile:
       type: object
       required:
@@ -611,6 +736,51 @@ components:
           $ref: '#/components/schemas/Accounts.IndustryCodes'
         primaryRegulator:
           $ref: '#/components/schemas/Accounts.PrimaryRegulator'
+    Accounts.CreateIndividualError:
+      type: object
+      properties:
+        name:
+          type: object
+          allOf:
+            - $ref: '#/components/schemas/Accounts.IndividualNameError'
+          nullable: true
+        phone:
+          type: object
+          allOf:
+            - $ref: '#/components/schemas/Accounts.PhoneNumberError'
+          nullable: true
+        email:
+          type: string
+        address:
+          type: object
+          allOf:
+            - $ref: '#/components/schemas/Accounts.AddressError'
+          nullable: true
+        birthDate:
+          type: object
+          allOf:
+            - $ref: '#/components/schemas/Accounts.BirthDateError'
+          nullable: true
+        governmentID:
+          type: object
+          properties:
+            ssn:
+              type: object
+              properties:
+                full:
+                  type: string
+                lastFour:
+                  type: string
+              nullable: true
+            itin:
+              type: object
+              properties:
+                full:
+                  type: string
+                lastFour:
+                  type: string
+              nullable: true
+          nullable: true
     Accounts.CreateIndividualProfile:
       type: object
       required:
@@ -619,11 +789,17 @@ components:
         name:
           $ref: '#/components/schemas/Accounts.IndividualName'
         phone:
-          $ref: '#/components/schemas/Accounts.PhoneNumber'
+          type: object
+          allOf:
+            - $ref: '#/components/schemas/Accounts.PhoneNumber'
+          nullable: true
         email:
           $ref: '#/components/schemas/Accounts.Email'
         address:
-          $ref: '#/components/schemas/Accounts.Address'
+          type: object
+          allOf:
+            - $ref: '#/components/schemas/Accounts.Address'
+          nullable: true
         birthDate:
           type: object
           properties:
@@ -640,8 +816,12 @@ components:
             - day
             - month
             - year
+          nullable: true
         governmentID:
-          $ref: '#/components/schemas/Accounts.GovernmentID'
+          type: object
+          allOf:
+            - $ref: '#/components/schemas/Accounts.GovernmentID'
+          nullable: true
     Accounts.CreateProfile:
       type: object
       properties:
@@ -649,6 +829,19 @@ components:
           $ref: '#/components/schemas/Accounts.CreateIndividualProfile'
         business:
           $ref: '#/components/schemas/Accounts.CreateBusinessProfile'
+    Accounts.CreateProfileError:
+      type: object
+      properties:
+        individual:
+          type: object
+          allOf:
+            - $ref: '#/components/schemas/Accounts.CreateIndividualError'
+          nullable: true
+        business:
+          type: object
+          allOf:
+            - $ref: '#/components/schemas/Accounts.CreateBusinessError'
+          nullable: true
     Accounts.CustomerSupport:
       type: object
       properties:
@@ -657,13 +850,30 @@ components:
         email:
           $ref: '#/components/schemas/Accounts.Email'
         address:
-          type: string
+          $ref: '#/components/schemas/Accounts.Address'
         website:
           type: string
           format: uri
       description: |-
         User-provided information that can be displayed on credit card transactions for customers to use when
         contacting a customer support team. This data is only allowed on a business account.
+    Accounts.CustomerSupportError:
+      type: object
+      properties:
+        phone:
+          type: object
+          allOf:
+            - $ref: '#/components/schemas/Accounts.PhoneNumberError'
+          nullable: true
+        email:
+          type: string
+        address:
+          type: object
+          allOf:
+            - $ref: '#/components/schemas/Accounts.AddressError'
+          nullable: true
+        website:
+          type: string
     Accounts.Document:
       type: object
       required:
@@ -750,6 +960,17 @@ components:
           example: Jr
           maxLength: 20
           description: Suffix of a given name.
+    Accounts.IndividualNameError:
+      type: object
+      properties:
+        firstName:
+          type: string
+        middleName:
+          type: string
+        lastName:
+          type: string
+        suffix:
+          type: string
     Accounts.IndividualProfile:
       type: object
       required:
@@ -818,6 +1039,17 @@ components:
           type: string
           format: uri
       description: Describes the acceptance of the Terms of Service. All data is required, and must be from the user.
+    Accounts.ManualToSError:
+      type: object
+      properties:
+        acceptedDate:
+          type: string
+        acceptedDomain:
+          type: string
+        acceptedIP:
+          type: string
+        acceptedUserAgent:
+          type: string
     Accounts.Mode:
       type: string
       enum:
@@ -836,6 +1068,13 @@ components:
           type: string
           example: '1'
           maxLength: 1
+    Accounts.PhoneNumberError:
+      type: object
+      properties:
+        number:
+          type: string
+        countryCode:
+          type: string
     Accounts.PrimaryRegulator:
       type: string
       enum:
@@ -955,6 +1194,23 @@ components:
           format: ipv4
           description: The IP address from which the terms of service were accepted.
       description: Describes the acceptance of the Terms of Service.
+    Accounts.TermsOfServiceError:
+      type: object
+      properties:
+        token:
+          type: string
+        manual:
+          type: object
+          properties:
+            acceptedDate:
+              type: string
+            acceptedDomain:
+              type: string
+            acceptedIP:
+              type: string
+            acceptedUserAgent:
+              type: string
+          nullable: true
     Accounts.TermsOfServiceToken:
       type: object
       required:
@@ -1228,7 +1484,7 @@ components:
     Versions:
       type: string
       enum:
-        - ''
+        - v2024.00.00
         - latest
       description: Moov API versions. Version strings are formatted as `vYYYY.MM.DD`, except preVerioned and latest.
   securitySchemes:
