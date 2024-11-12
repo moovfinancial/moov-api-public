@@ -12,6 +12,7 @@
     "build": "make compile"
   },
   "devDependencies": {
+    "@moovfinancial/tsp-lib": "./tsp-lib",
     "@typespec/compiler": "0.62.0",
     "@typespec/http": "0.62.0",
     "@typespec/openapi3": "0.62.0",

@@ -1,6 +1,7 @@
 import "@typespec/http";
 import "@typespec/openapi";
 import "@typespec/versioning";
+import "@moovfinancial/tsp-lib";
 
 // import each subdirectory's main
 import "./auth";
