@@ -12,8 +12,6 @@ using TypeSpec.Versioning;
 
 namespace MoovAPI.Accounts;
 
-interface Test {}
-
 model CreateAccount {
   accountType: AccountType;
   profile: CreateProfile;
