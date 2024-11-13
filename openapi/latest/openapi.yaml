@@ -585,10 +585,15 @@ components:
             type: string
           description: Free-form key-value pair list. Useful for storing information that is not captured elsewhere.
         termsOfService:
-          nullable: true
           oneOf:
-            - $ref: '#/components/schemas/Accounts.TermsOfServiceToken'
-            - $ref: '#/components/schemas/Accounts.ManualTermsOfService'
+            - type: object
+              allOf:
+                - $ref: '#/components/schemas/Accounts.TermsOfServiceToken'
+              nullable: true
+            - type: object
+              allOf:
+                - $ref: '#/components/schemas/Accounts.ManualTermsOfService'
+              nullable: true
         foreignID:
           type: string
           maxLength: 64
