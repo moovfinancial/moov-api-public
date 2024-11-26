@@ -196,6 +196,15 @@ model PhoneNumberError {
   countryCode?: string;
 }
 
+const exampleAddress = #{
+  addressLine1: "123 Main Street",
+  addressLine2: "Apt 302",
+  city: "Boulder",
+  stateOrProvince: "CO",
+  postalCode: "80301",
+  country: "US",
+};
+
 model Address {
   @example("123 Main Street")
   @maxLength(60)
@@ -220,6 +229,26 @@ model Address {
   @example("US")
   @maxLength(2)
   country: string;
+}
+
+model UpdateAddress {
+  @maxLength(60)
+  addressLine1?: string;
+
+  @maxLength(32)
+  addressLine2?: string;
+
+  @maxLength(24)
+  city?: string;
+
+  @maxLength(2)
+  stateOrProvince?: string;
+
+  @maxLength(5)
+  postalCode?: string;
+
+  @maxLength(2)
+  country?: string;
 }
 
 model AddressError {
