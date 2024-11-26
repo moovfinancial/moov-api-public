@@ -278,12 +278,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  error:
-                    $ref: '#/components/schemas/LinkCardError'
-                required:
-                  - error
+                $ref: '#/components/schemas/LinkCardError'
         '429':
           description: Request was refused due to rate limiting.
       tags:
@@ -424,12 +419,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  error:
-                    $ref: '#/components/schemas/UpdateCardError'
-                required:
-                  - error
+                $ref: '#/components/schemas/UpdateCardError'
         '429':
           description: Request was refused due to rate limiting.
       tags:
@@ -1329,6 +1319,19 @@ components:
           type: string
           example: /moov/support.read /moov/support.write
           description: A space delimited list of scopes
+    BasicPaymentMethod:
+      type: object
+      required:
+        - paymentMethodID
+        - paymentMethodType
+      properties:
+        paymentMethodID:
+          type: string
+        paymentMethodType:
+          $ref: '#/components/schemas/PaymentMethodType'
+      example:
+        paymentMethodID: 01234567-89ab-cdef-0123-456789abcdef
+        paymentMethodType: moov-wallet
     BirthDateError:
       type: object
       properties:
@@ -1513,7 +1516,7 @@ components:
           type: string
           description: The name of the cardholder as it appears on the card.
         billingAddress:
-          $ref: '#/components/schemas/Address'
+          $ref: '#/components/schemas/CardAddress'
         cardVerification:
           $ref: '#/components/schemas/CardVerification'
         issuer:
@@ -1554,7 +1557,7 @@ components:
         paymentMethods:
           type: array
           items:
-            $ref: '#/components/schemas/PaymentMethod'
+            $ref: '#/components/schemas/BasicPaymentMethod'
       example:
         cardID: 01234567-89ab-cdef-0123-456789abcdef
         fingerprint: 9948962d92a1ce40c9f918cd9ece3a22bde62fb325a2f1fe2e833969de672ba3
@@ -1616,6 +1619,51 @@ components:
         updatedOn: 2024-05-06T12:20:38.184Z
         updateType: number-update
       description: The results of the most recent card update request.
+    CardAddress:
+      type: object
+      required:
+        - postalCode
+      properties:
+        addressLine1:
+          type: string
+          maxLength: 60
+        addressLine2:
+          type: string
+          maxLength: 32
+        city:
+          type: string
+          maxLength: 24
+        stateOrProvince:
+          type: string
+          maxLength: 2
+        postalCode:
+          type: string
+          maxLength: 5
+        country:
+          type: string
+          maxLength: 2
+      example:
+        addressLine1: 123 Main Street
+        addressLine2: Apt 302
+        city: Boulder
+        stateOrProvince: CO
+        postalCode: '80301'
+        country: US
+    CardAddressError:
+      type: object
+      properties:
+        addressLine1:
+          type: string
+        addressLine2:
+          type: string
+        city:
+          type: string
+        stateOrProvince:
+          type: string
+        postalCode:
+          type: string
+        country:
+          type: string
     CardBrand:
       type: string
       enum:
@@ -2403,10 +2451,7 @@ components:
         - cardNumber
         - cardCvv
         - expiration
-        - holderName
         - billingAddress
-        - cardOnFile
-        - verifyName
       properties:
         e2ee:
           $ref: '#/components/schemas/End2EndEncryption'
@@ -2419,7 +2464,7 @@ components:
         holderName:
           type: string
         billingAddress:
-          $ref: '#/components/schemas/Address'
+          $ref: '#/components/schemas/CardAddress'
         cardOnFile:
           type: boolean
         merchantAccountID:
@@ -2446,6 +2491,8 @@ components:
     LinkCardError:
       type: object
       properties:
+        error:
+          type: string
         e2ee:
           $ref: '#/components/schemas/End2EndEncryptionError'
         cardNumber:
@@ -2457,7 +2504,7 @@ components:
         holderName:
           type: string
         billingAddress:
-          $ref: '#/components/schemas/AddressError'
+          $ref: '#/components/schemas/CardAddressError'
         cardOnFile:
           type: string
         merchantAccountID:
@@ -2538,19 +2585,6 @@ components:
           type: object
           additionalProperties:
             type: string
-    PaymentMethod:
-      type: object
-      required:
-        - paymentMethodID
-        - paymentMethodType
-      properties:
-        paymentMethodID:
-          type: string
-        paymentMethodType:
-          $ref: '#/components/schemas/PaymentMethodType'
-      example:
-        paymentMethodID: 01234567-89ab-cdef-0123-456789abcdef
-        paymentMethodType: moov-wallet
     PaymentMethodType:
       type: string
       enum:
@@ -3131,7 +3165,28 @@ components:
       type: string
       enum:
         - rail-response
-    UpdateAddress:
+    UpdateCard:
+      type: object
+      properties:
+        e2ee:
+          $ref: '#/components/schemas/End2EndEncryptionUpdate'
+        billingAddress:
+          $ref: '#/components/schemas/UpdateCardAddress'
+        expiration:
+          $ref: '#/components/schemas/UpdateCardExpiration'
+        cardCvv:
+          type: string
+        cardOnFile:
+          type: boolean
+        merchantAccountID:
+          type: string
+        verifyName:
+          type: boolean
+        holderName:
+          type: string
+      example:
+        cardCvv: '456'
+    UpdateCardAddress:
       type: object
       properties:
         addressLine1:
@@ -3152,34 +3207,20 @@ components:
         country:
           type: string
           maxLength: 2
-    UpdateCard:
-      type: object
-      properties:
-        e2ee:
-          $ref: '#/components/schemas/End2EndEncryptionUpdate'
-        billingAddress:
-          $ref: '#/components/schemas/UpdateAddress'
-        expiration:
-          $ref: '#/components/schemas/UpdateCardExpiration'
-        cardCvv:
-          type: string
-        cardOnFile:
-          type: boolean
-        merchantAccountID:
-          type: string
-        verifyName:
-          type: boolean
-        holderName:
-          type: string
       example:
-        cardCvv: '456'
+        addressLine1: 123 Main Street
+        addressLine2: Apt 302
+        city: Boulder
+        stateOrProvince: CO
+        postalCode: '80301'
+        country: US
     UpdateCardError:
       type: object
       properties:
         e2ee:
           $ref: '#/components/schemas/End2EndEncryptionError'
         billingAddress:
-          $ref: '#/components/schemas/AddressError'
+          $ref: '#/components/schemas/CardAddressError'
         expiration:
           $ref: '#/components/schemas/CardExpirationError'
         cardCvv:

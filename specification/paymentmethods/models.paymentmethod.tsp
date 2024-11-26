@@ -1,12 +1,12 @@
 namespace MoovAPI;
 
-const examplePaymentMethod = #{
+const exampleBasicPaymentMethod = #{
   paymentMethodID: exampleID,
   paymentMethodType: PaymentMethodType.moovWallet,
 };
 
-@example(examplePaymentMethod)
-model PaymentMethod {
+@example(exampleBasicPaymentMethod)
+model BasicPaymentMethod {
   paymentMethodID: string;
   paymentMethodType: PaymentMethodType;
 }

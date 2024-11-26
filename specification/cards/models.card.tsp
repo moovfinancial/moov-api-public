@@ -1,7 +1,6 @@
 import "@typespec/http";
 import "@typespec/openapi3";
 import "@typespec/versioning";
-import "../accounts/models.account.tsp";
 import "../common/models.id.tsp";
 import "../end2end/models.end2end.tsp";
 import "../paymentmethods/models.paymentmethod.tsp";
@@ -27,7 +26,7 @@ const exampleCard = #{
   bin: "123456",
   expiration: exampleCardExpiration,
   holderName: "Jules Jackson",
-  billingAddress: exampleAddress,
+  billingAddress: exampleCardAddress,
   cardVerification: exampleCardVerification,
   issuer: "GRINGOTTS BANK",
   issuerCountry: "US",
@@ -85,7 +84,7 @@ model Card {
   @doc("The name of the cardholder as it appears on the card.")
   holderName: string;
 
-  billingAddress: Address;
+  billingAddress: CardAddress;
   cardVerification: CardVerification;
 
   @doc("Financial institution that issued the card.")
@@ -122,7 +121,7 @@ model Card {
   cardAccountUpdater?: CardAccountUpdater;
   domesticPushToCard: DomesticPushToCard;
   domesticPullFromCard: DomesticPullFromCard;
-  paymentMethods?: PaymentMethod[];
+  paymentMethods?: BasicPaymentMethod[];
 }
 
 const exampleCardFingerprint = "9948962d92a1ce40c9f918cd9ece3a22bde62fb325a2f1fe2e833969de672ba3";
@@ -167,6 +166,36 @@ model CardExpiration {
   @minLength(2)
   @maxLength(2)
   year: string;
+}
+
+const exampleCardAddress = #{
+  addressLine1: "123 Main Street",
+  addressLine2: "Apt 302",
+  city: "Boulder",
+  stateOrProvince: "CO",
+  postalCode: "80301",
+  country: "US",
+};
+
+@example(exampleCardAddress)
+model CardAddress {
+  @maxLength(60)
+  addressLine1?: string;
+
+  @maxLength(32)
+  addressLine2?: string;
+
+  @maxLength(24)
+  city?: string;
+
+  @maxLength(2)
+  stateOrProvince?: string;
+
+  @maxLength(5)
+  postalCode: string;
+
+  @maxLength(2)
+  country?: string;
 }
 
 const exampleCardVerification = #{
@@ -276,12 +305,33 @@ model UpdateCardExpiration {
   year?: string;
 }
 
+@example(exampleCardAddress)
+model UpdateCardAddress {
+  @maxLength(60)
+  addressLine1?: string;
+
+  @maxLength(32)
+  addressLine2?: string;
+
+  @maxLength(24)
+  city?: string;
+
+  @maxLength(2)
+  stateOrProvince?: string;
+
+  @maxLength(5)
+  postalCode?: string;
+
+  @maxLength(2)
+  country?: string;
+}
+
 @example(#{
   cardNumber: "4111111111111111",
   cardCvv: "123",
   expiration: exampleCardExpiration,
   holderName: "Jules Jackson",
-  billingAddress: exampleAddress,
+  billingAddress: exampleCardAddress,
   cardOnFile: true,
   merchantAccountID: exampleID,
   verifyName: true,
@@ -291,17 +341,17 @@ model LinkCard {
   cardNumber: string;
   cardCvv: string;
   expiration: CardExpiration;
-  holderName: string;
-  billingAddress: Address;
-  cardOnFile: boolean;
+  holderName?: string;
+  billingAddress: CardAddress;
+  cardOnFile?: boolean;
   merchantAccountID?: string;
-  verifyName: boolean;
+  verifyName?: boolean;
 }
 
 @example(#{ cardCvv: "456" })
 model UpdateCard {
   e2ee?: End2EndEncryption;
-  billingAddress?: UpdateAddress;
+  billingAddress?: UpdateCardAddress;
   expiration?: UpdateCardExpiration;
   cardCvv?: string;
   cardOnFile?: boolean;
@@ -317,13 +367,23 @@ model CardExpirationError {
   year?: string;
 }
 
+model CardAddressError {
+  addressLine1?: string;
+  addressLine2?: string;
+  city?: string;
+  stateOrProvince?: string;
+  postalCode?: string;
+  country?: string;
+}
+
 model LinkCardError {
+  error?: string;
   e2ee?: End2EndEncryptionError;
   cardNumber?: string;
   cardCvv?: string;
   expiration?: CardExpirationError;
   holderName?: string;
-  billingAddress?: AddressError;
+  billingAddress?: CardAddressError;
   cardOnFile?: string;
   merchantAccountID?: string;
   verifyName?: string;
@@ -331,7 +391,7 @@ model LinkCardError {
 
 model UpdateCardError {
   e2ee?: End2EndEncryptionError;
-  billingAddress?: AddressError;
+  billingAddress?: CardAddressError;
   expiration?: CardExpirationError;
   cardCvv?: string;
   cardOnFile?: string;

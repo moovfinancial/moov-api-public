@@ -50,12 +50,7 @@ namespace MoovAPI {
     accountID: string,
 
     @body body: LinkCard,
-  ): PostResponses<
-    Card,
-    {
-      error: LinkCardError;
-    }
-  >;
+  ): PostResponses<Card, LinkCardError>;
 
   @doc("""
     List all the active cards associated with a Moov account. Read our [accept card payments guide](https://docs.moov.io/guides/sources/cards/accept-card-payments/) to learn more.
@@ -115,12 +110,7 @@ namespace MoovAPI {
     cardID: CardID,
 
     @body body: UpdateCard,
-  ): UpdateResponses<
-    Card,
-    {
-      error: UpdateCardError;
-    }
-  >;
+  ): UpdateResponses<Card, UpdateCardError>;
 
   @doc("""
     Disables a card associated with a Moov account.
