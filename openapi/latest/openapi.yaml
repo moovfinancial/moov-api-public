@@ -18,6 +18,7 @@ tags:
   - name: Authentication
   - name: Accounts
   - name: Capabilities
+  - name: Cards
   - name: Transfers
 paths:
   /accounts:
@@ -207,6 +208,279 @@ paths:
         - BasicAuth: []
         - OAuth2Auth:
             - /accounts/{accountID}/capabilities.read
+  /accounts/{accountID}/cards:
+    post:
+      operationId: linkCard
+      description: |-
+        Link a card to an existing Moov account. 
+
+        Read our [accept card payments guide](https://docs.moov.io/guides/sources/cards/accept-card-payments/#link-a-card) to learn more.
+
+        Only use this endpoint if you have provided Moov with a copy of your PCI attestation of compliance. 
+
+        During card linking, the provided data will be verified by submitting a $0 authorization (account verification) request. 
+        If `merchantAccountID` is provided, the authorization request will contain that account's statement descriptor and address. 
+        Otherwise, the platform account's profile will be used. If no statement descriptor has been set, the authorization will 
+        use the account's name instead.
+
+        It is strongly recommended that callers include the `X-Wait-For` header, set to `payment-method`, if the newly linked 
+        card is intended to be used right away. If this header is not included, the caller will need to poll the [List Payment 
+        Methods](https://docs.moov.io/api/sources/payment-methods/list/)
+        endpoint to wait for the new payment methods to be available for use.
+
+        To use this endpoint from the browser, you'll need to specify the `/accounts/{accountID}/cards.write` scope
+        when generating a [token](https://docs.moov.io/api/authentication/access-tokens/).
+      parameters:
+        - $ref: '#/components/parameters/CommonHeaders'
+        - name: x-wait-for
+          in: header
+          required: false
+          description: |-
+            Optional header to wait for certain events, such as the creation of a payment method, to occur before returning a response.
+
+            When this header is set to `payment-method`, the response will include any payment methods that were created for the newly 
+            linked card in the `paymentMethods` field. Otherwise, the `paymentMethods` field will be omitted from the response.
+          schema:
+            $ref: '#/components/schemas/LinkCardWaitFor'
+        - name: accountID
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: The request completed successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Card'
+        '400':
+          description: The server could not understand the request due to invalid syntax.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+        '401':
+          description: The request contained missing or expired authentication.
+        '403':
+          description: The user is not authorized to make the request.
+        '404':
+          description: The requested resource was not found.
+        '409':
+          description: The request conflicted with the current state of the target resource.
+          content:
+            application/json:
+              schema:
+                type: string
+        '422':
+          description: The request was well-formed, but the contents failed validation. Check the request for missing or invalid fields.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LinkCardError'
+        '429':
+          description: Request was refused due to rate limiting.
+      tags:
+        - Cards
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LinkCard'
+      security:
+        - BasicAuth: []
+        - OAuth2Auth:
+            - /accounts/{accountID}/cards.write
+    get:
+      operationId: listCards
+      description: |-
+        List all the active cards associated with a Moov account. Read our [accept card payments guide](https://docs.moov.io/guides/sources/cards/accept-card-payments/) to learn more.
+        <br><br> To use this endpoint from the browser, you'll need to specify the `/accounts/{accountID}/cards.read` scope when generating a [token](https://docs.moov.io/api/authentication/access-tokens/).
+      parameters:
+        - $ref: '#/components/parameters/CommonHeaders'
+        - name: accountID
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: The request completed successfully.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Card'
+        '401':
+          description: The request contained missing or expired authentication.
+        '403':
+          description: The user is not authorized to make the request.
+        '429':
+          description: Request was refused due to rate limiting.
+      tags:
+        - Cards
+      security:
+        - BasicAuth: []
+        - OAuth2Auth:
+            - /accounts/{accountID}/cards.read
+  /accounts/{accountID}/cards/{cardID}:
+    get:
+      operationId: getCard
+      description: |-
+        Fetch a specific card associated with a Moov account. Read our [accept card payments guide](https://docs.moov.io/guides/sources/cards/accept-card-payments/) to learn more.
+        <br><br> To use this endpoint from the browser, you'll need to specify the `/accounts/{accountID}/cards.read` scope when generating a [token](https://docs.moov.io/api/authentication/access-tokens/).
+      parameters:
+        - $ref: '#/components/parameters/CommonHeaders'
+        - name: accountID
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: cardID
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/CardID'
+      responses:
+        '200':
+          description: The request completed successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Card'
+        '401':
+          description: The request contained missing or expired authentication.
+        '403':
+          description: The user is not authorized to make the request.
+        '404':
+          description: The requested resource was not found.
+        '429':
+          description: Request was refused due to rate limiting.
+      tags:
+        - Cards
+      security:
+        - BasicAuth: []
+        - OAuth2Auth:
+            - /accounts/{accountID}/cards.read
+    patch:
+      operationId: updateCard
+      description: |-
+        Update a linked card and/or resubmit it for verification. If a value is provided for CVV, 
+        a new verification ($0 authorization) will be submitted for the card. Updating the expiration date or 
+        address will update the information stored on file for the card but will not be verified. <br> 
+        Read our [accept card payments guide](https://docs.moov.io/guides/sources/cards/accept-card-payments/#reverify-a-card) to learn more.
+        Only use this endpoint if you have provided Moov with a copy of your PCI attestation of compliance. 
+        <br><br> To use this endpoint from the browser, you'll need to specify the `/accounts/{accountID}/cards.write` scope when generating a [token](https://docs.moov.io/api/authentication/access-tokens/).
+      parameters:
+        - $ref: '#/components/parameters/CommonHeaders'
+        - name: accountID
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: cardID
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/CardID'
+      responses:
+        '200':
+          description: The request completed successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Card'
+        '400':
+          description: The server could not understand the request due to invalid syntax.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+        '401':
+          description: The request contained missing or expired authentication.
+        '403':
+          description: The user is not authorized to make the request.
+        '404':
+          description: The requested resource was not found.
+        '409':
+          description: The request conflicted with the current state of the target resource.
+          content:
+            application/json:
+              schema:
+                type: string
+        '422':
+          description: The request was well-formed, but the contents failed validation. Check the request for missing or invalid fields.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UpdateCardError'
+        '429':
+          description: Request was refused due to rate limiting.
+      tags:
+        - Cards
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateCard'
+      security:
+        - BasicAuth: []
+        - OAuth2Auth:
+            - /accounts/{accountID}/cards.write
+    delete:
+      operationId: disableCard
+      description: |-
+        Disables a card associated with a Moov account.
+        <br><br> To use this endpoint from the browser, you'll need to specify the `/accounts/{accountID}/cards.write` scope when generating a [token](https://docs.moov.io/api/authentication/access-tokens/).
+      parameters:
+        - $ref: '#/components/parameters/CommonHeaders'
+        - name: accountID
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: cardID
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/CardID'
+      responses:
+        '204':
+          description: The request completed successfully, but there is no content to return.
+        '400':
+          description: The server could not understand the request due to invalid syntax.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+        '401':
+          description: The request contained missing or expired authentication.
+        '403':
+          description: The user is not authorized to make the request.
+        '404':
+          description: The requested resource was not found.
+        '409':
+          description: The request conflicted with the current state of the target resource.
+          content:
+            application/json:
+              schema:
+                type: string
+        '429':
+          description: Request was refused due to rate limiting.
+      tags:
+        - Cards
+      security:
+        - BasicAuth: []
+        - OAuth2Auth:
+            - /accounts/{accountID}/cards.write
   /accounts/{accountID}/transfers:
     get:
       operationId: listTransfersForAccount
@@ -845,6 +1119,28 @@ components:
         status:
           type: string
       description: Describes an action or set of actions that an account is permitted to perform.
+    AccountNameVerification:
+      type: object
+      required:
+        - firstName
+        - lastName
+        - middleName
+        - fullName
+      properties:
+        firstName:
+          $ref: '#/components/schemas/CardVerificationResult'
+        lastName:
+          $ref: '#/components/schemas/CardVerificationResult'
+        middleName:
+          $ref: '#/components/schemas/CardVerificationResult'
+        fullName:
+          $ref: '#/components/schemas/CardVerificationResult'
+      example:
+        firstName: match
+        lastName: match
+        middleName: match
+        fullName: match
+      description: The results of submitting cardholder name to a card network for verification.
     AccountType:
       type: string
       enum:
@@ -1023,11 +1319,19 @@ components:
           type: string
           example: /moov/support.read /moov/support.write
           description: A space delimited list of scopes
-    BadRequestResponse:
+    BasicPaymentMethod:
       type: object
+      required:
+        - paymentMethodID
+        - paymentMethodType
       properties:
-        error:
-          $ref: '#/components/schemas/GenericError'
+        paymentMethodID:
+          type: string
+        paymentMethodType:
+          $ref: '#/components/schemas/PaymentMethodType'
+      example:
+        paymentMethodID: 01234567-89ab-cdef-0123-456789abcdef
+        paymentMethodType: moov-wallet
     BirthDateError:
       type: object
       properties:
@@ -1161,12 +1465,259 @@ components:
         - pending
         - in-review
       description: The status of the capability requested for an account.
+    Card:
+      type: object
+      required:
+        - cardID
+        - fingerprint
+        - brand
+        - cardType
+        - cardCategory
+        - lastFourCardNumber
+        - bin
+        - expiration
+        - holderName
+        - billingAddress
+        - cardVerification
+        - issuer
+        - issuerCountry
+        - issuerURL
+        - issuerPhone
+        - cardOnFile
+        - domesticPushToCard
+        - domesticPullFromCard
+      properties:
+        cardID:
+          $ref: '#/components/schemas/CardID'
+        fingerprint:
+          $ref: '#/components/schemas/CardFingerprint'
+        brand:
+          $ref: '#/components/schemas/CardBrand'
+        cardType:
+          $ref: '#/components/schemas/CardType'
+        cardCategory:
+          type: string
+          description: |-
+            The category or level of the card defined by the issuer.
+            Examples include, but not limited to, "REWARDS", "TRADITIONAL REWARDS", "CLASSIC", and "CORPORATE PURCHASING".
+        lastFourCardNumber:
+          type: string
+          minLength: 4
+          maxLength: 4
+          description: Last four digits of the card number
+        bin:
+          type: string
+          minLength: 6
+          maxLength: 8
+          description: The first six to eight digits of the card number, which identifies the financial institution that issued the card.
+        expiration:
+          $ref: '#/components/schemas/CardExpiration'
+        holderName:
+          type: string
+          description: The name of the cardholder as it appears on the card.
+        billingAddress:
+          $ref: '#/components/schemas/CardAddress'
+        cardVerification:
+          $ref: '#/components/schemas/CardVerification'
+        issuer:
+          type: string
+          description: Financial institution that issued the card.
+        issuerCountry:
+          type: string
+          description: Country where the card was issued.
+        issuerURL:
+          type: string
+          format: uri
+          description: URL of the issuer.
+        issuerPhone:
+          type: string
+          description: Phone number of the issuer.
+        commercial:
+          type: boolean
+          description: |-
+            If true, the card is for commercial use, or associated with a business.
+            If false, the card is associated with a general consumer.
+        regulated:
+          type: boolean
+          description: |-
+            If true, the card issuing bank is regulated, and the scheme fees for debit transactions will be limited based on the Durbin Amendment.
+            If false, the card issuing bank is not regulated, and the scheme fees will not be limited.
+        cardOnFile:
+          type: boolean
+          description: Indicates cardholder has authorized card to be stored for future payments.
+        merchantAccountID:
+          type: string
+          format: uuid
+        cardAccountUpdater:
+          $ref: '#/components/schemas/CardAccountUpdater'
+        domesticPushToCard:
+          $ref: '#/components/schemas/DomesticPushToCard'
+        domesticPullFromCard:
+          $ref: '#/components/schemas/DomesticPullFromCard'
+        paymentMethods:
+          type: array
+          items:
+            $ref: '#/components/schemas/BasicPaymentMethod'
+      example:
+        cardID: 01234567-89ab-cdef-0123-456789abcdef
+        fingerprint: 9948962d92a1ce40c9f918cd9ece3a22bde62fb325a2f1fe2e833969de672ba3
+        brand: Visa
+        cardType: credit
+        cardCategory: CLASSIC
+        lastFourCardNumber: '1234'
+        bin: '123456'
+        expiration:
+          month: '01'
+          year: '21'
+        holderName: Jules Jackson
+        billingAddress:
+          addressLine1: 123 Main Street
+          addressLine2: Apt 302
+          city: Boulder
+          stateOrProvince: CO
+          postalCode: '80301'
+          country: US
+        cardVerification:
+          cvv: match
+          addressLine1: match
+          postalCode: match
+          accountName:
+            firstName: match
+            lastName: match
+            middleName: match
+            fullName: match
+        issuer: GRINGOTTS BANK
+        issuerCountry: US
+        issuerURL: HTTPS://WWW.EXAMPLE.COM/
+        issuerPhone: '8185551212'
+        commercial: false
+        regulated: false
+        cardOnFile: true
+        merchantAccountID: 01234567-89ab-cdef-0123-456789abcdef
+        cardAccountUpdater:
+          updatedOn: 2024-05-06T12:20:38.184Z
+          updateType: number-update
+        domesticPushToCard: standard
+        domesticPullFromCard: supported
+        paymentMethods:
+          - paymentMethodID: 01234567-89ab-cdef-0123-456789abcdef
+            paymentMethodType: card-payment
+          - paymentMethodID: 01234567-89ab-cdef-0123-456789abcdef
+            paymentMethodType: push-to-card
+          - paymentMethodID: 01234567-89ab-cdef-0123-456789abcdef
+            paymentMethodType: pull-from-card
+      description: Describes a card on a Moov account.
+    CardAccountUpdater:
+      type: object
+      properties:
+        updatedOn:
+          type: string
+          format: date-time
+        updateType:
+          $ref: '#/components/schemas/CardUpdateReason'
+      example:
+        updatedOn: 2024-05-06T12:20:38.184Z
+        updateType: number-update
+      description: The results of the most recent card update request.
+    CardAddress:
+      type: object
+      required:
+        - postalCode
+      properties:
+        addressLine1:
+          type: string
+          maxLength: 60
+        addressLine2:
+          type: string
+          maxLength: 32
+        city:
+          type: string
+          maxLength: 24
+        stateOrProvince:
+          type: string
+          maxLength: 2
+        postalCode:
+          type: string
+          maxLength: 5
+        country:
+          type: string
+          maxLength: 2
+      example:
+        addressLine1: 123 Main Street
+        addressLine2: Apt 302
+        city: Boulder
+        stateOrProvince: CO
+        postalCode: '80301'
+        country: US
+    CardAddressError:
+      type: object
+      properties:
+        addressLine1:
+          type: string
+        addressLine2:
+          type: string
+        city:
+          type: string
+        stateOrProvince:
+          type: string
+        postalCode:
+          type: string
+        country:
+          type: string
+    CardBrand:
+      type: string
+      enum:
+        - American Express
+        - Discover
+        - Mastercard
+        - Visa
+        - Unknown
+      example: Visa
+      description: The card brand.
     CardDynamicDescriptor:
       type: string
       example: WhlBdy *Yoga 11-12
       minLength: 4
       maxLength: 22
       description: An optional override of the default card statement descriptor for a transfer. Accounts must be enabled by Moov to set this field.
+    CardExpiration:
+      type: object
+      required:
+        - month
+        - year
+      properties:
+        month:
+          type: string
+          minLength: 2
+          maxLength: 2
+        year:
+          type: string
+          minLength: 2
+          maxLength: 2
+      example:
+        month: '01'
+        year: '21'
+      description: The expiration date of the card or token.
+    CardExpirationError:
+      type: object
+      properties:
+        month:
+          type: string
+        year:
+          type: string
+    CardFingerprint:
+      type: string
+      example: 9948962d92a1ce40c9f918cd9ece3a22bde62fb325a2f1fe2e833969de672ba3
+      maxLength: 100
+      description: |-
+        Uniquely identifies a linked payment card or token.
+        For Apple Pay, the fingerprint is based on the tokenized card number and may vary based on the user's device.
+        This field can be used to identify specific payment methods across multiple accounts on your platform.
+    CardID:
+      type: string
+      example: 01234567-89ab-cdef-0123-456789abcdef
+      format: uuid
+      description: ID of the card.
     CardPaymentSettings:
       type: object
       properties:
@@ -1299,6 +1850,62 @@ components:
         cardDetails:
           $ref: '#/components/schemas/RefundCardDetails'
       description: Details of a card refund.
+    CardType:
+      type: string
+      enum:
+        - debit
+        - credit
+        - prepaid
+        - unknown
+      example: credit
+      description: The type of the card.
+    CardUpdateReason:
+      type: string
+      enum:
+        - unspecified
+        - account-closed
+        - contact-cardholder
+        - expiration-update
+        - no-change
+        - no-match
+        - number-update
+      example: number-update
+      description: The results of the card update request.
+    CardVerification:
+      type: object
+      required:
+        - cvv
+        - addressLine1
+        - postalCode
+        - accountName
+      properties:
+        cvv:
+          $ref: '#/components/schemas/CardVerificationResult'
+        addressLine1:
+          $ref: '#/components/schemas/CardVerificationResult'
+        postalCode:
+          $ref: '#/components/schemas/CardVerificationResult'
+        accountName:
+          $ref: '#/components/schemas/AccountNameVerification'
+      example:
+        cvv: match
+        addressLine1: match
+        postalCode: match
+        accountName:
+          firstName: match
+          lastName: match
+          middleName: match
+          fullName: match
+      description: The results of submitting cardholder data to a card network for verification.
+    CardVerificationResult:
+      type: string
+      enum:
+        - noMatch
+        - match
+        - notChecked
+        - unavailable
+        - partialMatch
+      example: match
     Count:
       type: integer
       format: int64
@@ -1636,15 +2243,6 @@ components:
         - 2-days
       example: 2-days
       description: An optional override of your default ACH hold period in banking days. The hold period must be longer than or equal to your default setting.
-    DisableResponses:
-      anyOf:
-        - $ref: '#/components/schemas/NoContentResponse'
-        - $ref: '#/components/schemas/BadRequestResponse'
-        - $ref: '#/components/schemas/UnauthorizedResponse'
-        - $ref: '#/components/schemas/ForbiddenResponse'
-        - $ref: '#/components/schemas/NotFoundResponse'
-        - $ref: '#/components/schemas/StateConflictResponse'
-        - $ref: '#/components/schemas/RateLimitedResponse'
     Document:
       type: object
       required:
@@ -1681,14 +2279,61 @@ components:
         - BankStatement
       example: BankStatement
       description: Types of documents that can be uploaded.
+    DomesticPullFromCard:
+      type: string
+      enum:
+        - not-supported
+        - supported
+        - unknown
+      example: supported
+      description: Indicates if the card supports domestic pull-from-card transfer.
+    DomesticPushToCard:
+      type: string
+      enum:
+        - not-supported
+        - standard
+        - fast-funds
+        - unknown
+      example: standard
+      description: Indicates which level of domestic push-to-card transfer is supported by the card, if any.
     Email:
       type: string
       example: jordan.lee@classbooker.dev
       maxLength: 255
       format: email
-    ForbiddenResponse:
+    End2EndEncryption:
       type: object
-      description: The user is not authorized to make the request.
+      required:
+        - token
+      properties:
+        token:
+          type: string
+          format: JWE
+      example:
+        token: eyJhbGciOiJFQ0RILUVTK0EyNTZLVyIsImVuYyI6IkEyNTZHQ00iLCJlcGsiOnsia3R5IjoiRUMiLCJjcnYiOiJQLTUyMSIsIngiOiJBS0NYVDM1WVdvTm8wbzExNy1SU0dqUGg3alN1NjFmLUhnYkx1dW0xVG1ueTRlcW5yX2hyU0hpY0w1d3gwODRCWDBRZjVTdEtkRUoydzY2ZUJqWHprRV9OIiwieSI6IkFIMEJfT2RaYTQtbG43dGJ4M3VBdlc1NDNQRE9HUXBCTDloRFFNWjlTQXNfOW05UWN3dnhRd1hrb1VrM3VzT1FnVV9ySVFrNFRoZ1NTUzV4UlhKcm5ZaTkifSwia2lkIjoiYmRvV3pLekpKUGw0TVFIaENDa05WYTZlZ1dmYi02V1haSjZKTFZqQ0hWMD0ifQ.HalyoHsfufBJEODd2lD9ThQvvVWw3b2kgWDLHGxmHhMv8rODyLL_Ug.rpQP178t8Ed_pUU2.Sn9UFeVoegAxiMUv11q7l3M0y9YHSLYi2n_JB7n7Pc777_47-icfaxstJemT0IC81w.akkq1EBxzWkBr4vEomSpWA
+      description: |-
+        Optional and only used if planning to use End to End Encryption to pass PCI data through an intermediary. 
+        This is the output of using compact serialization of a JWE token that wraps an AES key and uses the public key returned from /end-to-end-keys.
+        Examples of how to create this token can be found on our [GitHub](https://github.com/moovfinancial/moov-go/blob/main/examples/e2ee/e2ee_test.go).
+        Body for a JWE token following [RFC](https://datatracker.ietf.org/doc/html/rfc7516).
+    End2EndEncryptionError:
+      type: object
+      properties:
+        token:
+          type: string
+    End2EndEncryptionUpdate:
+      type: object
+      properties:
+        token:
+          type: string
+          format: JWE
+      example:
+        token: eyJhbGciOiJFQ0RILUVTK0EyNTZLVyIsImVuYyI6IkEyNTZHQ00iLCJlcGsiOnsia3R5IjoiRUMiLCJjcnYiOiJQLTUyMSIsIngiOiJBS0NYVDM1WVdvTm8wbzExNy1SU0dqUGg3alN1NjFmLUhnYkx1dW0xVG1ueTRlcW5yX2hyU0hpY0w1d3gwODRCWDBRZjVTdEtkRUoydzY2ZUJqWHprRV9OIiwieSI6IkFIMEJfT2RaYTQtbG43dGJ4M3VBdlc1NDNQRE9HUXBCTDloRFFNWjlTQXNfOW05UWN3dnhRd1hrb1VrM3VzT1FnVV9ySVFrNFRoZ1NTUzV4UlhKcm5ZaTkifSwia2lkIjoiYmRvV3pLekpKUGw0TVFIaENDa05WYTZlZ1dmYi02V1haSjZKTFZqQ0hWMD0ifQ.HalyoHsfufBJEODd2lD9ThQvvVWw3b2kgWDLHGxmHhMv8rODyLL_Ug.rpQP178t8Ed_pUU2.Sn9UFeVoegAxiMUv11q7l3M0y9YHSLYi2n_JB7n7Pc777_47-icfaxstJemT0IC81w.akkq1EBxzWkBr4vEomSpWA
+      description: |-
+        Optional and only used if planning to use End to End Encryption to pass PCI data through an intermediary. 
+        This is the output of using compact serialization of a JWE token that wraps an AES key and uses the public key returned from /end-to-end-keys.
+        Examples of how to create this token can be found on our [GitHub](https://github.com/moovfinancial/moov-go/blob/main/examples/e2ee/e2ee_test.go).
+        Body for a JWE token following [RFC](https://datatracker.ietf.org/doc/html/rfc7516).
     GenericError:
       type: object
       required:
@@ -1800,6 +2445,77 @@ components:
           example: '7997'
           minLength: 4
           maxLength: 4
+    LinkCard:
+      type: object
+      required:
+        - cardNumber
+        - cardCvv
+        - expiration
+        - billingAddress
+      properties:
+        e2ee:
+          $ref: '#/components/schemas/End2EndEncryption'
+        cardNumber:
+          type: string
+        cardCvv:
+          type: string
+        expiration:
+          $ref: '#/components/schemas/CardExpiration'
+        holderName:
+          type: string
+        billingAddress:
+          $ref: '#/components/schemas/CardAddress'
+        cardOnFile:
+          type: boolean
+        merchantAccountID:
+          type: string
+        verifyName:
+          type: boolean
+      example:
+        cardNumber: '4111111111111111'
+        cardCvv: '123'
+        expiration:
+          month: '01'
+          year: '21'
+        holderName: Jules Jackson
+        billingAddress:
+          addressLine1: 123 Main Street
+          addressLine2: Apt 302
+          city: Boulder
+          stateOrProvince: CO
+          postalCode: '80301'
+          country: US
+        cardOnFile: true
+        merchantAccountID: 01234567-89ab-cdef-0123-456789abcdef
+        verifyName: true
+    LinkCardError:
+      type: object
+      properties:
+        error:
+          type: string
+        e2ee:
+          $ref: '#/components/schemas/End2EndEncryptionError'
+        cardNumber:
+          type: string
+        cardCvv:
+          type: string
+        expiration:
+          $ref: '#/components/schemas/CardExpirationError'
+        holderName:
+          type: string
+        billingAddress:
+          $ref: '#/components/schemas/CardAddressError'
+        cardOnFile:
+          type: string
+        merchantAccountID:
+          type: string
+        verifyName:
+          type: string
+    LinkCardWaitFor:
+      type: string
+      enum:
+        - payment-method
+      example: payment-method
     ManualTermsOfService:
       type: object
       required:
@@ -1862,12 +2578,6 @@ components:
           type: string
           description: Moov processing fee. String type represents dollars with up to 9 decimal place precision.
       description: Processing and pass-through costs that add up to the moovFee.
-    NoContentResponse:
-      type: object
-      description: The request completed successfully, but there is no content to return.
-    NotFoundResponse:
-      type: object
-      description: The requested resource was not found.
     PatchTransfer:
       type: object
       properties:
@@ -1875,6 +2585,19 @@ components:
           type: object
           additionalProperties:
             type: string
+    PaymentMethodType:
+      type: string
+      enum:
+        - moov-wallet
+        - ach-debit-fund
+        - ach-debit-collect
+        - ach-credit-standard
+        - ach-credit-same-day
+        - rtp-credit
+        - card-payment
+        - apple-pay
+        - push-to-card
+        - pull-from-card
     PhoneNumber:
       type: object
       properties:
@@ -1909,9 +2632,6 @@ components:
         business:
           $ref: '#/components/schemas/BusinessProfile'
       description: Describes a Moov account profile. A profile will have a business or an individual, depending on the account's type.
-    RateLimitedResponse:
-      type: object
-      description: Request was refused due to rate limiting.
     RefundCardDetails:
       type: object
       required:
@@ -2171,15 +2891,6 @@ components:
       format: int64
       example: 60
       description: The number of entries to skip when paginating a large result set.
-    StateConflictResponse:
-      type: object
-      properties:
-        error:
-          type: string
-          description: |-
-            In most cases this will be a GenericError, but some APIs may
-            return the existing resource with which this request conflicted.
-      description: The request conflicted with the current state of the target resource.
     TaxID:
       type: object
       required:
@@ -2454,9 +3165,84 @@ components:
       type: string
       enum:
         - rail-response
-    UnauthorizedResponse:
+    UpdateCard:
       type: object
-      description: The request contained missing or expired authentication.
+      properties:
+        e2ee:
+          $ref: '#/components/schemas/End2EndEncryptionUpdate'
+        billingAddress:
+          $ref: '#/components/schemas/UpdateCardAddress'
+        expiration:
+          $ref: '#/components/schemas/UpdateCardExpiration'
+        cardCvv:
+          type: string
+        cardOnFile:
+          type: boolean
+        merchantAccountID:
+          type: string
+        verifyName:
+          type: boolean
+        holderName:
+          type: string
+      example:
+        cardCvv: '456'
+    UpdateCardAddress:
+      type: object
+      properties:
+        addressLine1:
+          type: string
+          maxLength: 60
+        addressLine2:
+          type: string
+          maxLength: 32
+        city:
+          type: string
+          maxLength: 24
+        stateOrProvince:
+          type: string
+          maxLength: 2
+        postalCode:
+          type: string
+          maxLength: 5
+        country:
+          type: string
+          maxLength: 2
+      example:
+        addressLine1: 123 Main Street
+        addressLine2: Apt 302
+        city: Boulder
+        stateOrProvince: CO
+        postalCode: '80301'
+        country: US
+    UpdateCardError:
+      type: object
+      properties:
+        e2ee:
+          $ref: '#/components/schemas/End2EndEncryptionError'
+        billingAddress:
+          $ref: '#/components/schemas/CardAddressError'
+        expiration:
+          $ref: '#/components/schemas/CardExpirationError'
+        cardCvv:
+          type: string
+        cardOnFile:
+          type: string
+        merchantAccountID:
+          type: string
+        verifyName:
+          type: string
+        holderName:
+          type: string
+    UpdateCardExpiration:
+      type: object
+      properties:
+        month:
+          type: string
+        year:
+          type: string
+      example:
+        month: '01'
+        year: '21'
     Verification:
       type: object
       required:
@@ -2519,6 +3305,8 @@ components:
             /accounts.read: ''
             /accounts/{accountID}/profile.read: ''
             /accounts/{accountID}/capabilities.read: ''
+            /accounts/{accountID}/cards.write: ''
+            /accounts/{accountID}/cards.read: ''
             /accounts/{yourAccountID}/transfers.write: ''
             /accounts/{yourAccountID}/transfers.read: ''
             /accounts/{accountID}/transfers.read: ''
