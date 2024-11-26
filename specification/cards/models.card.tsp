@@ -3,7 +3,7 @@ import "@typespec/openapi3";
 import "@typespec/versioning";
 import "../accounts/models.account.tsp";
 import "../common/models.id.tsp";
-import "../end2end/models.token.tsp";
+import "../end2end/models.end2end.tsp";
 import "../paymentmethods/models.paymentmethod.tsp";
 
 using TypeSpec.Http;
@@ -265,8 +265,29 @@ enum CardUpdateReason {
 
 // Requests
 
+@example(LinkCardWaitFor.paymentMethod)
+enum LinkCardWaitFor {
+  paymentMethod: "payment-method",
+}
+
+@example(exampleCardExpiration)
+model UpdateCardExpiration {
+  month?: string;
+  year?: string;
+}
+
+@example(#{
+  cardNumber: "4111111111111111",
+  cardCvv: "123",
+  expiration: exampleCardExpiration,
+  holderName: "Jules Jackson",
+  billingAddress: exampleAddress,
+  cardOnFile: true,
+  merchantAccountID: exampleID,
+  verifyName: true,
+})
 model LinkCard {
-  e2ee?: End2EndToken;
+  e2ee?: End2EndEncryption;
   cardNumber: string;
   cardCvv: string;
   expiration: CardExpiration;
@@ -277,12 +298,9 @@ model LinkCard {
   verifyName: boolean;
 }
 
-enum LinkCardWaitFor {
-  paymentMethod: "payment-method",
-}
-
+@example(#{ cardCvv: "456" })
 model UpdateCard {
-  e2ee: End2EndToken;
+  e2ee?: End2EndEncryption;
   billingAddress?: UpdateAddress;
   expiration?: UpdateCardExpiration;
   cardCvv?: string;
@@ -292,15 +310,15 @@ model UpdateCard {
   holderName?: string;
 }
 
-model UpdateCardExpiration {
+// Errors
+
+model CardExpirationError {
   month?: string;
   year?: string;
 }
 
-// Errors
-
 model LinkCardError {
-  e2ee?: End2EndTokenError;
+  e2ee?: End2EndEncryptionError;
   cardNumber?: string;
   cardCvv?: string;
   expiration?: CardExpirationError;
@@ -311,13 +329,8 @@ model LinkCardError {
   verifyName?: string;
 }
 
-model CardExpirationError {
-  month?: string;
-  year?: string;
-}
-
 model UpdateCardError {
-  e2ee?: End2EndTokenError;
+  e2ee?: End2EndEncryptionError;
   billingAddress?: AddressError;
   expiration?: CardExpirationError;
   cardCvv?: string;
