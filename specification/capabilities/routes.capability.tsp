@@ -7,21 +7,21 @@ import "../common/models.parameter.tsp";
 
 using TypeSpec.Http;
 
-@tag("Capabilities")
-@route("/accounts/{accountID}/capabilities")
-namespace MoovAPI.Capabilities {
+namespace MoovAPI {
   @doc("""
     Retrieve all the capabilities an account has requested.
     
     Read our [capabilities guide](https://docs.moov.io/guides/accounts/capabilities/) to learn more.
     """)
+  @tag("Capabilities")
+  @route("/accounts/{accountID}/capabilities")
   @get
-  @useAuth(BasicAuth | Auth.OAuth2<["/accounts/{accountID}/capabilities.read"]>)
+  @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/capabilities.read"]>)
   op listAccountCapabilities(
-    ...Common.Headers,
+    ...CommonHeaders,
 
     @format("uuid")
     @path
     accountID: string,
-  ): Common.List<Capabilities.Capability>;
+  ): ListResponses<Capability>;
 }

@@ -4,13 +4,13 @@ import "@typespec/versioning";
 import "./models.profile.tsp";
 import "./models.verification.tsp";
 import "./models.settings.tsp";
-import "../capabilities/models.common.capability.tsp";
+import "../capabilities/models.capability.tsp";
 
 using TypeSpec.Http;
 using TypeSpec.OpenAPI;
 using TypeSpec.Versioning;
 
-namespace MoovAPI.Accounts;
+namespace MoovAPI;
 
 model CreateAccount {
   accountType: AccountType;
@@ -20,32 +20,32 @@ model CreateAccount {
   metadata?: Record<string>;
 
   @oneOf
-  termsOfService?: TermsOfServiceToken | ManualTermsOfService | null;
+  termsOfService?: TermsOfServiceToken | ManualTermsOfService;
 
   @doc("Optional alias from a foreign/external system which can be used to reference this resource.")
   @maxLength(64)
   foreignID?: string;
 
-  customerSupport?: CustomerSupport | null;
-  settings?: Settings | null;
-  capabilities?: CommonCapabilities.CapabilityID[];
+  customerSupport?: CustomerSupport;
+  settings?: Settings;
+  capabilities?: CapabilityID[];
 }
 
 model CreateAccountError {
   accountType?: string;
-  profile?: CreateProfileError | null;
+  profile?: CreateProfileError;
   metadata?: string;
-  termsOfService?: TermsOfServiceError | null;
+  termsOfService?: TermsOfServiceError;
   foreignID?: string;
-  customerSupport?: CustomerSupportError | null;
+  customerSupport?: CustomerSupportError;
   settings?: {
     cardPayment?: {
       statementDescriptor?: string;
-    } | null;
+    };
     achPayment?: {
       companyName?: string;
-    } | null;
-  } | null;
+    };
+  };
   capabilities?: Record<string>;
 }
 
@@ -68,7 +68,7 @@ model Account {
   metadata?: Record<string>;
 
   termsOfService?: TermsOfService;
-  capabilities?: Capability[];
+  capabilities?: AccountCapability[];
   verification: Verification;
 
   @doc("Optional alias from a foreign/external system which can be used to reference this resource.")
@@ -112,7 +112,7 @@ model TermsOfServiceError {
     acceptedDomain?: string;
     acceptedIP?: string;
     acceptedUserAgent?: string;
-  } | null;
+  };
 }
 
 @doc("An encrypted value used to record acceptance of Moov's Terms of Service.")
@@ -158,7 +158,7 @@ model TermsOfService {
 }
 
 @doc("Describes an action or set of actions that an account is permitted to perform.")
-model Capability {
+model AccountCapability {
   capability: string;
   status: string;
 }
@@ -175,9 +175,9 @@ model CustomerSupport {
 }
 
 model CustomerSupportError {
-  phone?: PhoneNumberError | null;
+  phone?: PhoneNumberError;
   email?: string;
-  address?: AddressError | null;
+  address?: AddressError;
   website?: string;
 }
 
@@ -290,14 +290,14 @@ model AccountsQuery {
   @doc("""
       Filter connected accounts by the capability.
     """)
-  @example(CommonCapabilities.CapabilityID.Transfers)
+  @example(CapabilityID.Transfers)
   @query
-  capability?: CommonCapabilities.CapabilityID;
+  capability?: CapabilityID;
 
   @doc("""
       Filter connected accounts by the capability.
     """)
-  @example(CommonCapabilities.CapabilityStatus.Enabled)
+  @example(CapabilityStatus.Enabled)
   @query
-  capabilityStatus?: CommonCapabilities.CapabilityStatus;
+  capabilityStatus?: CapabilityStatus;
 }

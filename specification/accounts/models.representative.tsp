@@ -1,4 +1,4 @@
-namespace MoovAPI.Accounts;
+namespace MoovAPI;
 
 @doc("Describes a business representative.")
 model Representative {
@@ -24,7 +24,7 @@ model Representative {
   responsibilities?: RepresentativeResponsibilities;
   createdOn: utcDateTime;
   updatedOn: utcDateTime;
-  disabledOn?: utcDateTime | null;
+  disabledOn?: utcDateTime;
 }
 
 @doc("Describes the job responsibilities of a business representative.")

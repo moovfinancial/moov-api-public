@@ -1,4 +1,4 @@
-namespace MoovAPI.Accounts;
+namespace MoovAPI;
 
 @doc("User provided settings to manage an account.")
 model Settings {

@@ -4,14 +4,14 @@ import "../common/models.response.tsp";
 
 using TypeSpec.Http;
 
-@tag("Authentication")
-@route("/oauth2/token")
-namespace MoovAPI.Auth {
+namespace MoovAPI {
   @doc("Use the `client_id` and `client_secret` to generate an access token.")
   @post
   @useAuth(BasicAuth)
-  op createAuthToken(@body request: Auth.AuthTokenRequest): Common.Post<
-    Auth.AccessToken,
+  @tag("Authentication")
+  @route("/oauth2/token")
+  op createAuthToken(@body request: AuthTokenRequest): PostResponses<
+    AccessToken,
     unknown
   >;
 }

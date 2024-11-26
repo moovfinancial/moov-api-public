@@ -2,7 +2,7 @@ import "@typespec/http";
 
 using TypeSpec.Http;
 
-namespace MoovAPI.Auth;
+namespace MoovAPI;
 
 alias OAuth2<Scopes extends string[]> = OAuth2Auth<
   [

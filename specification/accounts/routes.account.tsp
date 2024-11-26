@@ -7,9 +7,7 @@ import "../common/models.parameter.tsp";
 
 using TypeSpec.Http;
 
-@tag("Accounts")
-@route("/accounts")
-namespace MoovAPI.Accounts {
+namespace MoovAPI {
   @doc("""
     You can create **business** or **individual** accounts for your users (i.e., customers, merchants) by passing the required
     information to Moov. Requirements differ per account type and requested [capabilities](https://docs.moov.io/guides/accounts/capabilities/requirements/).
@@ -24,15 +22,14 @@ namespace MoovAPI.Accounts {
     Visit our documentation to read more about [creating accounts](https://docs.moov.io/guides/accounts/create-accounts/) and [verification requirements](https://docs.moov.io/guides/accounts/requirements/identity-verification/).
     Note that the `mode` field (for production or sandbox) is only required when creating a _facilitator_ account. All non-facilitator account requests will ignore the mode field and be set to the calling facilitator's mode.
     """)
+  @tag("Accounts")
+  @route("/accounts")
   @post
-  @useAuth(BasicAuth | Auth.OAuth2<["/accounts.write"]>)
-  op createAccount(
-    ...Common.Headers,
-    @body body: Accounts.CreateAccount,
-  ): Common.Post<
-    Accounts.Account,
+  @useAuth(BasicAuth | OAuth2<["/accounts.write"]>)
+  op createAccount(...CommonHeaders, @body body: CreateAccount): PostResponses<
+    Account,
     {
-      error: Accounts.CreateAccountError;
+      error: CreateAccountError;
     }
   >;
 
@@ -43,23 +40,27 @@ namespace MoovAPI.Accounts {
     Pagination is supported via the `skip` and `count` query parameters.
     Searching by name and email will overlap and return results based on relevance.
     """)
+  @tag("Accounts")
+  @route("/accounts")
   @get
-  @useAuth(BasicAuth | Auth.OAuth2<["/accounts.read"]>)
+  @useAuth(BasicAuth | OAuth2<["/accounts.read"]>)
   op listAccounts(
-    ...Common.Headers,
-    ...Accounts.AccountsQuery,
-    @query skip: Common.Skip,
-    @query count: Common.Count,
-  ): Common.List<Accounts.Account>;
+    ...CommonHeaders,
+    ...AccountsQuery,
+    @query skip: Skip,
+    @query count: Count,
+  ): ListResponses<Account>;
 
   @doc("Retrieves details for the account with the specified ID.")
+  @tag("Accounts")
+  @route("/accounts/{accountID}")
   @get
-  @useAuth(BasicAuth | Auth.OAuth2<["/accounts/{accountID}/profile.read"]>)
+  @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/profile.read"]>)
   op getAccount(
-    ...Common.Headers,
+    ...CommonHeaders,
 
     @format("uuid")
     @path
     accountID: string,
-  ): Common.Get<Accounts.Account>;
+  ): GetResponses<Account>;
 }

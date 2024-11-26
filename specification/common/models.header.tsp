@@ -2,14 +2,12 @@ import "@typespec/http";
 import "../models.version.tsp";
 
 using TypeSpec.Http;
-using TypeSpec.Versioning;
 
-@useDependency(MoovAPI.Versions.latest)
-namespace Common;
+namespace MoovAPI;
 
-model Headers {
+model CommonHeaders {
   @doc("Specify an API version.")
-  @example(MoovAPI.Versions.preVersioned)
+  @example(Versions.preVersioned)
   @header
-  xMoovVersion?: MoovAPI.Versions;
+  xMoovVersion?: Versions;
 }

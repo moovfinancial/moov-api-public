@@ -18,10 +18,11 @@ tags:
   - name: Authentication
   - name: Accounts
   - name: Capabilities
+  - name: Transfers
 paths:
   /accounts:
     post:
-      operationId: Accounts_createAccount
+      operationId: createAccount
       description: |-
         You can create **business** or **individual** accounts for your users (i.e., customers, merchants) by passing the required
         information to Moov. Requirements differ per account type and requested [capabilities](https://docs.moov.io/guides/accounts/capabilities/requirements/).
@@ -36,32 +37,32 @@ paths:
         Visit our documentation to read more about [creating accounts](https://docs.moov.io/guides/accounts/create-accounts/) and [verification requirements](https://docs.moov.io/guides/accounts/requirements/identity-verification/).
         Note that the `mode` field (for production or sandbox) is only required when creating a _facilitator_ account. All non-facilitator account requests will ignore the mode field and be set to the calling facilitator's mode.
       parameters:
-        - $ref: '#/components/parameters/Common.Headers'
+        - $ref: '#/components/parameters/CommonHeaders'
       responses:
         '200':
           description: The request completed successfully.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Accounts.Account'
+                $ref: '#/components/schemas/Account'
         '400':
           description: The server could not understand the request due to invalid syntax.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Common.GenericError'
+                $ref: '#/components/schemas/GenericError'
         '401':
           description: The request contained missing or expired authentication.
         '403':
           description: The user is not authorized to make the request.
         '404':
-          description: The server cannot find the requested resource.
+          description: The requested resource was not found.
         '409':
           description: The request conflicted with the current state of the target resource.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Common.GenericError'
+                type: string
         '422':
           description: The request was well-formed, but the contents failed validation. Check the request for missing or invalid fields.
           content:
@@ -70,7 +71,7 @@ paths:
                 type: object
                 properties:
                   error:
-                    $ref: '#/components/schemas/Accounts.CreateAccountError'
+                    $ref: '#/components/schemas/CreateAccountError'
                 required:
                   - error
         '429':
@@ -82,13 +83,13 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Accounts.CreateAccount'
+              $ref: '#/components/schemas/CreateAccount'
       security:
         - BasicAuth: []
         - OAuth2Auth:
             - /accounts.write
     get:
-      operationId: Accounts_listAccounts
+      operationId: listAccounts
       description: |-
         List or search accounts to which the caller is connected.
 
@@ -96,25 +97,25 @@ paths:
         Pagination is supported via the `skip` and `count` query parameters.
         Searching by name and email will overlap and return results based on relevance.
       parameters:
-        - $ref: '#/components/parameters/Common.Headers'
-        - $ref: '#/components/parameters/Accounts.AccountsQuery.name'
-        - $ref: '#/components/parameters/Accounts.AccountsQuery.email'
-        - $ref: '#/components/parameters/Accounts.AccountsQuery.type'
-        - $ref: '#/components/parameters/Accounts.AccountsQuery.foreignID'
-        - $ref: '#/components/parameters/Accounts.AccountsQuery.includeDisconnected'
-        - $ref: '#/components/parameters/Accounts.AccountsQuery.capability'
-        - $ref: '#/components/parameters/Accounts.AccountsQuery.capabilityStatus'
+        - $ref: '#/components/parameters/CommonHeaders'
+        - $ref: '#/components/parameters/AccountsQuery.name'
+        - $ref: '#/components/parameters/AccountsQuery.email'
+        - $ref: '#/components/parameters/AccountsQuery.type'
+        - $ref: '#/components/parameters/AccountsQuery.foreignID'
+        - $ref: '#/components/parameters/AccountsQuery.includeDisconnected'
+        - $ref: '#/components/parameters/AccountsQuery.capability'
+        - $ref: '#/components/parameters/AccountsQuery.capabilityStatus'
         - name: skip
           in: query
           required: true
           schema:
-            $ref: '#/components/schemas/Common.Skip'
+            $ref: '#/components/schemas/Skip'
           explode: false
         - name: count
           in: query
           required: true
           schema:
-            $ref: '#/components/schemas/Common.Count'
+            $ref: '#/components/schemas/Count'
           explode: false
       responses:
         '200':
@@ -124,7 +125,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Accounts.Account'
+                  $ref: '#/components/schemas/Account'
         '401':
           description: The request contained missing or expired authentication.
         '403':
@@ -139,10 +140,10 @@ paths:
             - /accounts.read
   /accounts/{accountID}:
     get:
-      operationId: Accounts_getAccount
+      operationId: getAccount
       description: Retrieves details for the account with the specified ID.
       parameters:
-        - $ref: '#/components/parameters/Common.Headers'
+        - $ref: '#/components/parameters/CommonHeaders'
         - name: accountID
           in: path
           required: true
@@ -155,13 +156,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Accounts.Account'
+                $ref: '#/components/schemas/Account'
         '401':
           description: The request contained missing or expired authentication.
         '403':
           description: The user is not authorized to make the request.
         '404':
-          description: The server cannot find the requested resource.
+          description: The requested resource was not found.
         '429':
           description: Request was refused due to rate limiting.
       tags:
@@ -172,13 +173,13 @@ paths:
             - /accounts/{accountID}/profile.read
   /accounts/{accountID}/capabilities:
     get:
-      operationId: Capabilities_listAccountCapabilities
+      operationId: listAccountCapabilities
       description: |-
         Retrieve all the capabilities an account has requested.
 
         Read our [capabilities guide](https://docs.moov.io/guides/accounts/capabilities/) to learn more.
       parameters:
-        - $ref: '#/components/parameters/Common.Headers'
+        - $ref: '#/components/parameters/CommonHeaders'
         - name: accountID
           in: path
           required: true
@@ -193,7 +194,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Capabilities.Capability'
+                  $ref: '#/components/schemas/Capability'
         '401':
           description: The request contained missing or expired authentication.
         '403':
@@ -206,9 +207,106 @@ paths:
         - BasicAuth: []
         - OAuth2Auth:
             - /accounts/{accountID}/capabilities.read
+  /accounts/{accountID}/transfers:
+    get:
+      operationId: listTransfersForAccount
+      description: |-
+        List all the transfers associated with a particular Moov account. Read our [transfers overview guide](https://docs.moov.io/guides/money-movement/overview/) to learn more. 
+
+        To access this endpoint using a [token](https://docs.moov.io/api/authentication/access-tokens/) you'll need to specify the `/accounts/{accountID}/transfers.read` scope. The
+        accountID included must match the accountID being requested. 
+
+        When you run this request, you retrieve 200 transfers at a time. You can advance past a results set of 200 transfers by using the `skip` parameter (for example, if you set 
+        `skip`= 10, you will see a results set of 200 transfers after the first 2000). If you are searching a high volume of transfers, the request will likely process very slowly. 
+        To achieve faster performance, restrict the data as much as you can by using the `StartDateTime` and `EndDateTime` parameters for a limited period of time. You can run 
+        multiple requests in smaller time window increments until you've retrieved all the transfers you need.
+      parameters:
+        - $ref: '#/components/parameters/CommonHeaders'
+        - name: accountID
+          in: path
+          required: true
+          description: Identifier for the account.
+          schema:
+            type: string
+        - $ref: '#/components/parameters/TransferListFilters.accountIDs'
+        - $ref: '#/components/parameters/TransferListFilters.status'
+        - $ref: '#/components/parameters/TransferListFilters.startDateTime'
+        - $ref: '#/components/parameters/TransferListFilters.endDateTime'
+        - $ref: '#/components/parameters/TransferListFilters.groupID'
+        - $ref: '#/components/parameters/TransferListFilters.refunded'
+        - $ref: '#/components/parameters/TransferListFilters.disputed'
+        - $ref: '#/components/parameters/TransferListFilters.skip'
+        - $ref: '#/components/parameters/TransferListFilters.count'
+      responses:
+        '200':
+          description: The request completed successfully.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Transfer'
+        '401':
+          description: The request contained missing or expired authentication.
+        '403':
+          description: The user is not authorized to make the request.
+        '429':
+          description: Request was refused due to rate limiting.
+      tags:
+        - Transfers
+      security:
+        - BasicAuth: []
+        - OAuth2Auth:
+            - /accounts/{accountID}/transfers.read
+  /accounts/{accountID}/transfers/{transferID}:
+    get:
+      operationId: getTransferForAccount
+      description: |-
+        Retrieve full transfer details for an individual transfer of a particular Moov account. 
+
+        Payment rail-specific details are included in the source and destination. Read our [transfers overview guide](https://docs.moov.io/guides/money-movement/overview/) to learn
+        more. 
+
+        To access this endpoint using a [token](https://docs.moov.io/api/authentication/access-tokens/) you'll need to specify the `/accounts/{accountID}/transfers.read` scope. The 
+        accountID included must match the accountID being requested.
+      parameters:
+        - $ref: '#/components/parameters/CommonHeaders'
+        - name: accountID
+          in: path
+          required: true
+          description: Identifier for the account.
+          schema:
+            type: string
+        - name: transferID
+          in: path
+          required: true
+          description: Identifier for the transfer.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: The request completed successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Transfer'
+        '401':
+          description: The request contained missing or expired authentication.
+        '403':
+          description: The user is not authorized to make the request.
+        '404':
+          description: The requested resource was not found.
+        '429':
+          description: Request was refused due to rate limiting.
+      tags:
+        - Transfers
+      security:
+        - BasicAuth: []
+        - OAuth2Auth:
+            - /accounts/{accountID}/transfers.read
   /oauth2/token:
     post:
-      operationId: Auth_createAuthToken
+      operationId: createAuthToken
       description: Use the `client_id` and `client_secret` to generate an access token.
       parameters: []
       responses:
@@ -217,25 +315,25 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Auth.AccessToken'
+                $ref: '#/components/schemas/AccessToken'
         '400':
           description: The server could not understand the request due to invalid syntax.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Common.GenericError'
+                $ref: '#/components/schemas/GenericError'
         '401':
           description: The request contained missing or expired authentication.
         '403':
           description: The user is not authorized to make the request.
         '404':
-          description: The server cannot find the requested resource.
+          description: The requested resource was not found.
         '409':
           description: The request conflicted with the current state of the target resource.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Common.GenericError'
+                type: string
         '422':
           description: The request was well-formed, but the contents failed validation. Check the request for missing or invalid fields.
           content:
@@ -250,28 +348,251 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Auth.AuthTokenRequest'
+              $ref: '#/components/schemas/AuthTokenRequest'
       security:
         - BasicAuth: []
+  /transfers:
+    post:
+      operationId: createTransfer
+      description: |-
+        Move money by providing the source, destination, and amount in the request body. 
+        Read our [transfers overview guide](https://docs.moov.io/guides/money-movement/overview/) to learn more. 
+
+        If you are running a **server-side** integration, you will use your API keys per our 
+        [authentication guidelines](https://docs.moov.io/api/authentication/api-authentication/#server-side-basic-authentication). If you
+        are running a **client-side** integration, you'll need to specify the `/accounts/{yourAccountID}/transfers.write` scope when generating
+        a [token](https://docs.moov.io/api/authentication/access-tokens/). The accountID included must be your accountID. You can find your 
+        accountID on the [Business details](https://dashboard.moov.io/settings/business) page.
+      parameters:
+        - $ref: '#/components/parameters/CommonHeaders'
+        - name: x-idempotency-key
+          in: header
+          required: true
+          description: Prevents duplicate transfers from being created.
+          schema:
+            type: string
+            format: uuid
+        - name: x-wait-for
+          in: header
+          required: false
+          description: |-
+            Optional header that indicates whether to return a synchronous response that includes full transfer and rail-specific details or an 
+            asynchronous response indicating the transfer was created (this is the default response if the header is omitted).
+          schema:
+            $ref: '#/components/schemas/TransferWaitFor'
+      responses:
+        '200':
+          description: The request completed successfully.
+          content:
+            application/json:
+              schema:
+                anyOf:
+                  - $ref: '#/components/schemas/Transfer'
+                  - $ref: '#/components/schemas/AsyncTransfer'
+        '201':
+          description: A transfer was successfully created but an error occurred while generating the synchronous response. The asynchronous response object will be returned.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AsyncTransfer'
+        '202':
+          description: A transfer was successfully created but a timeout occurred while waiting for a synchronous response. Rail-specific details may be missing from the response object.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Transfer'
+        '400':
+          description: The server could not understand the request due to invalid syntax.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+        '404':
+          description: The requested resource was not found.
+        '409':
+          description: Attempted to create a transfer using a duplicate X-Idempotency-Key header.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Transfer'
+        '422':
+          description: The request was well-formed, but the contents failed validation. Check the request for missing or invalid fields.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransferValidationError'
+        '429':
+          description: Request was refused due to rate limiting.
+      tags:
+        - Transfers
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateTransfer'
+      security:
+        - BasicAuth: []
+        - OAuth2Auth:
+            - /accounts/{yourAccountID}/transfers.write
+    get:
+      operationId: listTransfers
+      description: |-
+        List all the transfers associated with a particular Moov account. 
+
+        Read our [transfers overview guide](https://docs.moov.io/guides/money-movement/overview/) to learn more. 
+
+        To use this endpoint from the browser, you'll need to specify the `/accounts/{yourAccountID}/transfers.read` scope when generating a 
+        [token](https://docs.moov.io/api/authentication/access-tokens/). The accountID included must be your accountID. You can find your 
+        accountID on the [Business details](https://dashboard.moov.io/settings/business) page.
+
+        When you run this request, you retrieve 200 transfers at a time. You can advance past a results set of 200 transfers by using the 
+        `skip` parameter (for example, if you set `skip`= 10, you will see a results set of 200 transfers after the first 2000). If you are 
+        searching a high volume of transfers, the request will likely process very slowly. To achieve faster performance, restrict the data 
+        as much as you can by using the `StartDateTime` and `EndDateTime` parameters for a limited period of time. You can run multiple 
+        requests in smaller time window increments until you've retrieved all the transfers you need.
+      parameters:
+        - $ref: '#/components/parameters/CommonHeaders'
+        - $ref: '#/components/parameters/TransferListFilters.accountIDs'
+        - $ref: '#/components/parameters/TransferListFilters.status'
+        - $ref: '#/components/parameters/TransferListFilters.startDateTime'
+        - $ref: '#/components/parameters/TransferListFilters.endDateTime'
+        - $ref: '#/components/parameters/TransferListFilters.groupID'
+        - $ref: '#/components/parameters/TransferListFilters.refunded'
+        - $ref: '#/components/parameters/TransferListFilters.disputed'
+        - $ref: '#/components/parameters/TransferListFilters.skip'
+        - $ref: '#/components/parameters/TransferListFilters.count'
+      responses:
+        '200':
+          description: The request completed successfully.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Transfer'
+        '401':
+          description: The request contained missing or expired authentication.
+        '403':
+          description: The user is not authorized to make the request.
+        '429':
+          description: Request was refused due to rate limiting.
+      tags:
+        - Transfers
+      security:
+        - BasicAuth: []
+        - OAuth2Auth:
+            - /accounts/{yourAccountID}/transfers.read
+  /transfers/{transferID}:
+    get:
+      operationId: getTransfer
+      description: |-
+        Retrieve full transfer details such as the amount, source, and destination. Payment rail-specific details are included in the source
+        and destination. Read our [transfers overview guide](https://docs.moov.io/guides/money-movement/overview/) to learn more.
+
+        To use this endpoint from the browser, you'll need to specify the `/accounts/{yourAccountID}/transfers.read` scope when generating a
+        [token](https://docs.moov.io/api/authentication/access-tokens/). The accountID included must be your accountID. You can find your 
+        accountID on the [Business details](https://dashboard.moov.io/settings/business) page.
+      parameters:
+        - $ref: '#/components/parameters/CommonHeaders'
+        - name: transferID
+          in: path
+          required: true
+          description: Identifier for the transfer.
+          schema:
+            type: string
+        - name: accountID
+          in: query
+          required: false
+          description: Identifier for a connected account. Must be provided when using a token and the value of `{accountID}` in the scopes is a connected account.
+          schema:
+            type: string
+          explode: false
+      responses:
+        '200':
+          description: The request completed successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Transfer'
+        '401':
+          description: The request contained missing or expired authentication.
+        '403':
+          description: The user is not authorized to make the request.
+        '404':
+          description: The requested resource was not found.
+        '429':
+          description: Request was refused due to rate limiting.
+      tags:
+        - Transfers
+      security:
+        - BasicAuth: []
+        - OAuth2Auth:
+            - /accounts/{yourAccountID}/transfers.read
+    patch:
+      operationId: patchTransfer
+      description: |-
+        Update the metadata contained on a transfer. 
+
+        Read our [transfers overview guide](https://docs.moov.io/guides/money-movement/overview/) to learn more. To use this endpoint from the browser, you'll 
+        need to specify the `/accounts/{yourAccountID}/transfers.write` scope when generating a [token](https://docs.moov.io/api/authentication/access-tokens/). 
+        The accountID included must be your facilitator accountID. You can find your accountID on the [Business details](https://dashboard.moov.io/settings/business) 
+        page.
+      parameters:
+        - $ref: '#/components/parameters/CommonHeaders'
+        - name: transferID
+          in: path
+          required: true
+          description: Identifier for the transfer.
+          schema:
+            type: string
+        - name: accountID
+          in: query
+          required: false
+          description: Identifier for a connected account. Must be provided when using a token and the value of `{accountID}` in the scopes is a connected account.
+          schema:
+            type: string
+          explode: false
+      responses:
+        '200':
+          description: The request completed successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Transfer'
+        '401':
+          description: The request contained missing or expired authentication.
+        '403':
+          description: The user is not authorized to make the request.
+        '404':
+          description: The requested resource was not found.
+        '429':
+          description: Request was refused due to rate limiting.
+      tags:
+        - Transfers
+      security:
+        - BasicAuth: []
+        - OAuth2Auth:
+            - /accounts/{yourAccountID}/transfers.write
 components:
   parameters:
-    Accounts.AccountsQuery.capability:
+    AccountsQuery.capability:
       name: capability
       in: query
       required: false
       description: '  Filter connected accounts by the capability.'
       schema:
-        $ref: '#/components/schemas/CommonCapabilities.CapabilityID'
+        $ref: '#/components/schemas/CapabilityID'
       explode: false
-    Accounts.AccountsQuery.capabilityStatus:
+    AccountsQuery.capabilityStatus:
       name: capabilityStatus
       in: query
       required: false
       description: '  Filter connected accounts by the capability.'
       schema:
-        $ref: '#/components/schemas/CommonCapabilities.CapabilityStatus'
+        $ref: '#/components/schemas/CapabilityStatus'
       explode: false
-    Accounts.AccountsQuery.email:
+    AccountsQuery.email:
       name: email
       in: query
       required: false
@@ -282,7 +603,7 @@ components:
       schema:
         type: string
       explode: false
-    Accounts.AccountsQuery.foreignID:
+    AccountsQuery.foreignID:
       name: foreignID
       in: query
       required: false
@@ -290,7 +611,7 @@ components:
       schema:
         type: string
       explode: false
-    Accounts.AccountsQuery.includeDisconnected:
+    AccountsQuery.includeDisconnected:
       name: includeDisconnected
       in: query
       required: false
@@ -301,7 +622,7 @@ components:
       schema:
         type: boolean
       explode: false
-    Accounts.AccountsQuery.name:
+    AccountsQuery.name:
       name: name
       in: query
       required: false
@@ -317,7 +638,7 @@ components:
       schema:
         type: string
       explode: false
-    Accounts.AccountsQuery.type:
+    AccountsQuery.type:
       name: type
       in: query
       required: false
@@ -328,17 +649,92 @@ components:
           be searched. For example, if `type=business` and `name=moov`, the search will attempt to find matches against
           the display name and Business Profile name fields (`legalBusinessName`, and `doingBusinessAs`).
       schema:
-        $ref: '#/components/schemas/Accounts.AccountType'
+        $ref: '#/components/schemas/AccountType'
       explode: false
-    Common.Headers:
+    CommonHeaders:
       name: x-moov-version
       in: header
       required: false
       description: Specify an API version.
       schema:
         $ref: '#/components/schemas/Versions'
+    TransferListFilters.accountIDs:
+      name: accountIDs
+      in: query
+      required: false
+      description: Optional, comma-separated account IDs by which the response is filtered based on whether the account ID is the source or destination.
+      schema:
+        type: array
+        items:
+          type: string
+      explode: false
+    TransferListFilters.count:
+      name: count
+      in: query
+      required: false
+      schema:
+        $ref: '#/components/schemas/Count'
+      explode: false
+    TransferListFilters.disputed:
+      name: disputed
+      in: query
+      required: false
+      description: Optional parameter to only return disputed transfers.
+      schema:
+        type: boolean
+      explode: false
+    TransferListFilters.endDateTime:
+      name: endDateTime
+      in: query
+      required: false
+      description: Optional date-time which exclusively filters all transfers created before this date-time.
+      schema:
+        type: string
+        format: date-time
+      explode: false
+    TransferListFilters.groupID:
+      name: groupID
+      in: query
+      required: false
+      description: Optional ID to filter for transfers in the same group.
+      schema:
+        type: string
+        format: uuid
+      explode: false
+    TransferListFilters.refunded:
+      name: refunded
+      in: query
+      required: false
+      description: Optional parameter to only return refunded transfers.
+      schema:
+        type: boolean
+      explode: false
+    TransferListFilters.skip:
+      name: skip
+      in: query
+      required: false
+      schema:
+        $ref: '#/components/schemas/Skip'
+      explode: false
+    TransferListFilters.startDateTime:
+      name: startDateTime
+      in: query
+      required: false
+      description: Optional date-time which inclusively filters all transfers created after this date-time.
+      schema:
+        type: string
+        format: date-time
+      explode: false
+    TransferListFilters.status:
+      name: status
+      in: query
+      required: false
+      description: Optional parameter for filtering transfers by status.
+      schema:
+        $ref: '#/components/schemas/TransferStatus'
+      explode: false
   schemas:
-    Accounts.ACHPaymentSettings:
+    ACHPaymentSettings:
       type: object
       required:
         - companyName
@@ -350,7 +746,35 @@ components:
           maxLength: 16
           pattern: '[a-zA-Z0-9.!*-+_\- ]+'
           description: The description that shows up on ACH transactions. This will default to the account's display name on account creation.
-    Accounts.Account:
+    AccessToken:
+      type: object
+      required:
+        - access_token
+        - expires_in
+        - refresh_token
+        - scope
+        - token_type
+      properties:
+        access_token:
+          type: string
+          example: i1qxz68gu50zp4i8ceyxqogmq7y0yienm52351c6...
+          description: String passed to the authorization server to gain access to the system.
+        expires_in:
+          type: integer
+          format: int32
+          example: 900
+          description: Number of seconds for which the token is valid.
+        refresh_token:
+          type: string
+          example: i1qxz68gu50zp4i8ceyxqogmq7y0yienm52351c6...
+          description: String passed to the authorization server to gain access to the system.
+        scope:
+          type: string
+          example: /accounts.write
+          description: A space-delimited list of [scopes](https://docs.moov.io/api/authentication/scopes/) that are allowed.
+        token_type:
+          $ref: '#/components/schemas/TokenType'
+    Account:
       type: object
       required:
         - accountID
@@ -368,36 +792,36 @@ components:
           format: uuid
           description: Unique identifier for this account.
         mode:
-          $ref: '#/components/schemas/Accounts.Mode'
+          $ref: '#/components/schemas/Mode'
         accountType:
-          $ref: '#/components/schemas/Accounts.AccountType'
+          $ref: '#/components/schemas/AccountType'
         displayName:
           type: string
           example: Whole Body Fitness
           maxLength: 64
         profile:
-          $ref: '#/components/schemas/Accounts.Profile'
+          $ref: '#/components/schemas/Profile'
         metadata:
           type: object
           additionalProperties:
             type: string
           description: Free-form key-value pair list. Useful for storing information that is not captured elsewhere.
         termsOfService:
-          $ref: '#/components/schemas/Accounts.TermsOfService'
+          $ref: '#/components/schemas/TermsOfService'
         capabilities:
           type: array
           items:
-            $ref: '#/components/schemas/Accounts.Capability'
+            $ref: '#/components/schemas/AccountCapability'
         verification:
-          $ref: '#/components/schemas/Accounts.Verification'
+          $ref: '#/components/schemas/Verification'
         foreignID:
           type: string
           maxLength: 64
           description: Optional alias from a foreign/external system which can be used to reference this resource.
         customerSupport:
-          $ref: '#/components/schemas/Accounts.CustomerSupport'
+          $ref: '#/components/schemas/CustomerSupport'
         settings:
-          $ref: '#/components/schemas/Accounts.Settings'
+          $ref: '#/components/schemas/Settings'
         createdOn:
           type: string
           format: date-time
@@ -410,14 +834,25 @@ components:
           type: string
           format: date-time
           example: 2024-05-06T12:20:38.184Z
-    Accounts.AccountType:
+    AccountCapability:
+      type: object
+      required:
+        - capability
+        - status
+      properties:
+        capability:
+          type: string
+        status:
+          type: string
+      description: Describes an action or set of actions that an account is permitted to perform.
+    AccountType:
       type: string
       enum:
         - individual
         - business
       example: business
       description: The type of entity represented by this account.
-    Accounts.AccountVerificationStatus:
+    AccountVerificationStatus:
       type: string
       enum:
         - unverified
@@ -428,7 +863,77 @@ components:
         - failed
       description: Possible states an account verification can be in.
       deprecated: true
-    Accounts.Address:
+    AchCompanyEntryDescription:
+      type: string
+      example: Gym dues
+      minLength: 4
+      maxLength: 10
+      description: An optional override of the default NACHA company entry description for a transfer.
+    AchException:
+      type: object
+      properties:
+        code:
+          type: string
+        reason:
+          type: string
+        description:
+          type: string
+    AchOriginatingCompanyName:
+      type: string
+      example: Whole Body Fit
+      minLength: 4
+      maxLength: 16
+      description: An optional override of the default NACHA company name for a transfer.
+    AchTransactionDetails:
+      type: object
+      required:
+        - status
+        - traceNumber
+      properties:
+        status:
+          $ref: '#/components/schemas/AchTransactionStatus'
+        traceNumber:
+          type: string
+          example: '124782618117'
+          maxLength: 15
+        return:
+          $ref: '#/components/schemas/AchException'
+        correction:
+          $ref: '#/components/schemas/AchException'
+        companyEntryDescription:
+          $ref: '#/components/schemas/AchCompanyEntryDescription'
+        originatingCompanyName:
+          $ref: '#/components/schemas/AchOriginatingCompanyName'
+        secCode:
+          $ref: '#/components/schemas/SecCode'
+        initiatedOn:
+          type: string
+          format: date-time
+        originatedOn:
+          type: string
+          format: date-time
+        correctedOn:
+          type: string
+          format: date-time
+        returnedOn:
+          type: string
+          format: date-time
+        completedOn:
+          type: string
+          format: date-time
+        debitHoldPeriod:
+          $ref: '#/components/schemas/DebitHoldPeriod'
+      description: ACH specific details about the transaction.
+    AchTransactionStatus:
+      type: string
+      enum:
+        - initiated
+        - originated
+        - corrected
+        - returned
+        - completed
+      description: Status of a transaction within the ACH lifecycle.
+    Address:
       type: object
       required:
         - addressLine1
@@ -461,7 +966,7 @@ components:
           type: string
           example: US
           maxLength: 2
-    Accounts.AddressError:
+    AddressError:
       type: object
       properties:
         addressLine1:
@@ -476,7 +981,54 @@ components:
           type: string
         country:
           type: string
-    Accounts.BirthDateError:
+    Amount:
+      type: object
+      required:
+        - currency
+        - value
+      properties:
+        currency:
+          type: string
+          example: USD
+          description: A 3-letter ISO 4217 currency code.
+        value:
+          type: integer
+          format: int64
+          example: 1204
+          description: |-
+            Quantity in the smallest unit of the specified currency. 
+
+            In USD this is cents, for example, $12.04 is 1204 and $0.99 is 99.
+    AsyncTransfer:
+      type: object
+      required:
+        - transferID
+        - createdOn
+      properties:
+        transferID:
+          type: string
+          format: uuid
+        createdOn:
+          type: string
+          format: date-time
+    AuthTokenRequest:
+      type: object
+      required:
+        - grant_type
+        - scopes
+      properties:
+        grant_type:
+          $ref: '#/components/schemas/GrantType'
+        scopes:
+          type: string
+          example: /moov/support.read /moov/support.write
+          description: A space delimited list of scopes
+    BadRequestResponse:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/GenericError'
+    BirthDateError:
       type: object
       properties:
         day:
@@ -485,7 +1037,7 @@ components:
           type: string
         year:
           type: string
-    Accounts.BusinessProfile:
+    BusinessProfile:
       type: object
       required:
         - legalBusinessName
@@ -502,13 +1054,13 @@ components:
           maxLength: 64
           description: A registered trade name under which the business operates, if different from its legal name.
         businessType:
-          $ref: '#/components/schemas/Accounts.BusinessType'
+          $ref: '#/components/schemas/BusinessType'
         address:
-          $ref: '#/components/schemas/Accounts.Address'
+          $ref: '#/components/schemas/Address'
         phone:
-          $ref: '#/components/schemas/Accounts.PhoneNumber'
+          $ref: '#/components/schemas/PhoneNumber'
         email:
-          $ref: '#/components/schemas/Accounts.Email'
+          $ref: '#/components/schemas/Email'
         website:
           type: string
           format: uri
@@ -524,15 +1076,15 @@ components:
         representatives:
           type: array
           items:
-            $ref: '#/components/schemas/Accounts.Representative'
+            $ref: '#/components/schemas/Representative'
         ownersProvided:
           type: boolean
         industryCodes:
-          $ref: '#/components/schemas/Accounts.IndustryCodes'
+          $ref: '#/components/schemas/IndustryCodes'
         primaryRegulator:
-          $ref: '#/components/schemas/Accounts.PrimaryRegulator'
+          $ref: '#/components/schemas/PrimaryRegulator'
       description: Describes a business.
-    Accounts.BusinessType:
+    BusinessType:
       type: string
       enum:
         - soleProprietorship
@@ -547,18 +1099,75 @@ components:
         - governmentEntity
       example: llc
       description: The type of entity represented by this business.
-    Accounts.Capability:
+    Capability:
       type: object
       required:
         - capability
+        - accountID
         - status
+        - createdOn
+        - updatedOn
       properties:
         capability:
+          $ref: '#/components/schemas/CapabilityID'
+        accountID:
           type: string
+          format: uuid
         status:
+          $ref: '#/components/schemas/CapabilityStatus'
+        requirements:
+          type: array
+          items:
+            $ref: '#/components/schemas/CapabilityRequirement'
+        disabledReason:
           type: string
-      description: Describes an action or set of actions that an account is permitted to perform.
-    Accounts.CardPaymentSettings:
+        createdOn:
+          type: string
+          format: date-time
+        updatedOn:
+          type: string
+          format: date-time
+        disabledOn:
+          type: string
+          format: date-time
+    CapabilityID:
+      type: string
+      enum:
+        - transfers
+        - send-funds
+        - collect-funds
+        - wallet
+        - card-issuing
+      description: Moov account capabilities.
+    CapabilityRequirement:
+      type: object
+      required:
+        - currentlyDue
+      properties:
+        currentlyDue:
+          type: array
+          items:
+            $ref: '#/components/schemas/RequirementID'
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/RequirementError'
+      description: Represents individual and business data necessary to facilitate the enabling of a capability for an account.
+    CapabilityStatus:
+      type: string
+      enum:
+        - enabled
+        - disabled
+        - pending
+        - in-review
+      description: The status of the capability requested for an account.
+    CardDynamicDescriptor:
+      type: string
+      example: WhlBdy *Yoga 11-12
+      minLength: 4
+      maxLength: 22
+      description: An optional override of the default card statement descriptor for a transfer. Accounts must be enabled by Moov to set this field.
+    CardPaymentSettings:
       type: object
       properties:
         statementDescriptor:
@@ -569,16 +1178,142 @@ components:
           pattern: '[a-zA-Z0-9.!*-+_\- ]+'
           description: The description that shows up on credit card transactions. This will default to the accounts display name on account creation.
       description: User provided settings to manage card payments. This data is only allowed on a business account.
-    Accounts.CreateAccount:
+    CardTransactionDetails:
+      type: object
+      required:
+        - status
+      properties:
+        status:
+          $ref: '#/components/schemas/CardTransactionStatus'
+        failureCode:
+          $ref: '#/components/schemas/CardTransactionFailureCode'
+        dynamicDescriptor:
+          $ref: '#/components/schemas/CardDynamicDescriptor'
+        transactionSource:
+          $ref: '#/components/schemas/TransactionSource'
+        initiatedOn:
+          type: string
+          format: date-time
+        confirmedOn:
+          type: string
+          format: date-time
+        settledOn:
+          type: string
+          format: date-time
+        failedOn:
+          type: string
+          format: date-time
+        canceledOn:
+          type: string
+          format: date-time
+        completedOn:
+          type: string
+          format: date-time
+        interchangeQualification:
+          type: string
+          example: Visa Signature and Visa Infinite (Spend not-qualified) Product 1
+          description: The program assigned by the card network that determines the interchange rate for the transfer.
+          deprecated: true
+        feeProgram:
+          type: string
+          example: Visa Signature and Visa Infinite (Spend not-qualified) Product 1
+          description: The program assigned by the card network that determines the interchange rate for the transfer.
+      description: Card-specific details about the transaction.
+    CardTransactionFailureCode:
+      type: string
+      enum:
+        - call-issuer
+        - do-not-honor
+        - processing-error
+        - invalid-transaction
+        - invalid-amount
+        - no-such-issuer
+        - reenter-transaction
+        - cvv-mismatch
+        - lost-or-stolen
+        - insufficient-funds
+        - invalid-card-number
+        - invalid-merchant
+        - expired-card
+        - incorrect-pin
+        - transaction-not-allowed
+        - suspected-fraud
+        - amount-limit-exceeded
+        - velocity-limit-exceeded
+        - revocation-of-authorization
+        - card-not-activated
+        - issuer-not-available
+        - could-not-route
+        - cardholder-account-closed
+        - unknown-issue
+        - duplicate-transaction
+    CardTransactionStatus:
+      type: string
+      enum:
+        - initiated
+        - confirmed
+        - canceled
+        - settled
+        - failed
+        - completed
+      description: Status of a transaction within the card payment lifecycle.
+    CardTransferDispute:
+      type: object
+      required:
+        - disputeID
+        - createdOn
+        - amount
+      properties:
+        disputeID:
+          type: string
+          format: uuid
+        createdOn:
+          type: string
+          format: date-time
+        amount:
+          $ref: '#/components/schemas/Amount'
+      description: Details of a card dispute.
+    CardTransferRefund:
+      type: object
+      required:
+        - refundID
+        - createdOn
+        - updatedOn
+        - status
+        - amount
+      properties:
+        refundID:
+          type: string
+          format: uuid
+          description: Identifier for the refund.
+        createdOn:
+          type: string
+          format: date-time
+        updatedOn:
+          type: string
+          format: date-time
+        status:
+          $ref: '#/components/schemas/RefundStatus'
+        amount:
+          $ref: '#/components/schemas/Amount'
+        cardDetails:
+          $ref: '#/components/schemas/RefundCardDetails'
+      description: Details of a card refund.
+    Count:
+      type: integer
+      format: int64
+      example: 20
+      description: Limits the maximum number of results returned, or determines the page size when used with `skip` for pagination.
+    CreateAccount:
       type: object
       required:
         - accountType
         - profile
       properties:
         accountType:
-          $ref: '#/components/schemas/Accounts.AccountType'
+          $ref: '#/components/schemas/AccountType'
         profile:
-          $ref: '#/components/schemas/Accounts.CreateProfile'
+          $ref: '#/components/schemas/CreateProfile'
         metadata:
           type: object
           additionalProperties:
@@ -586,56 +1321,35 @@ components:
           description: Free-form key-value pair list. Useful for storing information that is not captured elsewhere.
         termsOfService:
           oneOf:
-            - type: object
-              allOf:
-                - $ref: '#/components/schemas/Accounts.TermsOfServiceToken'
-              nullable: true
-            - type: object
-              allOf:
-                - $ref: '#/components/schemas/Accounts.ManualTermsOfService'
-              nullable: true
+            - $ref: '#/components/schemas/TermsOfServiceToken'
+            - $ref: '#/components/schemas/ManualTermsOfService'
         foreignID:
           type: string
           maxLength: 64
           description: Optional alias from a foreign/external system which can be used to reference this resource.
         customerSupport:
-          type: object
-          allOf:
-            - $ref: '#/components/schemas/Accounts.CustomerSupport'
-          nullable: true
+          $ref: '#/components/schemas/CustomerSupport'
         settings:
-          type: object
-          allOf:
-            - $ref: '#/components/schemas/Accounts.Settings'
-          nullable: true
+          $ref: '#/components/schemas/Settings'
         capabilities:
           type: array
           items:
-            $ref: '#/components/schemas/CommonCapabilities.CapabilityID'
-    Accounts.CreateAccountError:
+            $ref: '#/components/schemas/CapabilityID'
+    CreateAccountError:
       type: object
       properties:
         accountType:
           type: string
         profile:
-          type: object
-          allOf:
-            - $ref: '#/components/schemas/Accounts.CreateProfileError'
-          nullable: true
+          $ref: '#/components/schemas/CreateProfileError'
         metadata:
           type: string
         termsOfService:
-          type: object
-          allOf:
-            - $ref: '#/components/schemas/Accounts.TermsOfServiceError'
-          nullable: true
+          $ref: '#/components/schemas/TermsOfServiceError'
         foreignID:
           type: string
         customerSupport:
-          type: object
-          allOf:
-            - $ref: '#/components/schemas/Accounts.CustomerSupportError'
-          nullable: true
+          $ref: '#/components/schemas/CustomerSupportError'
         settings:
           type: object
           properties:
@@ -644,19 +1358,16 @@ components:
               properties:
                 statementDescriptor:
                   type: string
-              nullable: true
             achPayment:
               type: object
               properties:
                 companyName:
                   type: string
-              nullable: true
-          nullable: true
         capabilities:
           type: object
           additionalProperties:
             type: string
-    Accounts.CreateBusinessError:
+    CreateBusinessError:
       type: object
       properties:
         legalBusinessName:
@@ -666,15 +1377,9 @@ components:
         businessType:
           type: string
         address:
-          type: object
-          allOf:
-            - $ref: '#/components/schemas/Accounts.AddressError'
-          nullable: true
+          $ref: '#/components/schemas/AddressError'
         phone:
-          type: object
-          allOf:
-            - $ref: '#/components/schemas/Accounts.PhoneNumberError'
-          nullable: true
+          $ref: '#/components/schemas/PhoneNumberError'
         email:
           type: string
         website:
@@ -689,8 +1394,6 @@ components:
               properties:
                 number:
                   type: string
-              nullable: true
-          nullable: true
         industryCodes:
           type: object
           properties:
@@ -700,10 +1403,9 @@ components:
               type: string
             mcc:
               type: string
-          nullable: true
         primaryRegulator:
           type: string
-    Accounts.CreateBusinessProfile:
+    CreateBusinessProfile:
       type: object
       required:
         - legalBusinessName
@@ -719,13 +1421,13 @@ components:
           maxLength: 64
           description: A registered trade name under which the business operates, if different from its legal name.
         businessType:
-          $ref: '#/components/schemas/Accounts.BusinessType'
+          $ref: '#/components/schemas/BusinessType'
         address:
-          $ref: '#/components/schemas/Accounts.Address'
+          $ref: '#/components/schemas/Address'
         phone:
-          $ref: '#/components/schemas/Accounts.PhoneNumber'
+          $ref: '#/components/schemas/PhoneNumber'
         email:
-          $ref: '#/components/schemas/Accounts.Email'
+          $ref: '#/components/schemas/Email'
         website:
           type: string
           format: uri
@@ -736,36 +1438,24 @@ components:
           minLength: 10
           maxLength: 100
         taxID:
-          $ref: '#/components/schemas/Accounts.TaxID'
+          $ref: '#/components/schemas/TaxID'
         industryCodes:
-          $ref: '#/components/schemas/Accounts.IndustryCodes'
+          $ref: '#/components/schemas/IndustryCodes'
         primaryRegulator:
-          $ref: '#/components/schemas/Accounts.PrimaryRegulator'
-    Accounts.CreateIndividualError:
+          $ref: '#/components/schemas/PrimaryRegulator'
+    CreateIndividualError:
       type: object
       properties:
         name:
-          type: object
-          allOf:
-            - $ref: '#/components/schemas/Accounts.IndividualNameError'
-          nullable: true
+          $ref: '#/components/schemas/IndividualNameError'
         phone:
-          type: object
-          allOf:
-            - $ref: '#/components/schemas/Accounts.PhoneNumberError'
-          nullable: true
+          $ref: '#/components/schemas/PhoneNumberError'
         email:
           type: string
         address:
-          type: object
-          allOf:
-            - $ref: '#/components/schemas/Accounts.AddressError'
-          nullable: true
+          $ref: '#/components/schemas/AddressError'
         birthDate:
-          type: object
-          allOf:
-            - $ref: '#/components/schemas/Accounts.BirthDateError'
-          nullable: true
+          $ref: '#/components/schemas/BirthDateError'
         governmentID:
           type: object
           properties:
@@ -776,7 +1466,6 @@ components:
                   type: string
                 lastFour:
                   type: string
-              nullable: true
             itin:
               type: object
               properties:
@@ -784,27 +1473,19 @@ components:
                   type: string
                 lastFour:
                   type: string
-              nullable: true
-          nullable: true
-    Accounts.CreateIndividualProfile:
+    CreateIndividualProfile:
       type: object
       required:
         - name
       properties:
         name:
-          $ref: '#/components/schemas/Accounts.IndividualName'
+          $ref: '#/components/schemas/IndividualName'
         phone:
-          type: object
-          allOf:
-            - $ref: '#/components/schemas/Accounts.PhoneNumber'
-          nullable: true
+          $ref: '#/components/schemas/PhoneNumber'
         email:
-          $ref: '#/components/schemas/Accounts.Email'
+          $ref: '#/components/schemas/Email'
         address:
-          type: object
-          allOf:
-            - $ref: '#/components/schemas/Accounts.Address'
-          nullable: true
+          $ref: '#/components/schemas/Address'
         birthDate:
           type: object
           properties:
@@ -821,65 +1502,150 @@ components:
             - day
             - month
             - year
-          nullable: true
         governmentID:
-          type: object
-          allOf:
-            - $ref: '#/components/schemas/Accounts.GovernmentID'
-          nullable: true
-    Accounts.CreateProfile:
+          $ref: '#/components/schemas/GovernmentID'
+    CreateProfile:
       type: object
       properties:
         individual:
-          $ref: '#/components/schemas/Accounts.CreateIndividualProfile'
+          $ref: '#/components/schemas/CreateIndividualProfile'
         business:
-          $ref: '#/components/schemas/Accounts.CreateBusinessProfile'
-    Accounts.CreateProfileError:
+          $ref: '#/components/schemas/CreateBusinessProfile'
+    CreateProfileError:
       type: object
       properties:
         individual:
-          type: object
-          allOf:
-            - $ref: '#/components/schemas/Accounts.CreateIndividualError'
-          nullable: true
+          $ref: '#/components/schemas/CreateIndividualError'
         business:
+          $ref: '#/components/schemas/CreateBusinessError'
+    CreateTransfer:
+      type: object
+      required:
+        - source
+        - destination
+        - amount
+      properties:
+        source:
+          $ref: '#/components/schemas/CreateTransferSource'
+        destination:
+          $ref: '#/components/schemas/CreateTransferDestination'
+        amount:
+          $ref: '#/components/schemas/Amount'
+        facilitatorFee:
+          $ref: '#/components/schemas/TransferFacilitatorFee'
+        description:
+          type: string
+          example: Pay Instructor for May 15 Class
+          maxLength: 256
+          description: An optional description of the transfer for your own internal use.
+        metadata:
           type: object
-          allOf:
-            - $ref: '#/components/schemas/Accounts.CreateBusinessError'
-          nullable: true
-    Accounts.CustomerSupport:
+          additionalProperties:
+            type: string
+          description: Free-form key-value pair list.
+    CreateTransferDestination:
+      type: object
+      required:
+        - paymentMethodID
+      properties:
+        paymentMethodID:
+          type: string
+        cardDetails:
+          $ref: '#/components/schemas/CreateTransferDestinationCard'
+        achDetails:
+          $ref: '#/components/schemas/CreateTransferDestinationACH'
+      description: The final stage of a transfer and the ultimate recipient of the funds.
+    CreateTransferDestinationACH:
+      type: object
+      properties:
+        companyEntryDescription:
+          $ref: '#/components/schemas/AchCompanyEntryDescription'
+        originatingCompanyName:
+          $ref: '#/components/schemas/AchOriginatingCompanyName'
+    CreateTransferDestinationCard:
+      type: object
+      properties:
+        dynamicDescriptor:
+          $ref: '#/components/schemas/CardDynamicDescriptor'
+    CreateTransferSource:
+      type: object
+      properties:
+        transferID:
+          type: string
+          format: uuid
+          description: |-
+            A `transferID` is used to create a [transfer group](https://docs.moov.io/guides/money-movement/transfer-groups/), 
+            associating the new transfer with a parent transfer.
+        paymentMethodID:
+          type: string
+          format: uuid
+        cardDetails:
+          $ref: '#/components/schemas/CreateTransferSourceCard'
+        achDetails:
+          $ref: '#/components/schemas/CreateTransferSourceACH'
+      description: Where funds for a transfer originate. For the source, you must include either a `paymentMethodID` or a `transferID`.
+    CreateTransferSourceACH:
+      type: object
+      properties:
+        companyEntryDescription:
+          $ref: '#/components/schemas/AchCompanyEntryDescription'
+        originatingCompanyName:
+          $ref: '#/components/schemas/AchOriginatingCompanyName'
+        debitHoldPeriod:
+          $ref: '#/components/schemas/DebitHoldPeriod'
+        secCode:
+          $ref: '#/components/schemas/SecCode'
+    CreateTransferSourceCard:
+      type: object
+      properties:
+        dynamicDescriptor:
+          $ref: '#/components/schemas/CardDynamicDescriptor'
+        transactionSource:
+          $ref: '#/components/schemas/TransactionSource'
+    CustomerSupport:
       type: object
       properties:
         phone:
-          $ref: '#/components/schemas/Accounts.PhoneNumber'
+          $ref: '#/components/schemas/PhoneNumber'
         email:
-          $ref: '#/components/schemas/Accounts.Email'
+          $ref: '#/components/schemas/Email'
         address:
-          $ref: '#/components/schemas/Accounts.Address'
+          $ref: '#/components/schemas/Address'
         website:
           type: string
           format: uri
       description: |-
         User-provided information that can be displayed on credit card transactions for customers to use when
         contacting a customer support team. This data is only allowed on a business account.
-    Accounts.CustomerSupportError:
+    CustomerSupportError:
       type: object
       properties:
         phone:
-          type: object
-          allOf:
-            - $ref: '#/components/schemas/Accounts.PhoneNumberError'
-          nullable: true
+          $ref: '#/components/schemas/PhoneNumberError'
         email:
           type: string
         address:
-          type: object
-          allOf:
-            - $ref: '#/components/schemas/Accounts.AddressError'
-          nullable: true
+          $ref: '#/components/schemas/AddressError'
         website:
           type: string
-    Accounts.Document:
+    DebitHoldPeriod:
+      type: string
+      enum:
+        - no-hold
+        - 1-day
+        - 2-days
+      example: 2-days
+      description: An optional override of your default ACH hold period in banking days. The hold period must be longer than or equal to your default setting.
+    DisableResponses:
+      anyOf:
+        - $ref: '#/components/schemas/NoContentResponse'
+        - $ref: '#/components/schemas/BadRequestResponse'
+        - $ref: '#/components/schemas/UnauthorizedResponse'
+        - $ref: '#/components/schemas/ForbiddenResponse'
+        - $ref: '#/components/schemas/NotFoundResponse'
+        - $ref: '#/components/schemas/StateConflictResponse'
+        - $ref: '#/components/schemas/RateLimitedResponse'
+    Document:
       type: object
       required:
         - documentID
@@ -892,7 +1658,7 @@ components:
           example: e07e83e8-9429-4e99-ac99-c941f719eb39
           format: uuid
         type:
-          $ref: '#/components/schemas/Accounts.DocumentType'
+          $ref: '#/components/schemas/DocumentType'
         contentType:
           type: string
           example: application/pdf
@@ -906,7 +1672,7 @@ components:
           type: string
           format: date-time
           example: 2024-05-06T12:20:38.184Z
-    Accounts.DocumentType:
+    DocumentType:
       type: string
       enum:
         - DriversLicense
@@ -915,12 +1681,22 @@ components:
         - BankStatement
       example: BankStatement
       description: Types of documents that can be uploaded.
-    Accounts.Email:
+    Email:
       type: string
       example: jordan.lee@classbooker.dev
       maxLength: 255
       format: email
-    Accounts.GovernmentID:
+    ForbiddenResponse:
+      type: object
+      description: The user is not authorized to make the request.
+    GenericError:
+      type: object
+      required:
+        - error
+      properties:
+        error:
+          type: string
+    GovernmentID:
       type: object
       properties:
         ssn:
@@ -939,7 +1715,13 @@ components:
               pattern: ^\d{3}[-]?\d{2}[-]?\d{4}$
             lastFour:
               type: string
-    Accounts.IndividualName:
+    GrantType:
+      type: string
+      enum:
+        - client_credentials
+        - refresh_token
+      description: The type of grant being requested.
+    IndividualName:
       type: object
       required:
         - firstName
@@ -965,7 +1747,7 @@ components:
           example: Jr
           maxLength: 20
           description: Suffix of a given name.
-    Accounts.IndividualNameError:
+    IndividualNameError:
       type: object
       properties:
         firstName:
@@ -976,19 +1758,19 @@ components:
           type: string
         suffix:
           type: string
-    Accounts.IndividualProfile:
+    IndividualProfile:
       type: object
       required:
         - name
       properties:
         name:
-          $ref: '#/components/schemas/Accounts.IndividualName'
+          $ref: '#/components/schemas/IndividualName'
         phone:
-          $ref: '#/components/schemas/Accounts.PhoneNumber'
+          $ref: '#/components/schemas/PhoneNumber'
         email:
-          $ref: '#/components/schemas/Accounts.Email'
+          $ref: '#/components/schemas/Email'
         address:
-          $ref: '#/components/schemas/Accounts.Address'
+          $ref: '#/components/schemas/Address'
         birthDateProvided:
           type: boolean
           description: Indicates whether this individual's birth date has been provided.
@@ -996,7 +1778,7 @@ components:
           type: boolean
           description: Indicates whether a government ID (SSN, ITIN, etc.) has been provided for this individual.
       description: Describes an individual.
-    Accounts.IndustryCodes:
+    IndustryCodes:
       type: object
       required:
         - naics
@@ -1018,7 +1800,7 @@ components:
           example: '7997'
           minLength: 4
           maxLength: 4
-    Accounts.ManualTermsOfService:
+    ManualTermsOfService:
       type: object
       required:
         - acceptedDate
@@ -1044,7 +1826,7 @@ components:
           type: string
           format: uri
       description: Describes the acceptance of the Terms of Service. All data is required, and must be from the user.
-    Accounts.ManualToSError:
+    ManualToSError:
       type: object
       properties:
         acceptedDate:
@@ -1055,14 +1837,45 @@ components:
           type: string
         acceptedUserAgent:
           type: string
-    Accounts.Mode:
+    Mode:
       type: string
       enum:
         - sandbox
         - production
       example: production
       description: The operating mode for an account.
-    Accounts.PhoneNumber:
+    MoovFeeDetails:
+      type: object
+      required:
+        - moovProcessing
+      properties:
+        cardScheme:
+          type: string
+          description: Card scheme fees accrued during authorization and settlement. String type represents dollars with up to 9 decimal place precision.
+        interchange:
+          type: string
+          description: Network interchange fee for Visa, Mastercard, or Discover. String type represents dollars with up to 9 decimal place precision.
+        discount:
+          type: string
+          description: Network discount fee for American Express. String type represents dollars with up to 9 decimal place precision.
+        moovProcessing:
+          type: string
+          description: Moov processing fee. String type represents dollars with up to 9 decimal place precision.
+      description: Processing and pass-through costs that add up to the moovFee.
+    NoContentResponse:
+      type: object
+      description: The request completed successfully, but there is no content to return.
+    NotFoundResponse:
+      type: object
+      description: The requested resource was not found.
+    PatchTransfer:
+      type: object
+      properties:
+        metadata:
+          type: object
+          additionalProperties:
+            type: string
+    PhoneNumber:
       type: object
       properties:
         number:
@@ -1073,14 +1886,14 @@ components:
           type: string
           example: '1'
           maxLength: 1
-    Accounts.PhoneNumberError:
+    PhoneNumberError:
       type: object
       properties:
         number:
           type: string
         countryCode:
           type: string
-    Accounts.PrimaryRegulator:
+    PrimaryRegulator:
       type: string
       enum:
         - OCC
@@ -1088,15 +1901,57 @@ components:
         - NCUA
         - FRB
       description: If the business is a financial institution, this field describes its primary regulator.
-    Accounts.Profile:
+    Profile:
       type: object
       properties:
         individual:
-          $ref: '#/components/schemas/Accounts.IndividualProfile'
+          $ref: '#/components/schemas/IndividualProfile'
         business:
-          $ref: '#/components/schemas/Accounts.BusinessProfile'
+          $ref: '#/components/schemas/BusinessProfile'
       description: Describes a Moov account profile. A profile will have a business or an individual, depending on the account's type.
-    Accounts.Representative:
+    RateLimitedResponse:
+      type: object
+      description: Request was refused due to rate limiting.
+    RefundCardDetails:
+      type: object
+      required:
+        - status
+      properties:
+        status:
+          $ref: '#/components/schemas/RefundCardStatus'
+        failureCode:
+          $ref: '#/components/schemas/CardTransactionFailureCode'
+        initiatedOn:
+          type: string
+          format: date-time
+        confirmedOn:
+          type: string
+          format: date-time
+        settledOn:
+          type: string
+          format: date-time
+        failedOn:
+          type: string
+          format: date-time
+        completedOn:
+          type: string
+          format: date-time
+    RefundCardStatus:
+      type: string
+      enum:
+        - initiated
+        - confirmed
+        - settled
+        - failed
+        - completed
+    RefundStatus:
+      type: string
+      enum:
+        - created
+        - pending
+        - completed
+        - failed
+    Representative:
       type: object
       required:
         - representativeID
@@ -1110,15 +1965,15 @@ components:
           format: uuid
           description: Unique identifier for this representative.
         name:
-          $ref: '#/components/schemas/Accounts.IndividualName'
+          $ref: '#/components/schemas/IndividualName'
         phone:
-          $ref: '#/components/schemas/Accounts.PhoneNumber'
+          $ref: '#/components/schemas/PhoneNumber'
         email:
           type: string
           maxLength: 255
           format: email
         address:
-          $ref: '#/components/schemas/Accounts.Address'
+          $ref: '#/components/schemas/Address'
         birthDateProvided:
           type: boolean
           description: Indicates whether this representative's birth date has been provided.
@@ -1126,7 +1981,7 @@ components:
           type: boolean
           description: Indicates whether a government ID (SSN, ITIN, etc.) has been provided for this representative.
         responsibilities:
-          $ref: '#/components/schemas/Accounts.RepresentativeResponsibilities'
+          $ref: '#/components/schemas/RepresentativeResponsibilities'
         createdOn:
           type: string
           format: date-time
@@ -1136,9 +1991,8 @@ components:
         disabledOn:
           type: string
           format: date-time
-          nullable: true
       description: Describes a business representative.
-    Accounts.RepresentativeResponsibilities:
+    RepresentativeResponsibilities:
       type: object
       required:
         - ownershipPercentage
@@ -1161,219 +2015,16 @@ components:
           example: CEO
           maxLength: 64
       description: Describes the job responsibilities of a business representative.
-    Accounts.Settings:
-      type: object
-      properties:
-        cardPayment:
-          $ref: '#/components/schemas/Accounts.CardPaymentSettings'
-        achPayment:
-          $ref: '#/components/schemas/Accounts.ACHPaymentSettings'
-      description: User provided settings to manage an account.
-    Accounts.TaxID:
-      type: object
-      required:
-        - ein
-      properties:
-        ein:
-          type: object
-          properties:
-            number:
-              type: string
-              example: 12-3456789
-          required:
-            - number
-      description: An EIN (employer identification number) for the business. For sole proprietors, an SSN can be used as the EIN.
-    Accounts.TermsOfService:
-      type: object
-      required:
-        - acceptedDate
-        - acceptedIP
-      properties:
-        acceptedDate:
-          type: string
-          format: date-time
-          description: The date and time the terms of service were accepted.
-        acceptedIP:
-          type: string
-          example: 172.217.2.46
-          format: ipv4
-          description: The IP address from which the terms of service were accepted.
-      description: Describes the acceptance of the Terms of Service.
-    Accounts.TermsOfServiceError:
-      type: object
-      properties:
-        token:
-          type: string
-        manual:
-          type: object
-          properties:
-            acceptedDate:
-              type: string
-            acceptedDomain:
-              type: string
-            acceptedIP:
-              type: string
-            acceptedUserAgent:
-              type: string
-          nullable: true
-    Accounts.TermsOfServiceToken:
-      type: object
-      required:
-        - token
-      properties:
-        token:
-          type: string
-          example: kgT1uxoMAk7QKuyJcmQE8nqW_HjpyuXBabiXPi6T83fUQoxsyWYPcYzuHQTqrt7YRp4gCwyDQvb6U5REM9Pgl2EloCe35t-eiMAbUWGo3Kerxme6aqNcKrP_6-v0MTXViOEJ96IBxPFTvMV7EROI2dq3u4e-x4BbGSCedAX-ViAQND6hcreCDXwrO6sHuzh5Xi2IzSqZHxaovnWEboaxuZKRJkA3dsFID6fzitMpm2qrOh4
-      description: An encrypted value used to record acceptance of Moov's Terms of Service.
-    Accounts.Verification:
-      type: object
-      required:
-        - status
-      properties:
-        verificationStatus:
-          $ref: '#/components/schemas/Accounts.AccountVerificationStatus'
-        status:
-          $ref: '#/components/schemas/Accounts.VerificationStatus'
-        details:
-          $ref: '#/components/schemas/Accounts.VerificationStatusDetail'
-        documents:
-          type: array
-          items:
-            $ref: '#/components/schemas/Accounts.Document'
-      description: Describes identity verification status and relevant identity verification documents.
-    Accounts.VerificationStatus:
-      type: string
-      enum:
-        - unverified
-        - pending
-        - verified
-        - errored
-      description: Possible states an account verification can be in.
-      deprecated: true
-    Accounts.VerificationStatusDetail:
-      type: string
-      enum:
-        - failedAutoVerify
-        - docDobMismatch
-        - docNameMismatch
-        - docAddressMismatch
-        - docNumberMismatch
-        - docIncomplete
-        - docFailedRisk
-        - potentialAccountSanctionsMatch
-        - potentialRepresentativeSanctionsMatch
-        - failedOther
-      description: Additional detail for a verification status.
-      deprecated: true
-    Auth.AccessToken:
-      type: object
-      required:
-        - access_token
-        - expires_in
-        - refresh_token
-        - scope
-        - token_type
-      properties:
-        access_token:
-          type: string
-          example: i1qxz68gu50zp4i8ceyxqogmq7y0yienm52351c6...
-          description: String passed to the authorization server to gain access to the system.
-        expires_in:
-          type: integer
-          format: int32
-          example: 900
-          description: Number of seconds for which the token is valid.
-        refresh_token:
-          type: string
-          example: i1qxz68gu50zp4i8ceyxqogmq7y0yienm52351c6...
-          description: String passed to the authorization server to gain access to the system.
-        scope:
-          type: string
-          example: /accounts.write
-          description: A space-delimited list of [scopes](https://docs.moov.io/api/authentication/scopes/) that are allowed.
-        token_type:
-          $ref: '#/components/schemas/Auth.TokenType'
-    Auth.AuthTokenRequest:
-      type: object
-      required:
-        - grant_type
-        - scopes
-      properties:
-        grant_type:
-          $ref: '#/components/schemas/Auth.GrantType'
-        scopes:
-          type: string
-          example: /moov/support.read /moov/support.write
-          description: A space delimited list of scopes
-    Auth.GrantType:
-      type: string
-      enum:
-        - client_credentials
-        - refresh_token
-      description: The type of grant being requested.
-    Auth.TokenType:
-      type: string
-      enum:
-        - opaque
-        - jwt
-      example: opaque
-      description: Type of token returned.
-    Capabilities.Capability:
-      type: object
-      required:
-        - capability
-        - accountID
-        - status
-        - createdOn
-        - updatedOn
-      properties:
-        capability:
-          $ref: '#/components/schemas/CommonCapabilities.CapabilityID'
-        accountID:
-          type: string
-          format: uuid
-        status:
-          $ref: '#/components/schemas/CommonCapabilities.CapabilityStatus'
-        requirements:
-          type: array
-          items:
-            $ref: '#/components/schemas/Capabilities.Requirement'
-        disabledReason:
-          type: string
-        createdOn:
-          type: string
-          format: date-time
-        updatedOn:
-          type: string
-          format: date-time
-        disabledOn:
-          type: string
-          format: date-time
-          nullable: true
-    Capabilities.Requirement:
-      type: object
-      required:
-        - currentlyDue
-      properties:
-        currentlyDue:
-          type: array
-          items:
-            $ref: '#/components/schemas/Capabilities.RequirementID'
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/Capabilities.RequirementError'
-      description: Represents individual and business data necessary to facilitate the enabling of a capability for an account.
-    Capabilities.RequirementError:
+    RequirementError:
       type: object
       required:
         - requirement
       properties:
         requirement:
-          $ref: '#/components/schemas/Capabilities.RequirementID'
+          $ref: '#/components/schemas/RequirementID'
         errorCode:
-          $ref: '#/components/schemas/Capabilities.RequirementErrorCode'
-    Capabilities.RequirementErrorCode:
+          $ref: '#/components/schemas/RequirementErrorCode'
+    RequirementErrorCode:
       type: string
       enum:
         - invalid-value
@@ -1394,7 +2045,7 @@ components:
         - document-not-uploaded
         - document-corrupt
         - document-expired
-    Capabilities.RequirementID:
+    RequirementID:
       type: string
       enum:
         - account.tos-acceptance
@@ -1452,40 +2103,400 @@ components:
         - representative.{rep-uuid}.ownership
         - document.{doc-uuid}
       description: The unique ID of what the requirement is asking to be filled out.
-    Common.Count:
-      type: integer
-      format: int64
-      example: 20
-      description: Limits the maximum number of results returned, or determines the page size when used with `skip` for pagination.
-    Common.GenericError:
+    RtpFailureCode:
+      type: string
+      enum:
+        - processing-error
+        - invalid-account
+        - account-closed
+        - account-blocked
+        - invalid-field
+        - transaction-not-supported
+        - limit-exceeded
+        - invalid-amount
+        - customer-deceased
+        - other
+      description: Status codes for RTP failures.
+    RtpTransactionDetails:
       type: object
       required:
-        - error
+        - status
       properties:
-        error:
+        status:
+          $ref: '#/components/schemas/RtpTransactionStatus'
+        networkResponseCode:
           type: string
-    Common.Skip:
+          description: Response code returned by network on failure.
+        failureCode:
+          $ref: '#/components/schemas/RtpFailureCode'
+        initiatedOn:
+          type: string
+          format: date-time
+        completedOn:
+          type: string
+          format: date-time
+        failedOn:
+          type: string
+          format: date-time
+        acceptedWithoutPostingOn:
+          type: string
+          format: date-time
+      description: RTP specific details about the transaction.
+    RtpTransactionStatus:
+      type: string
+      enum:
+        - initiated
+        - completed
+        - failed
+        - accepted-without-posting
+      description: Status of a transaction within the RTP lifecycle.
+    SecCode:
+      type: string
+      enum:
+        - WEB
+        - PPD
+        - CCD
+        - TEL
+      description: Code used to identify the ACH authorization method.
+    Settings:
+      type: object
+      properties:
+        cardPayment:
+          $ref: '#/components/schemas/CardPaymentSettings'
+        achPayment:
+          $ref: '#/components/schemas/ACHPaymentSettings'
+      description: User provided settings to manage an account.
+    Skip:
       type: integer
       format: int64
       example: 60
       description: The number of entries to skip when paginating a large result set.
-    CommonCapabilities.CapabilityID:
+    StateConflictResponse:
+      type: object
+      properties:
+        error:
+          type: string
+          description: |-
+            In most cases this will be a GenericError, but some APIs may
+            return the existing resource with which this request conflicted.
+      description: The request conflicted with the current state of the target resource.
+    TaxID:
+      type: object
+      required:
+        - ein
+      properties:
+        ein:
+          type: object
+          properties:
+            number:
+              type: string
+              example: 12-3456789
+          required:
+            - number
+      description: An EIN (employer identification number) for the business. For sole proprietors, an SSN can be used as the EIN.
+    TermsOfService:
+      type: object
+      required:
+        - acceptedDate
+        - acceptedIP
+      properties:
+        acceptedDate:
+          type: string
+          format: date-time
+          description: The date and time the terms of service were accepted.
+        acceptedIP:
+          type: string
+          example: 172.217.2.46
+          format: ipv4
+          description: The IP address from which the terms of service were accepted.
+      description: Describes the acceptance of the Terms of Service.
+    TermsOfServiceError:
+      type: object
+      properties:
+        token:
+          type: string
+        manual:
+          type: object
+          properties:
+            acceptedDate:
+              type: string
+            acceptedDomain:
+              type: string
+            acceptedIP:
+              type: string
+            acceptedUserAgent:
+              type: string
+    TermsOfServiceToken:
+      type: object
+      required:
+        - token
+      properties:
+        token:
+          type: string
+          example: kgT1uxoMAk7QKuyJcmQE8nqW_HjpyuXBabiXPi6T83fUQoxsyWYPcYzuHQTqrt7YRp4gCwyDQvb6U5REM9Pgl2EloCe35t-eiMAbUWGo3Kerxme6aqNcKrP_6-v0MTXViOEJ96IBxPFTvMV7EROI2dq3u4e-x4BbGSCedAX-ViAQND6hcreCDXwrO6sHuzh5Xi2IzSqZHxaovnWEboaxuZKRJkA3dsFID6fzitMpm2qrOh4
+      description: An encrypted value used to record acceptance of Moov's Terms of Service.
+    TokenType:
       type: string
       enum:
-        - transfers
-        - send-funds
-        - collect-funds
-        - wallet
-        - card-issuing
-      description: Moov account capabilities.
-    CommonCapabilities.CapabilityStatus:
+        - opaque
+        - jwt
+      example: opaque
+      description: Type of token returned.
+    TransactionSource:
       type: string
       enum:
-        - enabled
-        - disabled
+        - first-recurring
+        - recurring
+        - unscheduled
+      description: |-
+        Specifies the nature and initiator of a transaction. 
+
+        Crucial for recurring and merchant-initiated transactions as per card scheme rules. 
+        Omit for customer-initiated e-commerce transactions.
+    Transfer:
+      type: object
+      required:
+        - transferID
+        - createdOn
+        - status
+        - amount
+      properties:
+        transferID:
+          type: string
+          format: uuid
+        createdOn:
+          type: string
+          format: date-time
+        source:
+          $ref: '#/components/schemas/TransferSource'
+        destination:
+          $ref: '#/components/schemas/TransferDestination'
+        completedOn:
+          type: string
+          format: date-time
+        status:
+          $ref: '#/components/schemas/TransferStatus'
+        failureReason:
+          $ref: '#/components/schemas/TransferFailureReason'
+        amount:
+          $ref: '#/components/schemas/Amount'
+        description:
+          type: string
+          example: Pay Instructor for May 15 Class
+          maxLength: 128
+          description: An optional description of the transfer for your own internal use.
+        metadata:
+          type: object
+          additionalProperties:
+            type: string
+        facilitatorFee:
+          $ref: '#/components/schemas/TransferFacilitatorFee'
+        moovFee:
+          type: integer
+          format: int64
+          description: Fees charged to your platform account for transfers.
+        moovFeeDecimal:
+          type: integer
+          format: int64
+          description: Same as `moovFee`, but a decimal-formatted numerical string that represents up to 9 decimal place precision.
+        moovFeeDetails:
+          $ref: '#/components/schemas/MoovFeeDetails'
+        groupID:
+          type: string
+        refundedAmount:
+          $ref: '#/components/schemas/Amount'
+        refunds:
+          type: array
+          items:
+            $ref: '#/components/schemas/CardTransferRefund'
+        disputedAmount:
+          $ref: '#/components/schemas/Amount'
+        disputes:
+          type: array
+          items:
+            $ref: '#/components/schemas/CardTransferDispute'
+        sweepID:
+          type: string
+        scheduleID:
+          type: string
+        occurrenceID:
+          type: string
+      description: Details of a Transfer.
+    TransferAccount:
+      type: object
+      required:
+        - accountID
+        - email
+        - displayName
+      properties:
+        accountID:
+          type: string
+        email:
+          type: string
+        displayName:
+          type: string
+    TransferDestination:
+      type: object
+      required:
+        - paymentMethodID
+        - paymentMethodType
+        - account
+      properties:
+        paymentMethodID:
+          type: string
+        paymentMethodType:
+          type: string
+        account:
+          $ref: '#/components/schemas/TransferAccount'
+        bankAccount: {}
+        wallet: {}
+        card: {}
+        achDetails:
+          $ref: '#/components/schemas/AchTransactionDetails'
+        applePay: {}
+        cardDetails:
+          $ref: '#/components/schemas/CardTransactionDetails'
+        rtpDetails:
+          $ref: '#/components/schemas/RtpTransactionDetails'
+    TransferFacilitatorFee:
+      type: object
+      properties:
+        total:
+          type: integer
+          format: int64
+          description: Total facilitator fee in cents. Only either `total` or `totalDecimal` can be set.
+        totalDecimal:
+          type: string
+          example: '12.987654321'
+          pattern: ^\d+\.\d{1,9}$
+          description: |-
+            Same as `total`, but a decimal-formatted numerical string that represents up to 9 decimal place precision. 
+
+            Only either `total` or `totalDecimal` can be set. Set this field if you expect the fee to be in fractions of a cent.
+        markup:
+          type: integer
+          format: int64
+          description: Markup facilitator fee in cents. Only either `markup` or `markupDecimal` can be set.
+        markupDecimal:
+          type: string
+          example: '0.987654321'
+          pattern: ^\d+\.\d{1,9}$
+          description: |-
+            Same as `markup`, but a decimal-formatted numerical string that represents up to 9 decimal place precision. 
+            Only either `markup` or `markupDecimal` can be set. Set this field if you expect the fee to be in fractions of a cent.
+      description: Total or markup fee.
+    TransferFailureReason:
+      type: string
+      enum:
+        - source-payment-error
+        - destination-payment-error
+        - wallet-insufficient-funds
+        - rejected-high-risk
+        - processing-error
+      description: Reason for a transfer's failure.
+    TransferSource:
+      type: object
+      required:
+        - paymentMethodID
+        - paymentMethodType
+        - account
+      properties:
+        paymentMethodID:
+          type: string
+        paymentMethodType:
+          type: string
+        account:
+          $ref: '#/components/schemas/TransferAccount'
+        bankAccount: {}
+        wallet: {}
+        card: {}
+        applePay: {}
+        cardDetails:
+          $ref: '#/components/schemas/CardTransactionDetails'
+        achDetails:
+          $ref: '#/components/schemas/AchTransactionDetails'
+    TransferStatus:
+      type: string
+      enum:
+        - created
         - pending
-        - in-review
-      description: The status of the capability requested for an account.
+        - completed
+        - failed
+        - reversed
+        - queued
+        - canceled
+      description: Status of a transfer.
+    TransferValidationError:
+      type: object
+      properties:
+        Transfer:
+          type: string
+        amount:
+          type: string
+        source:
+          type: string
+        sourcePaymentMethodID:
+          type: string
+        destinationPaymentMethodID:
+          type: string
+        description:
+          type: string
+        FacilitatorFee.TotalDecimal:
+          type: string
+        FacilitatorFee.MarkupDecimal:
+          type: string
+        metadata:
+          type: string
+        error:
+          type: string
+          description: Used for generic errors when invalid request data isn't attributed to a single request field.
+    TransferWaitFor:
+      type: string
+      enum:
+        - rail-response
+    UnauthorizedResponse:
+      type: object
+      description: The request contained missing or expired authentication.
+    Verification:
+      type: object
+      required:
+        - status
+      properties:
+        verificationStatus:
+          $ref: '#/components/schemas/AccountVerificationStatus'
+        status:
+          $ref: '#/components/schemas/VerificationStatus'
+        details:
+          $ref: '#/components/schemas/VerificationStatusDetail'
+        documents:
+          type: array
+          items:
+            $ref: '#/components/schemas/Document'
+      description: Describes identity verification status and relevant identity verification documents.
+    VerificationStatus:
+      type: string
+      enum:
+        - unverified
+        - pending
+        - verified
+        - errored
+      description: Possible states an account verification can be in.
+      deprecated: true
+    VerificationStatusDetail:
+      type: string
+      enum:
+        - failedAutoVerify
+        - docDobMismatch
+        - docNameMismatch
+        - docAddressMismatch
+        - docNumberMismatch
+        - docIncomplete
+        - docFailedRisk
+        - potentialAccountSanctionsMatch
+        - potentialRepresentativeSanctionsMatch
+        - failedOther
+      description: Additional detail for a verification status.
+      deprecated: true
     Versions:
       type: string
       enum:
@@ -1508,6 +2519,9 @@ components:
             /accounts.read: ''
             /accounts/{accountID}/profile.read: ''
             /accounts/{accountID}/capabilities.read: ''
+            /accounts/{yourAccountID}/transfers.write: ''
+            /accounts/{yourAccountID}/transfers.read: ''
+            /accounts/{accountID}/transfers.read: ''
 servers:
   - url: https://api.moov.io
     description: Production API host

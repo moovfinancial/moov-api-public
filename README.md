@@ -172,7 +172,7 @@ namespace MoovAPI.Accounts {
   @get
   // Can use either OAuth2 OR API key
   @useAuth(BasicAuth | Auth.OAuth2<["/accounts.read"]>)
-  op listAccounts(): Common.List<Accounts.Account>;
+  op listAccounts(): ListResponses<Accounts.Account>;
 }
 ```
 

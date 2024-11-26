@@ -2,14 +2,19 @@ import "@typespec/http";
 
 using TypeSpec.Http;
 
-namespace Common;
+namespace MoovAPI;
 
 @doc("The request completed successfully.")
-model Ok<T> {
+model OkResponse<T> {
   @statusCode statusCode: "200";
 
   @body
   body: T;
+}
+
+@doc("The request completed successfully, but there is no content to return.")
+model NoContentResponse {
+  @statusCode statusCode: "204";
 }
 
 @error
@@ -18,7 +23,7 @@ model GenericError {
 }
 
 @error
-model BadRequest {
+model BadRequestResponse {
   @statusCode statusCode: "400";
 
   @body
@@ -27,19 +32,25 @@ model BadRequest {
 
 @doc("The request contained missing or expired authentication.")
 @error
-model Unauthorized {
+model UnauthorizedResponse {
   @statusCode statusCode: "401";
 }
 
 @doc("The user is not authorized to make the request.")
 @error
-model Forbidden {
+model ForbiddenResponse {
   @statusCode statusCode: "403";
+}
+
+@doc("The requested resource was not found.")
+@error
+model NotFoundResponse {
+  @statusCode statusCode: "404";
 }
 
 @doc("The request conflicted with the current state of the target resource.")
 @error
-model StateConflict {
+model StateConflictResponse {
   @statusCode statusCode: "409";
 
   @body
@@ -47,12 +58,12 @@ model StateConflict {
     In most cases this will be a GenericError, but some APIs may
     return the existing resource with which this request conflicted.
     """)
-  error?: GenericError;
+  error?: string;
 }
 
 @doc("The request was well-formed, but the contents failed validation. Check the request for missing or invalid fields.")
 @error
-model UnprocessableEntity<T> {
+model UnprocessableEntityResponse<T> {
   @statusCode statusCode: "422";
 
   @body
@@ -62,64 +73,64 @@ model UnprocessableEntity<T> {
 
 @doc("Request was refused due to rate limiting.")
 @error
-model RateLimited {
+model RateLimitedResponse {
   @statusCode statusCode: "429";
 }
 
-union List<T> {
-  Ok<Array<T>>,
-  Unauthorized,
-  Forbidden,
-  RateLimited,
+union ListResponses<T> {
+  MoovAPI.OkResponse<Array<T>>,
+  MoovAPI.UnauthorizedResponse,
+  MoovAPI.ForbiddenResponse,
+  MoovAPI.RateLimitedResponse,
 }
 
-union Get<T> {
-  Ok<T>,
-  Unauthorized,
-  Forbidden,
-  NotFoundResponse,
-  RateLimited,
+union GetResponses<T> {
+  MoovAPI.OkResponse<T>,
+  MoovAPI.UnauthorizedResponse,
+  MoovAPI.ForbiddenResponse,
+  MoovAPI.NotFoundResponse,
+  MoovAPI.RateLimitedResponse,
 }
 
-union Post<OK, ValidationError> {
-  Ok<OK>,
-  BadRequest,
-  Unauthorized,
-  Forbidden,
-  NotFoundResponse,
-  StateConflict,
-  UnprocessableEntity<ValidationError>,
-  RateLimited,
+union PostResponses<OK, ValidationError> {
+  MoovAPI.OkResponse<OK>,
+  MoovAPI.BadRequestResponse,
+  MoovAPI.UnauthorizedResponse,
+  MoovAPI.ForbiddenResponse,
+  MoovAPI.NotFoundResponse,
+  MoovAPI.StateConflictResponse,
+  MoovAPI.UnprocessableEntityResponse<ValidationError>,
+  MoovAPI.RateLimitedResponse,
 }
 
-union Update<OK, ValidationError> {
-  Ok<OK>,
-  BadRequest,
-  Unauthorized,
-  Forbidden,
-  NotFoundResponse,
-  StateConflict,
-  UnprocessableEntity<ValidationError>,
-  RateLimited,
+union UpdateResponses<OK, ValidationError> {
+  MoovAPI.OkResponse<OK>,
+  MoovAPI.BadRequestResponse,
+  MoovAPI.UnauthorizedResponse,
+  MoovAPI.ForbiddenResponse,
+  MoovAPI.NotFoundResponse,
+  MoovAPI.StateConflictResponse,
+  MoovAPI.UnprocessableEntityResponse<ValidationError>,
+  MoovAPI.RateLimitedResponse,
 }
 
-union UpdateNoContent<ValidationError> {
-  NoContentResponse,
-  BadRequest,
-  Unauthorized,
-  Forbidden,
-  NotFoundResponse,
-  StateConflict,
-  UnprocessableEntity<ValidationError>,
-  RateLimited,
+union UpdateNoContentResponses<ValidationError> {
+  MoovAPI.NoContentResponse,
+  MoovAPI.BadRequestResponse,
+  MoovAPI.UnauthorizedResponse,
+  MoovAPI.ForbiddenResponse,
+  MoovAPI.NotFoundResponse,
+  MoovAPI.StateConflictResponse,
+  MoovAPI.UnprocessableEntityResponse<ValidationError>,
+  MoovAPI.RateLimitedResponse,
 }
 
-union Disable {
-  NoContentResponse,
-  BadRequest,
-  Unauthorized,
-  Forbidden,
-  NotFoundResponse,
-  StateConflict,
-  RateLimited,
+union DisableResponses {
+  MoovAPI.NoContentResponse,
+  MoovAPI.BadRequestResponse,
+  MoovAPI.UnauthorizedResponse,
+  MoovAPI.ForbiddenResponse,
+  MoovAPI.NotFoundResponse,
+  MoovAPI.StateConflictResponse,
+  MoovAPI.RateLimitedResponse,
 }

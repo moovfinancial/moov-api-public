@@ -1,6 +1,6 @@
 import "./models.document.tsp";
 
-namespace MoovAPI.Accounts;
+namespace MoovAPI;
 
 @doc("Describes identity verification status and relevant identity verification documents.")
 model Verification {

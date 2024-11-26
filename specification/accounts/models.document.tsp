@@ -1,4 +1,4 @@
-namespace MoovAPI.Accounts;
+namespace MoovAPI;
 
 model Document {
   @format("uuid")

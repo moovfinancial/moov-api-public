@@ -1,7 +1,7 @@
+all: format compile
+
 setup:
 	npm i
-
-all: format compile
 
 format:
 	npx tsp format "**/*.tsp"

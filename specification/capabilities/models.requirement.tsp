@@ -1,7 +1,7 @@
-namespace MoovAPI.Capabilities;
+namespace MoovAPI;
 
 @doc("Represents individual and business data necessary to facilitate the enabling of a capability for an account.")
-model Requirement {
+model CapabilityRequirement {
   currentlyDue: RequirementID[];
   errors?: RequirementError[];
 }

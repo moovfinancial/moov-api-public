@@ -7,6 +7,7 @@ import "@moovfinancial/tsp-lib";
 import "./auth";
 import "./accounts";
 import "./capabilities";
+import "./transfers";
 
 using TypeSpec.Http;
 using TypeSpec.OpenAPI;

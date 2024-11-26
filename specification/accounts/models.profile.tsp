@@ -1,7 +1,7 @@
 import "./models.representative.tsp";
 import "./models.governmentid.tsp";
 
-namespace MoovAPI.Accounts;
+namespace MoovAPI;
 
 model CreateProfile {
   individual?: CreateIndividualProfile;
@@ -9,8 +9,8 @@ model CreateProfile {
 }
 
 model CreateProfileError {
-  individual?: CreateIndividualError | null;
-  business?: CreateBusinessError | null;
+  individual?: CreateIndividualError;
+  business?: CreateBusinessError;
 }
 
 @doc("Describes a Moov account profile. A profile will have a business or an individual, depending on the account's type.")
@@ -21,9 +21,9 @@ model Profile {
 
 model CreateIndividualProfile {
   name: IndividualName;
-  phone?: PhoneNumber | null;
+  phone?: PhoneNumber;
   email?: Email;
-  address?: Address | null;
+  address?: Address;
   birthDate?: {
     @example(9)
     day: integer;
@@ -33,26 +33,26 @@ model CreateIndividualProfile {
 
     @example(1989)
     year: integer;
-  } | null;
-  governmentID?: GovernmentID | null;
+  };
+  governmentID?: GovernmentID;
 }
 
 model CreateIndividualError {
-  name?: IndividualNameError | null;
-  phone?: PhoneNumberError | null;
+  name?: IndividualNameError;
+  phone?: PhoneNumberError;
   email?: string;
-  address?: AddressError | null;
-  birthDate?: BirthDateError | null;
+  address?: AddressError;
+  birthDate?: BirthDateError;
   governmentID?: {
     ssn?: {
       full?: string;
       lastFour?: string;
-    } | null;
+    };
     itin?: {
       full?: string;
       lastFour?: string;
-    } | null;
-  } | null;
+    };
+  };
 }
 
 @doc("Describes an individual.")
@@ -136,21 +136,21 @@ model CreateBusinessError {
   legalBusinessName?: string;
   doingBusinessAs?: string;
   businessType?: string;
-  address?: AddressError | null;
-  phone?: PhoneNumberError | null;
+  address?: AddressError;
+  phone?: PhoneNumberError;
   email?: string;
   website?: string;
   description?: string;
   taxID?: {
     ein?: {
       number?: string;
-    } | null;
-  } | null;
+    };
+  };
   industryCodes?: {
     naics?: string;
     sic?: string;
     mcc?: string;
-  } | null;
+  };
   primaryRegulator?: string;
 }
 

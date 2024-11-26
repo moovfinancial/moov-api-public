@@ -1,4 +1,4 @@
-namespace Common;
+namespace MoovAPI;
 
 @doc("The number of entries to skip when paginating a large result set.")
 @example(60)
