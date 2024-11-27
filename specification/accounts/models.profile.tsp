@@ -24,17 +24,19 @@ model CreateIndividualProfile {
   phone?: PhoneNumber;
   email?: Email;
   address?: Address;
-  birthDate?: {
-    @example(9)
-    day: integer;
-
-    @example(11)
-    month: integer;
-
-    @example(1989)
-    year: integer;
-  };
+  birthDate?: BirthDate;
   governmentID?: GovernmentID;
+}
+
+model BirthDate {
+  @example(9)
+  day: integer;
+
+  @example(11)
+  month: integer;
+
+  @example(1989)
+  year: integer;
 }
 
 model CreateIndividualError {
@@ -183,6 +185,50 @@ model BusinessProfile {
 
   representatives?: Representative[];
   ownersProvided: boolean;
+  industryCodes?: IndustryCodes;
+  primaryRegulator?: PrimaryRegulator;
+}
+
+@doc("""
+  Describes the fields available when patching a profile.
+  Each object can be patched independent of patching the other fields.
+  """)
+model PatchProfile {
+  individual?: PatchIndividual;
+  business?: PatchBusiness;
+}
+
+@doc("Describes the fields available when patching an individual.")
+model PatchIndividual {
+  name?: IndividualName;
+  phone?: PhoneNumber;
+  email?: Email;
+  address?: Address;
+  birthDate?: BirthDate;
+  governmentID?: GovernmentID;
+}
+
+model PatchBusiness {
+  @maxLength(64)
+  legalBusinessName?: string;
+
+  @maxLength(64)
+  doingBusinessAs?: string;
+
+  businessType?: BusinessType;
+  address?: Address;
+  phone?: PhoneNumber;
+  email?: Email;
+
+  @maxLength(100)
+  website?: string;
+
+  @minLength(10)
+  @maxLength(100)
+  description?: string;
+
+  taxID?: TaxID;
+  ownersProvided?: boolean;
   industryCodes?: IndustryCodes;
   primaryRegulator?: PrimaryRegulator;
 }

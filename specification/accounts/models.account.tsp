@@ -38,15 +38,17 @@ model CreateAccountError {
   termsOfService?: TermsOfServiceError;
   foreignID?: string;
   customerSupport?: CustomerSupportError;
-  settings?: {
-    cardPayment?: {
-      statementDescriptor?: string;
-    };
-    achPayment?: {
-      companyName?: string;
-    };
-  };
+  settings?: CreateAccountSettings;
   capabilities?: Record<string>;
+}
+
+model CreateAccountSettings {
+  cardPayment?: {
+    statementDescriptor?: string;
+  };
+  achPayment?: {
+    companyName?: string;
+  };
 }
 
 model Account {
@@ -86,6 +88,28 @@ model Account {
 
   @example(utcDateTime.fromISO("2024-05-06T12:20:38.184Z"))
   disconnectedOn?: utcDateTime;
+}
+
+@doc("Describes the fields available when patching a Moov account.")
+model PatchAccount {
+  profile?: PatchProfile;
+  metadata?: Record<string> | null;
+
+  @oneOf
+  termsOfService?: TermsOfServiceToken | ManualTermsOfService;
+
+  foreignID?: string;
+  customerSupport?: CustomerSupport | null;
+  settings?: CreateAccountSettings;
+}
+
+model PatchAccountError {
+  profile?: CreateProfileError;
+  metadata?: string;
+  termsOfService?: TermsOfServiceError;
+  foreignID?: string;
+  customerSupport?: CustomerSupportError;
+  settings?: CreateAccountSettings;
 }
 
 @doc("The operating mode for an account.")
@@ -300,4 +324,8 @@ model AccountsQuery {
   @example(CapabilityStatus.enabled)
   @query
   capabilityStatus?: CapabilityStatus;
+}
+
+enum AccountWaitFor {
+  connection,
 }

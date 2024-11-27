@@ -40,6 +40,12 @@ paths:
         Note that the `mode` field (for production or sandbox) is only required when creating a _facilitator_ account. All non-facilitator account requests will ignore the mode field and be set to the calling facilitator's mode.
       parameters:
         - $ref: '#/components/parameters/CommonHeaders'
+        - name: x-wait-for
+          in: header
+          required: false
+          description: Optional header that indicates whether to wait for the connection to be created before returning from the account creation.
+          schema:
+            $ref: '#/components/schemas/AccountWaitFor'
       responses:
         '200':
           description: The request completed successfully.
@@ -173,6 +179,124 @@ paths:
         - BasicAuth: []
         - OAuth2Auth:
             - /accounts/{accountID}/profile.read
+    patch:
+      operationId: patchAccount
+      description: |-
+        When **can** profile data be updated:
+          + For unverified accounts, all profile data can be edited.
+          + During the verification process, missing or incomplete profile data can be edited.
+          + Verified accounts can only add missing profile data.
+
+          When **can't** profile data be updated:
+          + Verified accounts cannot change any existing profile data.
+
+        If you need to update information in a locked state, please contact Moov support.
+
+        To use this endpoint from the browser, you'll need to specify the `/accounts/{accountID}/profile.write` scope when generating 
+        a [token](https://docs.moov.io/api/authentication/access-tokens/), and provide the changed information.
+      parameters:
+        - $ref: '#/components/parameters/CommonHeaders'
+        - name: accountID
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: The request completed successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Account'
+        '400':
+          description: The server could not understand the request due to invalid syntax.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+        '401':
+          description: The request contained missing or expired authentication.
+        '403':
+          description: The user is not authorized to make the request.
+        '404':
+          description: The requested resource was not found.
+        '409':
+          description: The request conflicted with the current state of the target resource.
+          content:
+            application/json:
+              schema:
+                type: string
+        '422':
+          description: The request was well-formed, but the contents failed validation. Check the request for missing or invalid fields.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    $ref: '#/components/schemas/PatchAccountError'
+                required:
+                  - error
+        '429':
+          description: Request was refused due to rate limiting.
+      tags:
+        - Accounts
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateAccountUpdate'
+      security:
+        - BasicAuth: []
+        - OAuth2Auth:
+            - /accounts/{accountID}/profile.write
+    delete:
+      operationId: disconnectAccount
+      description: |2-
+          This will sever the connection between you and the account specified and it will no longer be listed as active in the list of accounts. 
+          This also means you'll only have read-only access to the account going forward for reporting purposes.
+
+          To use this endpoint from the browser, you'll need to specify the `/accounts/{accountID}/profile.disconnect` scope when generating 
+          a [token](https://docs.moov.io/api/authentication/access-tokens/), and provide the changed information.
+      parameters:
+        - $ref: '#/components/parameters/CommonHeaders'
+        - name: accountID
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '204':
+          description: The request completed successfully, but there is no content to return.
+        '400':
+          description: The server could not understand the request due to invalid syntax.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+        '401':
+          description: The request contained missing or expired authentication.
+        '403':
+          description: The user is not authorized to make the request.
+        '404':
+          description: The requested resource was not found.
+        '409':
+          description: The request conflicted with the current state of the target resource.
+          content:
+            application/json:
+              schema:
+                type: string
+        '429':
+          description: Request was refused due to rate limiting.
+      tags:
+        - Accounts
+      security:
+        - BasicAuth: []
+        - OAuth2Auth:
+            - /accounts/{accountID}/profile.disconnect
   /accounts/{accountID}/bank-accounts:
     post:
       operationId: linkBankAccount
@@ -1591,6 +1715,16 @@ components:
           maxLength: 16
           pattern: '[a-zA-Z0-9.!*-+_\- ]+'
           description: The description that shows up on ACH transactions. This will default to the account's display name on account creation.
+    ACHPaymentSettingsUpdate:
+      type: object
+      properties:
+        companyName:
+          type: string
+          example: WholeBodyFitness
+          minLength: 1
+          maxLength: 16
+          pattern: '[a-zA-Z0-9.!*-+_\- ]+'
+          description: The description that shows up on ACH transactions. This will default to the account's display name on account creation.
     ACHReturnCode:
       type: string
       enum:
@@ -1825,6 +1959,10 @@ components:
         - failed
       description: Possible states an account verification can be in.
       deprecated: true
+    AccountWaitFor:
+      type: string
+      enum:
+        - connection
     Address:
       type: object
       required:
@@ -1873,6 +2011,33 @@ components:
           type: string
         country:
           type: string
+    AddressUpdate:
+      type: object
+      properties:
+        addressLine1:
+          type: string
+          example: 123 Main Street
+          maxLength: 60
+        addressLine2:
+          type: string
+          example: Apt 302
+          maxLength: 32
+        city:
+          type: string
+          example: Boulder
+          maxLength: 24
+        stateOrProvince:
+          type: string
+          example: CO
+          maxLength: 2
+        postalCode:
+          type: string
+          example: '80301'
+          maxLength: 5
+        country:
+          type: string
+          example: US
+          maxLength: 2
     Amount:
       type: object
       required:
@@ -2132,6 +2297,22 @@ components:
       example:
         paymentMethodID: 01234567-89ab-cdef-0123-456789abcdef
         paymentMethodType: moov-wallet
+    BirthDate:
+      type: object
+      required:
+        - day
+        - month
+        - year
+      properties:
+        day:
+          type: integer
+          example: 9
+        month:
+          type: integer
+          example: 11
+        year:
+          type: integer
+          example: 1989
     BirthDateError:
       type: object
       properties:
@@ -2141,6 +2322,18 @@ components:
           type: string
         year:
           type: string
+    BirthDateUpdate:
+      type: object
+      properties:
+        day:
+          type: integer
+          example: 9
+        month:
+          type: integer
+          example: 11
+        year:
+          type: integer
+          example: 1989
     BusinessProfile:
       type: object
       required:
@@ -2788,22 +2981,52 @@ components:
         customerSupport:
           $ref: '#/components/schemas/CustomerSupportError'
         settings:
-          type: object
-          properties:
-            cardPayment:
-              type: object
-              properties:
-                statementDescriptor:
-                  type: string
-            achPayment:
-              type: object
-              properties:
-                companyName:
-                  type: string
+          $ref: '#/components/schemas/CreateAccountSettings'
         capabilities:
           type: object
           additionalProperties:
             type: string
+    CreateAccountSettings:
+      type: object
+      properties:
+        cardPayment:
+          type: object
+          properties:
+            statementDescriptor:
+              type: string
+        achPayment:
+          type: object
+          properties:
+            companyName:
+              type: string
+    CreateAccountUpdate:
+      type: object
+      properties:
+        accountType:
+          $ref: '#/components/schemas/AccountType'
+        profile:
+          $ref: '#/components/schemas/CreateProfileUpdate'
+        metadata:
+          type: object
+          additionalProperties:
+            type: string
+          description: Free-form key-value pair list. Useful for storing information that is not captured elsewhere.
+        termsOfService:
+          oneOf:
+            - $ref: '#/components/schemas/TermsOfServiceTokenUpdate'
+            - $ref: '#/components/schemas/ManualTermsOfServiceUpdate'
+        foreignID:
+          type: string
+          maxLength: 64
+          description: Optional alias from a foreign/external system which can be used to reference this resource.
+        customerSupport:
+          $ref: '#/components/schemas/CustomerSupportUpdate'
+        settings:
+          $ref: '#/components/schemas/SettingsUpdate'
+        capabilities:
+          type: array
+          items:
+            $ref: '#/components/schemas/CapabilityID'
     CreateBusinessError:
       type: object
       properties:
@@ -2880,6 +3103,41 @@ components:
           $ref: '#/components/schemas/IndustryCodes'
         primaryRegulator:
           $ref: '#/components/schemas/PrimaryRegulator'
+    CreateBusinessProfileUpdate:
+      type: object
+      properties:
+        legalBusinessName:
+          type: string
+          example: Classbooker, LLC
+          maxLength: 64
+          description: The legal name under which the entity is registered.
+        doingBusinessAs:
+          type: string
+          maxLength: 64
+          description: A registered trade name under which the business operates, if different from its legal name.
+        businessType:
+          $ref: '#/components/schemas/BusinessType'
+        address:
+          $ref: '#/components/schemas/AddressUpdate'
+        phone:
+          $ref: '#/components/schemas/PhoneNumber'
+        email:
+          $ref: '#/components/schemas/Email'
+        website:
+          type: string
+          format: uri
+          maxLength: 100
+        description:
+          type: string
+          example: Local fitness gym paying out instructors
+          minLength: 10
+          maxLength: 100
+        taxID:
+          $ref: '#/components/schemas/TaxIDUpdate'
+        industryCodes:
+          $ref: '#/components/schemas/IndustryCodesUpdate'
+        primaryRegulator:
+          $ref: '#/components/schemas/PrimaryRegulator'
     CreateIndividualError:
       type: object
       properties:
@@ -2924,21 +3182,22 @@ components:
         address:
           $ref: '#/components/schemas/Address'
         birthDate:
-          type: object
-          properties:
-            day:
-              type: integer
-              example: 9
-            month:
-              type: integer
-              example: 11
-            year:
-              type: integer
-              example: 1989
-          required:
-            - day
-            - month
-            - year
+          $ref: '#/components/schemas/BirthDate'
+        governmentID:
+          $ref: '#/components/schemas/GovernmentID'
+    CreateIndividualProfileUpdate:
+      type: object
+      properties:
+        name:
+          $ref: '#/components/schemas/IndividualNameUpdate'
+        phone:
+          $ref: '#/components/schemas/PhoneNumber'
+        email:
+          $ref: '#/components/schemas/Email'
+        address:
+          $ref: '#/components/schemas/AddressUpdate'
+        birthDate:
+          $ref: '#/components/schemas/BirthDateUpdate'
         governmentID:
           $ref: '#/components/schemas/GovernmentID'
     CreateProfile:
@@ -2955,6 +3214,13 @@ components:
           $ref: '#/components/schemas/CreateIndividualError'
         business:
           $ref: '#/components/schemas/CreateBusinessError'
+    CreateProfileUpdate:
+      type: object
+      properties:
+        individual:
+          $ref: '#/components/schemas/CreateIndividualProfileUpdate'
+        business:
+          $ref: '#/components/schemas/CreateBusinessProfileUpdate'
     CreateTransfer:
       type: object
       required:
@@ -3065,6 +3331,21 @@ components:
           $ref: '#/components/schemas/AddressError'
         website:
           type: string
+    CustomerSupportUpdate:
+      type: object
+      properties:
+        phone:
+          $ref: '#/components/schemas/PhoneNumber'
+        email:
+          $ref: '#/components/schemas/Email'
+        address:
+          $ref: '#/components/schemas/AddressUpdate'
+        website:
+          type: string
+          format: uri
+      description: |-
+        User-provided information that can be displayed on credit card transactions for customers to use when
+        contacting a customer support team. This data is only allowed on a business account.
     DebitHoldPeriod:
       type: string
       enum:
@@ -3260,6 +3541,29 @@ components:
           type: string
         suffix:
           type: string
+    IndividualNameUpdate:
+      type: object
+      properties:
+        firstName:
+          type: string
+          example: Jordan
+          maxLength: 64
+          description: The individual's first given name.
+        middleName:
+          type: string
+          example: Reese
+          maxLength: 64
+          description: The individual's second given name, if any.
+        lastName:
+          type: string
+          example: Lee
+          maxLength: 64
+          description: The individual's family name.
+        suffix:
+          type: string
+          example: Jr
+          maxLength: 20
+          description: Suffix of a given name.
     IndividualProfile:
       type: object
       required:
@@ -3286,6 +3590,24 @@ components:
         - naics
         - sic
         - mcc
+      properties:
+        naics:
+          type: string
+          example: '713940'
+          minLength: 2
+          maxLength: 6
+        sic:
+          type: string
+          example: '7991'
+          minLength: 4
+          maxLength: 4
+        mcc:
+          type: string
+          example: '7997'
+          minLength: 4
+          maxLength: 4
+    IndustryCodesUpdate:
+      type: object
       properties:
         naics:
           type: string
@@ -3417,6 +3739,27 @@ components:
           type: string
           format: uri
       description: Describes the acceptance of the Terms of Service. All data is required, and must be from the user.
+    ManualTermsOfServiceUpdate:
+      type: object
+      properties:
+        acceptedDate:
+          type: string
+          format: date-time
+          description: The date and time the terms of service were accepted.
+        acceptedIP:
+          type: string
+          example: 172.217.2.46
+          format: ipv4
+          description: The IP address from which the terms of service were accepted.
+        acceptedUserAgent:
+          type: string
+          example: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.71 Safari/537.36
+          maxLength: 255
+          description: The user-agent of the user making the request.
+        acceptedDomain:
+          type: string
+          format: uri
+      description: Describes the acceptance of the Terms of Service. All data is required, and must be from the user.
     ManualToSError:
       type: object
       properties:
@@ -3479,6 +3822,103 @@ components:
           RoutingNumber: "123456780",
           BankName: "Gringotts Bank"
         ```
+    PatchAccount:
+      type: object
+      properties:
+        profile:
+          $ref: '#/components/schemas/PatchProfile'
+        metadata:
+          type: object
+          additionalProperties:
+            type: string
+          nullable: true
+        termsOfService:
+          oneOf:
+            - $ref: '#/components/schemas/TermsOfServiceToken'
+            - $ref: '#/components/schemas/ManualTermsOfService'
+        foreignID:
+          type: string
+        customerSupport:
+          type: object
+          allOf:
+            - $ref: '#/components/schemas/CustomerSupport'
+          nullable: true
+        settings:
+          $ref: '#/components/schemas/CreateAccountSettings'
+      description: Describes the fields available when patching a Moov account.
+    PatchAccountError:
+      type: object
+      properties:
+        profile:
+          $ref: '#/components/schemas/CreateProfileError'
+        metadata:
+          type: string
+        termsOfService:
+          $ref: '#/components/schemas/TermsOfServiceError'
+        foreignID:
+          type: string
+        customerSupport:
+          $ref: '#/components/schemas/CustomerSupportError'
+        settings:
+          $ref: '#/components/schemas/CreateAccountSettings'
+    PatchBusiness:
+      type: object
+      properties:
+        legalBusinessName:
+          type: string
+          maxLength: 64
+        doingBusinessAs:
+          type: string
+          maxLength: 64
+        businessType:
+          $ref: '#/components/schemas/BusinessType'
+        address:
+          $ref: '#/components/schemas/Address'
+        phone:
+          $ref: '#/components/schemas/PhoneNumber'
+        email:
+          $ref: '#/components/schemas/Email'
+        website:
+          type: string
+          maxLength: 100
+        description:
+          type: string
+          minLength: 10
+          maxLength: 100
+        taxID:
+          $ref: '#/components/schemas/TaxID'
+        ownersProvided:
+          type: boolean
+        industryCodes:
+          $ref: '#/components/schemas/IndustryCodes'
+        primaryRegulator:
+          $ref: '#/components/schemas/PrimaryRegulator'
+    PatchIndividual:
+      type: object
+      properties:
+        name:
+          $ref: '#/components/schemas/IndividualName'
+        phone:
+          $ref: '#/components/schemas/PhoneNumber'
+        email:
+          $ref: '#/components/schemas/Email'
+        address:
+          $ref: '#/components/schemas/Address'
+        birthDate:
+          $ref: '#/components/schemas/BirthDate'
+        governmentID:
+          $ref: '#/components/schemas/GovernmentID'
+      description: Describes the fields available when patching an individual.
+    PatchProfile:
+      type: object
+      properties:
+        individual:
+          $ref: '#/components/schemas/PatchIndividual'
+        business:
+          $ref: '#/components/schemas/PatchBusiness'
+      description: |-
+        Describes the fields available when patching a profile.
+        Each object can be patched independent of patching the other fields.
     PatchTransfer:
       type: object
       properties:
@@ -3862,6 +4302,14 @@ components:
         achPayment:
           $ref: '#/components/schemas/ACHPaymentSettings'
       description: User provided settings to manage an account.
+    SettingsUpdate:
+      type: object
+      properties:
+        cardPayment:
+          $ref: '#/components/schemas/CardPaymentSettings'
+        achPayment:
+          $ref: '#/components/schemas/ACHPaymentSettingsUpdate'
+      description: User provided settings to manage an account.
     Skip:
       type: integer
       format: int64
@@ -3880,6 +4328,16 @@ components:
               example: 12-3456789
           required:
             - number
+      description: An EIN (employer identification number) for the business. For sole proprietors, an SSN can be used as the EIN.
+    TaxIDUpdate:
+      type: object
+      properties:
+        ein:
+          type: object
+          properties:
+            number:
+              type: string
+              example: 12-3456789
       description: An EIN (employer identification number) for the business. For sole proprietors, an SSN can be used as the EIN.
     TermsOfService:
       type: object
@@ -3917,6 +4375,13 @@ components:
       type: object
       required:
         - token
+      properties:
+        token:
+          type: string
+          example: kgT1uxoMAk7QKuyJcmQE8nqW_HjpyuXBabiXPi6T83fUQoxsyWYPcYzuHQTqrt7YRp4gCwyDQvb6U5REM9Pgl2EloCe35t-eiMAbUWGo3Kerxme6aqNcKrP_6-v0MTXViOEJ96IBxPFTvMV7EROI2dq3u4e-x4BbGSCedAX-ViAQND6hcreCDXwrO6sHuzh5Xi2IzSqZHxaovnWEboaxuZKRJkA3dsFID6fzitMpm2qrOh4
+      description: An encrypted value used to record acceptance of Moov's Terms of Service.
+    TermsOfServiceTokenUpdate:
+      type: object
       properties:
         token:
           type: string
@@ -4259,6 +4724,8 @@ components:
             /accounts.write: ''
             /accounts.read: ''
             /accounts/{accountID}/profile.read: ''
+            /accounts/{accountID}/profile.write: ''
+            /accounts/{accountID}/profile.disconnect: ''
             /accounts/{accountID}/bank-accounts.write: ''
             /accounts/{accountID}/bank-accounts.read: ''
             /accounts/{accountID}/capabilities.read: ''

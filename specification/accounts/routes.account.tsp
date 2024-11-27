@@ -26,7 +26,15 @@ namespace MoovAPI {
   @route("/accounts")
   @post
   @useAuth(BasicAuth | OAuth2<["/accounts.write"]>)
-  op createAccount(...CommonHeaders, @body body: CreateAccount): PostResponses<
+  op createAccount(
+    ...CommonHeaders,
+
+    @doc("Optional header that indicates whether to wait for the connection to be created before returning from the account creation.")
+    @header
+    xWaitFor?: AccountWaitFor,
+
+    @body body: CreateAccount,
+  ): PostResponses<
     Account,
     {
       error: CreateAccountError;
@@ -63,4 +71,56 @@ namespace MoovAPI {
     @path
     accountID: string,
   ): GetResponses<Account>;
+
+  @doc("""
+    When **can** profile data be updated:
+      + For unverified accounts, all profile data can be edited.
+      + During the verification process, missing or incomplete profile data can be edited.
+      + Verified accounts can only add missing profile data.
+    
+      When **can't** profile data be updated:
+      + Verified accounts cannot change any existing profile data.
+    
+    If you need to update information in a locked state, please contact Moov support.
+    
+    To use this endpoint from the browser, you'll need to specify the `/accounts/{accountID}/profile.write` scope when generating 
+    a [token](https://docs.moov.io/api/authentication/access-tokens/), and provide the changed information.
+    """)
+  @tag("Accounts")
+  @route("/accounts/{accountID}")
+  @patch
+  @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/profile.write"]>)
+  op patchAccount(
+    ...CommonHeaders,
+
+    @format("uuid")
+    @path
+    accountID: string,
+
+    @body body: CreateAccount,
+  ): PostResponses<
+    Account,
+    {
+      error: PatchAccountError;
+    }
+  >;
+
+  @doc("""
+      This will sever the connection between you and the account specified and it will no longer be listed as active in the list of accounts. 
+      This also means you'll only have read-only access to the account going forward for reporting purposes.
+    
+      To use this endpoint from the browser, you'll need to specify the `/accounts/{accountID}/profile.disconnect` scope when generating 
+      a [token](https://docs.moov.io/api/authentication/access-tokens/), and provide the changed information.
+    """)
+  @tag("Accounts")
+  @route("/accounts/{accountID}")
+  @delete
+  @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/profile.disconnect"]>)
+  op disconnectAccount(
+    ...CommonHeaders,
+
+    @format("uuid")
+    @path
+    accountID: string,
+  ): DisableResponses;
 }
