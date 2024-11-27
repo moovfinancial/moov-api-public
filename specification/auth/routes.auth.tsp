@@ -12,6 +12,6 @@ namespace MoovAPI {
   @route("/oauth2/token")
   op createAuthToken(@body request: AuthTokenRequest): PostResponses<
     AccessToken,
-    unknown
+    {}
   >;
 }

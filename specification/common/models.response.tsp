@@ -78,59 +78,59 @@ model RateLimitedResponse {
 }
 
 union ListResponses<T> {
-  MoovAPI.OkResponse<Array<T>>,
-  MoovAPI.UnauthorizedResponse,
-  MoovAPI.ForbiddenResponse,
-  MoovAPI.RateLimitedResponse,
+  OkResponse<Array<T>>,
+  UnauthorizedResponse,
+  ForbiddenResponse,
+  RateLimitedResponse,
 }
 
 union GetResponses<T> {
-  MoovAPI.OkResponse<T>,
-  MoovAPI.UnauthorizedResponse,
-  MoovAPI.ForbiddenResponse,
-  MoovAPI.NotFoundResponse,
-  MoovAPI.RateLimitedResponse,
+  OkResponse<T>,
+  UnauthorizedResponse,
+  ForbiddenResponse,
+  NotFoundResponse,
+  RateLimitedResponse,
 }
 
 union PostResponses<OK, ValidationError> {
-  MoovAPI.OkResponse<OK>,
-  MoovAPI.BadRequestResponse,
-  MoovAPI.UnauthorizedResponse,
-  MoovAPI.ForbiddenResponse,
-  MoovAPI.NotFoundResponse,
-  MoovAPI.StateConflictResponse,
-  MoovAPI.UnprocessableEntityResponse<ValidationError>,
-  MoovAPI.RateLimitedResponse,
+  OkResponse<OK>,
+  BadRequestResponse,
+  UnauthorizedResponse,
+  ForbiddenResponse,
+  NotFoundResponse,
+  StateConflictResponse,
+  UnprocessableEntityResponse<ValidationError>,
+  RateLimitedResponse,
 }
 
 union UpdateResponses<OK, ValidationError> {
-  MoovAPI.OkResponse<OK>,
-  MoovAPI.BadRequestResponse,
-  MoovAPI.UnauthorizedResponse,
-  MoovAPI.ForbiddenResponse,
-  MoovAPI.NotFoundResponse,
-  MoovAPI.StateConflictResponse,
-  MoovAPI.UnprocessableEntityResponse<ValidationError>,
-  MoovAPI.RateLimitedResponse,
+  OkResponse<OK>,
+  BadRequestResponse,
+  UnauthorizedResponse,
+  ForbiddenResponse,
+  NotFoundResponse,
+  StateConflictResponse,
+  UnprocessableEntityResponse<ValidationError>,
+  RateLimitedResponse,
 }
 
 union UpdateNoContentResponses<ValidationError> {
-  MoovAPI.NoContentResponse,
-  MoovAPI.BadRequestResponse,
-  MoovAPI.UnauthorizedResponse,
-  MoovAPI.ForbiddenResponse,
-  MoovAPI.NotFoundResponse,
-  MoovAPI.StateConflictResponse,
-  MoovAPI.UnprocessableEntityResponse<ValidationError>,
-  MoovAPI.RateLimitedResponse,
+  NoContentResponse,
+  BadRequestResponse,
+  UnauthorizedResponse,
+  ForbiddenResponse,
+  NotFoundResponse,
+  StateConflictResponse,
+  UnprocessableEntityResponse<ValidationError>,
+  RateLimitedResponse,
 }
 
 union DisableResponses {
-  MoovAPI.NoContentResponse,
-  MoovAPI.BadRequestResponse,
-  MoovAPI.UnauthorizedResponse,
-  MoovAPI.ForbiddenResponse,
-  MoovAPI.NotFoundResponse,
-  MoovAPI.StateConflictResponse,
-  MoovAPI.RateLimitedResponse,
+  NoContentResponse,
+  BadRequestResponse,
+  UnauthorizedResponse,
+  ForbiddenResponse,
+  NotFoundResponse,
+  StateConflictResponse,
+  RateLimitedResponse,
 }

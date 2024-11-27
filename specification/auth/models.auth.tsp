@@ -50,12 +50,14 @@ model AccessToken {
   token_type: TokenType;
 }
 
-@doc("Type of token returned.")
-@example(TokenType.Opaque)
+@doc("""
+  Type of token returned.
+  
+    - opaque: A token following a proprietary format.
+    - jwt: A JSON Web Token (JWT), a self-contained token that contains claims about the user and is cryptographically signed.
+  """)
+@example(TokenType.opaque)
 enum TokenType {
-  @doc("A token following a proprietary format.")
-  Opaque: "opaque",
-
-  @doc("A JSON Web Token (JWT), a self-contained token that contains claims about the user and is cryptographically signed.")
-  JWT: "jwt",
+  opaque,
+  jwt,
 }

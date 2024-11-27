@@ -1,7 +1,7 @@
 namespace MoovAPI;
 
 @doc("Details of a card refund.")
-model CardTransferRefund {
+model CardAcquiringRefund {
   @doc("Identifier for the refund.")
   @format("uuid")
   refundID: string;
@@ -24,16 +24,16 @@ model RefundCardDetails {
 }
 
 enum RefundStatus {
-  Created: "created",
-  Pending: "pending",
-  Completed: "completed",
-  Failed: "failed",
+  created,
+  pending,
+  completed,
+  failed,
 }
 
 enum RefundCardStatus {
-  Initiated: "initiated",
-  Confirmed: "confirmed",
-  Settled: "settled",
-  Failed: "failed",
-  Completed: "completed",
+  initiated,
+  confirmed,
+  settled,
+  failed,
+  completed,
 }

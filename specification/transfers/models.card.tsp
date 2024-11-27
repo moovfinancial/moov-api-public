@@ -40,51 +40,51 @@ model CreateTransferDestinationCard {
   """)
 enum TransactionSource {
   @doc("Initial transaction in a recurring series or saving a card for future merchant-initiated charges.")
-  FirstRecurring: "first-recurring",
+  firstRecurring: "first-recurring",
 
   @doc("Regular, merchant-initiated scheduled transactions.")
-  Recurring: "recurring",
+  recurring: "recurring",
 
   @doc("Non-regular, merchant-initiated transactions like account top-ups.")
-  Unscheduled: "unscheduled",
+  unscheduled: "unscheduled",
 }
 
 @doc("Status of a transaction within the card payment lifecycle.")
 enum CardTransactionStatus {
-  Initiated: "initiated",
-  Confirmed: "confirmed",
-  Canceled: "canceled",
-  Settled: "settled",
-  Failed: "failed",
-  Completed: "completed",
+  initiated,
+  confirmed,
+  canceled,
+  settled,
+  failed,
+  completed,
 }
 
 enum CardTransactionFailureCode {
-  CallIssuer: "call-issuer",
-  DoNotHonor: "do-not-honor",
-  ProcessingError: "processing-error",
-  InvalidTransaction: "invalid-transaction",
-  InvalidAmount: "invalid-amount",
-  NoSuchIssuer: "no-such-issuer",
-  ReenterTransaction: "reenter-transaction",
-  CvvMismatch: "cvv-mismatch",
-  LostOrStolen: "lost-or-stolen",
-  InsufficientFunds: "insufficient-funds",
-  InvalidCardNumber: "invalid-card-number",
-  InvalidMerchant: "invalid-merchant",
-  ExpiredCard: "expired-card",
-  IncorrectPin: "incorrect-pin",
-  TransactionNotAllowed: "transaction-not-allowed",
-  SuspectedFraud: "suspected-fraud",
-  AmountLimitExceeded: "amount-limit-exceeded",
-  VelocityLimitExceeded: "velocity-limit-exceeded",
-  RevocationOfAuthorization: "revocation-of-authorization",
-  CardNotActivated: "card-not-activated",
-  IssuerNotAvailable: "issuer-not-available",
-  CouldNotRoute: "could-not-route",
-  CardholderAccountClosed: "cardholder-account-closed",
-  UnknownIssue: "unknown-issue",
-  DuplicateTransaction: "duplicate-transaction",
+  callIssuer: "call-issuer",
+  doNotHonor: "do-not-honor",
+  processingError: "processing-error",
+  invalidTransaction: "invalid-transaction",
+  invalidAmount: "invalid-amount",
+  noSuchIssuer: "no-such-issuer",
+  reenterTransaction: "reenter-transaction",
+  cvvMismatch: "cvv-mismatch",
+  lostOrStolen: "lost-or-stolen",
+  insufficientFunds: "insufficient-funds",
+  invalidCardNumber: "invalid-card-number",
+  invalidMerchant: "invalid-merchant",
+  expiredCard: "expired-card",
+  incorrectPIN: "incorrect-pin",
+  transactionNotAllowed: "transaction-not-allowed",
+  suspectedFraud: "suspected-fraud",
+  amountLimitExceeded: "amount-limit-exceeded",
+  velocityLimitExceeded: "velocity-limit-exceeded",
+  revocationOfAuthorization: "revocation-of-authorization",
+  cardNotActivated: "card-not-activated",
+  issuerNotAvailable: "issuer-not-available",
+  couldNotRoute: "could-not-route",
+  cardholderAccountClosed: "cardholder-account-closed",
+  unknownIssue: "unknown-issue",
+  duplicateTransaction: "duplicate-transaction",
 }
 
 @doc("An optional override of the default card statement descriptor for a transfer. Accounts must be enabled by Moov to set this field.")

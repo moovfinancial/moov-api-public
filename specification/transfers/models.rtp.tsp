@@ -1,13 +1,13 @@
 namespace MoovAPI;
 
 @doc("RTP specific details about the transaction.")
-model RtpTransactionDetails {
-  status: RtpTransactionStatus;
+model RTPTransactionDetails {
+  status: RTPTransactionStatus;
 
   @doc("Response code returned by network on failure.")
   networkResponseCode?: string;
 
-  failureCode?: RtpFailureCode;
+  failureCode?: RTPFailureCode;
   initiatedOn?: utcDateTime;
   completedOn?: utcDateTime;
   failedOn?: utcDateTime;
@@ -15,23 +15,23 @@ model RtpTransactionDetails {
 }
 
 @doc("Status of a transaction within the RTP lifecycle.")
-enum RtpTransactionStatus {
-  Initiated: "initiated",
-  Completed: "completed",
-  Failed: "failed",
-  AcceptedWithoutPosting: "accepted-without-posting",
+enum RTPTransactionStatus {
+  initiated: "initiated",
+  completed: "completed",
+  failed: "failed",
+  acceptedWithoutPosting: "accepted-without-posting",
 }
 
 @doc("Status codes for RTP failures.")
-enum RtpFailureCode {
-  ProcessingError: "processing-error",
-  InvalidAccount: "invalid-account",
-  AccountClosed: "account-closed",
-  AccountBlocked: "account-blocked",
-  InvalidField: "invalid-field",
-  TransactionNotSupported: "transaction-not-supported",
-  LimitExceeded: "limit-exceeded",
-  InvalidAmount: "invalid-amount",
-  CustomerDeceased: "customer-deceased",
-  Other: "other",
+enum RTPFailureCode {
+  processingError: "processing-error",
+  invalidAccount: "invalid-account",
+  accountClosed: "account-closed",
+  accountBlocked: "account-blocked",
+  invalidField: "invalid-field",
+  transactionNotSupported: "transaction-not-supported",
+  limitExceeded: "limit-exceeded",
+  invalidAmount: "invalid-amount",
+  customerDeceased: "customer-deceased",
+  other: "other",
 }

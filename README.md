@@ -25,7 +25,7 @@ import "../models.version.tsp"
 
 using TypeSpec.Versioning;
 
-namespace MoovAPI.Thing;
+namespace MoovAPI;
 
 model Thing {
   thingID: string;
@@ -70,85 +70,33 @@ At a glance, the process to add new APIs to this project looks like:
 
 The following sections describe each component in more detail.
 
-## Namespaces
+### Namespacing
 
-This project is structured to aggregate all of the individual APIs into a single OpenAPI file per version. To
-accomplish this, namespaces must be nested under the top level `MoovAPI` namespace. Nesting can be done using
-block (`{}`), or blockless (file level) notation:
-
-### Block example
-
-```typespec
-namespace TopLevel {
-  namespace Nested {
-    // models, routes, etc.
-  }
-}
-```
-
-OR
-
-```typespec
-namespace TopLevel.Nested {
-  // models, routes, etc.
-}
-```
-
-### Blockless example
-
-The following is equivalent to the block example above:
-
-```typespec
-namespace TopLevel.Nested;
-
-// models, routes, etc.
-```
-
-Refer to TypeSpec's documentation for more information:
-* [Namespaces](https://typespec.io/docs/language-basics/namespaces)
+All files in this project should use `namespace MoovAPI`.
 
 ### Main
 
 The top-level `specification/main.tsp` imports all the subdirectories and serves as the entrypoint for the
-TypeSpec compiler. It is used to aggregate the routes from all other namespaces to ensure the compiled output
+TypeSpec compiler. It is used to aggregate the routes from all other domains to ensure the compiled output
 is a single OpenAPI file per API version.
 
-Each subdirectory that contains routes must have its own `main.tsp` that defines the namespace and attaches
-the `MoovAPI.Versions` enum:
+Each domain's `main.tsp` simply needs to import any `routes.{name}.tsp` files:
 
 ```typespec
-import "@typespec/versioning";
-import "../models.version.tsp";
-
-// import routes
-import "./routes.{apiname}.tsp";
-
-using TypeSpec.Versioning;
-
-// Define the namespace
-@versioned(MoovAPI.Versions)
-namespace MoovAPI.Accounts;
+import "./routes.bankaccount.tsp";
+import "./routes.microdeposit.tsp";
+import "./routes.verification.tsp";
 ```
 
 ### Models
 
 API models should be defined in a `models.{name}.tsp` file. Related models should be grouped together in a
-single file, named appropriately for its contents. The file level namespace should be the same as the
-subdirectory's `main.tsp` file. Be sure to use the appropriate versioning decorators to ensure the generated
-OpenAPI specifications accurately reflect the backend implementations.
-
-#### Shared models
-
-Because of the way TypeSpec's versioning works, you cannot import a model from a versioned namespace into
-another versioned namespace. This means shared types must either go in `./common`, or in the appropriate
-domain's subdirectory under a different namespace. For shared models in a domain-specific subdirectory
-(consider the `CapabilityID` enum in `./capabilities`), define a separate namespace like `CommonCapabilities`
-with no versioning.
+single file, named appropriately for its contents. Be sure to use the appropriate versioning decorators to 
+ensure the generated OpenAPI specifications accurately reflect the backend implementations.
 
 ### Routes
 
-Routes should be defined in a `routes.{name}.tsp` file with the same namespace as the models, and import
-the necessary model files.
+Routes should be defined in a `routes.{name}.tsp` file and import the necessary model files.
 
 #### Authentication
 
@@ -165,13 +113,13 @@ import "./models.account.tsp";
 
 using TypeSpec.Http;
 
-@tag("Accounts")
-@route("/accounts")
-namespace MoovAPI.Accounts {
+namespace MoovAPI {
   @doc("Endpoint description here")
+  @tag("Accounts")
+  @route("/accounts")
   @get
   // Can use either OAuth2 OR API key
-  @useAuth(BasicAuth | Auth.OAuth2<["/accounts.read"]>)
+  @useAuth(BasicAuth | OAuth2<["/accounts.read"]>)
   op listAccounts(): ListResponses<Accounts.Account>;
 }
 ```
@@ -186,4 +134,90 @@ import "@typespec/versioning";
 import "./auth";
 import "./accounts";
 import "./capabilities";
+```
+
+## Project conventions
+
+This project aims to follow TypeSpec's official [style guide](https://typespec.io/docs/handbook/style-guide/).
+
+Additional conventions for this project are detailed below.
+
+### Naming
+
+* Acronyms and initialisms in names should have a consistent case
+  * For example prefer `url` or `URL`, over `Url`
+
+### Enums
+
+* Enum members only need explicit value assignments when the name and value differ
+  * `enumMember: "enum-member"` needs an explicit value because `kabob-case` values are not valid TypeSpec identifiers
+
+### Optional
+
+An optional field is any model property, parameter, header, etc. that can be omitted from a request or response. 
+Optional fields must be marked with `?`. Field requirement/optionality MUST be correctly defined for both requests
+and responses. For responses, any property not marked optional is considered guaranteed to be present.
+
+### Nullable
+
+A nullable field is any model property that can be present in a request or response payload with a value of `null`.
+In certain contexts, it is valid to mark a field as both optional _and_ nullable. PATCH requests, where it's permissible
+to send an explicit `null` to unset a field, are one valid use-case. 
+
+To define a property as nullable, its type should be unioned with `null`:
+
+```typespec
+model Thing {
+  property: AnotherThing | null;
+}
+```
+
+### Decorators and allOf
+
+Using decorators, such as a doc comment, on a property whose type is a custom model will result in OpenAPI 
+specs with unnecessary `allOf` keywords. While `allOf` is _usually_ safe, it cluters the spec and can cause 
+issues in some code generators (e.g. empty structs). When adding to this project, prefer definitions that 
+avoid the `allOf` keyword unless strictly necessary.
+
+When defining models with custom types, all TypeSpec.Http decorators should be on the custom type itself - 
+not the property using that type.
+
+The following model definition will result in an unncessary `allOf`:
+
+```typespec
+model Thing {
+  @doc("Extra description that didn't actually need to be here")
+  property: NestedThing;
+}
+
+@doc("This is a nested thing")
+model NestedThing {
+  anotherProperty?: string;
+}
+```
+
+```yaml
+Thing:
+  type: object
+  required:
+    - property
+  properties:
+    property:
+      allOf:
+        - $ref: '#/components/schemas/NestedThing'
+      description: Extra description that didn't actually need to be here
+```
+
+Instead, allow TypeSpec/OpenAPI to use the existing description and other decorators:
+
+```typespec
+model Thing {
+  // this will use the decorators from NestedThing in generated code and documentation
+  property: NestedThing;
+}
+
+@doc("This is a nested thing")
+model NestedThing {
+  anotherProperty?: string;
+}
 ```

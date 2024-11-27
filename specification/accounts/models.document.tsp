@@ -19,10 +19,10 @@ model Document {
 }
 
 @doc("Types of documents that can be uploaded.")
-@example(DocumentType.BankStatement)
+@example(DocumentType.bankStatement)
 enum DocumentType {
-  DriversLicense,
-  Passport,
-  UtilityBill,
-  BankStatement,
+  driversLicense,
+  passport,
+  utilityBill,
+  bankStatement,
 }

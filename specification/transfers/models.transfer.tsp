@@ -34,7 +34,7 @@ model Transfer {
   description?: string;
 
   metadata?: Record<string>;
-  facilitatorFee?: TransferFacilitatorFee;
+  facilitatorFee?: FacilitatorFee;
 
   @doc("Fees charged to your platform account for transfers.")
   moovFee?: int64;
@@ -45,9 +45,9 @@ model Transfer {
   moovFeeDetails?: MoovFeeDetails;
   groupID?: string;
   refundedAmount?: Amount;
-  refunds?: CardTransferRefund[];
+  refunds?: CardAcquiringRefund[];
   disputedAmount?: Amount;
-  disputes?: CardTransferDispute[];
+  disputes?: CardAcquiringDispute[];
   sweepID?: string;
   scheduleID?: string;
   occurrenceID?: string;
@@ -69,7 +69,7 @@ model TransferSource {
   card?: unknown; // cards.Card
   applePay?: unknown; // paymentmethods.ApplePayResponse
   cardDetails?: CardTransactionDetails;
-  achDetails?: AchTransactionDetails;
+  achDetails?: ACHTransactionDetails;
 }
 
 model TransferAccount {
@@ -85,17 +85,17 @@ model TransferDestination {
   bankAccount?: BankAccount;
   wallet?: unknown; // paymentmethods.WalletResponse
   card?: unknown; // cards.Card
-  achDetails?: AchTransactionDetails;
+  achDetails?: ACHTransactionDetails;
   applePay?: unknown; // paymentmethods.ApplePayResponse
   cardDetails?: CardTransactionDetails;
-  rtpDetails?: RtpTransactionDetails;
+  rtpDetails?: RTPTransactionDetails;
 }
 
 model CreateTransfer {
   source: CreateTransferSource;
   destination: CreateTransferDestination;
   amount: Amount;
-  facilitatorFee?: TransferFacilitatorFee;
+  facilitatorFee?: FacilitatorFee;
 
   @doc("An optional description of the transfer for your own internal use.")
   @example("Pay Instructor for May 15 Class")
@@ -107,7 +107,7 @@ model CreateTransfer {
 }
 
 @doc("A transfer was successfully created but an error occurred while generating the synchronous response. The asynchronous response object will be returned.")
-model AsyncCreateTransferResponse {
+model CreatedTransferSyncErrorResponse {
   @statusCode statusCode: "201";
   @body body: AsyncTransfer;
 }
@@ -170,7 +170,7 @@ model PatchTransfer {
 }
 
 @doc("Total or markup fee.")
-model TransferFacilitatorFee {
+model FacilitatorFee {
   @doc("Total facilitator fee in cents. Only either `total` or `totalDecimal` can be set.")
   total?: int64;
 
@@ -254,24 +254,24 @@ model TransferListFilters {
 
 @doc("Status of a transfer.")
 enum TransferStatus {
-  Created: "created",
-  Pending: "pending",
-  Completed: "completed",
-  Failed: "failed",
-  Reversed: "reversed",
-  Queued: "queued",
-  Canceled: "canceled",
+  created,
+  pending,
+  completed,
+  failed,
+  reversed,
+  queued,
+  canceled,
 }
 
 @doc("Reason for a transfer's failure.")
 enum TransferFailureReason {
-  SourcePaymentError: "source-payment-error",
-  DestinationPaymentError: "destination-payment-error",
-  WalletInsufficientFunds: "wallet-insufficient-funds",
-  RejectedHighRisk: "rejected-high-risk",
-  ProcessingError: "processing-error",
+  sourcePaymentError: "source-payment-error",
+  destinationPaymentError: "destination-payment-error",
+  walletInsufficientFunds: "wallet-insufficient-funds",
+  rejectedHighRisk: "rejected-high-risk",
+  processingError: "processing-error",
 }
 
 enum TransferWaitFor {
-  RailResponse: "rail-response",
+  railResponse: "rail-response",
 }

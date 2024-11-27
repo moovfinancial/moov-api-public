@@ -13,34 +13,34 @@ model Verification {
 #deprecated "This field has been deprecated and will be removed in a future release."
 @doc("Possible states an account verification can be in.")
 enum AccountVerificationStatus {
-  Unverified: "unverified",
-  Pending: "pending",
-  Resubmit: "resubmit",
-  Review: "review",
-  Verified: "verified",
-  Failed: "failed",
+  unverified,
+  pending,
+  resubmit,
+  review,
+  verified,
+  failed,
 }
 
 #deprecated "This field has been deprecated and will be removed in a future release."
 @doc("Possible states an account verification can be in.")
 enum VerificationStatus {
-  Unverified: "unverified",
-  Pending: "pending",
-  Verified: "verified",
-  Errored: "errored",
+  unverified,
+  pending,
+  verified,
+  errored,
 }
 
 #deprecated "This field is deprecated and will be removed in a future release."
 @doc("Additional detail for a verification status.")
 enum VerificationStatusDetail {
-  FailedAutoVerify: "failedAutoVerify",
-  DocDobMismatch: "docDobMismatch",
-  DocNameMismatch: "docNameMismatch",
-  DocAddressMismatch: "docAddressMismatch",
-  DocNumberMismatch: "docNumberMismatch",
-  DocIncomplete: "docIncomplete",
-  DocFailedRisk: "docFailedRisk",
-  PotentialAccountSanctionsMatch: "potentialAccountSanctionsMatch",
-  PotentialRepresentativeSanctionsMatch: "potentialRepresentativeSanctionsMatch",
-  FailedOther: "failedOther",
+  failedAutoVerify,
+  docDobMismatch,
+  docNameMismatch,
+  docAddressMismatch,
+  docNumberMismatch,
+  docIncomplete,
+  docFailedRisk,
+  potentialAccountSanctionsMatch,
+  potentialRepresentativeSanctionsMatch,
+  failedOther,
 }

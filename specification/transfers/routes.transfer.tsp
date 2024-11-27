@@ -40,7 +40,7 @@ namespace MoovAPI {
     @body body: CreateTransfer,
   ):
     | MoovAPI.OkResponse<Transfer | AsyncTransfer>
-    | AsyncCreateTransferResponse
+    | CreatedTransferSyncErrorResponse
     | CreateTransferTimeoutResponse
     | MoovAPI.BadRequestResponse
     | MoovAPI.NotFoundResponse

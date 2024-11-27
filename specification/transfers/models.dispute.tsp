@@ -1,7 +1,7 @@
 namespace MoovAPI;
 
 @doc("Details of a card dispute.")
-model CardTransferDispute {
+model CardAcquiringDispute {
   @format("uuid")
   disputeID: string;
 

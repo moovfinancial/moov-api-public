@@ -1,18 +1,18 @@
 namespace MoovAPI;
 
 @doc("ACH specific details about the transaction.")
-model AchTransactionDetails {
-  status: AchTransactionStatus;
+model ACHTransactionDetails {
+  status: ACHTransactionStatus;
 
   @example("124782618117")
   @maxLength(15)
   traceNumber: string;
 
-  `return`?: AchException;
-  correction?: AchException;
-  companyEntryDescription?: AchCompanyEntryDescription;
-  originatingCompanyName?: AchOriginatingCompanyName;
-  secCode?: SecCode;
+  `return`?: ACHException;
+  correction?: ACHException;
+  companyEntryDescription?: ACHCompanyEntryDescription;
+  originatingCompanyName?: ACHOriginatingCompanyName;
+  secCode?: SECCode;
   initiatedOn?: utcDateTime;
   originatedOn?: utcDateTime;
   correctedOn?: utcDateTime;
@@ -21,57 +21,57 @@ model AchTransactionDetails {
   debitHoldPeriod?: DebitHoldPeriod;
 }
 
-model AchException {
+model ACHException {
   code?: string;
   reason?: string;
   description?: string;
 }
 
 model CreateTransferSourceACH {
-  companyEntryDescription?: AchCompanyEntryDescription;
-  originatingCompanyName?: AchOriginatingCompanyName;
+  companyEntryDescription?: ACHCompanyEntryDescription;
+  originatingCompanyName?: ACHOriginatingCompanyName;
   debitHoldPeriod?: DebitHoldPeriod;
-  secCode?: SecCode;
+  secCode?: SECCode;
 }
 
 model CreateTransferDestinationACH {
-  companyEntryDescription?: AchCompanyEntryDescription;
-  originatingCompanyName?: AchOriginatingCompanyName;
+  companyEntryDescription?: ACHCompanyEntryDescription;
+  originatingCompanyName?: ACHOriginatingCompanyName;
 }
 
 @doc("An optional override of your default ACH hold period in banking days. The hold period must be longer than or equal to your default setting.")
-@example(DebitHoldPeriod.TwoDay)
+@example(DebitHoldPeriod.twoDays)
 enum DebitHoldPeriod {
-  NoHold: "no-hold",
-  OneDay: "1-day",
-  TwoDay: "2-days",
+  noHold: "no-hold",
+  oneDay: "1-day",
+  twoDays: "2-days",
 }
 
 @doc("Code used to identify the ACH authorization method.")
-enum SecCode {
-  Web: "WEB",
-  PPD: "PPD",
-  CCD: "CCD",
-  TEL: "TEL",
+enum SECCode {
+  WEB,
+  PPD,
+  CCD,
+  TEL,
 }
 
 @doc("Status of a transaction within the ACH lifecycle.")
-enum AchTransactionStatus {
-  Initiated: "initiated",
-  Originated: "originated",
-  Corrected: "corrected",
-  Returned: "returned",
-  Completed: "completed",
+enum ACHTransactionStatus {
+  initiated,
+  originated,
+  corrected,
+  returned,
+  completed,
 }
 
 @doc("An optional override of the default NACHA company entry description for a transfer.")
 @example("Gym dues")
 @minLength(4)
 @maxLength(10)
-scalar AchCompanyEntryDescription extends string;
+scalar ACHCompanyEntryDescription extends string;
 
 @doc("An optional override of the default NACHA company name for a transfer.")
 @example("Whole Body Fit")
 @minLength(4)
 @maxLength(16)
-scalar AchOriginatingCompanyName extends string;
+scalar ACHOriginatingCompanyName extends string;

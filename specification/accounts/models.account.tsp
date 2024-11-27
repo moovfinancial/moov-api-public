@@ -89,20 +89,20 @@ model Account {
 }
 
 @doc("The operating mode for an account.")
-@example(Mode.Production)
+@example(Mode.production)
 enum Mode {
   @doc("Sandbox mode is used to develop and test API integrations without actually moving money.")
-  Sandbox: "sandbox",
+  sandbox,
 
   @doc("Production mode is used for real money movement in a production environment.")
-  Production: "production",
+  production,
 }
 
 @doc("The type of entity represented by this account.")
-@example(AccountType.Business)
+@example(AccountType.business)
 enum AccountType {
-  Individual: "individual",
-  Business: "business",
+  individual,
+  business,
 }
 
 model TermsOfServiceError {
@@ -267,7 +267,7 @@ model AccountsQuery {
       be searched. For example, if `type=business` and `name=moov`, the search will attempt to find matches against
       the display name and Business Profile name fields (`legalBusinessName`, and `doingBusinessAs`).
     """)
-  @example(AccountType.Business)
+  @example(AccountType.business)
   @query
   type?: AccountType;
 
@@ -290,14 +290,14 @@ model AccountsQuery {
   @doc("""
       Filter connected accounts by the capability.
     """)
-  @example(CapabilityID.Transfers)
+  @example(CapabilityID.transfers)
   @query
   capability?: CapabilityID;
 
   @doc("""
       Filter connected accounts by the capability.
     """)
-  @example(CapabilityStatus.Enabled)
+  @example(CapabilityStatus.enabled)
   @query
   capabilityStatus?: CapabilityStatus;
 }

@@ -84,8 +84,8 @@ model BankAccount {
 
 @doc("Reason for, and details related to, an `errored` or `verificationFailed` bank account status.")
 model BankAccountException {
-  achReturnCode: AchReturnCode;
-  rtpRejectionCode: RtpRejectionCode;
+  achReturnCode: ACHReturnCode;
+  rtpRejectionCode: RTPRejectionCode;
 
   @doc("Details related to an `errored` or `verificationFailed` bank account status.")
   description: string;
@@ -155,7 +155,7 @@ enum BankAccountStatusReason {
   - R38: Stop Payment on Source Document (Adjustment Entry)
   - R39: Improper Source Document
   """)
-enum AchReturnCode {
+enum ACHReturnCode {
   R02: "R02",
   R03: "R03",
   R04: "R04",
@@ -189,7 +189,7 @@ enum AchReturnCode {
   - AG03: Transaction Type Not Supported
   - MD07: Customer Deceased
   """)
-enum RtpRejectionCode {
+enum RTPRejectionCode {
   AC03: "AC03",
   AC04: "AC04",
   AC06: "AC06",

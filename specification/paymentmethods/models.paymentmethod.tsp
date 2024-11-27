@@ -1,3 +1,5 @@
+import "../common/models.id.tsp";
+
 namespace MoovAPI;
 
 const exampleBasicPaymentMethod = #{

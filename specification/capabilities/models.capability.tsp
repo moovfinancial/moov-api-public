@@ -18,17 +18,17 @@ model Capability {
 
 @doc("Moov account capabilities.")
 enum CapabilityID {
-  Transfers: "transfers",
-  SendFunds: "send-funds",
-  CollectFunds: "collect-funds",
-  Wallet: "wallet",
-  CardIssuing: "card-issuing",
+  transfers: "transfers",
+  sendFunds: "send-funds",
+  collectFunds: "collect-funds",
+  wallet: "wallet",
+  cardIssuing: "card-issuing",
 }
 
 @doc("The status of the capability requested for an account.")
 enum CapabilityStatus {
-  Enabled: "enabled",
-  Disabled: "disabled",
-  Pending: "pending",
-  InRreview: "in-review",
+  enabled: "enabled",
+  disabled: "disabled",
+  pending: "pending",
+  inReview: "in-review",
 }

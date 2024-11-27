@@ -1161,7 +1161,8 @@ paths:
           description: The request was well-formed, but the contents failed validation. Check the request for missing or invalid fields.
           content:
             application/json:
-              schema: {}
+              schema:
+                type: object
         '429':
           description: Request was refused due to rate limiting.
       tags:
@@ -1557,6 +1558,27 @@ components:
         $ref: '#/components/schemas/TransferStatus'
       explode: false
   schemas:
+    ACHCompanyEntryDescription:
+      type: string
+      example: Gym dues
+      minLength: 4
+      maxLength: 10
+      description: An optional override of the default NACHA company entry description for a transfer.
+    ACHException:
+      type: object
+      properties:
+        code:
+          type: string
+        reason:
+          type: string
+        description:
+          type: string
+    ACHOriginatingCompanyName:
+      type: string
+      example: Whole Body Fit
+      minLength: 4
+      maxLength: 16
+      description: An optional override of the default NACHA company name for a transfer.
     ACHPaymentSettings:
       type: object
       required:
@@ -1569,6 +1591,101 @@ components:
           maxLength: 16
           pattern: '[a-zA-Z0-9.!*-+_\- ]+'
           description: The description that shows up on ACH transactions. This will default to the account's display name on account creation.
+    ACHReturnCode:
+      type: string
+      enum:
+        - R02
+        - R03
+        - R04
+        - R05
+        - R07
+        - R08
+        - R10
+        - R11
+        - R12
+        - R13
+        - R14
+        - R15
+        - R16
+        - R17
+        - R20
+        - R23
+        - R29
+        - R34
+        - R38
+        - R39
+      description: |-
+        The return code of an ACH transaction that caused the bank account status to change.
+
+        - R02: Account Closed
+        - R03: No Account/Unable to Locate Account
+        - R04: Invalid Account Number
+        - R05: Improper Debit to Consumer Account
+        - R07: Authorization Revoked by Customer
+        - R08: Payment Stopped
+        - R10: Customer Advises Originator is Not Known or Authorized to Receiver
+        - R11: Customer Advises Entry Not in Accordance with the Terms of the Authorization
+        - R12: Branch Sold to Another DFI
+        - R13: RDFI not qualified to participate
+        - R14: Representative payee deceased or unable to continue in that capacity
+        - R15: Beneficiary or bank account holder
+        - R16: Bank account frozen
+        - R17: Entry with Invalid Account Number Initiated Under Questionable Circumstances
+        - R20: Non-payment bank account
+        - R23: Credit entry refused by receiver
+        - R29: Corporate customer advises not authorized
+        - R34: Limited participation RDFI
+        - R38: Stop Payment on Source Document (Adjustment Entry)
+        - R39: Improper Source Document
+    ACHTransactionDetails:
+      type: object
+      required:
+        - status
+        - traceNumber
+      properties:
+        status:
+          $ref: '#/components/schemas/ACHTransactionStatus'
+        traceNumber:
+          type: string
+          example: '124782618117'
+          maxLength: 15
+        return:
+          $ref: '#/components/schemas/ACHException'
+        correction:
+          $ref: '#/components/schemas/ACHException'
+        companyEntryDescription:
+          $ref: '#/components/schemas/ACHCompanyEntryDescription'
+        originatingCompanyName:
+          $ref: '#/components/schemas/ACHOriginatingCompanyName'
+        secCode:
+          $ref: '#/components/schemas/SECCode'
+        initiatedOn:
+          type: string
+          format: date-time
+        originatedOn:
+          type: string
+          format: date-time
+        correctedOn:
+          type: string
+          format: date-time
+        returnedOn:
+          type: string
+          format: date-time
+        completedOn:
+          type: string
+          format: date-time
+        debitHoldPeriod:
+          $ref: '#/components/schemas/DebitHoldPeriod'
+      description: ACH specific details about the transaction.
+    ACHTransactionStatus:
+      type: string
+      enum:
+        - initiated
+        - originated
+        - corrected
+        - returned
+        - completed
+      description: Status of a transaction within the ACH lifecycle.
     AccessToken:
       type: object
       required:
@@ -1708,122 +1825,6 @@ components:
         - failed
       description: Possible states an account verification can be in.
       deprecated: true
-    AchCompanyEntryDescription:
-      type: string
-      example: Gym dues
-      minLength: 4
-      maxLength: 10
-      description: An optional override of the default NACHA company entry description for a transfer.
-    AchException:
-      type: object
-      properties:
-        code:
-          type: string
-        reason:
-          type: string
-        description:
-          type: string
-    AchOriginatingCompanyName:
-      type: string
-      example: Whole Body Fit
-      minLength: 4
-      maxLength: 16
-      description: An optional override of the default NACHA company name for a transfer.
-    AchReturnCode:
-      type: string
-      enum:
-        - R02
-        - R03
-        - R04
-        - R05
-        - R07
-        - R08
-        - R10
-        - R11
-        - R12
-        - R13
-        - R14
-        - R15
-        - R16
-        - R17
-        - R20
-        - R23
-        - R29
-        - R34
-        - R38
-        - R39
-      description: |-
-        The return code of an ACH transaction that caused the bank account status to change.
-
-        - R02: Account Closed
-        - R03: No Account/Unable to Locate Account
-        - R04: Invalid Account Number
-        - R05: Improper Debit to Consumer Account
-        - R07: Authorization Revoked by Customer
-        - R08: Payment Stopped
-        - R10: Customer Advises Originator is Not Known or Authorized to Receiver
-        - R11: Customer Advises Entry Not in Accordance with the Terms of the Authorization
-        - R12: Branch Sold to Another DFI
-        - R13: RDFI not qualified to participate
-        - R14: Representative payee deceased or unable to continue in that capacity
-        - R15: Beneficiary or bank account holder
-        - R16: Bank account frozen
-        - R17: Entry with Invalid Account Number Initiated Under Questionable Circumstances
-        - R20: Non-payment bank account
-        - R23: Credit entry refused by receiver
-        - R29: Corporate customer advises not authorized
-        - R34: Limited participation RDFI
-        - R38: Stop Payment on Source Document (Adjustment Entry)
-        - R39: Improper Source Document
-    AchTransactionDetails:
-      type: object
-      required:
-        - status
-        - traceNumber
-      properties:
-        status:
-          $ref: '#/components/schemas/AchTransactionStatus'
-        traceNumber:
-          type: string
-          example: '124782618117'
-          maxLength: 15
-        return:
-          $ref: '#/components/schemas/AchException'
-        correction:
-          $ref: '#/components/schemas/AchException'
-        companyEntryDescription:
-          $ref: '#/components/schemas/AchCompanyEntryDescription'
-        originatingCompanyName:
-          $ref: '#/components/schemas/AchOriginatingCompanyName'
-        secCode:
-          $ref: '#/components/schemas/SecCode'
-        initiatedOn:
-          type: string
-          format: date-time
-        originatedOn:
-          type: string
-          format: date-time
-        correctedOn:
-          type: string
-          format: date-time
-        returnedOn:
-          type: string
-          format: date-time
-        completedOn:
-          type: string
-          format: date-time
-        debitHoldPeriod:
-          $ref: '#/components/schemas/DebitHoldPeriod'
-      description: ACH specific details about the transaction.
-    AchTransactionStatus:
-      type: string
-      enum:
-        - initiated
-        - originated
-        - corrected
-        - returned
-        - completed
-      description: Status of a transaction within the ACH lifecycle.
     Address:
       type: object
       required:
@@ -1990,9 +1991,9 @@ components:
         - description
       properties:
         achReturnCode:
-          $ref: '#/components/schemas/AchReturnCode'
+          $ref: '#/components/schemas/ACHReturnCode'
         rtpRejectionCode:
-          $ref: '#/components/schemas/RtpRejectionCode'
+          $ref: '#/components/schemas/RTPRejectionCode'
         description:
           type: string
           description: Details related to an `errored` or `verificationFailed` bank account status.
@@ -2418,6 +2419,48 @@ components:
         updatedOn: 2024-05-06T12:20:38.184Z
         updateType: number-update
       description: The results of the most recent card update request.
+    CardAcquiringDispute:
+      type: object
+      required:
+        - disputeID
+        - createdOn
+        - amount
+      properties:
+        disputeID:
+          type: string
+          format: uuid
+        createdOn:
+          type: string
+          format: date-time
+        amount:
+          $ref: '#/components/schemas/Amount'
+      description: Details of a card dispute.
+    CardAcquiringRefund:
+      type: object
+      required:
+        - refundID
+        - createdOn
+        - updatedOn
+        - status
+        - amount
+      properties:
+        refundID:
+          type: string
+          format: uuid
+          description: Identifier for the refund.
+        createdOn:
+          type: string
+          format: date-time
+        updatedOn:
+          type: string
+          format: date-time
+        status:
+          $ref: '#/components/schemas/RefundStatus'
+        amount:
+          $ref: '#/components/schemas/Amount'
+        cardDetails:
+          $ref: '#/components/schemas/RefundCardDetails'
+      description: Details of a card refund.
     CardAddress:
       type: object
       required:
@@ -2607,48 +2650,6 @@ components:
         - failed
         - completed
       description: Status of a transaction within the card payment lifecycle.
-    CardTransferDispute:
-      type: object
-      required:
-        - disputeID
-        - createdOn
-        - amount
-      properties:
-        disputeID:
-          type: string
-          format: uuid
-        createdOn:
-          type: string
-          format: date-time
-        amount:
-          $ref: '#/components/schemas/Amount'
-      description: Details of a card dispute.
-    CardTransferRefund:
-      type: object
-      required:
-        - refundID
-        - createdOn
-        - updatedOn
-        - status
-        - amount
-      properties:
-        refundID:
-          type: string
-          format: uuid
-          description: Identifier for the refund.
-        createdOn:
-          type: string
-          format: date-time
-        updatedOn:
-          type: string
-          format: date-time
-        status:
-          $ref: '#/components/schemas/RefundStatus'
-        amount:
-          $ref: '#/components/schemas/Amount'
-        cardDetails:
-          $ref: '#/components/schemas/RefundCardDetails'
-      description: Details of a card refund.
     CardType:
       type: string
       enum:
@@ -2968,7 +2969,7 @@ components:
         amount:
           $ref: '#/components/schemas/Amount'
         facilitatorFee:
-          $ref: '#/components/schemas/TransferFacilitatorFee'
+          $ref: '#/components/schemas/FacilitatorFee'
         description:
           type: string
           example: Pay Instructor for May 15 Class
@@ -2995,9 +2996,9 @@ components:
       type: object
       properties:
         companyEntryDescription:
-          $ref: '#/components/schemas/AchCompanyEntryDescription'
+          $ref: '#/components/schemas/ACHCompanyEntryDescription'
         originatingCompanyName:
-          $ref: '#/components/schemas/AchOriginatingCompanyName'
+          $ref: '#/components/schemas/ACHOriginatingCompanyName'
     CreateTransferDestinationCard:
       type: object
       properties:
@@ -3024,13 +3025,13 @@ components:
       type: object
       properties:
         companyEntryDescription:
-          $ref: '#/components/schemas/AchCompanyEntryDescription'
+          $ref: '#/components/schemas/ACHCompanyEntryDescription'
         originatingCompanyName:
-          $ref: '#/components/schemas/AchOriginatingCompanyName'
+          $ref: '#/components/schemas/ACHOriginatingCompanyName'
         debitHoldPeriod:
           $ref: '#/components/schemas/DebitHoldPeriod'
         secCode:
-          $ref: '#/components/schemas/SecCode'
+          $ref: '#/components/schemas/SECCode'
     CreateTransferSourceCard:
       type: object
       properties:
@@ -3102,11 +3103,11 @@ components:
     DocumentType:
       type: string
       enum:
-        - DriversLicense
-        - Passport
-        - UtilityBill
-        - BankStatement
-      example: BankStatement
+        - driversLicense
+        - passport
+        - utilityBill
+        - bankStatement
+      example: bankStatement
       description: Types of documents that can be uploaded.
     DomesticPullFromCard:
       type: string
@@ -3163,6 +3164,33 @@ components:
         This is the output of using compact serialization of a JWE token that wraps an AES key and uses the public key returned from /end-to-end-keys.
         Examples of how to create this token can be found on our [GitHub](https://github.com/moovfinancial/moov-go/blob/main/examples/e2ee/e2ee_test.go).
         Body for a JWE token following [RFC](https://datatracker.ietf.org/doc/html/rfc7516).
+    FacilitatorFee:
+      type: object
+      properties:
+        total:
+          type: integer
+          format: int64
+          description: Total facilitator fee in cents. Only either `total` or `totalDecimal` can be set.
+        totalDecimal:
+          type: string
+          example: '12.987654321'
+          pattern: ^\d+\.\d{1,9}$
+          description: |-
+            Same as `total`, but a decimal-formatted numerical string that represents up to 9 decimal place precision. 
+
+            Only either `total` or `totalDecimal` can be set. Set this field if you expect the fee to be in fractions of a cent.
+        markup:
+          type: integer
+          format: int64
+          description: Markup facilitator fee in cents. Only either `markup` or `markupDecimal` can be set.
+        markupDecimal:
+          type: string
+          example: '0.987654321'
+          pattern: ^\d+\.\d{1,9}$
+          description: |-
+            Same as `markup`, but a decimal-formatted numerical string that represents up to 9 decimal place precision. 
+            Only either `markup` or `markupDecimal` can be set. Set this field if you expect the fee to be in fractions of a cent.
+      description: Total or markup fee.
     GenericError:
       type: object
       required:
@@ -3560,6 +3588,73 @@ components:
         business:
           $ref: '#/components/schemas/BusinessProfile'
       description: Describes a Moov account profile. A profile will have a business or an individual, depending on the account's type.
+    RTPFailureCode:
+      type: string
+      enum:
+        - processing-error
+        - invalid-account
+        - account-closed
+        - account-blocked
+        - invalid-field
+        - transaction-not-supported
+        - limit-exceeded
+        - invalid-amount
+        - customer-deceased
+        - other
+      description: Status codes for RTP failures.
+    RTPRejectionCode:
+      type: string
+      enum:
+        - AC03
+        - AC04
+        - AC06
+        - AC14
+        - AG01
+        - AG03
+        - MD07
+      description: |-
+        The rejection code of an RTP transaction that caused the bank account status to change.
+
+        - AC03: Account Invalid
+        - AC04: Account Closed
+        - AC06: Account Blocked
+        - AC14: Creditor Account Type Invalid
+        - AG01: Transactions Forbidden On Account
+        - AG03: Transaction Type Not Supported
+        - MD07: Customer Deceased
+    RTPTransactionDetails:
+      type: object
+      required:
+        - status
+      properties:
+        status:
+          $ref: '#/components/schemas/RTPTransactionStatus'
+        networkResponseCode:
+          type: string
+          description: Response code returned by network on failure.
+        failureCode:
+          $ref: '#/components/schemas/RTPFailureCode'
+        initiatedOn:
+          type: string
+          format: date-time
+        completedOn:
+          type: string
+          format: date-time
+        failedOn:
+          type: string
+          format: date-time
+        acceptedWithoutPostingOn:
+          type: string
+          format: date-time
+      description: RTP specific details about the transaction.
+    RTPTransactionStatus:
+      type: string
+      enum:
+        - initiated
+        - completed
+        - failed
+        - accepted-without-posting
+      description: Status of a transaction within the RTP lifecycle.
     RefundCardDetails:
       type: object
       required:
@@ -3751,74 +3846,7 @@ components:
         - representative.{rep-uuid}.ownership
         - document.{doc-uuid}
       description: The unique ID of what the requirement is asking to be filled out.
-    RtpFailureCode:
-      type: string
-      enum:
-        - processing-error
-        - invalid-account
-        - account-closed
-        - account-blocked
-        - invalid-field
-        - transaction-not-supported
-        - limit-exceeded
-        - invalid-amount
-        - customer-deceased
-        - other
-      description: Status codes for RTP failures.
-    RtpRejectionCode:
-      type: string
-      enum:
-        - AC03
-        - AC04
-        - AC06
-        - AC14
-        - AG01
-        - AG03
-        - MD07
-      description: |-
-        The rejection code of an RTP transaction that caused the bank account status to change.
-
-        - AC03: Account Invalid
-        - AC04: Account Closed
-        - AC06: Account Blocked
-        - AC14: Creditor Account Type Invalid
-        - AG01: Transactions Forbidden On Account
-        - AG03: Transaction Type Not Supported
-        - MD07: Customer Deceased
-    RtpTransactionDetails:
-      type: object
-      required:
-        - status
-      properties:
-        status:
-          $ref: '#/components/schemas/RtpTransactionStatus'
-        networkResponseCode:
-          type: string
-          description: Response code returned by network on failure.
-        failureCode:
-          $ref: '#/components/schemas/RtpFailureCode'
-        initiatedOn:
-          type: string
-          format: date-time
-        completedOn:
-          type: string
-          format: date-time
-        failedOn:
-          type: string
-          format: date-time
-        acceptedWithoutPostingOn:
-          type: string
-          format: date-time
-      description: RTP specific details about the transaction.
-    RtpTransactionStatus:
-      type: string
-      enum:
-        - initiated
-        - completed
-        - failed
-        - accepted-without-posting
-      description: Status of a transaction within the RTP lifecycle.
-    SecCode:
+    SECCode:
       type: string
       enum:
         - WEB
@@ -3900,7 +3928,11 @@ components:
         - opaque
         - jwt
       example: opaque
-      description: Type of token returned.
+      description: |-
+        Type of token returned.
+
+          - opaque: A token following a proprietary format.
+          - jwt: A JSON Web Token (JWT), a self-contained token that contains claims about the user and is cryptographically signed.
     TransactionSource:
       type: string
       enum:
@@ -3949,7 +3981,7 @@ components:
           additionalProperties:
             type: string
         facilitatorFee:
-          $ref: '#/components/schemas/TransferFacilitatorFee'
+          $ref: '#/components/schemas/FacilitatorFee'
         moovFee:
           type: integer
           format: int64
@@ -3967,13 +3999,13 @@ components:
         refunds:
           type: array
           items:
-            $ref: '#/components/schemas/CardTransferRefund'
+            $ref: '#/components/schemas/CardAcquiringRefund'
         disputedAmount:
           $ref: '#/components/schemas/Amount'
         disputes:
           type: array
           items:
-            $ref: '#/components/schemas/CardTransferDispute'
+            $ref: '#/components/schemas/CardAcquiringDispute'
         sweepID:
           type: string
         scheduleID:
@@ -4012,39 +4044,12 @@ components:
         wallet: {}
         card: {}
         achDetails:
-          $ref: '#/components/schemas/AchTransactionDetails'
+          $ref: '#/components/schemas/ACHTransactionDetails'
         applePay: {}
         cardDetails:
           $ref: '#/components/schemas/CardTransactionDetails'
         rtpDetails:
-          $ref: '#/components/schemas/RtpTransactionDetails'
-    TransferFacilitatorFee:
-      type: object
-      properties:
-        total:
-          type: integer
-          format: int64
-          description: Total facilitator fee in cents. Only either `total` or `totalDecimal` can be set.
-        totalDecimal:
-          type: string
-          example: '12.987654321'
-          pattern: ^\d+\.\d{1,9}$
-          description: |-
-            Same as `total`, but a decimal-formatted numerical string that represents up to 9 decimal place precision. 
-
-            Only either `total` or `totalDecimal` can be set. Set this field if you expect the fee to be in fractions of a cent.
-        markup:
-          type: integer
-          format: int64
-          description: Markup facilitator fee in cents. Only either `markup` or `markupDecimal` can be set.
-        markupDecimal:
-          type: string
-          example: '0.987654321'
-          pattern: ^\d+\.\d{1,9}$
-          description: |-
-            Same as `markup`, but a decimal-formatted numerical string that represents up to 9 decimal place precision. 
-            Only either `markup` or `markupDecimal` can be set. Set this field if you expect the fee to be in fractions of a cent.
-      description: Total or markup fee.
+          $ref: '#/components/schemas/RTPTransactionDetails'
     TransferFailureReason:
       type: string
       enum:
@@ -4075,7 +4080,7 @@ components:
         cardDetails:
           $ref: '#/components/schemas/CardTransactionDetails'
         achDetails:
-          $ref: '#/components/schemas/AchTransactionDetails'
+          $ref: '#/components/schemas/ACHTransactionDetails'
     TransferStatus:
       type: string
       enum:
