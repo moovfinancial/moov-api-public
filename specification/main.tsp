@@ -6,6 +6,7 @@ import "@moovfinancial/tsp-lib";
 // import each subdirectory's main
 import "./auth";
 import "./accounts";
+import "./bankaccounts";
 import "./capabilities";
 import "./cards";
 import "./end2end";

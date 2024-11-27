@@ -53,8 +53,12 @@ namespace MoovAPI {
   ): PostResponses<Card, LinkCardError>;
 
   @doc("""
-    List all the active cards associated with a Moov account. Read our [accept card payments guide](https://docs.moov.io/guides/sources/cards/accept-card-payments/) to learn more.
-    <br><br> To use this endpoint from the browser, you'll need to specify the `/accounts/{accountID}/cards.read` scope when generating a [token](https://docs.moov.io/api/authentication/access-tokens/).
+    List all the active cards associated with a Moov account. 
+    
+    Read our [accept card payments guide](https://docs.moov.io/guides/sources/cards/accept-card-payments/) to learn more.
+    
+    To use this endpoint from the browser, you'll need to specify the `/accounts/{accountID}/cards.read` scope when generating 
+    a [token](https://docs.moov.io/api/authentication/access-tokens/).
     """)
   @tag("Cards")
   @route("/accounts/{accountID}/cards")
@@ -69,8 +73,12 @@ namespace MoovAPI {
   ): ListResponses<Card>;
 
   @doc("""
-    Fetch a specific card associated with a Moov account. Read our [accept card payments guide](https://docs.moov.io/guides/sources/cards/accept-card-payments/) to learn more.
-    <br><br> To use this endpoint from the browser, you'll need to specify the `/accounts/{accountID}/cards.read` scope when generating a [token](https://docs.moov.io/api/authentication/access-tokens/).
+    Fetch a specific card associated with a Moov account. 
+    
+    Read our [accept card payments guide](https://docs.moov.io/guides/sources/cards/accept-card-payments/) to learn more.
+    
+    To use this endpoint from the browser, you'll need to specify the `/accounts/{accountID}/cards.read` scope when generating 
+    a [token](https://docs.moov.io/api/authentication/access-tokens/).
     """)
   @tag("Cards")
   @route("/accounts/{accountID}/cards/{cardID}")
@@ -88,12 +96,19 @@ namespace MoovAPI {
   ): GetResponses<Card>;
 
   @doc("""
-    Update a linked card and/or resubmit it for verification. If a value is provided for CVV, 
-    a new verification ($0 authorization) will be submitted for the card. Updating the expiration date or 
-    address will update the information stored on file for the card but will not be verified. <br> 
-    Read our [accept card payments guide](https://docs.moov.io/guides/sources/cards/accept-card-payments/#reverify-a-card) to learn more.
+    Update a linked card and/or resubmit it for verification. 
+    
+    If a value is provided for CVV, a new verification ($0 authorization) will be submitted for the card. Updating the expiration 
+    date or 
+    address will update the information stored on file for the card but will not be verified.
+    
+    Read our [accept card payments guide](https://docs.moov.io/guides/sources/cards/accept-card-payments/#reverify-a-card) to learn 
+    more.
+    
     Only use this endpoint if you have provided Moov with a copy of your PCI attestation of compliance. 
-    <br><br> To use this endpoint from the browser, you'll need to specify the `/accounts/{accountID}/cards.write` scope when generating a [token](https://docs.moov.io/api/authentication/access-tokens/).
+    
+    To use this endpoint from the browser, you'll need to specify the `/accounts/{accountID}/cards.write` scope when generating 
+    a [token](https://docs.moov.io/api/authentication/access-tokens/).
     """)
   @tag("Cards")
   @route("/accounts/{accountID}/cards/{cardID}")
@@ -114,7 +129,9 @@ namespace MoovAPI {
 
   @doc("""
     Disables a card associated with a Moov account.
-    <br><br> To use this endpoint from the browser, you'll need to specify the `/accounts/{accountID}/cards.write` scope when generating a [token](https://docs.moov.io/api/authentication/access-tokens/).
+    
+    To use this endpoint from the browser, you'll need to specify the `/accounts/{accountID}/cards.write` scope when generating 
+    a [token](https://docs.moov.io/api/authentication/access-tokens/).
     """)
   @tag("Cards")
   @route("/accounts/{accountID}/cards/{cardID}")

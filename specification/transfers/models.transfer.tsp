@@ -7,6 +7,7 @@ import "./models.card.tsp";
 import "./models.dispute.tsp";
 import "./models.refund.tsp";
 import "./models.rtp.tsp";
+import "../bankaccounts/models.bankaccount.tsp";
 import "../common/models.parameter.tsp";
 
 using TypeSpec.Http;
@@ -63,7 +64,7 @@ model TransferSource {
   paymentMethodID: string;
   paymentMethodType: string;
   account: TransferAccount;
-  bankAccount?: unknown; // bankaccounts.BankAccount
+  bankAccount?: BankAccount;
   wallet?: unknown; // paymentmethods.WalletResponse
   card?: unknown; // cards.Card
   applePay?: unknown; // paymentmethods.ApplePayResponse
@@ -81,7 +82,7 @@ model TransferDestination {
   paymentMethodID: string;
   paymentMethodType: string;
   account: TransferAccount;
-  bankAccount?: unknown; // bankaccounts.BankAccount
+  bankAccount?: BankAccount;
   wallet?: unknown; // paymentmethods.WalletResponse
   card?: unknown; // cards.Card
   achDetails?: AchTransactionDetails;

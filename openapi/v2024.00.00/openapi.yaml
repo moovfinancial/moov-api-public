@@ -17,6 +17,7 @@ info:
 tags:
   - name: Authentication
   - name: Accounts
+  - name: Bank accounts
   - name: Capabilities
   - name: Cards
   - name: Transfers
@@ -172,6 +173,537 @@ paths:
         - BasicAuth: []
         - OAuth2Auth:
             - /accounts/{accountID}/profile.read
+  /accounts/{accountID}/bank-accounts:
+    post:
+      operationId: linkBankAccount
+      description: |-
+        Link a bank account to an existing Moov account. Read our [bank accounts guide](https://docs.moov.io/guides/sources/bank-accounts/) to learn more.
+
+        To use this endpoint from the browser, you'll need to specify the `/accounts/{accountID}/bank-accounts.write` scope when generating a [token](https://docs.moov.io/api/authentication/access-tokens/).
+
+        It is strongly recommended that callers include the `X-Wait-For` header, set to `payment-method`, if the newly linked
+        bank-account is intended to be used right away. If this header is not included, the caller will need to poll the [List Payment
+        Methods](https://docs.moov.io/api/sources/payment-methods/list/)
+        endpoint to wait for the new payment methods to be available for use.
+      parameters:
+        - $ref: '#/components/parameters/CommonHeaders'
+        - name: x-wait-for
+          in: header
+          required: false
+          description: |-
+            Optional header to wait for certain events, such as the creation of a payment method, to occur before returning a response.
+
+            When this header is set to `payment-method`, the response will include any payment methods that were created for the newly
+            linked card in the `paymentMethods` field. Otherwise, the `paymentMethods` field will be omitted from the response.
+          schema:
+            $ref: '#/components/schemas/BankAccountWaitFor'
+        - name: accountID
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: The request completed successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BankAccount'
+        '400':
+          description: The server could not understand the request due to invalid syntax.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+        '401':
+          description: The request contained missing or expired authentication.
+        '403':
+          description: The user is not authorized to make the request.
+        '404':
+          description: The requested resource was not found.
+        '409':
+          description: The request conflicted with the current state of the target resource.
+          content:
+            application/json:
+              schema:
+                type: string
+        '422':
+          description: The request was well-formed, but the contents failed validation. Check the request for missing or invalid fields.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BankAccountValidationError'
+        '429':
+          description: Request was refused due to rate limiting.
+      tags:
+        - Bank accounts
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LinkBankAccount'
+      security:
+        - BasicAuth: []
+        - OAuth2Auth:
+            - /accounts/{accountID}/bank-accounts.write
+    get:
+      operationId: listBankAccounts
+      description: |-
+        List all the bank accounts associated with a particular Moov account. 
+
+        Read our [bank accounts guide](https://docs.moov.io/guides/sources/bank-accounts/) to learn more. To use this endpoint 
+        from the browser, you'll need to specify the `/accounts/{accountID}/bank-accounts.read` scope when generating a 
+        [token](https://docs.moov.io/api/authentication/access-tokens/).
+      parameters:
+        - $ref: '#/components/parameters/CommonHeaders'
+        - name: accountID
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: The request completed successfully.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BankAccount'
+        '401':
+          description: The request contained missing or expired authentication.
+        '403':
+          description: The user is not authorized to make the request.
+        '429':
+          description: Request was refused due to rate limiting.
+      tags:
+        - Bank accounts
+      security:
+        - BasicAuth: []
+        - OAuth2Auth:
+            - /accounts/{accountID}/bank-accounts.read
+  /accounts/{accountID}/bank-accounts/{bankAccountID}:
+    get:
+      operationId: getBankAccount
+      description: |-
+        Retrieve bank account details (i.e. routing number or account type) associated with a specific Moov account. 
+
+        Read our [bank accounts guide](https://docs.moov.io/guides/sources/bank-accounts/) to learn more. To use this 
+        endpoint from the browser, you'll need to specify the `/accounts/{accountID}/bank-accounts.read` scope when 
+        generating a [token](https://docs.moov.io/api/authentication/access-tokens/).
+      parameters:
+        - $ref: '#/components/parameters/CommonHeaders'
+        - name: accountID
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: bankAccountID
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: The request completed successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BankAccount'
+        '401':
+          description: The request contained missing or expired authentication.
+        '403':
+          description: The user is not authorized to make the request.
+        '404':
+          description: The requested resource was not found.
+        '429':
+          description: Request was refused due to rate limiting.
+      tags:
+        - Bank accounts
+      security:
+        - BasicAuth: []
+        - OAuth2Auth:
+            - /accounts/{accountID}/bank-accounts.read
+    delete:
+      operationId: disableBankAccount
+      description: |-
+        Discontinue using a specified bank account linked to a Moov account. 
+
+        To use this endpoint from the browser, you'll need to specify the `/accounts/{accountID}/bank-accounts.write` scope 
+        when generating a [token](https://docs.moov.io/api/authentication/access-tokens/).
+      parameters:
+        - $ref: '#/components/parameters/CommonHeaders'
+        - name: accountID
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: bankAccountID
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '204':
+          description: The request completed successfully, but there is no content to return.
+        '400':
+          description: The server could not understand the request due to invalid syntax.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+        '401':
+          description: The request contained missing or expired authentication.
+        '403':
+          description: The user is not authorized to make the request.
+        '404':
+          description: The requested resource was not found.
+        '409':
+          description: The request conflicted with the current state of the target resource.
+          content:
+            application/json:
+              schema:
+                type: string
+        '429':
+          description: Request was refused due to rate limiting.
+      tags:
+        - Bank accounts
+      security:
+        - BasicAuth: []
+        - OAuth2Auth:
+            - /accounts/{accountID}/bank-accounts.write
+  /accounts/{accountID}/bank-accounts/{bankAccountID}/micro-deposits:
+    post:
+      operationId: initiateMicroDeposits
+      description: |-
+        Micro-deposits help confirm bank account ownership, helping reduce fraud and the risk of unauthorized activity. Use this method to initiate the micro-deposit verification, sending two small credit transfers to the bank account you want to confirm.
+
+        If you request micro-deposits before 4:15PM ET, they will appear that same day. If you request micro-deposits any time after 4:15PM ET, they will appear the next banking day. When the two credits are initiated, Moov simultaneously initiates a debit to recoup the micro-deposits. 
+
+        `sandbox` - Micro-deposits initiated for a `sandbox` bank account will always be `$0.00` / `$0.00` and instantly verifiable once initiated.
+
+        You can simulate micro-deposit verification in test mode. See our [test mode](https://docs.moov.io/guides/get-started/test-mode/#micro-deposits) guide for more information.
+
+        To use this endpoint from the browser, you'll need to specify the `/accounts/{accountID}/bank-accounts.write` scope when generating a [token](https://docs.moov.io/api/authentication/access-tokens/).
+      parameters:
+        - $ref: '#/components/parameters/CommonHeaders'
+        - name: accountID
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: bankAccountID
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '204':
+          description: The request completed successfully, but there is no content to return.
+        '400':
+          description: The server could not understand the request due to invalid syntax.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+        '401':
+          description: The request contained missing or expired authentication.
+        '403':
+          description: The user is not authorized to make the request.
+        '404':
+          description: The requested resource was not found.
+        '409':
+          description: The request conflicted with the current state of the target resource.
+          content:
+            application/json:
+              schema:
+                type: string
+        '429':
+          description: Request was refused due to rate limiting.
+      tags:
+        - Bank accounts
+      security:
+        - BasicAuth: []
+        - OAuth2Auth:
+            - /accounts/{accountID}/bank-accounts.write
+    put:
+      operationId: completeMicroDeposits
+      description: |-
+        Complete the micro-deposit validation process by passing the amounts of the two transfers within three tries.
+
+        To use this endpoint from the browser, you'll need to specify the `/accounts/{accountID}/bank-accounts.write` scope when generating a 
+        [token](https://docs.moov.io/api/authentication/access-tokens/).
+      parameters:
+        - $ref: '#/components/parameters/CommonHeaders'
+        - name: accountID
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: bankAccountID
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: The request completed successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CompletedMicroDeposits'
+        '400':
+          description: The server could not understand the request due to invalid syntax.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+        '401':
+          description: The request contained missing or expired authentication.
+        '403':
+          description: The user is not authorized to make the request.
+        '404':
+          description: The requested resource was not found.
+        '409':
+          description: The request conflicted with the current state of the target resource.
+          content:
+            application/json:
+              schema:
+                type: string
+        '422':
+          description: The request was well-formed, but the contents failed validation. Check the request for missing or invalid fields.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MicroDepositValidationError'
+        '429':
+          description: Request was refused due to rate limiting.
+      tags:
+        - Bank accounts
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CompleteMicroDeposits'
+      security:
+        - BasicAuth: []
+        - OAuth2Auth:
+            - /accounts/{accountID}/bank-accounts.write
+  /accounts/{accountID}/bank-accounts/{bankAccountID}/verify:
+    get:
+      operationId: getBankAccountVerification
+      description: |-
+        Retrieve the current status and details of an instant verification, including whether the verification method was instant or same-day 
+        ACH. This helps track the verification process in real-time and provides details in case of exceptions.
+
+        The status will indicate the following:
+
+        - `new`: Verification initiated, credit pending to the payment network
+        - `sent-credit`: Credit sent, available for verification
+        - `failed`: Verification failed, description provided, user needs to add a new bank account
+        - `expired`: Verification expired after 14 days, initiate another verification
+        - `max-attempts-exceeded`: Five incorrect code attempts exhausted, initiate another verification
+
+        To use this endpoint from the browser, you'll need to specify the `/accounts/{accountID}/bank-accounts.read` scope when generating a 
+        [token](https://docs.moov.io/api/authentication/access-tokens/).
+      parameters:
+        - $ref: '#/components/parameters/CommonHeaders'
+        - name: accountID
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: bankAccountID
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: The request completed successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BankAccountVerification'
+        '401':
+          description: The request contained missing or expired authentication.
+        '403':
+          description: The user is not authorized to make the request.
+        '404':
+          description: The requested resource was not found.
+        '429':
+          description: Request was refused due to rate limiting.
+      tags:
+        - Bank accounts
+      security:
+        - BasicAuth: []
+        - OAuth2Auth:
+            - /accounts/{accountID}/bank-accounts.read
+    post:
+      operationId: initiateBankAccountVerification
+      description: |-
+        Instant micro-deposit verification offers a quick and efficient way to verify bank account ownership. 
+
+        Send a $0.01 credit with a unique verification code via RTP or same-day ACH, depending on the receiving bank’s capabilities. This
+        feature provides a faster alternative to traditional methods, allowing verification in a single session.
+
+        It is recommended to use the `X-Wait-For: rail-response` header to synchronously receive the outcome of the instant credit in the
+         response payload.
+
+        Possible verification methods:
+          - `instant`: Real-time verification credit sent via RTP
+          - `ach`: Verification credit sent via same-day ACH
+
+        Possible statuses:
+          - `new`: Verification initiated, credit pending
+          - `sent-credit`: Credit sent, available for verification in the external bank account
+          - `failed`: Verification failed due to credit rejection/return, details in `exceptionDetails`
+
+        To use this endpoint from the browser, you'll need to specify the `/accounts/{accountID}/bank-accounts.write` scope when generating a 
+        [token](https://docs.moov.io/api/authentication/access-tokens/).
+      parameters:
+        - $ref: '#/components/parameters/CommonHeaders'
+        - name: x-wait-for
+          in: header
+          required: true
+          description: |-
+            Optional header to wait for certain events, such as the rail response, to occur before returning a response.
+
+            When this header is set to `rail-response`, the endpoint will wait for a sent-credit or failed status from the payment rail.
+          schema:
+            $ref: '#/components/schemas/BankAccountWaitFor'
+        - name: accountID
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: bankAccountID
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: The request completed successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BankAccountVerificationCreated'
+        '400':
+          description: The server could not understand the request due to invalid syntax.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+        '401':
+          description: The request contained missing or expired authentication.
+        '403':
+          description: The user is not authorized to make the request.
+        '404':
+          description: The requested resource was not found.
+        '409':
+          description: The request conflicted with the current state of the target resource.
+          content:
+            application/json:
+              schema:
+                type: string
+        '429':
+          description: Request was refused due to rate limiting.
+      tags:
+        - Bank accounts
+      security:
+        - BasicAuth: []
+        - OAuth2Auth:
+            - /accounts/{accountID}/bank-accounts.write
+    put:
+      operationId: completeBankAccountVerification
+      description: |-
+        Finalize the instant micro-deposit verification by submitting the verification code displayed in the user’s bank account. 
+
+        Upon successful verification, the bank account status will be updated to `verified` and eligible for ACH debit transactions.
+
+        The following formats are accepted:
+        - `MV0000`
+        - `mv0000`
+        - `0000`
+
+        To use this endpoint from the browser, you'll need to specify the `/accounts/{accountID}/bank-accounts.write` scope when 
+        generating a [token](https://docs.moov.io/api/authentication/access-tokens/).
+      parameters:
+        - $ref: '#/components/parameters/CommonHeaders'
+        - name: accountID
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: bankAccountID
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: The request completed successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BankAccountVerification'
+        '400':
+          description: The server could not understand the request due to invalid syntax.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+        '401':
+          description: The request contained missing or expired authentication.
+        '403':
+          description: The user is not authorized to make the request.
+        '404':
+          description: The requested resource was not found.
+        '409':
+          description: The request conflicted with the current state of the target resource.
+          content:
+            application/json:
+              schema:
+                type: string
+        '422':
+          description: The request was well-formed, but the contents failed validation. Check the request for missing or invalid fields.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+        '429':
+          description: Request was refused due to rate limiting.
+      tags:
+        - Bank accounts
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CompleteBankAccountVerification'
+      security:
+        - BasicAuth: []
+        - OAuth2Auth:
+            - /accounts/{accountID}/bank-accounts.write
   /accounts/{accountID}/capabilities:
     get:
       operationId: listAccountCapabilities
@@ -296,8 +828,12 @@ paths:
     get:
       operationId: listCards
       description: |-
-        List all the active cards associated with a Moov account. Read our [accept card payments guide](https://docs.moov.io/guides/sources/cards/accept-card-payments/) to learn more.
-        <br><br> To use this endpoint from the browser, you'll need to specify the `/accounts/{accountID}/cards.read` scope when generating a [token](https://docs.moov.io/api/authentication/access-tokens/).
+        List all the active cards associated with a Moov account. 
+
+        Read our [accept card payments guide](https://docs.moov.io/guides/sources/cards/accept-card-payments/) to learn more.
+
+        To use this endpoint from the browser, you'll need to specify the `/accounts/{accountID}/cards.read` scope when generating 
+        a [token](https://docs.moov.io/api/authentication/access-tokens/).
       parameters:
         - $ref: '#/components/parameters/CommonHeaders'
         - name: accountID
@@ -331,8 +867,12 @@ paths:
     get:
       operationId: getCard
       description: |-
-        Fetch a specific card associated with a Moov account. Read our [accept card payments guide](https://docs.moov.io/guides/sources/cards/accept-card-payments/) to learn more.
-        <br><br> To use this endpoint from the browser, you'll need to specify the `/accounts/{accountID}/cards.read` scope when generating a [token](https://docs.moov.io/api/authentication/access-tokens/).
+        Fetch a specific card associated with a Moov account. 
+
+        Read our [accept card payments guide](https://docs.moov.io/guides/sources/cards/accept-card-payments/) to learn more.
+
+        To use this endpoint from the browser, you'll need to specify the `/accounts/{accountID}/cards.read` scope when generating 
+        a [token](https://docs.moov.io/api/authentication/access-tokens/).
       parameters:
         - $ref: '#/components/parameters/CommonHeaders'
         - name: accountID
@@ -370,12 +910,19 @@ paths:
     patch:
       operationId: updateCard
       description: |-
-        Update a linked card and/or resubmit it for verification. If a value is provided for CVV, 
-        a new verification ($0 authorization) will be submitted for the card. Updating the expiration date or 
-        address will update the information stored on file for the card but will not be verified. <br> 
-        Read our [accept card payments guide](https://docs.moov.io/guides/sources/cards/accept-card-payments/#reverify-a-card) to learn more.
+        Update a linked card and/or resubmit it for verification. 
+
+        If a value is provided for CVV, a new verification ($0 authorization) will be submitted for the card. Updating the expiration 
+        date or 
+        address will update the information stored on file for the card but will not be verified.
+
+        Read our [accept card payments guide](https://docs.moov.io/guides/sources/cards/accept-card-payments/#reverify-a-card) to learn 
+        more.
+
         Only use this endpoint if you have provided Moov with a copy of your PCI attestation of compliance. 
-        <br><br> To use this endpoint from the browser, you'll need to specify the `/accounts/{accountID}/cards.write` scope when generating a [token](https://docs.moov.io/api/authentication/access-tokens/).
+
+        To use this endpoint from the browser, you'll need to specify the `/accounts/{accountID}/cards.write` scope when generating 
+        a [token](https://docs.moov.io/api/authentication/access-tokens/).
       parameters:
         - $ref: '#/components/parameters/CommonHeaders'
         - name: accountID
@@ -438,7 +985,9 @@ paths:
       operationId: disableCard
       description: |-
         Disables a card associated with a Moov account.
-        <br><br> To use this endpoint from the browser, you'll need to specify the `/accounts/{accountID}/cards.write` scope when generating a [token](https://docs.moov.io/api/authentication/access-tokens/).
+
+        To use this endpoint from the browser, you'll need to specify the `/accounts/{accountID}/cards.write` scope when generating 
+        a [token](https://docs.moov.io/api/authentication/access-tokens/).
       parameters:
         - $ref: '#/components/parameters/CommonHeaders'
         - name: accountID
@@ -1180,6 +1729,52 @@ components:
       minLength: 4
       maxLength: 16
       description: An optional override of the default NACHA company name for a transfer.
+    AchReturnCode:
+      type: string
+      enum:
+        - R02
+        - R03
+        - R04
+        - R05
+        - R07
+        - R08
+        - R10
+        - R11
+        - R12
+        - R13
+        - R14
+        - R15
+        - R16
+        - R17
+        - R20
+        - R23
+        - R29
+        - R34
+        - R38
+        - R39
+      description: |-
+        The return code of an ACH transaction that caused the bank account status to change.
+
+        - R02: Account Closed
+        - R03: No Account/Unable to Locate Account
+        - R04: Invalid Account Number
+        - R05: Improper Debit to Consumer Account
+        - R07: Authorization Revoked by Customer
+        - R08: Payment Stopped
+        - R10: Customer Advises Originator is Not Known or Authorized to Receiver
+        - R11: Customer Advises Entry Not in Accordance with the Terms of the Authorization
+        - R12: Branch Sold to Another DFI
+        - R13: RDFI not qualified to participate
+        - R14: Representative payee deceased or unable to continue in that capacity
+        - R15: Beneficiary or bank account holder
+        - R16: Bank account frozen
+        - R17: Entry with Invalid Account Number Initiated Under Questionable Circumstances
+        - R20: Non-payment bank account
+        - R23: Credit entry refused by receiver
+        - R29: Corporate customer advises not authorized
+        - R34: Limited participation RDFI
+        - R38: Stop Payment on Source Document (Adjustment Entry)
+        - R39: Improper Source Document
     AchTransactionDetails:
       type: object
       required:
@@ -1319,6 +1914,210 @@ components:
           type: string
           example: /moov/support.read /moov/support.write
           description: A space delimited list of scopes
+    BankAccount:
+      type: object
+      required:
+        - bankAccountID
+        - fingerprint
+        - status
+        - holderName
+        - holderType
+        - bankName
+        - bankAccountType
+        - routingNumber
+        - lastFourAccountNumber
+        - updatedOn
+        - statusReason
+      properties:
+        bankAccountID:
+          type: string
+          format: uuid
+        fingerprint:
+          type: string
+          maxLength: 100
+          description: |-
+            Once the bank account is linked, we don't reveal the full bank account number. 
+
+            The fingerprint acts as a way to identify whether two linked bank accounts are the same.
+        status:
+          $ref: '#/components/schemas/BankAccountStatus'
+        holderName:
+          type: string
+        holderType:
+          $ref: '#/components/schemas/BankAccountHolderType'
+        bankName:
+          type: string
+        bankAccountType:
+          $ref: '#/components/schemas/BankAccountType'
+        routingNumber:
+          type: string
+        lastFourAccountNumber:
+          type: string
+        updatedOn:
+          type: string
+          format: date-time
+        statusReason:
+          $ref: '#/components/schemas/BankAccountStatusReason'
+        exceptionDetails:
+          $ref: '#/components/schemas/BankAccountException'
+        paymentMethods:
+          type: array
+          items:
+            $ref: '#/components/schemas/BasicPaymentMethod'
+          description: |-
+            Includes any payment methods generated for a newly created bank account, removing the need to
+            call the List Payment Methods endpoint following a successful Create BankAccount request.
+
+            **NOTE: This field is only populated for Create BankAccount requests made with the `X-Wait-For` header.**
+      example:
+        bankAccountID: 833fa3ef-14d3-4c97-ba45-6af66f739832
+        fingerprint: dd4cbfe5fbaf47b392770b5b595bec604fd99394749b7d017153e2b9cfbea40e
+        status: new
+        holderName: John Doe
+        holderType: individual
+        bankName: Gringotts Bank
+        bankAccountType: checking
+        routingNumber: '123456780'
+        lastFourAccountNumber: '6789'
+        updatedOn: 2024-11-26T22:37:06Z
+        statusReason: bank-account-created
+      description: Describes a bank account linked to a Moov account.
+    BankAccountException:
+      type: object
+      required:
+        - achReturnCode
+        - rtpRejectionCode
+        - description
+      properties:
+        achReturnCode:
+          $ref: '#/components/schemas/AchReturnCode'
+        rtpRejectionCode:
+          $ref: '#/components/schemas/RtpRejectionCode'
+        description:
+          type: string
+          description: Details related to an `errored` or `verificationFailed` bank account status.
+      description: Reason for, and details related to, an `errored` or `verificationFailed` bank account status.
+    BankAccountHolderType:
+      type: string
+      enum:
+        - individual
+        - business
+      description: The type of holder on a funding source.
+    BankAccountIntegration:
+      type: object
+      required:
+        - holderName
+        - holderType
+        - accountNumber
+        - bankAccountType
+        - routingNumber
+      properties:
+        holderName:
+          type: string
+        holderType:
+          $ref: '#/components/schemas/BankAccountHolderType'
+        accountNumber:
+          type: string
+        bankAccountType:
+          $ref: '#/components/schemas/BankAccountType'
+        routingNumber:
+          type: string
+    BankAccountPayload:
+      type: object
+      required:
+        - account
+      properties:
+        account:
+          $ref: '#/components/schemas/BankAccountIntegration'
+      description: Describes the bank account to link to the Moov account.
+    BankAccountStatus:
+      type: string
+      enum:
+        - new
+        - verified
+        - verificationFailed
+        - pending
+        - errored
+    BankAccountStatusReason:
+      type: string
+      enum:
+        - bank-account-created
+        - verification-initiated
+        - micro-deposit-attempts-exceeded
+        - micro-deposit-expired
+        - max-verification-failures
+        - verification-attempts-exceeded
+        - verification-expired
+        - verification-successful
+        - ach-debit-return
+        - ach-credit-return
+        - rtp-credit-failure
+        - micro-deposit-return
+        - admin-action
+        - other
+      description: The reason the bank account status changed to the current value.
+    BankAccountType:
+      type: string
+      enum:
+        - checking
+        - savings
+        - general-ledger
+        - loan
+      description: The bank account type.
+    BankAccountValidationError:
+      type: object
+      properties:
+        account:
+          type: string
+        plaid:
+          type: string
+        plaidLink:
+          type: string
+        mx:
+          type: string
+        error:
+          type: string
+    BankAccountVerification:
+      type: object
+      required:
+        - verificationMethod
+        - status
+      properties:
+        verificationMethod:
+          $ref: '#/components/schemas/BankAccountVerificationMethod'
+        status:
+          $ref: '#/components/schemas/BankAccountVerificationStatus'
+        exceptionDetails:
+          $ref: '#/components/schemas/BankAccountException'
+    BankAccountVerificationCreated:
+      type: object
+      required:
+        - verificationMethod
+        - status
+      properties:
+        verificationMethod:
+          $ref: '#/components/schemas/BankAccountVerificationMethod'
+        status:
+          $ref: '#/components/schemas/BankAccountVerificationStatus'
+    BankAccountVerificationMethod:
+      type: string
+      enum:
+        - instant
+        - ach
+    BankAccountVerificationStatus:
+      type: string
+      enum:
+        - new
+        - sent-credit
+        - max-attempts-exceeded
+        - failed
+        - expired
+        - successful
+    BankAccountWaitFor:
+      type: string
+      enum:
+        - payment-method
+        - rail-response
     BasicPaymentMethod:
       type: object
       required:
@@ -1906,6 +2705,36 @@ components:
         - unavailable
         - partialMatch
       example: match
+    CompleteBankAccountVerification:
+      type: object
+      required:
+        - code
+      properties:
+        code:
+          type: string
+          example: MV1234
+          description: Code provided by user from their bank account transactions
+    CompleteMicroDeposits:
+      type: object
+      required:
+        - amounts
+      properties:
+        amounts:
+          type: array
+          items:
+            type: integer
+          example:
+            - 18
+            - 21
+          description: Two positive integers, in cents, equal to the values of the micro-deposits sent to the bank account.
+      description: Request to complete the micro-deposit verification workflow.
+    CompletedMicroDeposits:
+      type: object
+      required:
+        - status
+      properties:
+        status:
+          $ref: '#/components/schemas/MicroDepositStatus'
     Count:
       type: integer
       format: int64
@@ -2445,6 +3274,12 @@ components:
           example: '7997'
           minLength: 4
           maxLength: 4
+    LinkBankAccount:
+      oneOf:
+        - $ref: '#/components/schemas/BankAccountPayload'
+        - $ref: '#/components/schemas/PlaidPayload'
+        - $ref: '#/components/schemas/PlaidLinkPayload'
+        - $ref: '#/components/schemas/MxPayload'
     LinkCard:
       type: object
       required:
@@ -2516,6 +3351,18 @@ components:
       enum:
         - payment-method
       example: payment-method
+    MXAuthorizationCode:
+      type: object
+      required:
+        - authorizationCode
+      properties:
+        authorizationCode:
+          type: string
+      description: |-
+        The authorization code of a MX account which allows a processor to retrieve a linked payment account. 
+
+        `sandbox` - When linking a bank account to a `sandbox` account using a MX authorization code it will utilize MX's sandbox environment. 
+        The MX authorization code provided must be generated from MX's sandbox environment.
     ManualTermsOfService:
       type: object
       required:
@@ -2553,6 +3400,15 @@ components:
           type: string
         acceptedUserAgent:
           type: string
+    MicroDepositStatus:
+      type: string
+      enum:
+        - verified
+    MicroDepositValidationError:
+      type: object
+      properties:
+        amounts:
+          type: string
     Mode:
       type: string
       enum:
@@ -2578,6 +3434,23 @@ components:
           type: string
           description: Moov processing fee. String type represents dollars with up to 9 decimal place precision.
       description: Processing and pass-through costs that add up to the moovFee.
+    MxPayload:
+      type: object
+      required:
+        - mx
+      properties:
+        mx:
+          $ref: '#/components/schemas/MXAuthorizationCode'
+      description: |-
+        Describes the account to link to the Moov account using a MX processor token. 
+
+        `sandbox` - When linking a bank account to a `sandbox` account using an MX authorization token a default bank account routing number will
+        be used. The following default data will be used to generate the bank account in this flow:
+
+        ```
+          RoutingNumber: "123456780",
+          BankName: "Gringotts Bank"
+        ```
     PatchTransfer:
       type: object
       properties:
@@ -2616,6 +3489,61 @@ components:
           type: string
         countryCode:
           type: string
+    PlaidIntegration:
+      type: object
+      required:
+        - token
+      properties:
+        token:
+          type: string
+      description: |-
+        The details of a Plaid processor integration for a linked funding source. 
+
+        `sandbox` - When linking a bank account to a `sandbox` account using a Plaid processor token a default bank account
+        response will be used. The following default data will be used to generate the bank account in this flow:
+
+        ```
+          RoutingNumber: "011401533",
+          AccountNumber: "1111222233330000",
+          AccountType:   "checking",
+          Mask:          "0000"
+        ```
+    PlaidLinkIntegration:
+      type: object
+      required:
+        - publicToken
+      properties:
+        publicToken:
+          type: string
+      description: |-
+        This is used by Moov.js with a Plaid reseller relationship. The details of a Plaid link integration for a linked funding source.
+
+        You can simulate linking bank accounts with Plaid in test mode. See our [test mode](https://docs.moov.io/guides/get-started/test-mode/#plaid)
+        guide for more information.
+
+        Plaid's `sandbox` environment - (requires Plaid reseller setup with Moov). When linking a bank account to a `sandbox` account using a Plaid 
+        public token it will utilize Plaid's sandbox environment. The Plaid public token provided must be generated from Plaid's sandbox environment. 
+        Please see <a href="https://plaid.com/docs/api/sandbox/#sandboxpublic_tokencreate" target="_blank">Plaid's sandbox documentation</a> for more 
+        details.
+    PlaidLinkPayload:
+      type: object
+      required:
+        - plaidLink
+      properties:
+        plaidLink:
+          $ref: '#/components/schemas/PlaidLinkIntegration'
+      description: |-
+        This is used by Moov.js with a Plaid reseller relationship. 
+
+        Describes the account to link to the Moov account using a Plaid using a Plaid public token.
+    PlaidPayload:
+      type: object
+      required:
+        - plaid
+      properties:
+        plaid:
+          $ref: '#/components/schemas/PlaidIntegration'
+      description: Describes the account to link to the Moov account using a Plaid processor token.
     PrimaryRegulator:
       type: string
       enum:
@@ -2837,6 +3765,26 @@ components:
         - customer-deceased
         - other
       description: Status codes for RTP failures.
+    RtpRejectionCode:
+      type: string
+      enum:
+        - AC03
+        - AC04
+        - AC06
+        - AC14
+        - AG01
+        - AG03
+        - MD07
+      description: |-
+        The rejection code of an RTP transaction that caused the bank account status to change.
+
+        - AC03: Account Invalid
+        - AC04: Account Closed
+        - AC06: Account Blocked
+        - AC14: Creditor Account Type Invalid
+        - AG01: Transactions Forbidden On Account
+        - AG03: Transaction Type Not Supported
+        - MD07: Customer Deceased
     RtpTransactionDetails:
       type: object
       required:
@@ -3059,7 +4007,8 @@ components:
           type: string
         account:
           $ref: '#/components/schemas/TransferAccount'
-        bankAccount: {}
+        bankAccount:
+          $ref: '#/components/schemas/BankAccount'
         wallet: {}
         card: {}
         achDetails:
@@ -3118,7 +4067,8 @@ components:
           type: string
         account:
           $ref: '#/components/schemas/TransferAccount'
-        bankAccount: {}
+        bankAccount:
+          $ref: '#/components/schemas/BankAccount'
         wallet: {}
         card: {}
         applePay: {}
@@ -3304,6 +4254,8 @@ components:
             /accounts.write: ''
             /accounts.read: ''
             /accounts/{accountID}/profile.read: ''
+            /accounts/{accountID}/bank-accounts.write: ''
+            /accounts/{accountID}/bank-accounts.read: ''
             /accounts/{accountID}/capabilities.read: ''
             /accounts/{accountID}/cards.write: ''
             /accounts/{accountID}/cards.read: ''
