@@ -20,6 +20,7 @@ tags:
   - name: Bank accounts
   - name: Capabilities
   - name: Cards
+  - name: Payment methods
   - name: Transfers
 paths:
   /accounts:
@@ -1154,6 +1155,109 @@ paths:
         - BasicAuth: []
         - OAuth2Auth:
             - /accounts/{accountID}/cards.write
+  /accounts/{accountID}/payment-methods:
+    get:
+      operationId: listPaymentMethods
+      description: |-
+        Retrieve a list of payment methods associated with a Moov account. Read our [payment methods guide](https://docs.moov.io/guides/money-movement/payment-methods/) to learn more.
+
+        To use this endpoint from the browser, you'll need to specify the `/accounts/{accountID}/payment-methods.read` scope when generating a [token](https://docs.moov.io/api/authentication/access-tokens/).
+      parameters:
+        - $ref: '#/components/parameters/CommonHeaders'
+        - name: accountID
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: sourceID
+          in: query
+          required: false
+          description: Optional parameter to filter the account's payment methods by source ID. A source ID can be a [walletID](https://docs.moov.io/api/sources/wallets/list/), [cardID](https://docs.moov.io/api/sources/cards/list/), or [bankAccountID](https://docs.moov.io/api/sources/bank-accounts/list/).
+          schema:
+            type: string
+            format: uuid
+          explode: false
+        - name: paymentMethodType
+          in: query
+          required: false
+          description: Optional parameter to filter the account's payment methods by payment method type.
+          schema:
+            $ref: '#/components/schemas/PaymentMethodType'
+          explode: false
+      responses:
+        '200':
+          description: The request completed successfully.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PaymentMethod'
+              example:
+                - paymentMethodID: 01234567-89ab-cdef-0123-456789abcdef
+                  paymentMethodType: moov-wallet
+                  wallet: {}
+                - paymentMethodID: 01234567-89ab-cdef-0123-456789abcdef
+                  paymentMethodType: apple-pay
+                  applePay: {}
+        '401':
+          description: The request contained missing or expired authentication.
+        '403':
+          description: The user is not authorized to make the request.
+        '429':
+          description: Request was refused due to rate limiting.
+      tags:
+        - Payment methods
+      security:
+        - BasicAuth: []
+        - OAuth2Auth:
+            - /accounts/{accountID}/payment-methods.read
+  /accounts/{accountID}/payment-methods/{paymentMethodID}:
+    get:
+      operationId: getPaymentMethod
+      description: |-
+        Get the specified payment method associated with a Moov account. Read our [payment methods guide](https://docs.moov.io/guides/money-movement/payment-methods/) to learn more.
+
+        To use this endpoint from the browser, you'll need to specify the `/accounts/{accountID}/payment-methods.read` scope when generating a [token](https://docs.moov.io/api/authentication/access-tokens/).
+      parameters:
+        - $ref: '#/components/parameters/CommonHeaders'
+        - name: accountID
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: paymentMethodID
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/PaymentMethodID'
+      responses:
+        '200':
+          description: The request completed successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaymentMethod'
+              example:
+                paymentMethodID: 01234567-89ab-cdef-0123-456789abcdef
+                paymentMethodType: moov-wallet
+                wallet: {}
+        '401':
+          description: The request contained missing or expired authentication.
+        '403':
+          description: The user is not authorized to make the request.
+        '404':
+          description: The requested resource was not found.
+        '429':
+          description: Request was refused due to rate limiting.
+      tags:
+        - Payment methods
+      security:
+        - BasicAuth: []
+        - OAuth2Auth:
+            - /accounts/{accountID}/payment-methods.read
   /accounts/{accountID}/transfers:
     get:
       operationId: listTransfersForAccount
@@ -1963,6 +2067,66 @@ components:
       type: string
       enum:
         - connection
+    AchCreditSameDayPaymentMethod:
+      type: object
+      required:
+        - paymentMethodID
+        - bankAccount
+        - paymentMethodType
+      properties:
+        paymentMethodID:
+          $ref: '#/components/schemas/PaymentMethodID'
+        bankAccount:
+          $ref: '#/components/schemas/BankAccount'
+        paymentMethodType:
+          type: string
+          enum:
+            - ach-credit-same-day
+    AchCreditStandardPaymentMethod:
+      type: object
+      required:
+        - paymentMethodID
+        - bankAccount
+        - paymentMethodType
+      properties:
+        paymentMethodID:
+          $ref: '#/components/schemas/PaymentMethodID'
+        bankAccount:
+          $ref: '#/components/schemas/BankAccount'
+        paymentMethodType:
+          type: string
+          enum:
+            - ach-credit-standard
+    AchDebitCollectPaymentMethod:
+      type: object
+      required:
+        - paymentMethodID
+        - bankAccount
+        - paymentMethodType
+      properties:
+        paymentMethodID:
+          $ref: '#/components/schemas/PaymentMethodID'
+        bankAccount:
+          $ref: '#/components/schemas/BankAccount'
+        paymentMethodType:
+          type: string
+          enum:
+            - ach-debit-collect
+    AchDebitFundPaymentMethod:
+      type: object
+      required:
+        - paymentMethodID
+        - bankAccount
+        - paymentMethodType
+      properties:
+        paymentMethodID:
+          $ref: '#/components/schemas/PaymentMethodID'
+        bankAccount:
+          $ref: '#/components/schemas/BankAccount'
+        paymentMethodType:
+          type: string
+          enum:
+            - ach-debit-fund
     Address:
       type: object
       required:
@@ -2056,6 +2220,20 @@ components:
             Quantity in the smallest unit of the specified currency. 
 
             In USD this is cents, for example, $12.04 is 1204 and $0.99 is 99.
+    ApplePayPaymentMethod:
+      type: object
+      required:
+        - paymentMethodID
+        - paymentMethodType
+        - applePay
+      properties:
+        paymentMethodID:
+          $ref: '#/components/schemas/PaymentMethodID'
+        paymentMethodType:
+          type: string
+          enum:
+            - apple-pay
+        applePay: {}
     AsyncTransfer:
       type: object
       required:
@@ -2291,12 +2469,9 @@ components:
         - paymentMethodType
       properties:
         paymentMethodID:
-          type: string
+          $ref: '#/components/schemas/PaymentMethodID'
         paymentMethodType:
           $ref: '#/components/schemas/PaymentMethodType'
-      example:
-        paymentMethodID: 01234567-89ab-cdef-0123-456789abcdef
-        paymentMethodType: moov-wallet
     BirthDate:
       type: object
       required:
@@ -2753,6 +2928,21 @@ components:
       example: 01234567-89ab-cdef-0123-456789abcdef
       format: uuid
       description: ID of the card.
+    CardPaymentPaymentMethod:
+      type: object
+      required:
+        - paymentMethodID
+        - card
+        - paymentMethodType
+      properties:
+        paymentMethodID:
+          $ref: '#/components/schemas/PaymentMethodID'
+        card:
+          $ref: '#/components/schemas/Card'
+        paymentMethodType:
+          type: string
+          enum:
+            - card-payment
     CardPaymentSettings:
       type: object
       properties:
@@ -3805,6 +3995,20 @@ components:
           type: string
           description: Moov processing fee. String type represents dollars with up to 9 decimal place precision.
       description: Processing and pass-through costs that add up to the moovFee.
+    MoovWalletPaymentMethod:
+      type: object
+      required:
+        - paymentMethodID
+        - paymentMethodType
+        - wallet
+      properties:
+        paymentMethodID:
+          $ref: '#/components/schemas/PaymentMethodID'
+        paymentMethodType:
+          type: string
+          enum:
+            - moov-wallet
+        wallet: {}
     MxPayload:
       type: object
       required:
@@ -3926,6 +4130,36 @@ components:
           type: object
           additionalProperties:
             type: string
+    PaymentMethod:
+      oneOf:
+        - $ref: '#/components/schemas/MoovWalletPaymentMethod'
+        - $ref: '#/components/schemas/AchDebitFundPaymentMethod'
+        - $ref: '#/components/schemas/AchDebitCollectPaymentMethod'
+        - $ref: '#/components/schemas/AchCreditStandardPaymentMethod'
+        - $ref: '#/components/schemas/AchCreditSameDayPaymentMethod'
+        - $ref: '#/components/schemas/RtpCreditPaymentMethod'
+        - $ref: '#/components/schemas/CardPaymentPaymentMethod'
+        - $ref: '#/components/schemas/PushToCardPaymentMethod'
+        - $ref: '#/components/schemas/PullFromCardPaymentMethod'
+        - $ref: '#/components/schemas/ApplePayPaymentMethod'
+      discriminator:
+        propertyName: paymentMethodType
+        mapping:
+          moov-wallet: '#/components/schemas/MoovWalletPaymentMethod'
+          ach-debit-fund: '#/components/schemas/AchDebitFundPaymentMethod'
+          ach-debit-collect: '#/components/schemas/AchDebitCollectPaymentMethod'
+          ach-credit-standard: '#/components/schemas/AchCreditStandardPaymentMethod'
+          ach-credit-same-day: '#/components/schemas/AchCreditSameDayPaymentMethod'
+          rtp-credit: '#/components/schemas/RtpCreditPaymentMethod'
+          card-payment: '#/components/schemas/CardPaymentPaymentMethod'
+          push-to-card: '#/components/schemas/PushToCardPaymentMethod'
+          pull-from-card: '#/components/schemas/PullFromCardPaymentMethod'
+          apple-pay: '#/components/schemas/ApplePayPaymentMethod'
+      description: A method of moving money
+    PaymentMethodID:
+      type: string
+      format: uuid
+      description: ID of the payment method.
     PaymentMethodType:
       type: string
       enum:
@@ -3936,9 +4170,10 @@ components:
         - ach-credit-same-day
         - rtp-credit
         - card-payment
-        - apple-pay
         - push-to-card
         - pull-from-card
+        - apple-pay
+      description: The payment method type that represents a payment rail and directionality
     PhoneNumber:
       type: object
       properties:
@@ -4028,6 +4263,36 @@ components:
         business:
           $ref: '#/components/schemas/BusinessProfile'
       description: Describes a Moov account profile. A profile will have a business or an individual, depending on the account's type.
+    PullFromCardPaymentMethod:
+      type: object
+      required:
+        - paymentMethodID
+        - card
+        - paymentMethodType
+      properties:
+        paymentMethodID:
+          $ref: '#/components/schemas/PaymentMethodID'
+        card:
+          $ref: '#/components/schemas/Card'
+        paymentMethodType:
+          type: string
+          enum:
+            - pull-from-card
+    PushToCardPaymentMethod:
+      type: object
+      required:
+        - paymentMethodID
+        - card
+        - paymentMethodType
+      properties:
+        paymentMethodID:
+          $ref: '#/components/schemas/PaymentMethodID'
+        card:
+          $ref: '#/components/schemas/Card'
+        paymentMethodType:
+          type: string
+          enum:
+            - push-to-card
     RTPFailureCode:
       type: string
       enum:
@@ -4286,6 +4551,21 @@ components:
         - representative.{rep-uuid}.ownership
         - document.{doc-uuid}
       description: The unique ID of what the requirement is asking to be filled out.
+    RtpCreditPaymentMethod:
+      type: object
+      required:
+        - paymentMethodID
+        - bankAccount
+        - paymentMethodType
+      properties:
+        paymentMethodID:
+          $ref: '#/components/schemas/PaymentMethodID'
+        bankAccount:
+          $ref: '#/components/schemas/BankAccount'
+        paymentMethodType:
+          type: string
+          enum:
+            - rtp-credit
     SECCode:
       type: string
       enum:
@@ -4731,6 +5011,7 @@ components:
             /accounts/{accountID}/capabilities.read: ''
             /accounts/{accountID}/cards.write: ''
             /accounts/{accountID}/cards.read: ''
+            /accounts/{accountID}/payment-methods.read: ''
             /accounts/{yourAccountID}/transfers.write: ''
             /accounts/{yourAccountID}/transfers.read: ''
             /accounts/{accountID}/transfers.read: ''

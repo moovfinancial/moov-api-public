@@ -1,7 +1,7 @@
 import "@typespec/http";
 import "@typespec/openapi3";
 import "@typespec/versioning";
-import "../common/models.id.tsp";
+import "../common/examples.id.tsp";
 import "../end2end/models.end2end.tsp";
 import "../paymentmethods/models.paymentmethod.tsp";
 
@@ -13,11 +13,11 @@ namespace MoovAPI;
 
 @doc("ID of the card.")
 @format("uuid")
-@example(exampleID)
+@example(ExampleID)
 scalar CardID extends string;
 
 const exampleCard = #{
-  cardID: exampleID,
+  cardID: ExampleID,
   fingerprint: exampleCardFingerprint,
   brand: CardBrand.visa,
   cardType: CardType.credit,
@@ -35,21 +35,21 @@ const exampleCard = #{
   commercial: false,
   regulated: false,
   cardOnFile: true,
-  merchantAccountID: exampleID,
+  merchantAccountID: ExampleID,
   cardAccountUpdater: exampleCardAccountUpdater,
   domesticPushToCard: DomesticPushToCard.standard,
   domesticPullFromCard: DomesticPullFromCard.supported,
   paymentMethods: #[
     #{
-      paymentMethodID: exampleID,
+      paymentMethodID: ExampleID,
       paymentMethodType: PaymentMethodType.cardPayment,
     },
     #{
-      paymentMethodID: exampleID,
+      paymentMethodID: ExampleID,
       paymentMethodType: PaymentMethodType.pushToCard,
     },
     #{
-      paymentMethodID: exampleID,
+      paymentMethodID: ExampleID,
       paymentMethodType: PaymentMethodType.pullFromCard,
     }
   ],
@@ -333,7 +333,7 @@ model UpdateCardAddress {
   holderName: "Jules Jackson",
   billingAddress: exampleCardAddress,
   cardOnFile: true,
-  merchantAccountID: exampleID,
+  merchantAccountID: ExampleID,
   verifyName: true,
 })
 model LinkCard {

@@ -4,17 +4,21 @@ using TypeSpec.Http;
 
 namespace MoovAPI;
 
+alias HttpStatusOK = 200;
+
 @doc("The request completed successfully.")
 model OkResponse<T> {
-  @statusCode statusCode: "200";
+  @statusCode statusCode: HttpStatusOK;
 
   @body
   body: T;
 }
 
+alias HttpStatusNoContent = 204;
+
 @doc("The request completed successfully, but there is no content to return.")
 model NoContentResponse {
-  @statusCode statusCode: "204";
+  @statusCode statusCode: HttpStatusNoContent;
 }
 
 @error
@@ -22,36 +26,46 @@ model GenericError {
   error: string;
 }
 
+alias HttpStatusBadRequest = 400;
+
 @error
 model BadRequestResponse {
-  @statusCode statusCode: "400";
+  @statusCode statusCode: HttpStatusBadRequest;
 
   @body
   error?: GenericError;
 }
 
+alias HttpStatusUnauthorized = 401;
+
 @doc("The request contained missing or expired authentication.")
 @error
 model UnauthorizedResponse {
-  @statusCode statusCode: "401";
+  @statusCode statusCode: HttpStatusUnauthorized;
 }
+
+alias HttpStatusForbidden = 403;
 
 @doc("The user is not authorized to make the request.")
 @error
 model ForbiddenResponse {
-  @statusCode statusCode: "403";
+  @statusCode statusCode: HttpStatusForbidden;
 }
+
+alias HttpStatusNotFound = 404;
 
 @doc("The requested resource was not found.")
 @error
 model NotFoundResponse {
-  @statusCode statusCode: "404";
+  @statusCode statusCode: HttpStatusNotFound;
 }
+
+alias HttpStatusConflict = 409;
 
 @doc("The request conflicted with the current state of the target resource.")
 @error
 model StateConflictResponse {
-  @statusCode statusCode: "409";
+  @statusCode statusCode: HttpStatusConflict;
 
   @body
   @doc("""
@@ -61,20 +75,24 @@ model StateConflictResponse {
   error?: string;
 }
 
+alias HttpStatusUnprocessableEntity = 422;
+
 @doc("The request was well-formed, but the contents failed validation. Check the request for missing or invalid fields.")
 @error
 model UnprocessableEntityResponse<T> {
-  @statusCode statusCode: "422";
+  @statusCode statusCode: HttpStatusUnprocessableEntity;
 
   @body
   @doc("Descriptions of any field validations that failed.")
   error?: T;
 }
 
+alias HttpStatusRateLimited = 429;
+
 @doc("Request was refused due to rate limiting.")
 @error
 model RateLimitedResponse {
-  @statusCode statusCode: "429";
+  @statusCode statusCode: HttpStatusRateLimited;
 }
 
 union ListResponses<T> {
