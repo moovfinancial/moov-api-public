@@ -2,13 +2,13 @@ import "@typespec/http";
 import "@typespec/openapi3";
 import "@typespec/versioning";
 import "./models.ach.tsp";
-import "./models.amount.tsp";
 import "./models.card.tsp";
 import "./models.dispute.tsp";
 import "./models.refund.tsp";
 import "./models.rtp.tsp";
 import "../bankaccounts/models.bankaccount.tsp";
 import "../common/models.parameter.tsp";
+import "../money/models.amount.tsp";
 
 using TypeSpec.Http;
 using TypeSpec.OpenAPI;

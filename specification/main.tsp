@@ -9,9 +9,11 @@ import "./accounts";
 import "./bankaccounts";
 import "./capabilities";
 import "./cards";
+import "./common";
 import "./end2end";
 import "./paymentmethods";
 import "./transfers";
+import "./wallets";
 
 using TypeSpec.Http;
 using TypeSpec.OpenAPI;

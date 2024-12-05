@@ -22,6 +22,9 @@ tags:
   - name: Cards
   - name: Payment methods
   - name: Transfers
+  - name: Sweeps
+  - name: Wallet transactions
+  - name: Wallets
 paths:
   /accounts:
     post:
@@ -1258,6 +1261,262 @@ paths:
         - BasicAuth: []
         - OAuth2Auth:
             - /accounts/{accountID}/payment-methods.read
+  /accounts/{accountID}/sweep-configs:
+    post:
+      operationId: createSweepConfig
+      description: Create a sweep config for a wallet.
+      parameters:
+        - $ref: '#/components/parameters/CommonHeaders'
+        - name: accountID
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: The request completed successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SweepConfig'
+              example:
+                sweepConfigID: 01234567-89ab-cdef-0123-456789abcdef
+                walletID: 01234567-89ab-cdef-0123-456789abcdef
+                status: enabled
+                pushPaymentMethod:
+                  paymentMethodID: 01234567-89ab-cdef-0123-456789abcdef
+                pullPaymentMethod:
+                  paymentMethodID: 01234567-89ab-cdef-0123-456789abcdef
+                minimumBalance: '0.00'
+                statementDescriptor: swp_012345
+                createdOn: 2024-05-06T12:20:38.184Z
+                updatedOn: 2024-05-06T12:20:38.184Z
+        '400':
+          description: The server could not understand the request due to invalid syntax.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+        '401':
+          description: The request contained missing or expired authentication.
+        '403':
+          description: The user is not authorized to make the request.
+        '404':
+          description: The requested resource was not found.
+        '409':
+          description: The request conflicted with the current state of the target resource.
+          content:
+            application/json:
+              schema:
+                type: string
+        '422':
+          description: The request was well-formed, but the contents failed validation. Check the request for missing or invalid fields.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateSweepConfigError'
+        '429':
+          description: Request was refused due to rate limiting.
+      tags:
+        - Sweeps
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateSweepConfig'
+            example:
+              walletID: 01234567-89ab-cdef-0123-456789abcdef
+              status: enabled
+              pushPaymentMethodID: 01234567-89ab-cdef-0123-456789abcdef
+              pullPaymentMethodID: 01234567-89ab-cdef-0123-456789abcdef
+      security:
+        - BasicAuth: []
+        - OAuth2Auth:
+            - /accounts/{accountID}/wallets.write
+    get:
+      operationId: listSweepConfigs
+      description: List sweep configs associated with an account.
+      parameters:
+        - $ref: '#/components/parameters/CommonHeaders'
+        - name: accountID
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: The request completed successfully.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SweepConfig'
+              example:
+                - sweepConfigID: 01234567-89ab-cdef-0123-456789abcdef
+                  walletID: 01234567-89ab-cdef-0123-456789abcdef
+                  status: enabled
+                  pushPaymentMethod:
+                    paymentMethodID: 01234567-89ab-cdef-0123-456789abcdef
+                  pullPaymentMethod:
+                    paymentMethodID: 01234567-89ab-cdef-0123-456789abcdef
+                  minimumBalance: '0.00'
+                  statementDescriptor: swp_012345
+                  createdOn: 2024-05-06T12:20:38.184Z
+                  updatedOn: 2024-05-06T12:20:38.184Z
+                - sweepConfigID: 01234567-89ab-cdef-0123-456789abcdef
+                  walletID: 01234567-89ab-cdef-0123-456789abcdef
+                  status: disabled
+                  pushPaymentMethod:
+                    paymentMethodID: 01234567-89ab-cdef-0123-456789abcdef
+                  pullPaymentMethod:
+                    paymentMethodID: 01234567-89ab-cdef-0123-456789abcdef
+                  minimumBalance: '0.00'
+                  statementDescriptor: swp_012345
+                  createdOn: 2024-05-06T12:20:38.184Z
+                  updatedOn: 2024-05-06T12:20:38.184Z
+                  disabledOn: 2024-05-06T12:20:38.184Z
+        '401':
+          description: The request contained missing or expired authentication.
+        '403':
+          description: The user is not authorized to make the request.
+        '429':
+          description: Request was refused due to rate limiting.
+      tags:
+        - Sweeps
+      security:
+        - BasicAuth: []
+        - OAuth2Auth:
+            - /accounts/{accountID}/wallets.read
+  /accounts/{accountID}/sweep-configs/{sweepConfigID}:
+    get:
+      operationId: getSweepConfig
+      description: Get a sweep config associated with a wallet.
+      parameters:
+        - $ref: '#/components/parameters/CommonHeaders'
+        - name: accountID
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: sweepConfigID
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/SweepConfigID'
+      responses:
+        '200':
+          description: The request completed successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SweepConfig'
+              example:
+                sweepConfigID: 01234567-89ab-cdef-0123-456789abcdef
+                walletID: 01234567-89ab-cdef-0123-456789abcdef
+                status: enabled
+                pushPaymentMethod:
+                  paymentMethodID: 01234567-89ab-cdef-0123-456789abcdef
+                pullPaymentMethod:
+                  paymentMethodID: 01234567-89ab-cdef-0123-456789abcdef
+                minimumBalance: '0.00'
+                statementDescriptor: swp_012345
+                createdOn: 2024-05-06T12:20:38.184Z
+                updatedOn: 2024-05-06T12:20:38.184Z
+        '401':
+          description: The request contained missing or expired authentication.
+        '403':
+          description: The user is not authorized to make the request.
+        '404':
+          description: The requested resource was not found.
+        '429':
+          description: Request was refused due to rate limiting.
+      tags:
+        - Sweeps
+      security:
+        - BasicAuth: []
+        - OAuth2Auth:
+            - /accounts/{accountID}/wallets.read
+    patch:
+      operationId: patchSweepConfig
+      description: Update settings on a sweep config.
+      parameters:
+        - $ref: '#/components/parameters/CommonHeaders'
+        - name: accountID
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: sweepConfigID
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/SweepConfigID'
+      responses:
+        '200':
+          description: The request completed successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SweepConfig'
+              example:
+                sweepConfigID: 01234567-89ab-cdef-0123-456789abcdef
+                walletID: 01234567-89ab-cdef-0123-456789abcdef
+                status: disabled
+                pushPaymentMethod:
+                  paymentMethodID: 01234567-89ab-cdef-0123-456789abcdef
+                pullPaymentMethod:
+                  paymentMethodID: 01234567-89ab-cdef-0123-456789abcdef
+                minimumBalance: '0.00'
+                statementDescriptor: swp_012345
+                createdOn: 2024-05-06T12:20:38.184Z
+                updatedOn: 2024-05-06T12:20:38.184Z
+                disabledOn: 2024-05-06T12:20:38.184Z
+        '400':
+          description: The server could not understand the request due to invalid syntax.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+        '401':
+          description: The request contained missing or expired authentication.
+        '403':
+          description: The user is not authorized to make the request.
+        '404':
+          description: The requested resource was not found.
+        '409':
+          description: The request conflicted with the current state of the target resource.
+          content:
+            application/json:
+              schema:
+                type: string
+        '422':
+          description: The request was well-formed, but the contents failed validation. Check the request for missing or invalid fields.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PatchSweepConfigError'
+        '429':
+          description: Request was refused due to rate limiting.
+      tags:
+        - Sweeps
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchSweepConfig'
+            example:
+              status: disabled
+      security:
+        - BasicAuth: []
+        - OAuth2Auth:
+            - /accounts/{accountID}/wallets.write
   /accounts/{accountID}/transfers:
     get:
       operationId: listTransfersForAccount
@@ -1355,6 +1614,414 @@ paths:
         - BasicAuth: []
         - OAuth2Auth:
             - /accounts/{accountID}/transfers.read
+  /accounts/{accountID}/wallets:
+    get:
+      operationId: listWallets
+      description: |-
+        List the wallets associated with a Moov account. Read our [Moov wallets guide](https://docs.moov.io/guides/sources/wallets/) to learn more.
+
+        To use this endpoint from the browser, you'll need to specify the `/accounts/{accountID}/wallets.read` scope when generating a [token](https://docs.moov.io/api/authentication/access-tokens/).
+      parameters:
+        - $ref: '#/components/parameters/CommonHeaders'
+        - name: accountID
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: The request completed successfully.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Wallet'
+              example:
+                - walletID: 01234567-89ab-cdef-0123-456789abcdef
+                  availableBalance:
+                    currency: USD
+                    value: 1234
+                    valueDecimal: '12.34'
+        '401':
+          description: The request contained missing or expired authentication.
+        '403':
+          description: The user is not authorized to make the request.
+        '429':
+          description: Request was refused due to rate limiting.
+      tags:
+        - Wallets
+      security:
+        - BasicAuth: []
+        - OAuth2Auth:
+            - /accounts/{accountID}/wallets.read
+  /accounts/{accountID}/wallets/{walletID}:
+    get:
+      operationId: getWallet
+      description: |-
+        Get information on a specific wallet (e.g., the available balance). Read our [Moov wallets guide](https://docs.moov.io/guides/sources/wallets/) to learn more.
+
+        To use this endpoint from the browser, you'll need to specify the `/accounts/{accountID}/wallets.read` scope when generating a [token](https://docs.moov.io/api/authentication/access-tokens/).
+      parameters:
+        - $ref: '#/components/parameters/CommonHeaders'
+        - name: accountID
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: walletID
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/WalletID'
+      responses:
+        '200':
+          description: The request completed successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Wallet'
+              example:
+                walletID: 01234567-89ab-cdef-0123-456789abcdef
+                availableBalance:
+                  currency: USD
+                  value: 1234
+                  valueDecimal: '12.34'
+        '401':
+          description: The request contained missing or expired authentication.
+        '403':
+          description: The user is not authorized to make the request.
+        '404':
+          description: The requested resource was not found.
+        '429':
+          description: Request was refused due to rate limiting.
+      tags:
+        - Wallets
+      security:
+        - BasicAuth: []
+        - OAuth2Auth:
+            - /accounts/{accountID}/wallets.read
+  /accounts/{accountID}/wallets/{walletID}/sweeps:
+    get:
+      operationId: listSweeps
+      description: List sweeps associated with a wallet.
+      parameters:
+        - $ref: '#/components/parameters/CommonHeaders'
+        - name: accountID
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: walletID
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/WalletID'
+        - $ref: '#/components/parameters/Pagination.skip'
+        - $ref: '#/components/parameters/Pagination.count'
+        - name: status
+          in: query
+          required: false
+          description: Optional parameter to filter by sweep status.
+          schema:
+            $ref: '#/components/schemas/SweepStatus'
+          explode: false
+        - name: statementDescriptor
+          in: query
+          required: false
+          description: Optional string to filter by statement descriptor.
+          schema:
+            $ref: '#/components/schemas/SweepStatementDescriptor'
+          explode: false
+      responses:
+        '200':
+          description: The request completed successfully.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Sweep'
+              example:
+                - sweepID: 01234567-89ab-cdef-0123-456789abcdef
+                  status: accruing
+                  accruedAmount: '100.00'
+                  currency: USD
+                  accrualStartedOn: 2024-05-06T12:20:38.184Z
+        '401':
+          description: The request contained missing or expired authentication.
+        '403':
+          description: The user is not authorized to make the request.
+        '429':
+          description: Request was refused due to rate limiting.
+      tags:
+        - Sweeps
+      security:
+        - BasicAuth: []
+        - OAuth2Auth:
+            - /accounts/{accountID}/wallets.read
+  /accounts/{accountID}/wallets/{walletID}/sweeps/{sweepID}:
+    get:
+      operationId: getSweep
+      description: Get details on a specific sweep.
+      parameters:
+        - $ref: '#/components/parameters/CommonHeaders'
+        - name: accountID
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: walletID
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/WalletID'
+        - name: sweepID
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/SweepID'
+      responses:
+        '200':
+          description: The request completed successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Sweep'
+              example:
+                sweepID: 01234567-89ab-cdef-0123-456789abcdef
+                status: accruing
+                accruedAmount: '100.00'
+                currency: USD
+                accrualStartedOn: 2024-05-06T12:20:38.184Z
+        '401':
+          description: The request contained missing or expired authentication.
+        '403':
+          description: The user is not authorized to make the request.
+        '404':
+          description: The requested resource was not found.
+        '429':
+          description: Request was refused due to rate limiting.
+      tags:
+        - Sweeps
+      security:
+        - BasicAuth: []
+        - OAuth2Auth:
+            - /accounts/{accountID}/wallets.read
+  /accounts/{accountID}/wallets/{walletID}/transactions:
+    get:
+      operationId: listWalletTransactions
+      description: |-
+        List all the transactions associated with a particular Moov wallet. Read our [wallet transactions guide](https://docs.moov.io/guides/sources/wallets/transactions/) to learn more.
+
+        To use this endpoint from the browser, you'll need to specify the `/accounts/{accountID}/wallets.read` scope when generating a [token](https://docs.moov.io/api/authentication/access-tokens/).
+      parameters:
+        - $ref: '#/components/parameters/CommonHeaders'
+        - name: accountID
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: walletID
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/WalletID'
+        - $ref: '#/components/parameters/Pagination.skip'
+        - $ref: '#/components/parameters/Pagination.count'
+        - name: transactionType
+          in: query
+          required: false
+          description: Optional parameter to filter by transaction type.
+          schema:
+            $ref: '#/components/schemas/WalletTransactionType'
+          explode: false
+        - name: sourceType
+          in: query
+          required: false
+          description: Optional parameter to filter by source type (i.e. transfer, dispute, issuing-transaction).
+          schema:
+            $ref: '#/components/schemas/WalletTransactionSourceType'
+          explode: false
+        - name: sourceID
+          in: query
+          required: false
+          description: Optional parameter to filter by source ID.
+          schema:
+            type: string
+            format: uuid
+          explode: false
+        - name: status
+          in: query
+          required: false
+          description: Optional parameter to filter by status (`pending` or `completed`).
+          schema:
+            $ref: '#/components/schemas/WalletTransactionStatus'
+          explode: false
+        - name: createdStartDateTime
+          in: query
+          required: false
+          description: 'Optional date-time which inclusively filters all transactions created after this date-time.  '
+          schema:
+            type: string
+            format: date-time
+          explode: false
+        - name: createdEndDateTime
+          in: query
+          required: false
+          description: Optional date-time which exclusively filters all transactions created before this date-time.
+          schema:
+            type: string
+            format: date-time
+          explode: false
+        - name: completedStartDateTime
+          in: query
+          required: false
+          description: Optional date-time which inclusively filters all transactions completed after this date-time.
+          schema:
+            type: string
+            format: date-time
+          explode: false
+        - name: completedEndDateTime
+          in: query
+          required: false
+          description: Optional date-time which exclusively filters all transactions completed before this date-time.
+          schema:
+            type: string
+            format: date-time
+          explode: false
+        - name: sweepID
+          in: query
+          required: false
+          description: Optional ID to filter for transactions accrued in a sweep.
+          schema:
+            $ref: '#/components/schemas/SweepID'
+          explode: false
+      responses:
+        '200':
+          description: The request completed successfully.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/WalletTransaction'
+              example:
+                - walletID: 01234567-89ab-cdef-0123-456789abcdef
+                  transactionID: 01234567-89ab-cdef-0123-456789abcdef
+                  transactionType: card-payment
+                  sourceType: transfer
+                  sourceID: 01234567-89ab-cdef-0123-456789abcdef
+                  status: completed
+                  memo: An example completed card payment
+                  createdOn: 2024-05-06T12:20:38.184Z
+                  completedOn: 2024-05-06T12:20:38.184Z
+                  currency: USD
+                  grossAmount: 2000
+                  grossAmountDecimal: '20.00'
+                  fee: 30
+                  feeDecimal: '0.30'
+                  netAmount: 1970
+                  netAmountDecimal: '19.70'
+                  availableBalance: 10000
+                  availableBalanceDecimal: '100.00'
+                - walletID: 01234567-89ab-cdef-0123-456789abcdef
+                  transactionID: 01234567-89ab-cdef-0123-456789abcdef
+                  transactionType: card-payment
+                  sourceType: transfer
+                  sourceID: 01234567-89ab-cdef-0123-456789abcdef
+                  status: pending
+                  memo: An example pending card payment
+                  createdOn: 2024-05-06T12:20:38.184Z
+                  currency: USD
+                  grossAmount: 2000
+                  grossAmountDecimal: '20.00'
+                  fee: 30
+                  feeDecimal: '0.30'
+                  netAmount: 1970
+                  netAmountDecimal: '19.70'
+        '401':
+          description: The request contained missing or expired authentication.
+        '403':
+          description: The user is not authorized to make the request.
+        '429':
+          description: Request was refused due to rate limiting.
+      tags:
+        - Wallet transactions
+      security:
+        - BasicAuth: []
+        - OAuth2Auth:
+            - /accounts/{accountID}/wallets.read
+  /accounts/{accountID}/wallets/{walletID}/transactions/{transactionID}:
+    get:
+      operationId: getWalletTransaction
+      description: |-
+        Get details on a specific wallet transaction. Read our [wallet transactions guide](https://docs.moov.io/guides/sources/wallets/transactions/) to learn more.
+
+        To use this endpoint from a browser, you'll need to specify the `/accounts/{accountID}/wallets.read` scope when generating a [token](https://docs.moov.io/api/authentication/access-tokens/).
+      parameters:
+        - $ref: '#/components/parameters/CommonHeaders'
+        - name: accountID
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: walletID
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/WalletID'
+        - name: transactionID
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/WalletTransactionID'
+      responses:
+        '200':
+          description: The request completed successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WalletTransaction'
+              example:
+                walletID: 01234567-89ab-cdef-0123-456789abcdef
+                transactionID: 01234567-89ab-cdef-0123-456789abcdef
+                transactionType: card-payment
+                sourceType: transfer
+                sourceID: 01234567-89ab-cdef-0123-456789abcdef
+                status: completed
+                memo: An example completed card payment
+                createdOn: 2024-05-06T12:20:38.184Z
+                completedOn: 2024-05-06T12:20:38.184Z
+                currency: USD
+                grossAmount: 2000
+                grossAmountDecimal: '20.00'
+                fee: 30
+                feeDecimal: '0.30'
+                netAmount: 1970
+                netAmountDecimal: '19.70'
+                availableBalance: 10000
+                availableBalanceDecimal: '100.00'
+        '401':
+          description: The request contained missing or expired authentication.
+        '403':
+          description: The user is not authorized to make the request.
+        '404':
+          description: The requested resource was not found.
+        '429':
+          description: Request was refused due to rate limiting.
+      tags:
+        - Wallet transactions
+      security:
+        - BasicAuth: []
+        - OAuth2Auth:
+            - /accounts/{accountID}/wallets.read
   /oauth2/token:
     post:
       operationId: createAuthToken
@@ -1710,6 +2377,20 @@ components:
       description: Specify an API version.
       schema:
         $ref: '#/components/schemas/Versions'
+    Pagination.count:
+      name: count
+      in: query
+      required: false
+      schema:
+        $ref: '#/components/schemas/Count'
+      explode: false
+    Pagination.skip:
+      name: skip
+      in: query
+      required: false
+      schema:
+        $ref: '#/components/schemas/Skip'
+      explode: false
     TransferListFilters.accountIDs:
       name: accountIDs
       in: query
@@ -2209,13 +2890,10 @@ components:
         - value
       properties:
         currency:
-          type: string
-          example: USD
-          description: A 3-letter ISO 4217 currency code.
+          $ref: '#/components/schemas/Currency'
         value:
           type: integer
           format: int64
-          example: 1204
           description: |-
             Quantity in the smallest unit of the specified currency. 
 
@@ -3411,6 +4089,42 @@ components:
           $ref: '#/components/schemas/CreateIndividualProfileUpdate'
         business:
           $ref: '#/components/schemas/CreateBusinessProfileUpdate'
+    CreateSweepConfig:
+      type: object
+      required:
+        - walletID
+        - status
+        - pushPaymentMethodID
+        - pullPaymentMethodID
+      properties:
+        walletID:
+          $ref: '#/components/schemas/WalletID'
+        status:
+          $ref: '#/components/schemas/SweepConfigStatus'
+        pushPaymentMethodID:
+          $ref: '#/components/schemas/PaymentMethodID'
+        pullPaymentMethodID:
+          $ref: '#/components/schemas/PaymentMethodID'
+        statementDescriptor:
+          $ref: '#/components/schemas/SweepStatementDescriptor'
+        minimumBalance:
+          type: string
+          pattern: ^\d+\.\d{1,2}$
+    CreateSweepConfigError:
+      type: object
+      properties:
+        walletID:
+          type: string
+        status:
+          type: string
+        pushPaymentMethodID:
+          type: string
+        pullPaymentMethodID:
+          type: string
+        statementDescriptor:
+          type: string
+        minimumBalance:
+          type: string
     CreateTransfer:
       type: object
       required:
@@ -3495,6 +4209,10 @@ components:
           $ref: '#/components/schemas/CardDynamicDescriptor'
         transactionSource:
           $ref: '#/components/schemas/TransactionSource'
+    Currency:
+      type: string
+      pattern: ^[A-Za-z]{3}$
+      description: A 3-letter ISO 4217 currency code.
     CustomerSupport:
       type: object
       properties:
@@ -4123,6 +4841,33 @@ components:
       description: |-
         Describes the fields available when patching a profile.
         Each object can be patched independent of patching the other fields.
+    PatchSweepConfig:
+      type: object
+      properties:
+        status:
+          $ref: '#/components/schemas/SweepConfigStatus'
+        pushPaymentMethodID:
+          $ref: '#/components/schemas/PaymentMethodID'
+        pullPaymentMethodID:
+          $ref: '#/components/schemas/PaymentMethodID'
+        statementDescriptor:
+          $ref: '#/components/schemas/SweepStatementDescriptor'
+        minimumBalance:
+          type: string
+          pattern: ^\d+\.\d{1,2}$
+    PatchSweepConfigError:
+      type: object
+      properties:
+        status:
+          type: string
+        pushPaymentMethodID:
+          type: string
+        pullPaymentMethodID:
+          type: string
+        statementDescriptor:
+          type: string
+        minimumBalance:
+          type: string
     PatchTransfer:
       type: object
       properties:
@@ -4595,6 +5340,129 @@ components:
       format: int64
       example: 60
       description: The number of entries to skip when paginating a large result set.
+    Sweep:
+      type: object
+      required:
+        - sweepID
+        - status
+        - accruedAmount
+        - currency
+        - accrualStartedOn
+      properties:
+        sweepID:
+          $ref: '#/components/schemas/SweepID'
+        status:
+          $ref: '#/components/schemas/SweepStatus'
+        accruedAmount:
+          type: string
+          pattern: ^\d+\.\d{1,9}$
+          description: The total net amount of wallet transactions accrued in the sweep.
+        residualBalance:
+          type: string
+          pattern: ^\d+\.\d{1,9}$
+          description: Amount remaining in the wallet after the sweep transfer completes.
+        currency:
+          $ref: '#/components/schemas/Currency'
+        accrualStartedOn:
+          type: string
+          format: date-time
+          description: The date-time the sweep began accruing transactions.
+        accrualEndedOn:
+          type: string
+          format: date-time
+          description: The date-time the sweep stopped accruing transactions.
+        pushPaymentMethodID:
+          $ref: '#/components/schemas/PaymentMethodID'
+        pullPaymentMethodID:
+          $ref: '#/components/schemas/PaymentMethodID'
+        transferID:
+          type: string
+          format: uuid
+        transferAmount:
+          type: string
+          pattern: ^\d+\.\d{1,9}$
+          description: Amount that is transferred.
+        statementDescriptor:
+          $ref: '#/components/schemas/SweepStatementDescriptor'
+    SweepConfig:
+      type: object
+      required:
+        - sweepConfigID
+        - walletID
+        - status
+        - pushPaymentMethod
+        - pullPaymentMethod
+        - createdOn
+        - updatedOn
+      properties:
+        sweepConfigID:
+          $ref: '#/components/schemas/SweepConfigID'
+        walletID:
+          $ref: '#/components/schemas/WalletID'
+        status:
+          $ref: '#/components/schemas/SweepConfigStatus'
+        pushPaymentMethod:
+          $ref: '#/components/schemas/SweepConfigPaymentMethod'
+        pullPaymentMethod:
+          $ref: '#/components/schemas/SweepConfigPaymentMethod'
+        minimumBalance:
+          type: string
+          pattern: ^\d+\.\d{1,2}$
+          description: An optional field to specify an amount to maintain in the wallet. This is a decimal-formatted numerical string that represents up to 2 decimal place precision. In USD for example, 12.34 is $12.34 and 0.99 is $0.99. If not supplied, the default is 0.00.
+        statementDescriptor:
+          $ref: '#/components/schemas/SweepStatementDescriptor'
+        lockedFields:
+          type: array
+          items:
+            type: string
+          description: An array of fields that are locked. To request updates, please contact Moov support.
+        createdOn:
+          type: string
+          format: date-time
+        updatedOn:
+          type: string
+          format: date-time
+        disabledOn:
+          type: string
+          format: date-time
+    SweepConfigID:
+      type: string
+      format: uuid
+    SweepConfigPaymentMethod:
+      type: object
+      required:
+        - paymentMethodID
+      properties:
+        paymentMethodID:
+          $ref: '#/components/schemas/PaymentMethodID'
+        disabledOn:
+          type: string
+          format: date-time
+      description: |-
+        The payment method used to push or pull funds to a bank account.
+        The push payment method can only be ach-credit-standard or ach-credit-same-day. The pull payment method can only be ach-debit-fund.
+    SweepConfigStatus:
+      type: string
+      enum:
+        - enabled
+        - disabled
+    SweepID:
+      type: string
+      format: uuid
+    SweepStatementDescriptor:
+      type: string
+      minLength: 4
+      maxLength: 10
+      description: The text that appears on the banking statement. The default descriptor is a 10 character ID if an override is not set in the sweep configs statementDescriptor.
+    SweepStatus:
+      type: string
+      enum:
+        - accruing
+        - action-required
+        - canceled
+        - closed
+        - failed
+        - paid
     TaxID:
       type: object
       required:
@@ -4989,6 +5857,165 @@ components:
         - v2024.00.00
         - latest
       description: Moov API versions. Version strings are formatted as `vYYYY.MM.DD`, except preVerioned and latest.
+    Wallet:
+      type: object
+      required:
+        - walletID
+        - availableBalance
+      properties:
+        walletID:
+          $ref: '#/components/schemas/WalletID'
+        availableBalance:
+          $ref: '#/components/schemas/WalletAvailableBalance'
+      description: A Moov wallet to store funds for transfers.
+    WalletAvailableBalance:
+      type: object
+      required:
+        - currency
+        - value
+        - valueDecimal
+      properties:
+        currency:
+          $ref: '#/components/schemas/Currency'
+        value:
+          type: integer
+          format: int64
+          description: |-
+            Quantity in the smallest unit of the specified currency. 
+
+            In USD this is cents, for example, $12.04 is 1204 and $0.99 is 99.
+        valueDecimal:
+          type: string
+          pattern: ^\d+\.\d{1,9}$
+    WalletID:
+      type: string
+      format: uuid
+    WalletTransaction:
+      type: object
+      required:
+        - walletID
+        - transactionID
+        - transactionType
+        - sourceType
+        - sourceID
+        - status
+        - memo
+        - createdOn
+        - currency
+        - grossAmount
+        - grossAmountDecimal
+        - fee
+        - feeDecimal
+        - netAmount
+        - netAmountDecimal
+      properties:
+        walletID:
+          $ref: '#/components/schemas/WalletID'
+        transactionID:
+          $ref: '#/components/schemas/WalletTransactionID'
+        transactionType:
+          $ref: '#/components/schemas/WalletTransactionType'
+        sourceType:
+          $ref: '#/components/schemas/WalletTransactionSourceType'
+        sourceID:
+          type: string
+          format: uuid
+          description: The ID of the Moov object to which this transaction is related.
+        status:
+          $ref: '#/components/schemas/WalletTransactionStatus'
+        memo:
+          type: string
+          description: Detailed description of the transaction.
+        createdOn:
+          type: string
+          format: date-time
+        completedOn:
+          type: string
+          format: date-time
+        currency:
+          $ref: '#/components/schemas/Currency'
+        grossAmount:
+          type: integer
+          format: int64
+          description: The total transaction amount. The amount is in the smallest unit of the specified currency. In USD this is cents, for example, $12.04 is 1204 and $0.99 is 99.
+        grossAmountDecimal:
+          type: string
+          pattern: ^\d+\.\d{1,9}$
+          description: The total transaction amount. Same as `grossAmount`, but a decimal-formatted numerical string that represents up to 9 decimal place precision. In USD for example, 12.987654321 is $12.987654321 and 0.9987634521 is $0.9987634521.
+        fee:
+          type: integer
+          format: int64
+          description: Total fees paid for the transaction. The value is in the smallest unit of the specified currency. In USD this is cents, for example, $12.04 is 1204 and $0.99 is 99.
+        feeDecimal:
+          type: string
+          pattern: ^\d+\.\d{1,9}$
+          description: Total fees paid for the transaction. Same as `fee`, but a decimal-formatted numerical string that represents up to 9 decimal place precision. In USD for example, 12.987654321 is $12.987654321 and 0.9987634521 is $0.9987634521.
+        netAmount:
+          type: integer
+          format: int64
+          description: Net amount is the gross amount less fees paid, and the amount that affects the wallet's balance. The amount is in the smallest unit of the specified currency. In USD this is cents, for example, $12.04 is 1204 and $0.99 is 99.
+        netAmountDecimal:
+          type: string
+          pattern: ^\d+\.\d{1,9}$
+          description: Net amount is the gross amount less fees paid, and the amount that affects the wallet's balance. Same as `netAmount`, but a decimal-formatted numerical string that represents up to 9 decimal place precision. In USD for example, 12.987654321 is $12.987654321 and 0.9987634521 is $0.9987634521.
+        availableBalance:
+          type: integer
+          format: int64
+          description: The wallet's total available balance after recording a completed transaction. The value is in the smallest unit of the specified currency. In USD this is cents, for example, $12.04 is 1204 and $0.99 is 99.
+        availableBalanceDecimal:
+          type: string
+          pattern: ^\d+\.\d{1,9}$
+          description: The wallet's total available balance after recording a completed transaction. Same as `availableBalance`, but a decimal-formatted numerical string that represents up to 9 decimal place precision. In USD for example, 12.987654321 is $12.987654321 and 0.9987634521 is $0.9987634521.
+        sweepID:
+          $ref: '#/components/schemas/SweepID'
+      description: A transaction that funds or deducts from the wallet.
+    WalletTransactionID:
+      type: string
+      format: uuid
+    WalletTransactionSourceType:
+      type: string
+      enum:
+        - transfer
+        - dispute
+        - issuing-card-transaction
+        - issuing-authorization
+        - sweep
+        - adjustment
+    WalletTransactionStatus:
+      type: string
+      enum:
+        - pending
+        - completed
+        - canceled
+        - failed
+    WalletTransactionType:
+      type: string
+      enum:
+        - account-funding
+        - ach-reversal
+        - auto-sweep
+        - card-payment
+        - card-decline
+        - card-reversal
+        - cash-out
+        - dispute
+        - dispute-reversal
+        - facilitator-fee
+        - issuing-refund
+        - issuing-transaction
+        - issuing-transaction-adjustment
+        - issuing-auth-hold
+        - issuing-auth-release
+        - issuing-decline
+        - moov-fee
+        - payment
+        - payout
+        - refund
+        - refund-failure
+        - rtp-failure
+        - top-up
+        - wallet-transfer
+        - adjustment
   securitySchemes:
     BasicAuth:
       type: http
@@ -5015,6 +6042,8 @@ components:
             /accounts/{yourAccountID}/transfers.write: ''
             /accounts/{yourAccountID}/transfers.read: ''
             /accounts/{accountID}/transfers.read: ''
+            /accounts/{accountID}/wallets.read: ''
+            /accounts/{accountID}/wallets.write: ''
 servers:
   - url: https://api.moov.io
     description: Production API host
