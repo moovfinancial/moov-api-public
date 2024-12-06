@@ -834,7 +834,7 @@ paths:
             - /accounts/{accountID}/bank-accounts.write
   /accounts/{accountID}/capabilities:
     get:
-      operationId: listAccountCapabilities
+      operationId: listCapabilities
       description: |-
         Retrieve all the capabilities an account has requested.
 
@@ -856,6 +856,20 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Capability'
+              example:
+                - capability: transfers
+                  accountID: 01234567-89ab-cdef-0123-456789abcdef
+                  status: enabled
+                  createdOn: 2024-05-06T12:20:38.184Z
+                  updatedOn: 2024-05-06T12:20:38.184Z
+                - capability: collect-funds
+                  accountID: 01234567-89ab-cdef-0123-456789abcdef
+                  status: in-review
+                  requirements:
+                    - currentlyDue:
+                        - business.owners
+                  createdOn: 2024-05-06T12:20:38.184Z
+                  updatedOn: 2024-05-06T12:20:38.184Z
         '401':
           description: The request contained missing or expired authentication.
         '403':
@@ -868,6 +882,179 @@ paths:
         - BasicAuth: []
         - OAuth2Auth:
             - /accounts/{accountID}/capabilities.read
+    post:
+      operationId: addCapabilities
+      description: |-
+        Request capabilities for a specific account. Read our [capabilities guide](https://docs.moov.io/guides/accounts/capabilities/) to learn more.
+
+        To use this endpoint from the browser, you'll need to specify the `/accounts/{accountID}/capabilities.write` scope when generating a [token](https://docs.moov.io/api/authentication/access-tokens/).
+      parameters:
+        - $ref: '#/components/parameters/CommonHeaders'
+        - name: accountID
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: The request completed successfully.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Capability'
+              example:
+                - capability: transfers
+                  accountID: 01234567-89ab-cdef-0123-456789abcdef
+                  status: enabled
+                  createdOn: 2024-05-06T12:20:38.184Z
+                  updatedOn: 2024-05-06T12:20:38.184Z
+                - capability: collect-funds
+                  accountID: 01234567-89ab-cdef-0123-456789abcdef
+                  status: in-review
+                  requirements:
+                    - currentlyDue:
+                        - business.owners
+                  createdOn: 2024-05-06T12:20:38.184Z
+                  updatedOn: 2024-05-06T12:20:38.184Z
+        '400':
+          description: The server could not understand the request due to invalid syntax.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+        '401':
+          description: The request contained missing or expired authentication.
+        '403':
+          description: The user is not authorized to make the request.
+        '404':
+          description: The requested resource was not found.
+        '409':
+          description: The request conflicted with the current state of the target resource.
+          content:
+            application/json:
+              schema:
+                type: string
+        '422':
+          description: The request was well-formed, but the contents failed validation. Check the request for missing or invalid fields.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AddCapabilitiesError'
+        '429':
+          description: Request was refused due to rate limiting.
+      tags:
+        - Capabilities
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AddCapabilities'
+            example:
+              capabilities:
+                - collect-funds
+      security:
+        - BasicAuth: []
+        - OAuth2Auth:
+            - /accounts/{accountID}/capabilities.write
+  /accounts/{accountID}/capabilities/{capabilityID}:
+    get:
+      operationId: getCapability
+      description: |-
+        Retrieve a specific capability that an account has requested. Read our [capabilities guide](https://docs.moov.io/guides/accounts/capabilities/) to learn more.
+
+        To use this endpoint from the browser, you'll need to specify the `/accounts/{accountID}/capabilities.read` scope when generating a [token](https://docs.moov.io/api/authentication/access-tokens/).
+      parameters:
+        - $ref: '#/components/parameters/CommonHeaders'
+        - name: accountID
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: capabilityID
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/CapabilityID'
+      responses:
+        '200':
+          description: The request completed successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Capability'
+              example:
+                capability: transfers
+                accountID: 01234567-89ab-cdef-0123-456789abcdef
+                status: enabled
+                createdOn: 2024-05-06T12:20:38.184Z
+                updatedOn: 2024-05-06T12:20:38.184Z
+        '401':
+          description: The request contained missing or expired authentication.
+        '403':
+          description: The user is not authorized to make the request.
+        '404':
+          description: The requested resource was not found.
+        '429':
+          description: Request was refused due to rate limiting.
+      tags:
+        - Capabilities
+      security:
+        - BasicAuth: []
+        - OAuth2Auth:
+            - /accounts/{accountID}/capabilities.read
+    delete:
+      operationId: disableCapability
+      description: |-
+        Disable a specific capability that an account has requested. Read our [capabilities guide](https://docs.moov.io/guides/accounts/capabilities/) to learn more.
+
+        To use this endpoint from the browser, you'll need to specify the `/accounts/{accountID}/capabilities.write` scope when generating a [token](https://docs.moov.io/api/authentication/access-tokens/).
+      parameters:
+        - $ref: '#/components/parameters/CommonHeaders'
+        - name: accountID
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: capabilityID
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/CapabilityID'
+      responses:
+        '204':
+          description: The request completed successfully, but there is no content to return.
+        '400':
+          description: The server could not understand the request due to invalid syntax.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+        '401':
+          description: The request contained missing or expired authentication.
+        '403':
+          description: The user is not authorized to make the request.
+        '404':
+          description: The requested resource was not found.
+        '409':
+          description: The request conflicted with the current state of the target resource.
+          content:
+            application/json:
+              schema:
+                type: string
+        '429':
+          description: Request was refused due to rate limiting.
+      tags:
+        - Capabilities
+      security:
+        - BasicAuth: []
+        - OAuth2Auth:
+            - /accounts/{accountID}/capabilities.write
   /accounts/{accountID}/cards:
     post:
       operationId: linkCard
@@ -2808,6 +2995,20 @@ components:
           type: string
           enum:
             - ach-debit-fund
+    AddCapabilities:
+      type: object
+      required:
+        - capabilities
+      properties:
+        capabilities:
+          type: array
+          items:
+            $ref: '#/components/schemas/CapabilityID'
+    AddCapabilitiesError:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/CapabilitiesError'
     Address:
       type: object
       required:
@@ -3249,6 +3450,13 @@ components:
         - governmentEntity
       example: llc
       description: The type of entity represented by this business.
+    CapabilitiesError:
+      type: object
+      properties:
+        capabilities:
+          type: object
+          additionalProperties:
+            type: string
     Capability:
       type: object
       required:
@@ -6036,6 +6244,7 @@ components:
             /accounts/{accountID}/bank-accounts.write: ''
             /accounts/{accountID}/bank-accounts.read: ''
             /accounts/{accountID}/capabilities.read: ''
+            /accounts/{accountID}/capabilities.write: ''
             /accounts/{accountID}/cards.write: ''
             /accounts/{accountID}/cards.read: ''
             /accounts/{accountID}/payment-methods.read: ''

@@ -32,3 +32,15 @@ enum CapabilityStatus {
   pending: "pending",
   inReview: "in-review",
 }
+
+model AddCapabilities {
+  capabilities: CapabilityID[];
+}
+
+model AddCapabilitiesError {
+  error?: CapabilitiesError;
+}
+
+model CapabilitiesError {
+  capabilities?: Record<string>;
+}
