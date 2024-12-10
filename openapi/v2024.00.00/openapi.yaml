@@ -16,10 +16,10 @@ info:
   version: v2024.00.00
 tags:
   - name: Authentication
+  - name: Cards
   - name: Accounts
   - name: Bank accounts
   - name: Capabilities
-  - name: Cards
   - name: Payment methods
   - name: Transfers
   - name: Sweeps
@@ -74,7 +74,7 @@ paths:
           content:
             application/json:
               schema:
-                type: string
+                $ref: '#/components/schemas/GenericError'
         '422':
           description: The request was well-formed, but the contents failed validation. Check the request for missing or invalid fields.
           content:
@@ -230,7 +230,7 @@ paths:
           content:
             application/json:
               schema:
-                type: string
+                $ref: '#/components/schemas/GenericError'
         '422':
           description: The request was well-formed, but the contents failed validation. Check the request for missing or invalid fields.
           content:
@@ -292,7 +292,7 @@ paths:
           content:
             application/json:
               schema:
-                type: string
+                $ref: '#/components/schemas/GenericError'
         '429':
           description: Request was refused due to rate limiting.
       tags:
@@ -301,6 +301,282 @@ paths:
         - BasicAuth: []
         - OAuth2Auth:
             - /accounts/{accountID}/profile.disconnect
+  /accounts/{accountID}/apple-pay/domains:
+    post:
+      operationId: registerApplePayMerchantDomains
+      description: |-
+        Add domains to be registered with Apple Pay.
+
+        Any domains that will be used to accept payments must first be [verified](https://docs.moov.io/guides/sources/cards/apple-pay/#register-your-domains) 
+        with Apple.
+
+        To use this endpoint from the browser, you'll need to specify the `/accounts/{accountID}/apple-pay.write` scope when generating a 
+        [token](https://docs.moov.io/api/authentication/access-tokens/).
+      parameters:
+        - $ref: '#/components/parameters/CommonHeaders'
+        - name: accountID
+          in: path
+          required: true
+          description: ID of the Moov account representing the merchant.
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: The request completed successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApplePayMerchantDomains'
+        '400':
+          description: The server could not understand the request due to invalid syntax.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+        '401':
+          description: The request contained missing or expired authentication.
+        '403':
+          description: The user is not authorized to make the request.
+        '409':
+          description: Apple Pay domains are already registered for this account.
+        '417':
+          description: The requested domains were not verified.
+        '429':
+          description: Request was refused due to rate limiting.
+      tags:
+        - Cards
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterApplePayMerchantDomains'
+      security:
+        - BasicAuth: []
+        - OAuth2Auth:
+            - /accounts/{accountID}/apple-pay.write
+    patch:
+      operationId: updateApplePayMerchantDomains
+      description: |2-
+          Add or remove domains to be registered with Apple Pay. 
+
+          Any domains that will be used to accept payments must first be [verified](https://docs.moov.io/guides/sources/cards/apple-pay/#register-your-domains) 
+          with Apple.
+          
+          To use this endpoint from the browser, you'll need to specify the `/accounts/{accountID}/apple-pay.write` scope when generating a 
+          [token](https://docs.moov.io/api/authentication/access-tokens/).
+      parameters:
+        - $ref: '#/components/parameters/CommonHeaders'
+        - name: accountID
+          in: path
+          required: true
+          description: ID of the Moov account representing the merchant.
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '204':
+          description: The request completed successfully, but there is no content to return.
+        '400':
+          description: The server could not understand the request due to invalid syntax.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+        '401':
+          description: The request contained missing or expired authentication.
+        '403':
+          description: The user is not authorized to make the request.
+        '404':
+          description: The requested resource was not found.
+        '409':
+          description: Apple Pay domains are already registered for this account.
+        '417':
+          description: The requested domains were not verified.
+        '429':
+          description: Request was refused due to rate limiting.
+      tags:
+        - Cards
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateApplePayMerchantDomains'
+      security:
+        - BasicAuth: []
+        - OAuth2Auth:
+            - /accounts/{accountID}/apple-pay.write
+    get:
+      operationId: getApplePayMerchantDomains
+      description: |2-
+          Get domains registered with Apple Pay. 
+          
+          Read our [Apple Pay tutorial](https://docs.moov.io/guides/sources/cards/apple-pay/#register-your-domains) to learn more. 
+          
+          To use this endpoint from the browser, you'll need to specify the `/accounts/{accountID}/apple-pay.read` scope when generating a 
+          [token](https://docs.moov.io/api/authentication/access-tokens/).
+      parameters:
+        - $ref: '#/components/parameters/CommonHeaders'
+        - name: accountID
+          in: path
+          required: true
+          description: ID of the Moov account representing the merchant.
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: The request completed successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApplePayMerchantDomains'
+        '401':
+          description: The request contained missing or expired authentication.
+        '403':
+          description: The user is not authorized to make the request.
+        '404':
+          description: The requested resource was not found.
+        '429':
+          description: Request was refused due to rate limiting.
+      tags:
+        - Cards
+      security:
+        - BasicAuth: []
+        - OAuth2Auth:
+            - /accounts/{accountID}/apple-pay.read
+  /accounts/{accountID}/apple-pay/sessions:
+    post:
+      operationId: createApplePaySession
+      description: |-
+        Create a session with Apple Pay to facilitate a payment. 
+
+        Read our [Apple Pay tutorial](https://docs.moov.io/guides/sources/cards/apple-pay/#register-your-domains) to learn more. 
+        A successful response from this endpoint should be passed through to Apple Pay unchanged. 
+
+        To use this endpoint from the browser, you'll need to specify the `/accounts/{accountID}/apple-pay.write` scope when generating 
+        a [token](https://docs.moov.io/api/authentication/access-tokens/).
+      parameters:
+        - $ref: '#/components/parameters/CommonHeaders'
+        - name: accountID
+          in: path
+          required: true
+          description: ID of the Moov account representing the merchant.
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: The request completed successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApplePaySession'
+        '400':
+          description: The server could not understand the request due to invalid syntax.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+        '401':
+          description: The request contained missing or expired authentication.
+        '403':
+          description: The user is not authorized to make the request.
+        '404':
+          description: The requested resource was not found.
+        '409':
+          description: The request conflicted with the current state of the target resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+        '422':
+          description: The request was well-formed, but the contents failed validation. Check the request for missing or invalid fields.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+        '429':
+          description: Request was refused due to rate limiting.
+      tags:
+        - Cards
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateApplePaySession'
+      security:
+        - BasicAuth: []
+        - OAuth2Auth:
+            - /accounts/{accountID}/apple-pay.write
+  /accounts/{accountID}/apple-pay/tokens:
+    post:
+      operationId: linkApplePayToken
+      description: |-
+        Connect an Apple Pay token to the specified account. 
+
+        Read our [Apple Pay tutorial](https://docs.moov.io/guides/sources/cards/apple-pay/#register-your-domains) to learn more. 
+        The `token` data is defined by Apple Pay and should be passed through from Apple Pay's response unmodified.
+
+        To use this endpoint from the browser, you'll need to specify the `/accounts/{accountID}/cards.write` scope when generating 
+        a [token](https://docs.moov.io/api/authentication/access-tokens/).
+      parameters:
+        - $ref: '#/components/parameters/CommonHeaders'
+        - name: accountID
+          in: path
+          required: true
+          description: ID of the Moov account representing the cardholder.
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: The request completed successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LinkedApplePayPaymentMethod'
+        '400':
+          description: The server could not understand the request due to invalid syntax.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+        '401':
+          description: The request contained missing or expired authentication.
+        '403':
+          description: The user is not authorized to make the request.
+        '404':
+          description: The requested resource was not found.
+        '409':
+          description: The request conflicted with the current state of the target resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+        '422':
+          description: The request was well-formed, but the contents failed validation. Check the request for missing or invalid fields.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LinkApplePayError'
+        '429':
+          description: Request was refused due to rate limiting.
+      tags:
+        - Cards
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LinkApplePay'
+      security:
+        - BasicAuth: []
+        - OAuth2Auth:
+            - /accounts/{accountID}/cards.write
   /accounts/{accountID}/bank-accounts:
     post:
       operationId: linkBankAccount
@@ -355,7 +631,7 @@ paths:
           content:
             application/json:
               schema:
-                type: string
+                $ref: '#/components/schemas/GenericError'
         '422':
           description: The request was well-formed, but the contents failed validation. Check the request for missing or invalid fields.
           content:
@@ -498,7 +774,7 @@ paths:
           content:
             application/json:
               schema:
-                type: string
+                $ref: '#/components/schemas/GenericError'
         '429':
           description: Request was refused due to rate limiting.
       tags:
@@ -554,7 +830,7 @@ paths:
           content:
             application/json:
               schema:
-                type: string
+                $ref: '#/components/schemas/GenericError'
         '429':
           description: Request was refused due to rate limiting.
       tags:
@@ -608,7 +884,7 @@ paths:
           content:
             application/json:
               schema:
-                type: string
+                $ref: '#/components/schemas/GenericError'
         '422':
           description: The request was well-formed, but the contents failed validation. Check the request for missing or invalid fields.
           content:
@@ -750,7 +1026,7 @@ paths:
           content:
             application/json:
               schema:
-                type: string
+                $ref: '#/components/schemas/GenericError'
         '429':
           description: Request was refused due to rate limiting.
       tags:
@@ -811,7 +1087,7 @@ paths:
           content:
             application/json:
               schema:
-                type: string
+                $ref: '#/components/schemas/GenericError'
         '422':
           description: The request was well-formed, but the contents failed validation. Check the request for missing or invalid fields.
           content:
@@ -936,7 +1212,7 @@ paths:
           content:
             application/json:
               schema:
-                type: string
+                $ref: '#/components/schemas/GenericError'
         '422':
           description: The request was well-formed, but the contents failed validation. Check the request for missing or invalid fields.
           content:
@@ -1046,7 +1322,7 @@ paths:
           content:
             application/json:
               schema:
-                type: string
+                $ref: '#/components/schemas/GenericError'
         '429':
           description: Request was refused due to rate limiting.
       tags:
@@ -1119,7 +1395,7 @@ paths:
           content:
             application/json:
               schema:
-                type: string
+                $ref: '#/components/schemas/GenericError'
         '422':
           description: The request was well-formed, but the contents failed validation. Check the request for missing or invalid fields.
           content:
@@ -1275,7 +1551,7 @@ paths:
           content:
             application/json:
               schema:
-                type: string
+                $ref: '#/components/schemas/GenericError'
         '422':
           description: The request was well-formed, but the contents failed validation. Check the request for missing or invalid fields.
           content:
@@ -1336,7 +1612,7 @@ paths:
           content:
             application/json:
               schema:
-                type: string
+                $ref: '#/components/schemas/GenericError'
         '429':
           description: Request was refused due to rate limiting.
       tags:
@@ -1496,7 +1772,7 @@ paths:
           content:
             application/json:
               schema:
-                type: string
+                $ref: '#/components/schemas/GenericError'
         '422':
           description: The request was well-formed, but the contents failed validation. Check the request for missing or invalid fields.
           content:
@@ -1681,7 +1957,7 @@ paths:
           content:
             application/json:
               schema:
-                type: string
+                $ref: '#/components/schemas/GenericError'
         '422':
           description: The request was well-formed, but the contents failed validation. Check the request for missing or invalid fields.
           content:
@@ -2238,7 +2514,7 @@ paths:
           content:
             application/json:
               schema:
-                type: string
+                $ref: '#/components/schemas/GenericError'
         '422':
           description: The request was well-formed, but the contents failed validation. Check the request for missing or invalid fields.
           content:
@@ -3099,6 +3375,86 @@ components:
             Quantity in the smallest unit of the specified currency. 
 
             In USD this is cents, for example, $12.04 is 1204 and $0.99 is 99.
+    AppleBillingContact:
+      type: object
+      properties:
+        addressLines:
+          type: array
+          items:
+            type: string
+          example:
+            - 123 Sesame Street
+          description: Address lines 1 and 2 for the contact.
+        locality:
+          type: string
+          example: Phoenix
+          description: The contact's city.
+        postalCode:
+          type: string
+          example: '30345'
+          description: The contact's postal code.
+        administrativeArea:
+          type: string
+          example: AZ
+          description: The contact's two-letter state code.
+        countryCode:
+          type: string
+          example: US
+          description: The contact's two-letter ISO 3166
+      description: |2-
+          Billing contact information as returned from Apple Pay.
+          
+          Refer to [Apple's documentation](https://developer.apple.com/documentation/apple_pay_on_the_web/applepaypaymentcontact) 
+          for more information.
+    ApplePayHeader:
+      type: object
+      required:
+        - publicKeyHash
+        - transactionId
+      properties:
+        ephemeralPublicKey:
+          type: string
+          example: MFkwEK...Md==
+          description: Base64-encoded ephemeral public key, used for ECC-encrypted payment data.
+        publicKeyHash:
+          type: string
+          example: l0CnXdMv...D1I=
+          description: A base64-encoded, SHA-256 hash of the merchant's public key.
+        transactionId:
+          type: string
+          example: 32b...4f3
+          description: A device-generated identifier for the transaction.
+      description: |-
+        Information needed to decrypt Apple Pay payment data.
+
+        Refer to [Apple's documentation](https://developer.apple.com/documentation/passkit/payment-token-format-reference#Header-keys-and-values) 
+        for more information.
+    ApplePayMerchantDomains:
+      type: object
+      required:
+        - accountID
+        - displayName
+        - domains
+        - createdOn
+        - updatedOn
+      properties:
+        accountID:
+          type: string
+        displayName:
+          $ref: '#/components/schemas/DomainDisplayName'
+        domains:
+          type: array
+          items:
+            type: string
+          example:
+            - checkout.classbooker.dev
+          description: A unique list of fully-qualified, top-level or sub-domain names where you will accept Apple Pay.
+        createdOn:
+          type: string
+          format: date-time
+        updatedOn:
+          type: string
+          format: date-time
     ApplePayPaymentMethod:
       type: object
       required:
@@ -3113,6 +3469,47 @@ components:
           enum:
             - apple-pay
         applePay: {}
+    ApplePayResponse:
+      type: object
+      required:
+        - brand
+        - cardType
+        - cardDisplayName
+        - fingerprint
+        - expiration
+        - dynamicLastFour
+      properties:
+        brand:
+          $ref: '#/components/schemas/CardBrand'
+        cardType:
+          $ref: '#/components/schemas/CardType'
+        cardDisplayName:
+          type: string
+          example: Visa 1256
+          description: |2-
+              User-friendly name of the tokenized card returned by Apple.
+              
+              It usually contains the brand and the last four digits of the underlying card.
+              There is no standard format.
+        fingerprint:
+          $ref: '#/components/schemas/CardFingerprint'
+        expiration:
+          $ref: '#/components/schemas/CardExpiration'
+        dynamicLastFour:
+          type: string
+          description: The last four digits of the Apple Pay token, which may differ from the tokenized card's last four digits.
+        issuerCountry:
+          type: string
+          example: US
+          description: Country where the underlying card was issued.
+      description: Describes an Apple Pay token on a Moov account.
+    ApplePaySession:
+      type: string
+      example: '{"epochTimestamp":1733783167685,"expiresAt":1733786767685...}'
+      description: |-
+        Stringified session object returned from Apple Pay.
+
+        The string value should be deserialized as a JSON object before passing to Apple.
     AsyncTransfer:
       type: object
       required:
@@ -4103,6 +4500,18 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/CapabilityID'
+    CreateApplePaySession:
+      type: object
+      required:
+        - domain
+        - displayName
+      properties:
+        domain:
+          type: string
+          example: checkout.classbooker.dev
+          description: A fully qualified top-level or sub-domain name where you will accept Apple Pay. Should not include "https".
+        displayName:
+          $ref: '#/components/schemas/DomainDisplayName'
     CreateBusinessError:
       type: object
       properties:
@@ -4506,6 +4915,10 @@ components:
         - bankStatement
       example: bankStatement
       description: Types of documents that can be uploaded.
+    DomainDisplayName:
+      type: string
+      maxLength: 64
+      description: A UTF-8 string to display in the Buy button.
     DomesticPullFromCard:
       type: string
       enum:
@@ -4740,6 +5153,106 @@ components:
           example: '7997'
           minLength: 4
           maxLength: 4
+    LinkApplePay:
+      type: object
+      required:
+        - token
+      properties:
+        token:
+          $ref: '#/components/schemas/LinkApplePayToken'
+        billingContact:
+          $ref: '#/components/schemas/AppleBillingContact'
+      description: |2-
+          The JSON structure returned from Apple Pay when authorizing a payment session.
+
+          Refer to [Apple's documentation](https://developer.apple.com/documentation/apple_pay_on_the_web/applepaypayment) 
+          for more information.
+    LinkApplePayError:
+      type: object
+      properties:
+        error:
+          type: string
+          description: Describes an error that wasn't attributable to a single request field.
+        paymentData:
+          type: string
+          description: Describes an error within the `token.paymentData` request field.
+        paymentMethod:
+          type: string
+          description: Describes an error within the `token.paymentMethod` request field.
+        transactionIdentifier:
+          type: string
+          description: Describes an error within the `token.transactionIdentifier` request field.
+    LinkApplePayToken:
+      type: object
+      required:
+        - paymentData
+        - paymentMethod
+        - transactionIdentifier
+      properties:
+        paymentData:
+          $ref: '#/components/schemas/LinkApplePaymentData'
+        paymentMethod:
+          $ref: '#/components/schemas/LinkApplePaymentMethod'
+        transactionIdentifier:
+          type: string
+          example: 32b...4f3
+          description: A unique identifier provided by Apple Pay for this payment.
+      description: |2-
+          Contains the user's payment information as returned from Apple Pay.
+
+          Refer to [Apple's documentation](https://developer.apple.com/documentation/apple_pay_on_the_web/applepaypaymenttoken) 
+          for more information.
+    LinkApplePaymentData:
+      type: object
+      required:
+        - version
+        - data
+        - signature
+        - header
+      properties:
+        version:
+          type: string
+          example: EC_v1
+          description: Specifies the encryption used for the payment token ("EC_v1" or "RSA_v1").
+        data:
+          type: string
+          example: 3+f4oOTwPa6f1UZ6tG...CE=
+          description: The encrypted, base64-encoded payment data.
+        signature:
+          type: string
+          example: MIAGCSqGSIb3DQ.AAAA==
+          description: A base64 encoded signature of the payment and header data.
+        header:
+          $ref: '#/components/schemas/ApplePayHeader'
+      description: |2-
+          Contains the encrypted payment data.
+
+          Refer to [Apple's documentation](https://developer.apple.com/documentation/apple_pay_on_the_web/applepaypaymenttoken/1916115-paymentdata) 
+          for more information.
+    LinkApplePaymentMethod:
+      type: object
+      required:
+        - displayName
+        - network
+        - type
+      properties:
+        displayName:
+          type: string
+          example: Visa 1234
+          description: A display-friendly discription of the card.
+        network:
+          type: string
+          example: Visa
+          description: The card's payment network.
+        type:
+          type: string
+          example: debit
+          description: The type of card.
+      description: |2-
+          Provides information about the underlying card.
+
+          Refer to [Apple's documentation](https://developer.apple.com/documentation/apple_pay_on_the_web/applepaypaymenttoken/1916113-paymentmethod) 
+          for more information.
     LinkBankAccount:
       oneOf:
         - $ref: '#/components/schemas/BankAccountPayload'
@@ -4817,6 +5330,21 @@ components:
       enum:
         - payment-method
       example: payment-method
+    LinkedApplePayPaymentMethod:
+      type: object
+      required:
+        - paymentMethodID
+        - paymentMethodType
+        - applePay
+      properties:
+        paymentMethodID:
+          type: string
+          format: uuid
+          description: The new payment method's ID.
+        paymentMethodType:
+          $ref: '#/components/schemas/PaymentMethodType'
+        applePay:
+          $ref: '#/components/schemas/ApplePayResponse'
     MXAuthorizationCode:
       type: object
       required:
@@ -5352,6 +5880,18 @@ components:
         - pending
         - completed
         - failed
+    RegisterApplePayMerchantDomains:
+      type: object
+      properties:
+        displayName:
+          $ref: '#/components/schemas/DomainDisplayName'
+        domains:
+          type: array
+          items:
+            type: string
+          example:
+            - checkout.classbooker.dev
+          description: A unique list of fully-qualified, top-level or sub-domain names where you will accept Apple Pay.
     Representative:
       type: object
       required:
@@ -5941,6 +6481,23 @@ components:
       type: string
       enum:
         - rail-response
+    UpdateApplePayMerchantDomains:
+      type: object
+      properties:
+        addDomains:
+          type: array
+          items:
+            type: string
+          example:
+            - pay.classbooker.dev
+          description: A unique list of fully-qualified, top-level or sub-domain names to add.
+        removeDomains:
+          type: array
+          items:
+            type: string
+          example:
+            - checkout.classbooker.dev
+          description: A unique list of fully-qualified, top-level or sub-domain names to remove.
     UpdateCard:
       type: object
       properties:
@@ -6236,6 +6793,9 @@ components:
           tokenUrl: /oauth2/token
           refreshUrl: /oauth2/token
           scopes:
+            /accounts/{accountID}/apple-pay.write: ''
+            /accounts/{accountID}/apple-pay.read: ''
+            /accounts/{accountID}/cards.write: ''
             /accounts.write: ''
             /accounts.read: ''
             /accounts/{accountID}/profile.read: ''
@@ -6245,7 +6805,6 @@ components:
             /accounts/{accountID}/bank-accounts.read: ''
             /accounts/{accountID}/capabilities.read: ''
             /accounts/{accountID}/capabilities.write: ''
-            /accounts/{accountID}/cards.write: ''
             /accounts/{accountID}/cards.read: ''
             /accounts/{accountID}/payment-methods.read: ''
             /accounts/{yourAccountID}/transfers.write: ''

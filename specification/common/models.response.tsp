@@ -72,7 +72,7 @@ model StateConflictResponse {
     In most cases this will be a GenericError, but some APIs may
     return the existing resource with which this request conflicted.
     """)
-  error?: string;
+  error?: GenericError;
 }
 
 alias HttpStatusUnprocessableEntity = 422;
