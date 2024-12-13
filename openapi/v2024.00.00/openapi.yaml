@@ -19,6 +19,7 @@ tags:
   - name: Cards
   - name: Accounts
   - name: Bank accounts
+  - name: Branding
   - name: Capabilities
   - name: Payment methods
   - name: Transfers
@@ -1108,6 +1109,157 @@ paths:
         - BasicAuth: []
         - OAuth2Auth:
             - /accounts/{accountID}/bank-accounts.write
+  /accounts/{accountID}/branding:
+    post:
+      operationId: postBrand
+      description: Creates the brand properties for the specified account.
+      parameters:
+        - $ref: '#/components/parameters/CommonHeaders'
+        - name: accountID
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: The request completed successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Brand'
+        '400':
+          description: The server could not understand the request due to invalid syntax.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+        '401':
+          description: The request contained missing or expired authentication.
+        '403':
+          description: The user is not authorized to make the request.
+        '404':
+          description: The requested resource was not found.
+        '409':
+          description: The request conflicted with the current state of the target resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+        '422':
+          description: The request was well-formed, but the contents failed validation. Check the request for missing or invalid fields.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BrandValidationError'
+        '429':
+          description: Request was refused due to rate limiting.
+      tags:
+        - Branding
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Brand'
+      security:
+        - BasicAuth: []
+        - OAuth2Auth:
+            - /accounts/{accountID}/branding.write
+    get:
+      operationId: getBrand
+      description: Gets the brand properties for the specified account.
+      parameters:
+        - $ref: '#/components/parameters/CommonHeaders'
+        - name: accountID
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: The request completed successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Brand'
+        '401':
+          description: The request contained missing or expired authentication.
+        '403':
+          description: The user is not authorized to make the request.
+        '404':
+          description: The requested resource was not found.
+        '429':
+          description: Request was refused due to rate limiting.
+      tags:
+        - Branding
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Brand'
+      security:
+        - BasicAuth: []
+        - OAuth2Auth:
+            - /accounts/{accountID}/branding.read
+    patch:
+      operationId: updateBrand
+      description: Updates the brand properties for the specified account.
+      parameters:
+        - $ref: '#/components/parameters/CommonHeaders'
+        - name: accountID
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: The request completed successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Brand'
+        '400':
+          description: The server could not understand the request due to invalid syntax.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+        '401':
+          description: The request contained missing or expired authentication.
+        '403':
+          description: The user is not authorized to make the request.
+        '404':
+          description: The requested resource was not found.
+        '409':
+          description: The request conflicted with the current state of the target resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+        '422':
+          description: The request was well-formed, but the contents failed validation. Check the request for missing or invalid fields.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BrandValidationError'
+        '429':
+          description: Request was refused due to rate limiting.
+      tags:
+        - Branding
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BrandUpdate'
+      security:
+        - BasicAuth: []
+        - OAuth2Auth:
+            - /accounts/{accountID}/branding.write
   /accounts/{accountID}/capabilities:
     get:
       operationId: listCapabilities
@@ -3785,6 +3937,32 @@ components:
         year:
           type: integer
           example: 1989
+    Brand:
+      type: object
+      required:
+        - colors
+      properties:
+        colors:
+          allOf:
+            - $ref: '#/components/schemas/Colors'
+          description: Set brand accent colors for light and dark modes.
+    BrandColorValidationError:
+      type: object
+      properties:
+        accent:
+          type: string
+    BrandUpdate:
+      type: object
+      properties:
+        colors:
+          allOf:
+            - $ref: '#/components/schemas/ColorsUpdate'
+          description: Set brand accent colors for light and dark modes.
+    BrandValidationError:
+      type: object
+      properties:
+        colors:
+          $ref: '#/components/schemas/ColorsValidationError'
     BusinessProfile:
       type: object
       required:
@@ -4372,6 +4550,30 @@ components:
         - unavailable
         - partialMatch
       example: match
+    Colors:
+      type: object
+      required:
+        - dark
+        - light
+      properties:
+        dark:
+          $ref: '#/components/schemas/Dark'
+        light:
+          $ref: '#/components/schemas/Light'
+    ColorsUpdate:
+      type: object
+      properties:
+        dark:
+          $ref: '#/components/schemas/DarkUpdate'
+        light:
+          $ref: '#/components/schemas/LightUpdate'
+    ColorsValidationError:
+      type: object
+      properties:
+        light:
+          $ref: '#/components/schemas/BrandColorValidationError'
+        dark:
+          $ref: '#/components/schemas/BrandColorValidationError'
     CompleteBankAccountVerification:
       type: object
       required:
@@ -4871,6 +5073,22 @@ components:
       description: |-
         User-provided information that can be displayed on credit card transactions for customers to use when
         contacting a customer support team. This data is only allowed on a business account.
+    Dark:
+      type: object
+      required:
+        - accent
+      properties:
+        accent:
+          type: string
+          example: '#111111'
+          description: A CSS hex color representing the accent color for use in dark mode.
+    DarkUpdate:
+      type: object
+      properties:
+        accent:
+          type: string
+          example: '#111111'
+          description: A CSS hex color representing the accent color for use in dark mode.
     DebitHoldPeriod:
       type: string
       enum:
@@ -5153,6 +5371,22 @@ components:
           example: '7997'
           minLength: 4
           maxLength: 4
+    Light:
+      type: object
+      required:
+        - accent
+      properties:
+        accent:
+          type: string
+          example: '#ffffff'
+          description: A CSS hex color representing the accent color for use in light mode.
+    LightUpdate:
+      type: object
+      properties:
+        accent:
+          type: string
+          example: '#ffffff'
+          description: A CSS hex color representing the accent color for use in light mode.
     LinkApplePay:
       type: object
       required:
@@ -6803,6 +7037,8 @@ components:
             /accounts/{accountID}/profile.disconnect: ''
             /accounts/{accountID}/bank-accounts.write: ''
             /accounts/{accountID}/bank-accounts.read: ''
+            /accounts/{accountID}/branding.write: ''
+            /accounts/{accountID}/branding.read: ''
             /accounts/{accountID}/capabilities.read: ''
             /accounts/{accountID}/capabilities.write: ''
             /accounts/{accountID}/cards.read: ''

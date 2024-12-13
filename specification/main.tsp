@@ -8,6 +8,7 @@ import "./auth";
 import "./applepay";
 import "./accounts";
 import "./bankaccounts";
+import "./branding";
 import "./capabilities";
 import "./cards";
 import "./common";
