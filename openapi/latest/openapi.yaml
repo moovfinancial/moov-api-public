@@ -1773,6 +1773,105 @@ paths:
         - BasicAuth: []
         - OAuth2Auth:
             - /accounts/{accountID}/cards.write
+  /accounts/{accountID}/countries:
+    get:
+      operationId: getAccountCountries
+      description: |-
+        Retrieve the specified countries of operation for an account. 
+
+        To use this endpoint from the browser, you'll need to specify the `/accounts/{accountID}/profile.read` scope when generating 
+        a [token](https://docs.moov.io/api/authentication/access-tokens/).
+      parameters:
+        - $ref: '#/components/parameters/CommonHeaders'
+        - name: accountID
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: The request completed successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountCountries'
+        '401':
+          description: The request contained missing or expired authentication.
+        '403':
+          description: The user is not authorized to make the request.
+        '404':
+          description: The requested resource was not found.
+        '429':
+          description: Request was refused due to rate limiting.
+      tags:
+        - Accounts
+      security:
+        - BasicAuth: []
+        - OAuth2Auth:
+            - /accounts/{accountID}/profile.read
+    put:
+      operationId: assignAccountCountries
+      description: |-
+        Assign the countries of operation for an account.
+
+        This endpoint will always overwrite the previously assigned values. 
+
+        To use this endpoint from the browser, you'll need to specify the `/accounts/{accountID}/profile.write` scope when generating 
+        a [token](https://docs.moov.io/api/authentication/access-tokens/).
+      parameters:
+        - $ref: '#/components/parameters/CommonHeaders'
+        - name: accountID
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: The request completed successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountCountries'
+        '400':
+          description: The server could not understand the request due to invalid syntax.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+        '401':
+          description: The request contained missing or expired authentication.
+        '403':
+          description: The user is not authorized to make the request.
+        '404':
+          description: The requested resource was not found.
+        '409':
+          description: The request conflicted with the current state of the target resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+        '422':
+          description: The request was well-formed, but the contents failed validation. Check the request for missing or invalid fields.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AssignCountriesError'
+        '429':
+          description: Request was refused due to rate limiting.
+      tags:
+        - Accounts
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AccountCountries'
+      security:
+        - BasicAuth: []
+        - OAuth2Auth:
+            - /accounts/{accountID}/profile.write
   /accounts/{accountID}/payment-methods:
     get:
       operationId: listPaymentMethods
@@ -3319,6 +3418,16 @@ components:
         status:
           type: string
       description: Describes an action or set of actions that an account is permitted to perform.
+    AccountCountries:
+      type: object
+      required:
+        - countries
+      properties:
+        countries:
+          type: array
+          items:
+            $ref: '#/components/schemas/OperatingCountry'
+      description: The countries in which an account operates.
     AccountNameVerification:
       type: object
       required:
@@ -3662,6 +3771,13 @@ components:
         Stringified session object returned from Apple Pay.
 
         The string value should be deserialized as a JSON object before passing to Apple.
+    AssignCountriesError:
+      type: object
+      required:
+        - error
+      properties:
+        error:
+          $ref: '#/components/schemas/CountriesErrors'
     AsyncTransfer:
       type: object
       required:
@@ -4609,6 +4725,15 @@ components:
       format: int64
       example: 20
       description: Limits the maximum number of results returned, or determines the page size when used with `skip` for pagination.
+    CountriesErrors:
+      type: object
+      required:
+        - countries
+      properties:
+        countries:
+          type: object
+          additionalProperties:
+            type: string
     CreateAccount:
       type: object
       required:
@@ -5714,6 +5839,10 @@ components:
           RoutingNumber: "123456780",
           BankName: "Gringotts Bank"
         ```
+    OperatingCountry:
+      type: string
+      example: United States
+      maxLength: 64
     PatchAccount:
       type: object
       properties:
