@@ -127,7 +127,7 @@ model CreateBusinessProfile {
   @example("Local fitness gym paying out instructors")
   @minLength(10)
   @maxLength(100)
-  description: string;
+  description?: string;
 
   taxID?: TaxID;
   industryCodes?: IndustryCodes;
@@ -178,7 +178,7 @@ model BusinessProfile {
   @example("Local fitness gym paying out instructors")
   @minLength(10)
   @maxLength(100)
-  description: string;
+  description?: string;
 
   @doc("Indicates whether a tax ID has been provided for this business.")
   taxIDProvided?: boolean;

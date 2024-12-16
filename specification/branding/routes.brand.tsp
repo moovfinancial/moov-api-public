@@ -33,8 +33,6 @@ namespace MoovAPI {
     @format("uuid")
     @path
     accountID: string,
-
-    @body body: Brand,
   ): GetResponses<Brand>;
 
   @doc("Updates the brand properties for the specified account.")
@@ -49,6 +47,6 @@ namespace MoovAPI {
     @path
     accountID: string,
 
-    @body body: Brand,
+    @body body: UpdateBrand,
   ): UpdateResponses<Brand, BrandValidationError>;
 }

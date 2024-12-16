@@ -1,10 +1,16 @@
 import "@typespec/http";
 import "@typespec/openapi3";
 import "@typespec/versioning";
+import "./examples.account.tsp";
+import "./models.mode.tsp";
 import "./models.profile.tsp";
 import "./models.verification.tsp";
 import "./models.settings.tsp";
 import "../capabilities/models.capability.tsp";
+import "../common/models.address.tsp";
+import "../common/models.email.tsp";
+import "../common/models.metadata.tsp";
+import "../common/models.phone.tsp";
 
 using TypeSpec.Http;
 using TypeSpec.OpenAPI;
@@ -12,12 +18,15 @@ using TypeSpec.Versioning;
 
 namespace MoovAPI;
 
+@example(
+  ExampleCreateIndividualAccount,
+  #{ title: "Minimal individual account" }
+)
+@example(ExampleCreateBusinessAccount, #{ title: "Minimal business account" })
 model CreateAccount {
   accountType: AccountType;
   profile: CreateProfile;
-
-  @doc("Free-form key-value pair list. Useful for storing information that is not captured elsewhere.")
-  metadata?: Record<string>;
+  metadata?: Metadata;
 
   @oneOf
   termsOfService?: TermsOfServiceToken | ManualTermsOfService;
@@ -51,6 +60,8 @@ model CreateAccountSettings {
   };
 }
 
+@example(ExampleIndividualAccount, #{ title: "Minimal individual account" })
+@example(ExampleBusinessAccount, #{ title: "Minimal business account" })
 model Account {
   @doc("Unique identifier for this account.")
   @format("uuid")
@@ -65,10 +76,7 @@ model Account {
   displayName: string;
 
   profile: Profile;
-
-  @doc("Free-form key-value pair list. Useful for storing information that is not captured elsewhere.")
-  metadata?: Record<string>;
-
+  metadata?: Metadata;
   termsOfService?: TermsOfService;
   capabilities?: AccountCapability[];
   verification: Verification;
@@ -93,7 +101,7 @@ model Account {
 @doc("Describes the fields available when patching a Moov account.")
 model PatchAccount {
   profile?: PatchProfile;
-  metadata?: Record<string> | null;
+  metadata?: Metadata | null;
 
   @oneOf
   termsOfService?: TermsOfServiceToken | ManualTermsOfService;
@@ -110,16 +118,6 @@ model PatchAccountError {
   foreignID?: string;
   customerSupport?: CustomerSupportError;
   settings?: CreateAccountSettings;
-}
-
-@doc("The operating mode for an account.")
-@example(Mode.production)
-enum Mode {
-  @doc("Sandbox mode is used to develop and test API integrations without actually moving money.")
-  sandbox,
-
-  @doc("Production mode is used for real money movement in a production environment.")
-  production,
 }
 
 @doc("The type of entity represented by this account.")
@@ -204,61 +202,6 @@ model CustomerSupportError {
   address?: AddressError;
   website?: string;
 }
-
-model PhoneNumber {
-  @example("8185551212")
-  @maxLength(10)
-  number?: string;
-
-  @example("1")
-  @maxLength(1)
-  countryCode?: string;
-}
-
-model PhoneNumberError {
-  number?: string;
-  countryCode?: string;
-}
-
-model Address {
-  @example("123 Main Street")
-  @maxLength(60)
-  addressLine1: string;
-
-  @example("Apt 302")
-  @maxLength(32)
-  addressLine2?: string;
-
-  @example("Boulder")
-  @maxLength(24)
-  city: string;
-
-  @example("CO")
-  @maxLength(2)
-  stateOrProvince: string;
-
-  @example("80301")
-  @maxLength(5)
-  postalCode: string;
-
-  @example("US")
-  @maxLength(2)
-  country: string;
-}
-
-model AddressError {
-  addressLine1?: string;
-  addressLine2?: string;
-  city?: string;
-  stateOrProvince?: string;
-  postalCode?: string;
-  country?: string;
-}
-
-@example("jordan.lee@classbooker.dev")
-@format("email")
-@maxLength(255)
-scalar Email extends string;
 
 model AccountsQuery {
   @doc("""

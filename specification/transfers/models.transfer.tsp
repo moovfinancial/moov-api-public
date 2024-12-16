@@ -8,6 +8,7 @@ import "./models.refund.tsp";
 import "./models.rtp.tsp";
 import "../bankaccounts/models.bankaccount.tsp";
 import "../common/models.parameter.tsp";
+import "../common/models.metadata.tsp";
 import "../money/models.amount.tsp";
 
 using TypeSpec.Http;
@@ -33,7 +34,7 @@ model Transfer {
   @maxLength(128)
   description?: string;
 
-  metadata?: Record<string>;
+  metadata?: Metadata;
   facilitatorFee?: FacilitatorFee;
 
   @doc("Fees charged to your platform account for transfers.")
@@ -102,8 +103,7 @@ model CreateTransfer {
   @maxLength(256)
   description?: string;
 
-  @doc("Free-form key-value pair list.")
-  metadata?: Record<string>;
+  metadata?: Metadata;
 }
 
 @doc("A transfer was successfully created but an error occurred while generating the synchronous response. The asynchronous response object will be returned.")
@@ -166,7 +166,7 @@ model CreateTransferDestination {
 }
 
 model PatchTransfer {
-  metadata?: Record<string>;
+  metadata?: Metadata | null;
 }
 
 @doc("Total or markup fee.")

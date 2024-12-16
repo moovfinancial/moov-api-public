@@ -8,11 +8,7 @@ model Representative {
 
   name: IndividualName;
   phone?: PhoneNumber;
-
-  @format("email")
-  @maxLength(255)
-  email: string;
-
+  email: Email;
   address?: Address;
 
   @doc("Indicates whether this representative's birth date has been provided.")

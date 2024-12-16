@@ -10,21 +10,30 @@ model Brand {
 }
 
 model Colors {
-  dark: Dark;
-  light: Light;
+  dark: BrandColor;
+  light: BrandColor;
 }
 
-model Dark {
-  @doc("A CSS hex color representing the accent color for use in dark mode.")
-  @example("#111111")
-  accent: string;
+model BrandColor {
+  accent: AccentColor;
 }
 
-model Light {
-  @doc("A CSS hex color representing the accent color for use in light mode.")
-  @example("#ffffff")
-  accent: string;
+model UpdateBrand {
+  colors?: UpdateColors;
 }
+
+model UpdateColors {
+  dark?: UpdateColor;
+  light?: UpdateColor;
+}
+
+model UpdateColor {
+  accent?: string;
+}
+
+@doc("A CSS hex color representing an accent color.")
+@example("#111111")
+scalar AccentColor extends string;
 
 model BrandValidationError {
   colors?: ColorsValidationError;

@@ -1194,12 +1194,6 @@ paths:
           description: Request was refused due to rate limiting.
       tags:
         - Branding
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Brand'
       security:
         - BasicAuth: []
         - OAuth2Auth:
@@ -1255,7 +1249,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/BrandUpdate'
+              $ref: '#/components/schemas/UpdateBrand'
       security:
         - BasicAuth: []
         - OAuth2Auth:
@@ -3319,6 +3313,10 @@ components:
         - returned
         - completed
       description: Status of a transaction within the ACH lifecycle.
+    AccentColor:
+      type: string
+      example: '#111111'
+      description: A CSS hex color representing an accent color.
     AccessToken:
       type: object
       required:
@@ -3375,10 +3373,7 @@ components:
         profile:
           $ref: '#/components/schemas/Profile'
         metadata:
-          type: object
-          additionalProperties:
-            type: string
-          description: Free-form key-value pair list. Useful for storing information that is not captured elsewhere.
+          $ref: '#/components/schemas/Metadata'
         termsOfService:
           $ref: '#/components/schemas/TermsOfService'
         capabilities:
@@ -3407,6 +3402,25 @@ components:
           type: string
           format: date-time
           example: 2024-05-06T12:20:38.184Z
+      example:
+        mode: sandbox
+        accountID: 53ca67ea-6fd3-423f-9544-ce2404159d33
+        accountType: business
+        displayName: Whole Body Fitness LLC
+        profile:
+          business:
+            legalBusinessName: Whole Body Fitness LLC
+            ownersProvided: false
+        verification:
+          verificationStatus: unverified
+          status: unverified
+        settings:
+          cardPayment:
+            statementDescriptor: Whole Body Fitness LLC
+          achPayment:
+            companyName: Whole Body Fitne
+        createdOn: 2024-12-16T17:55:20.557151867Z
+        updatedOn: 2024-12-16T17:55:20.557151867Z
     AccountCapability:
       type: object
       required:
@@ -4062,18 +4076,18 @@ components:
           allOf:
             - $ref: '#/components/schemas/Colors'
           description: Set brand accent colors for light and dark modes.
+    BrandColor:
+      type: object
+      required:
+        - accent
+      properties:
+        accent:
+          $ref: '#/components/schemas/AccentColor'
     BrandColorValidationError:
       type: object
       properties:
         accent:
           type: string
-    BrandUpdate:
-      type: object
-      properties:
-        colors:
-          allOf:
-            - $ref: '#/components/schemas/ColorsUpdate'
-          description: Set brand accent colors for light and dark modes.
     BrandValidationError:
       type: object
       properties:
@@ -4083,7 +4097,6 @@ components:
       type: object
       required:
         - legalBusinessName
-        - description
         - ownersProvided
       properties:
         legalBusinessName:
@@ -4673,16 +4686,9 @@ components:
         - light
       properties:
         dark:
-          $ref: '#/components/schemas/Dark'
+          $ref: '#/components/schemas/BrandColor'
         light:
-          $ref: '#/components/schemas/Light'
-    ColorsUpdate:
-      type: object
-      properties:
-        dark:
-          $ref: '#/components/schemas/DarkUpdate'
-        light:
-          $ref: '#/components/schemas/LightUpdate'
+          $ref: '#/components/schemas/BrandColor'
     ColorsValidationError:
       type: object
       properties:
@@ -4745,10 +4751,7 @@ components:
         profile:
           $ref: '#/components/schemas/CreateProfile'
         metadata:
-          type: object
-          additionalProperties:
-            type: string
-          description: Free-form key-value pair list. Useful for storing information that is not captured elsewhere.
+          $ref: '#/components/schemas/Metadata'
         termsOfService:
           oneOf:
             - $ref: '#/components/schemas/TermsOfServiceToken'
@@ -4765,6 +4768,11 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/CapabilityID'
+      example:
+        accountType: business
+        profile:
+          business:
+            legalBusinessName: Whole Body Fitness LLC
     CreateAccountError:
       type: object
       properties:
@@ -4807,10 +4815,7 @@ components:
         profile:
           $ref: '#/components/schemas/CreateProfileUpdate'
         metadata:
-          type: object
-          additionalProperties:
-            type: string
-          description: Free-form key-value pair list. Useful for storing information that is not captured elsewhere.
+          $ref: '#/components/schemas/Metadata'
         termsOfService:
           oneOf:
             - $ref: '#/components/schemas/TermsOfServiceTokenUpdate'
@@ -4827,6 +4832,11 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/CapabilityID'
+      example:
+        accountType: business
+        profile:
+          business:
+            legalBusinessName: Whole Body Fitness LLC
     CreateApplePaySession:
       type: object
       required:
@@ -4881,7 +4891,6 @@ components:
       type: object
       required:
         - legalBusinessName
-        - description
       properties:
         legalBusinessName:
           type: string
@@ -5090,10 +5099,7 @@ components:
           maxLength: 256
           description: An optional description of the transfer for your own internal use.
         metadata:
-          type: object
-          additionalProperties:
-            type: string
-          description: Free-form key-value pair list.
+          $ref: '#/components/schemas/Metadata'
     CreateTransferDestination:
       type: object
       required:
@@ -5198,22 +5204,6 @@ components:
       description: |-
         User-provided information that can be displayed on credit card transactions for customers to use when
         contacting a customer support team. This data is only allowed on a business account.
-    Dark:
-      type: object
-      required:
-        - accent
-      properties:
-        accent:
-          type: string
-          example: '#111111'
-          description: A CSS hex color representing the accent color for use in dark mode.
-    DarkUpdate:
-      type: object
-      properties:
-        accent:
-          type: string
-          example: '#111111'
-          description: A CSS hex color representing the accent color for use in dark mode.
     DebitHoldPeriod:
       type: string
       enum:
@@ -5496,22 +5486,6 @@ components:
           example: '7997'
           minLength: 4
           maxLength: 4
-    Light:
-      type: object
-      required:
-        - accent
-      properties:
-        accent:
-          type: string
-          example: '#ffffff'
-          description: A CSS hex color representing the accent color for use in light mode.
-    LightUpdate:
-      type: object
-      properties:
-        accent:
-          type: string
-          example: '#ffffff'
-          description: A CSS hex color representing the accent color for use in light mode.
     LinkApplePay:
       type: object
       required:
@@ -5774,6 +5748,13 @@ components:
           type: string
         acceptedUserAgent:
           type: string
+    Metadata:
+      type: object
+      additionalProperties:
+        type: string
+      example:
+        optional: metadata
+      description: Free-form key-value pair list. Useful for storing information that is not captured elsewhere.
     MicroDepositStatus:
       type: string
       enum:
@@ -5850,8 +5831,8 @@ components:
           $ref: '#/components/schemas/PatchProfile'
         metadata:
           type: object
-          additionalProperties:
-            type: string
+          allOf:
+            - $ref: '#/components/schemas/Metadata'
           nullable: true
         termsOfService:
           oneOf:
@@ -5972,8 +5953,9 @@ components:
       properties:
         metadata:
           type: object
-          additionalProperties:
-            type: string
+          allOf:
+            - $ref: '#/components/schemas/Metadata'
+          nullable: true
     PaymentMethod:
       oneOf:
         - $ref: '#/components/schemas/MoovWalletPaymentMethod'
@@ -6273,9 +6255,7 @@ components:
         phone:
           $ref: '#/components/schemas/PhoneNumber'
         email:
-          type: string
-          maxLength: 255
-          format: email
+          $ref: '#/components/schemas/Email'
         address:
           $ref: '#/components/schemas/Address'
         birthDateProvided:
@@ -6701,9 +6681,7 @@ components:
           maxLength: 128
           description: An optional description of the transfer for your own internal use.
         metadata:
-          type: object
-          additionalProperties:
-            type: string
+          $ref: '#/components/schemas/Metadata'
         facilitatorFee:
           $ref: '#/components/schemas/FacilitatorFee'
         moovFee:
@@ -6861,6 +6839,11 @@ components:
           example:
             - checkout.classbooker.dev
           description: A unique list of fully-qualified, top-level or sub-domain names to remove.
+    UpdateBrand:
+      type: object
+      properties:
+        colors:
+          $ref: '#/components/schemas/UpdateColors'
     UpdateCard:
       type: object
       properties:
@@ -6939,6 +6922,18 @@ components:
       example:
         month: '01'
         year: '21'
+    UpdateColor:
+      type: object
+      properties:
+        accent:
+          type: string
+    UpdateColors:
+      type: object
+      properties:
+        dark:
+          $ref: '#/components/schemas/UpdateColor'
+        light:
+          $ref: '#/components/schemas/UpdateColor'
     Verification:
       type: object
       required:
