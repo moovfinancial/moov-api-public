@@ -22,6 +22,7 @@ tags:
   - name: Branding
   - name: Capabilities
   - name: Payment methods
+  - name: Scheduling
   - name: Transfers
   - name: Sweeps
   - name: Wallet transactions
@@ -120,13 +121,13 @@ paths:
         - $ref: '#/components/parameters/AccountsQuery.capabilityStatus'
         - name: skip
           in: query
-          required: true
+          required: false
           schema:
             $ref: '#/components/schemas/Skip'
           explode: false
         - name: count
           in: query
-          required: true
+          required: false
           schema:
             $ref: '#/components/schemas/Count'
           explode: false
@@ -1969,6 +1970,305 @@ paths:
         - BasicAuth: []
         - OAuth2Auth:
             - /accounts/{accountID}/payment-methods.read
+  /accounts/{accountID}/schedules:
+    post:
+      operationId: createSchedule
+      description: Describes the schedule to create or modify.
+      parameters:
+        - $ref: '#/components/parameters/CommonHeaders'
+        - name: accountID
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: The request completed successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ScheduleResponse'
+        '400':
+          description: The server could not understand the request due to invalid syntax.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+        '401':
+          description: The request contained missing or expired authentication.
+        '403':
+          description: The user is not authorized to make the request.
+        '404':
+          description: The requested resource was not found.
+        '409':
+          description: The request conflicted with the current state of the target resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+        '422':
+          description: The request was well-formed, but the contents failed validation. Check the request for missing or invalid fields.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ScheduleValidationError'
+        '429':
+          description: Request was refused due to rate limiting.
+      tags:
+        - Scheduling
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpsertSchedule'
+      security:
+        - BasicAuth: []
+        - OAuth2Auth:
+            - /accounts/{your-account-id}/transfers.write
+  /accounts/{accountID}/schedules/:
+    get:
+      operationId: listSchedules
+      description: Describes a list of schedules associated with an account. Requires at least 1 occurrence or recurTransfer to be specified.
+      parameters:
+        - $ref: '#/components/parameters/CommonHeaders'
+        - name: skip
+          in: query
+          required: false
+          schema:
+            $ref: '#/components/schemas/Skip'
+          explode: false
+        - name: count
+          in: query
+          required: false
+          schema:
+            $ref: '#/components/schemas/Count'
+          explode: false
+        - name: accountID
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: The request completed successfully.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ScheduleResponse'
+        '401':
+          description: The request contained missing or expired authentication.
+        '403':
+          description: The user is not authorized to make the request.
+        '429':
+          description: Request was refused due to rate limiting.
+      tags:
+        - Scheduling
+      security:
+        - BasicAuth: []
+        - OAuth2Auth:
+            - /accounts/{your-account-id}/transfers.read
+  /accounts/{accountID}/schedules/{scheduleID}:
+    put:
+      operationId: updateSchedule
+      description: Describes the schedule to modify.
+      parameters:
+        - $ref: '#/components/parameters/CommonHeaders'
+        - name: accountID
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: scheduleID
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: The request completed successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ScheduleResponse'
+        '400':
+          description: The server could not understand the request due to invalid syntax.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+        '401':
+          description: The request contained missing or expired authentication.
+        '403':
+          description: The user is not authorized to make the request.
+        '404':
+          description: The requested resource was not found.
+        '409':
+          description: The request conflicted with the current state of the target resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+        '422':
+          description: The request was well-formed, but the contents failed validation. Check the request for missing or invalid fields.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ScheduleValidationError'
+        '429':
+          description: Request was refused due to rate limiting.
+      tags:
+        - Scheduling
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpsertSchedule'
+      security:
+        - BasicAuth: []
+        - OAuth2Auth:
+            - /accounts/{your-account-id}/transfers.write
+    get:
+      operationId: getSchedules
+      description: Describes a schedule associated with an account. Requires at least 1 occurrence or recurTransfer to be specified.
+      parameters:
+        - $ref: '#/components/parameters/CommonHeaders'
+        - name: accountID
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: scheduleID
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: The request completed successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ScheduleResponse'
+        '401':
+          description: The request contained missing or expired authentication.
+        '403':
+          description: The user is not authorized to make the request.
+        '404':
+          description: The requested resource was not found.
+        '429':
+          description: Request was refused due to rate limiting.
+      tags:
+        - Scheduling
+      security:
+        - BasicAuth: []
+        - OAuth2Auth:
+            - /accounts/{your-account-id}/transfers.read
+    delete:
+      operationId: cancelSchedule
+      description: Describes the schedule to cancel.
+      parameters:
+        - $ref: '#/components/parameters/CommonHeaders'
+        - name: accountID
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: scheduleID
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '204':
+          description: The request completed successfully, but there is no content to return.
+        '400':
+          description: The server could not understand the request due to invalid syntax.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+        '401':
+          description: The request contained missing or expired authentication.
+        '403':
+          description: The user is not authorized to make the request.
+        '404':
+          description: The requested resource was not found.
+        '409':
+          description: The request conflicted with the current state of the target resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+        '429':
+          description: Request was refused due to rate limiting.
+      tags:
+        - Scheduling
+      security:
+        - BasicAuth: []
+        - OAuth2Auth:
+            - /accounts/{your-account-id}/transfers.write
+  /accounts/{accountID}/schedules/{scheduleID}/occurrences/{occurrenceFilter}:
+    get:
+      operationId: getScheduledOccurrence
+      description: Defines an occurrence for when to run a transfer.
+      parameters:
+        - $ref: '#/components/parameters/CommonHeaders'
+        - name: accountID
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: scheduleID
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: occurrenceFilter
+          in: path
+          required: true
+          description: |2-
+              Allows the specification of additional filters beyond the UUID.
+
+              Specifying a UUID string returns the exact occurrence.
+              Specifying a RFC 3339 timestamp returns the latest occurrence at or before that timestamp.
+              Specifying `latest` returns the latest occurrence at or before now.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: The request completed successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ScheduleResponse'
+        '401':
+          description: The request contained missing or expired authentication.
+        '403':
+          description: The user is not authorized to make the request.
+        '404':
+          description: The requested resource was not found.
+        '429':
+          description: Request was refused due to rate limiting.
+      tags:
+        - Scheduling
+      security:
+        - BasicAuth: []
+        - OAuth2Auth:
+            - /accounts/{your-account-id}/transfers.read
   /accounts/{accountID}/sweep-configs:
     post:
       operationId: createSweepConfig
@@ -5820,6 +6120,78 @@ components:
           RoutingNumber: "123456780",
           BankName: "Gringotts Bank"
         ```
+    Occurrence:
+      type: object
+      properties:
+        canceled:
+          type: boolean
+          description: If set to true, will cancel the occurrence. If set false will resume the occurrence. If unset leaves the value unchanged.
+        occurrenceID:
+          type: string
+          example: c520f1b9-0ba7-42f5-b977-248cdbe41c69
+          format: uuid
+          description: |2-
+              If set this defines what occurrence to modify, if invalid will fail the request. 
+              If null or "" it defines to add a new occurrence.
+        runOn:
+          type: string
+          format: date-time
+          example: 2009-11-10T23:00:00Z
+          description: Timestamp to run the transfer after. Value must be into the future.
+        runTransfer:
+          $ref: '#/components/schemas/RunTransfer'
+      description: Occurrences to either create or modify.
+    OccurrenceStatus:
+      type: string
+      enum:
+        - pending
+        - failed
+        - completed
+      description: Status of the completed occurrence.
+    OccurrencesResponse:
+      type: object
+      required:
+        - runOn
+        - runTransfer
+      properties:
+        canceledOn:
+          type: string
+          format: date-time
+        error:
+          type: object
+          properties:
+            message:
+              type: string
+          description: Contains details on why the occurrence errored.
+        generated:
+          type: boolean
+          description: True if this was generated by a RRule.
+        indefinite:
+          type: boolean
+          description: True if the RRule set runs indefinitely.
+        mode:
+          allOf:
+            - $ref: '#/components/schemas/Mode'
+          description: Sandbox or production status of this schedule.
+        occurrenceID:
+          type: string
+          format: uuid
+        ranOn:
+          type: string
+          format: date-time
+        ranTransferID:
+          type: string
+          format: uuid
+        runOn:
+          type: string
+          format: date-time
+        runTransfer:
+          $ref: '#/components/schemas/RunTransfer'
+        scheduleID:
+          type: string
+          format: uuid
+        status:
+          $ref: '#/components/schemas/OccurrenceStatus'
     OperatingCountry:
       type: string
       example: United States
@@ -6186,6 +6558,27 @@ components:
         - failed
         - accepted-without-posting
       description: Status of a transaction within the RTP lifecycle.
+    Recur:
+      type: object
+      required:
+        - recurrenceRule
+        - runTransfer
+      properties:
+        recurrenceRule:
+          type: string
+          description: |2-
+              RRule as defined by RFC 5545 (https://www.rfc-editor.org/rfc/rfc5545#section-3.3.10). 
+              Generators available online at the following sites - https://freetools.textmagic.com/rrule-generator, https://jkbrzt.github.io/rrule/
+        runTransfer:
+          $ref: '#/components/schemas/RunTransfer'
+        indefinite:
+          type: boolean
+          description: True if the RRule set runs indefinitely.
+        start:
+          type: string
+          format: date-time
+          example: 2009-11-10T23:00:00Z
+      description: Defines configuration for recurring transfers.
     RefundCardDetails:
       type: object
       required:
@@ -6402,6 +6795,29 @@ components:
           type: string
           enum:
             - rtp-credit
+    RunTransfer:
+      type: object
+      required:
+        - amount
+        - destination
+        - partnerAccountID
+        - source
+        - description
+      properties:
+        amount:
+          $ref: '#/components/schemas/Amount'
+        destination:
+          $ref: '#/components/schemas/SchedulePaymentMethod'
+        partnerAccountID:
+          type: string
+          example: c520f1b9-0ba7-42f5-b977-248cdbe41c69
+          format: uuid
+        source:
+          $ref: '#/components/schemas/SchedulePaymentMethod'
+        description:
+          type: string
+          description: Simple description to place on the transfer.
+      description: Defines the attributes of a transfer.
     SECCode:
       type: string
       enum:
@@ -6410,6 +6826,86 @@ components:
         - CCD
         - TEL
       description: Code used to identify the ACH authorization method.
+    SchedulePaymentMethod:
+      type: object
+      required:
+        - paymentMethodID
+      properties:
+        paymentMethodID:
+          type: string
+          example: c520f1b9-0ba7-42f5-b977-248cdbe41c69
+          format: uuid
+        achDetails:
+          type: object
+          properties:
+            companyEntryDescription:
+              $ref: '#/components/schemas/ACHCompanyEntryDescription'
+            originatingCompanyName:
+              $ref: '#/components/schemas/ACHOriginatingCompanyName'
+        cardDetails:
+          type: object
+          properties:
+            dynamicDescriptor:
+              $ref: '#/components/schemas/CardDynamicDescriptor'
+    ScheduleResponse:
+      type: object
+      required:
+        - destinationAccountID
+        - mode
+        - ownerAccountID
+        - partnerAccountID
+        - scheduleID
+        - sourceAccountID
+        - createdOn
+        - updatedOn
+      properties:
+        description:
+          type: string
+          description: Simple description to place on the transfer.
+        destinationAccountID:
+          type: string
+          example: c520f1b9-0ba7-42f5-b977-248cdbe41c69
+          format: uuid
+        mode:
+          $ref: '#/components/schemas/Mode'
+        occurrences:
+          $ref: '#/components/schemas/OccurrencesResponse'
+        ownerAccountID:
+          type: string
+          example: c520f1b9-0ba7-42f5-b977-248cdbe41c69
+          format: uuid
+        partnerAccountID:
+          type: string
+          example: c520f1b9-0ba7-42f5-b977-248cdbe41c69
+          format: uuid
+        recur:
+          $ref: '#/components/schemas/Recur'
+        scheduleID:
+          type: string
+          example: c520f1b9-0ba7-42f5-b977-248cdbe41c69
+          format: uuid
+        sourceAccountID:
+          type: string
+          example: c520f1b9-0ba7-42f5-b977-248cdbe41c69
+          format: uuid
+        createdOn:
+          type: string
+          format: date-time
+        updatedOn:
+          type: string
+          format: date-time
+        disabledOn:
+          type: string
+          format: date-time
+    ScheduleValidationError:
+      type: object
+      properties:
+        occurrences:
+          type: string
+        recur:
+          type: string
+        description:
+          type: string
     Settings:
       type: object
       properties:
@@ -6934,6 +7430,18 @@ components:
           $ref: '#/components/schemas/UpdateColor'
         light:
           $ref: '#/components/schemas/UpdateColor'
+    UpsertSchedule:
+      type: object
+      properties:
+        description:
+          type: string
+          description: Simple description of what the schedule is.
+        occurrences:
+          type: array
+          items:
+            $ref: '#/components/schemas/Occurrence'
+        recur:
+          $ref: '#/components/schemas/Recur'
     Verification:
       type: object
       required:
@@ -7167,6 +7675,8 @@ components:
             /accounts/{accountID}/capabilities.write: ''
             /accounts/{accountID}/cards.read: ''
             /accounts/{accountID}/payment-methods.read: ''
+            /accounts/{your-account-id}/transfers.write: ''
+            /accounts/{your-account-id}/transfers.read: ''
             /accounts/{yourAccountID}/transfers.write: ''
             /accounts/{yourAccountID}/transfers.read: ''
             /accounts/{accountID}/transfers.read: ''

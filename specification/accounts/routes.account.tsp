@@ -55,8 +55,8 @@ namespace MoovAPI {
   op listAccounts(
     ...CommonHeaders,
     ...AccountsQuery,
-    @query skip: Skip,
-    @query count: Count,
+    @query skip?: Skip,
+    @query count?: Count,
   ): ListResponses<Account>;
 
   @doc("Retrieves details for the account with the specified ID.")

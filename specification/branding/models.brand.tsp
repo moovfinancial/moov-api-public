@@ -1,7 +1,3 @@
-import "@typespec/openapi3";
-
-using TypeSpec.OpenAPI;
-
 namespace MoovAPI;
 
 model Brand {
