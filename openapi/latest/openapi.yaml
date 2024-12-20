@@ -2526,26 +2526,110 @@ paths:
         - OAuth2Auth:
             - /accounts/{accountID}/wallets.write
   /accounts/{accountID}/transfers:
-    get:
-      operationId: listTransfersForAccount
+    post:
+      operationId: createTransfer
       description: |-
-        List all the transfers associated with a particular Moov account. Read our [transfers overview guide](https://docs.moov.io/guides/money-movement/overview/) to learn more. 
+        Move money by providing the source, destination, and amount in the request body.
 
-        To access this endpoint using a [token](https://docs.moov.io/api/authentication/access-tokens/) you'll need to specify the `/accounts/{accountID}/transfers.read` scope. The
-        accountID included must match the accountID being requested. 
+        Read our [transfers overview guide](https://docs.moov.io/guides/money-movement/overview/) to learn more. 
 
-        When you run this request, you retrieve 200 transfers at a time. You can advance past a results set of 200 transfers by using the `skip` parameter (for example, if you set 
-        `skip`= 10, you will see a results set of 200 transfers after the first 2000). If you are searching a high volume of transfers, the request will likely process very slowly. 
-        To achieve faster performance, restrict the data as much as you can by using the `StartDateTime` and `EndDateTime` parameters for a limited period of time. You can run 
-        multiple requests in smaller time window increments until you've retrieved all the transfers you need.
+        To access this endpoint using a [token](https://docs.moov.io/api/authentication/access-tokens/) you'll need to specify the `/accounts/{accountID}/transfers.write` 
+        scope.
       parameters:
         - $ref: '#/components/parameters/CommonHeaders'
+        - name: x-idempotency-key
+          in: header
+          required: true
+          description: Prevents duplicate transfers from being created.
+          schema:
+            type: string
+            format: uuid
+        - name: x-wait-for
+          in: header
+          required: false
+          description: |-
+            Optional header that indicates whether to return a synchronous response that includes full transfer and rail-specific details or an 
+            asynchronous response indicating the transfer was created (this is the default response if the header is omitted).
+          schema:
+            $ref: '#/components/schemas/TransferWaitFor'
         - name: accountID
           in: path
           required: true
-          description: Identifier for the account.
+          description: The merchant's Moov account ID.
           schema:
             type: string
+            format: uuid
+      responses:
+        '200':
+          description: The request completed successfully.
+          content:
+            application/json:
+              schema:
+                anyOf:
+                  - $ref: '#/components/schemas/Transfer'
+                  - $ref: '#/components/schemas/AsyncTransfer'
+        '201':
+          description: A transfer was successfully created but an error occurred while generating the synchronous response. The asynchronous response object will be returned.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AsyncTransfer'
+        '202':
+          description: A transfer was successfully created but a timeout occurred while waiting for a synchronous response. Rail-specific details may be missing from the response object.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Transfer'
+        '400':
+          description: The server could not understand the request due to invalid syntax.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+        '404':
+          description: The requested resource was not found.
+        '409':
+          description: Attempted to create a transfer using a duplicate X-Idempotency-Key header.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Transfer'
+        '422':
+          description: The request was well-formed, but the contents failed validation. Check the request for missing or invalid fields.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransferValidationError'
+        '429':
+          description: Request was refused due to rate limiting.
+      tags:
+        - Transfers
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateTransfer'
+      security:
+        - BasicAuth: []
+        - OAuth2Auth:
+            - /accounts/{accountID}/transfers.write
+    get:
+      operationId: listTransfers
+      description: |-
+        List all the transfers associated with a particular Moov account. 
+
+        Read our [transfers overview guide](https://docs.moov.io/guides/money-movement/overview/) to learn more. 
+
+        When you run this request, you retrieve 200 transfers at a time. You can advance past a results set of 200 transfers by using the `skip` parameter (for example, 
+        if you set `skip`= 10, you will see a results set of 200 transfers after the first 2000). If you are searching a high volume of transfers, the request will likely 
+        process very slowly. To achieve faster performance, restrict the data as much as you can by using the `StartDateTime` and `EndDateTime` parameters for a limited 
+        period of time. You can run multiple requests in smaller time window increments until you've retrieved all the transfers you need.
+
+        To access this endpoint using a [token](https://docs.moov.io/api/authentication/access-tokens/) you'll need to specify the `/accounts/{accountID}/transfers.read` 
+        scope.
+      parameters:
+        - $ref: '#/components/parameters/CommonHeaders'
         - $ref: '#/components/parameters/TransferListFilters.accountIDs'
         - $ref: '#/components/parameters/TransferListFilters.status'
         - $ref: '#/components/parameters/TransferListFilters.startDateTime'
@@ -2555,6 +2639,12 @@ paths:
         - $ref: '#/components/parameters/TransferListFilters.disputed'
         - $ref: '#/components/parameters/TransferListFilters.skip'
         - $ref: '#/components/parameters/TransferListFilters.count'
+        - name: accountID
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
       responses:
         '200':
           description: The request completed successfully.
@@ -2578,29 +2668,30 @@ paths:
             - /accounts/{accountID}/transfers.read
   /accounts/{accountID}/transfers/{transferID}:
     get:
-      operationId: getTransferForAccount
+      operationId: getTransfer
       description: |-
         Retrieve full transfer details for an individual transfer of a particular Moov account. 
 
-        Payment rail-specific details are included in the source and destination. Read our [transfers overview guide](https://docs.moov.io/guides/money-movement/overview/) to learn
-        more. 
+        Payment rail-specific details are included in the source and destination. Read our [transfers overview guide](https://docs.moov.io/guides/money-movement/overview/) 
+        to learn more.
 
-        To access this endpoint using a [token](https://docs.moov.io/api/authentication/access-tokens/) you'll need to specify the `/accounts/{accountID}/transfers.read` scope. The 
-        accountID included must match the accountID being requested.
+        To access this endpoint using a [token](https://docs.moov.io/api/authentication/access-tokens/) you'll need to specify the `/accounts/{accountID}/transfers.read` 
+        scope.
       parameters:
         - $ref: '#/components/parameters/CommonHeaders'
-        - name: accountID
-          in: path
-          required: true
-          description: Identifier for the account.
-          schema:
-            type: string
         - name: transferID
           in: path
           required: true
           description: Identifier for the transfer.
           schema:
             type: string
+            format: uuid
+        - name: accountID
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
       responses:
         '200':
           description: The request completed successfully.
@@ -2608,6 +2699,285 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Transfer'
+        '401':
+          description: The request contained missing or expired authentication.
+        '403':
+          description: The user is not authorized to make the request.
+        '404':
+          description: The requested resource was not found.
+        '429':
+          description: Request was refused due to rate limiting.
+      tags:
+        - Transfers
+      security:
+        - BasicAuth: []
+        - OAuth2Auth:
+            - /accounts/{accountID}/transfers.read
+    patch:
+      operationId: patchTransfer
+      description: |-
+        Update the metadata contained on a transfer. 
+
+        Read our [transfers overview guide](https://docs.moov.io/guides/money-movement/overview/) to learn more. 
+
+        To access this endpoint using a [token](https://docs.moov.io/api/authentication/access-tokens/) you'll need to specify the `/accounts/{accountID}/transfers.write` 
+        scope.
+      parameters:
+        - $ref: '#/components/parameters/CommonHeaders'
+        - name: transferID
+          in: path
+          required: true
+          description: Identifier for the transfer.
+          schema:
+            type: string
+            format: uuid
+        - name: accountID
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: The request completed successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Transfer'
+        '401':
+          description: The request contained missing or expired authentication.
+        '403':
+          description: The user is not authorized to make the request.
+        '404':
+          description: The requested resource was not found.
+        '429':
+          description: Request was refused due to rate limiting.
+      tags:
+        - Transfers
+      security:
+        - BasicAuth: []
+        - OAuth2Auth:
+            - /accounts/{yourAccountID}/transfers.write
+  /accounts/{accountID}/transfers/{transferID}/refunds:
+    post:
+      operationId: refundTransfer
+      description: |-
+        Initiate a refund for a card transfer.
+
+        **Use the [Cancel or refund a card transfer](https://docs.moov.io/api/money-movement/refunds/cancel/) endpoint for more comprehensive cancel and refund options.**    
+        See the [reversals](https://docs.moov.io/guides/money-movement/accept-payments/card-acceptance/reversals/) guide for more information. 
+
+        To access this endpoint using a [token](https://docs.moov.io/api/authentication/access-tokens/) you'll need to specify the `/accounts/{accountID}/transfers.write` 
+        scope.
+      parameters:
+        - $ref: '#/components/parameters/CommonHeaders'
+        - name: x-idempotency-key
+          in: header
+          required: true
+          description: Prevents duplicate refunds from being created.
+          schema:
+            type: string
+            format: uuid
+        - name: x-wait-for
+          in: header
+          required: false
+          description: |-
+            Optional header that indicates whether to return a synchronous response that includes full transfer and rail-specific details or an 
+            asynchronous response indicating the transfer was created (this is the default response if the header is omitted).
+          schema:
+            $ref: '#/components/schemas/TransferWaitFor'
+        - name: accountID
+          in: path
+          required: true
+          description: The merchant's Moov account ID.
+          schema:
+            type: string
+            format: uuid
+        - name: transferID
+          in: path
+          required: true
+          description: Identifier for the transfer.
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: The request completed successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateRefundResponse'
+              examples:
+                Successful async refund:
+                  summary: Successful async refund
+                  value:
+                    refundID: d4963079-5b35-4d17-981e-8f851753f786
+                    createdOn: 2023-09-09T14:15:22Z
+                    amount:
+                      currency: USD
+                      value: 1204
+                Successful sync refund:
+                  summary: Successful sync refund
+                  value:
+                    refundID: d4963079-5b35-4d17-981e-8f851753f786
+                    createdOn: 2023-09-09T14:15:22Z
+                    updatedOn: 2023-09-09T14:17:41Z
+                    status: pending
+                    amount:
+                      currency: USD
+                      value: 1204
+                    cardDetails:
+                      status: confirmed
+                      initiatedOn: 2023-09-09T14:16:22Z
+                      confirmedOn: 2023-09-09T14:17:41Z
+        '202':
+          description: A refund was successfully created but an error occurred while waiting for a synchronous response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CardAcquiringRefund'
+        '400':
+          description: The server could not understand the request due to invalid syntax.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+        '404':
+          description: The requested resource was not found.
+        '409':
+          description: Attempted to create a refund using a duplicate X-Idempotency-Key header.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CardAcquiringRefund'
+        '422':
+          description: The request was well-formed, but the contents failed validation. Check the request for missing or invalid fields.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RefundValidationError'
+        '429':
+          description: Request was refused due to rate limiting.
+      tags:
+        - Transfers
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateRefund'
+      security:
+        - BasicAuth: []
+        - OAuth2Auth:
+            - /accounts/{accountID}/transfers.write
+    get:
+      operationId: listRefunds
+      description: |-
+        Get a list of refunds for a card transfer.
+
+        To access this endpoint using a [token](https://docs.moov.io/api/authentication/access-tokens/) you'll need to specify the `/accounts/{accountID}/transfers.read` 
+        scope.
+      parameters:
+        - $ref: '#/components/parameters/CommonHeaders'
+        - name: accountID
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: transferID
+          in: path
+          required: true
+          description: Identifier for the transfer.
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: The request completed successfully.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CardAcquiringRefund'
+              example:
+                - refundID: ec7e1848-dc80-4ab0-8827-dd7fc0737b43
+                  amount:
+                    currency: USD
+                    value: 1204
+                  cardDetails:
+                    completedOn: 2024-08-24T14:15:22Z
+                    confirmedOn: 2024-08-24T14:15:22Z
+                    initiatedOn: 2024-08-24T14:15:22Z
+                    settledOn: 2024-08-24T14:15:22Z
+                    status: completed
+                  createdOn: 2024-08-24T14:15:22Z
+                  status: completed
+                  updatedOn: 2024-08-24T14:15:22Z
+        '401':
+          description: The request contained missing or expired authentication.
+        '403':
+          description: The user is not authorized to make the request.
+        '429':
+          description: Request was refused due to rate limiting.
+      tags:
+        - Transfers
+      security:
+        - BasicAuth: []
+        - OAuth2Auth:
+            - /accounts/{accountID}/transfers.read
+  /accounts/{accountID}/transfers/{transferID}/refunds/{refundID}:
+    get:
+      operationId: getRefund
+      description: |-
+        Get details of a refund for a card transfer.
+
+        To access this endpoint using a [token](https://docs.moov.io/api/authentication/access-tokens/) you'll need to specify the `/accounts/{accountID}/transfers.read` 
+        scope.
+      parameters:
+        - $ref: '#/components/parameters/CommonHeaders'
+        - name: transferID
+          in: path
+          required: true
+          description: Identifier for the transfer.
+          schema:
+            type: string
+            format: uuid
+        - name: accountID
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: refundID
+          in: path
+          required: true
+          description: Identifier for the refund.
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: The request completed successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CardAcquiringRefund'
+              example:
+                refundID: ec7e1848-dc80-4ab0-8827-dd7fc0737b43
+                amount:
+                  currency: USD
+                  value: 1204
+                cardDetails:
+                  completedOn: 2024-08-24T14:15:22Z
+                  confirmedOn: 2024-08-24T14:15:22Z
+                  initiatedOn: 2024-08-24T14:15:22Z
+                  settledOn: 2024-08-24T14:15:22Z
+                  status: completed
+                createdOn: 2024-08-24T14:15:22Z
+                status: completed
+                updatedOn: 2024-08-24T14:15:22Z
         '401':
           description: The request contained missing or expired authentication.
         '403':
@@ -3078,229 +3448,6 @@ paths:
               $ref: '#/components/schemas/AuthTokenRequest'
       security:
         - BasicAuth: []
-  /transfers:
-    post:
-      operationId: createTransfer
-      description: |-
-        Move money by providing the source, destination, and amount in the request body. 
-        Read our [transfers overview guide](https://docs.moov.io/guides/money-movement/overview/) to learn more. 
-
-        If you are running a **server-side** integration, you will use your API keys per our 
-        [authentication guidelines](https://docs.moov.io/api/authentication/api-authentication/#server-side-basic-authentication). If you
-        are running a **client-side** integration, you'll need to specify the `/accounts/{yourAccountID}/transfers.write` scope when generating
-        a [token](https://docs.moov.io/api/authentication/access-tokens/). The accountID included must be your accountID. You can find your 
-        accountID on the [Business details](https://dashboard.moov.io/settings/business) page.
-      parameters:
-        - $ref: '#/components/parameters/CommonHeaders'
-        - name: x-idempotency-key
-          in: header
-          required: true
-          description: Prevents duplicate transfers from being created.
-          schema:
-            type: string
-            format: uuid
-        - name: x-wait-for
-          in: header
-          required: false
-          description: |-
-            Optional header that indicates whether to return a synchronous response that includes full transfer and rail-specific details or an 
-            asynchronous response indicating the transfer was created (this is the default response if the header is omitted).
-          schema:
-            $ref: '#/components/schemas/TransferWaitFor'
-      responses:
-        '200':
-          description: The request completed successfully.
-          content:
-            application/json:
-              schema:
-                anyOf:
-                  - $ref: '#/components/schemas/Transfer'
-                  - $ref: '#/components/schemas/AsyncTransfer'
-        '201':
-          description: A transfer was successfully created but an error occurred while generating the synchronous response. The asynchronous response object will be returned.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/AsyncTransfer'
-        '202':
-          description: A transfer was successfully created but a timeout occurred while waiting for a synchronous response. Rail-specific details may be missing from the response object.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Transfer'
-        '400':
-          description: The server could not understand the request due to invalid syntax.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericError'
-        '404':
-          description: The requested resource was not found.
-        '409':
-          description: Attempted to create a transfer using a duplicate X-Idempotency-Key header.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Transfer'
-        '422':
-          description: The request was well-formed, but the contents failed validation. Check the request for missing or invalid fields.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/TransferValidationError'
-        '429':
-          description: Request was refused due to rate limiting.
-      tags:
-        - Transfers
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/CreateTransfer'
-      security:
-        - BasicAuth: []
-        - OAuth2Auth:
-            - /accounts/{yourAccountID}/transfers.write
-    get:
-      operationId: listTransfers
-      description: |-
-        List all the transfers associated with a particular Moov account. 
-
-        Read our [transfers overview guide](https://docs.moov.io/guides/money-movement/overview/) to learn more. 
-
-        To use this endpoint from the browser, you'll need to specify the `/accounts/{yourAccountID}/transfers.read` scope when generating a 
-        [token](https://docs.moov.io/api/authentication/access-tokens/). The accountID included must be your accountID. You can find your 
-        accountID on the [Business details](https://dashboard.moov.io/settings/business) page.
-
-        When you run this request, you retrieve 200 transfers at a time. You can advance past a results set of 200 transfers by using the 
-        `skip` parameter (for example, if you set `skip`= 10, you will see a results set of 200 transfers after the first 2000). If you are 
-        searching a high volume of transfers, the request will likely process very slowly. To achieve faster performance, restrict the data 
-        as much as you can by using the `StartDateTime` and `EndDateTime` parameters for a limited period of time. You can run multiple 
-        requests in smaller time window increments until you've retrieved all the transfers you need.
-      parameters:
-        - $ref: '#/components/parameters/CommonHeaders'
-        - $ref: '#/components/parameters/TransferListFilters.accountIDs'
-        - $ref: '#/components/parameters/TransferListFilters.status'
-        - $ref: '#/components/parameters/TransferListFilters.startDateTime'
-        - $ref: '#/components/parameters/TransferListFilters.endDateTime'
-        - $ref: '#/components/parameters/TransferListFilters.groupID'
-        - $ref: '#/components/parameters/TransferListFilters.refunded'
-        - $ref: '#/components/parameters/TransferListFilters.disputed'
-        - $ref: '#/components/parameters/TransferListFilters.skip'
-        - $ref: '#/components/parameters/TransferListFilters.count'
-      responses:
-        '200':
-          description: The request completed successfully.
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Transfer'
-        '401':
-          description: The request contained missing or expired authentication.
-        '403':
-          description: The user is not authorized to make the request.
-        '429':
-          description: Request was refused due to rate limiting.
-      tags:
-        - Transfers
-      security:
-        - BasicAuth: []
-        - OAuth2Auth:
-            - /accounts/{yourAccountID}/transfers.read
-  /transfers/{transferID}:
-    get:
-      operationId: getTransfer
-      description: |-
-        Retrieve full transfer details such as the amount, source, and destination. Payment rail-specific details are included in the source
-        and destination. Read our [transfers overview guide](https://docs.moov.io/guides/money-movement/overview/) to learn more.
-
-        To use this endpoint from the browser, you'll need to specify the `/accounts/{yourAccountID}/transfers.read` scope when generating a
-        [token](https://docs.moov.io/api/authentication/access-tokens/). The accountID included must be your accountID. You can find your 
-        accountID on the [Business details](https://dashboard.moov.io/settings/business) page.
-      parameters:
-        - $ref: '#/components/parameters/CommonHeaders'
-        - name: transferID
-          in: path
-          required: true
-          description: Identifier for the transfer.
-          schema:
-            type: string
-        - name: accountID
-          in: query
-          required: false
-          description: Identifier for a connected account. Must be provided when using a token and the value of `{accountID}` in the scopes is a connected account.
-          schema:
-            type: string
-          explode: false
-      responses:
-        '200':
-          description: The request completed successfully.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Transfer'
-        '401':
-          description: The request contained missing or expired authentication.
-        '403':
-          description: The user is not authorized to make the request.
-        '404':
-          description: The requested resource was not found.
-        '429':
-          description: Request was refused due to rate limiting.
-      tags:
-        - Transfers
-      security:
-        - BasicAuth: []
-        - OAuth2Auth:
-            - /accounts/{yourAccountID}/transfers.read
-    patch:
-      operationId: patchTransfer
-      description: |-
-        Update the metadata contained on a transfer. 
-
-        Read our [transfers overview guide](https://docs.moov.io/guides/money-movement/overview/) to learn more. To use this endpoint from the browser, you'll 
-        need to specify the `/accounts/{yourAccountID}/transfers.write` scope when generating a [token](https://docs.moov.io/api/authentication/access-tokens/). 
-        The accountID included must be your facilitator accountID. You can find your accountID on the [Business details](https://dashboard.moov.io/settings/business) 
-        page.
-      parameters:
-        - $ref: '#/components/parameters/CommonHeaders'
-        - name: transferID
-          in: path
-          required: true
-          description: Identifier for the transfer.
-          schema:
-            type: string
-        - name: accountID
-          in: query
-          required: false
-          description: Identifier for a connected account. Must be provided when using a token and the value of `{accountID}` in the scopes is a connected account.
-          schema:
-            type: string
-          explode: false
-      responses:
-        '200':
-          description: The request completed successfully.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Transfer'
-        '401':
-          description: The request contained missing or expired authentication.
-        '403':
-          description: The user is not authorized to make the request.
-        '404':
-          description: The requested resource was not found.
-        '429':
-          description: Request was refused due to rate limiting.
-      tags:
-        - Transfers
-      security:
-        - BasicAuth: []
-        - OAuth2Auth:
-            - /accounts/{yourAccountID}/transfers.write
 components:
   parameters:
     AccountsQuery.capability:
@@ -4092,6 +4239,22 @@ components:
       properties:
         error:
           $ref: '#/components/schemas/CountriesErrors'
+    AsyncCreatedRefund:
+      type: object
+      required:
+        - refundID
+        - createdOn
+        - amount
+      properties:
+        refundID:
+          type: string
+          format: uuid
+        createdOn:
+          type: string
+          format: date-time
+        amount:
+          $ref: '#/components/schemas/Amount'
+      description: Asynchronous refund response
     AsyncTransfer:
       type: object
       required:
@@ -5342,6 +5505,22 @@ components:
           $ref: '#/components/schemas/CreateIndividualProfileUpdate'
         business:
           $ref: '#/components/schemas/CreateBusinessProfileUpdate'
+    CreateRefund:
+      type: object
+      properties:
+        amount:
+          type: integer
+          format: int64
+          example: 1000
+          description: Amount to refund in cents. If null, the original transfer's full amount will be refunded.
+      description: |-
+        Specifies a partial amount to refund. 
+
+        This request body is optional, an empty body will issue a refund for the full amount of the original transfer.
+    CreateRefundResponse:
+      oneOf:
+        - $ref: '#/components/schemas/CardAcquiringRefund'
+        - $ref: '#/components/schemas/AsyncCreatedRefund'
     CreateSweepConfig:
       type: object
       required:
@@ -6618,6 +6797,14 @@ components:
         - pending
         - completed
         - failed
+    RefundValidationError:
+      type: object
+      properties:
+        amount:
+          type: string
+        error:
+          type: string
+          description: Used for generic errors when invalid request data isn't attributed to a single request field.
     RegisterApplePayMerchantDomains:
       type: object
       properties:
@@ -7677,9 +7864,9 @@ components:
             /accounts/{accountID}/payment-methods.read: ''
             /accounts/{your-account-id}/transfers.write: ''
             /accounts/{your-account-id}/transfers.read: ''
-            /accounts/{yourAccountID}/transfers.write: ''
-            /accounts/{yourAccountID}/transfers.read: ''
+            /accounts/{accountID}/transfers.write: ''
             /accounts/{accountID}/transfers.read: ''
+            /accounts/{yourAccountID}/transfers.write: ''
             /accounts/{accountID}/wallets.read: ''
             /accounts/{accountID}/wallets.write: ''
 servers:
