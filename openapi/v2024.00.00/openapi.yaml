@@ -3448,6 +3448,51 @@ paths:
               $ref: '#/components/schemas/AuthTokenRequest'
       security:
         - BasicAuth: []
+  /transfer-options:
+    post:
+      operationId: createTransferOptions
+      description: |-
+        Generate available payment method options for one or multiple transfer participants depending on the accountID or paymentMethodID you 
+        supply in the request. 
+
+        Read our [transfers overview guide](https://docs.moov.io/guides/money-movement/overview/) to learn more.
+
+        To use this endpoint from the browser, you'll need to specify the `/accounts/{yourAccountID}/transfers.read` scope when generating a 
+        [token](https://docs.moov.io/api/authentication/access-tokens/). The accountID included must be your accountID. You can find your 
+        accountID on the [Business details](https://dashboard.moov.io/settings/business) page.
+      parameters:
+        - $ref: '#/components/parameters/CommonHeaders'
+      responses:
+        '200':
+          description: The request completed successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransferOptions'
+        '400':
+          description: The server could not understand the request due to invalid syntax.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+        '401':
+          description: The request contained missing or expired authentication.
+        '403':
+          description: The user is not authorized to make the request.
+        '422':
+          description: The request was well-formed, but the contents failed validation. Check the request for missing or invalid fields.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransferOptionsValidationError'
+        '429':
+          description: Request was refused due to rate limiting.
+      tags:
+        - Transfers
+      security:
+        - BasicAuth: []
+        - OAuth2Auth:
+            - /accounts/{accountID}/transfers.read
 components:
   parameters:
     AccountsQuery.capability:
@@ -5603,6 +5648,19 @@ components:
       properties:
         dynamicDescriptor:
           $ref: '#/components/schemas/CardDynamicDescriptor'
+    CreateTransferOptions:
+      type: object
+      required:
+        - source
+        - destination
+        - amount
+      properties:
+        source:
+          $ref: '#/components/schemas/SourceDestinationOptions'
+        destination:
+          $ref: '#/components/schemas/SourceDestinationOptions'
+        amount:
+          $ref: '#/components/schemas/Amount'
     CreateTransferSource:
       type: object
       properties:
@@ -7114,6 +7172,15 @@ components:
       format: int64
       example: 60
       description: The number of entries to skip when paginating a large result set.
+    SourceDestinationOptions:
+      type: object
+      properties:
+        accountID:
+          type: string
+          format: uuid
+        paymentMethodID:
+          type: string
+          format: uuid
     Sweep:
       type: object
       required:
@@ -7444,6 +7511,26 @@ components:
         - rejected-high-risk
         - processing-error
       description: Reason for a transfer's failure.
+    TransferOptions:
+      type: object
+      properties:
+        sourceOptions:
+          type: array
+          items:
+            $ref: '#/components/schemas/PaymentMethod'
+        destinationOptions:
+          type: array
+          items:
+            $ref: '#/components/schemas/PaymentMethod'
+    TransferOptionsValidationError:
+      type: object
+      properties:
+        amount:
+          type: string
+        source:
+          type: string
+        destination:
+          type: string
     TransferSource:
       type: object
       required:
@@ -7864,8 +7951,8 @@ components:
             /accounts/{accountID}/payment-methods.read: ''
             /accounts/{your-account-id}/transfers.write: ''
             /accounts/{your-account-id}/transfers.read: ''
-            /accounts/{accountID}/transfers.write: ''
             /accounts/{accountID}/transfers.read: ''
+            /accounts/{accountID}/transfers.write: ''
             /accounts/{yourAccountID}/transfers.write: ''
             /accounts/{accountID}/wallets.read: ''
             /accounts/{accountID}/wallets.write: ''
