@@ -12,6 +12,7 @@ import "./branding";
 import "./capabilities";
 import "./cards";
 import "./common";
+import "./disputes";
 import "./end2end";
 import "./paymentmethods";
 import "./schedules";

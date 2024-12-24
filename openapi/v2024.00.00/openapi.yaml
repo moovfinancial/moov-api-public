@@ -21,6 +21,7 @@ tags:
   - name: Bank accounts
   - name: Branding
   - name: Capabilities
+  - name: Disputes
   - name: Payment methods
   - name: Scheduling
   - name: Transfers
@@ -1867,6 +1868,650 @@ paths:
         - BasicAuth: []
         - OAuth2Auth:
             - /accounts/{accountID}/profile.write
+  /accounts/{accountID}/disputes:
+    get:
+      operationId: listDisputes
+      description: |-
+        Returns the list of disputes. 
+
+        Read our [disputes guide](https://docs.moov.io/guides/money-movement/accept-payments/card-acceptance/disputes/) to learn more.
+
+        To use this endpoint from the browser, you'll need to specify the `/accounts/{accountID}/transfers.read` scope when generating 
+        a [token](https://docs.moov.io/api/authentication/access-tokens/).
+      parameters:
+        - $ref: '#/components/parameters/CommonHeaders'
+        - name: accountID
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - $ref: '#/components/parameters/Pagination.skip'
+        - $ref: '#/components/parameters/Pagination.count'
+        - $ref: '#/components/parameters/DisputeListFilters.startDateTime'
+        - $ref: '#/components/parameters/DisputeListFilters.endDateTime'
+        - $ref: '#/components/parameters/DisputeListFilters.respondStartDateTime'
+        - $ref: '#/components/parameters/DisputeListFilters.respondEndDateTime'
+        - $ref: '#/components/parameters/DisputeListFilters.status'
+        - $ref: '#/components/parameters/DisputeListFilters.merchantAccountID'
+        - $ref: '#/components/parameters/DisputeListFilters.cardholderAccountID'
+        - $ref: '#/components/parameters/DisputeListFilters.disputeIDs'
+        - $ref: '#/components/parameters/DisputeListFilters.transferIDs'
+        - $ref: '#/components/parameters/DisputeListFilters.orderBy'
+      responses:
+        '200':
+          description: The request completed successfully.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Dispute'
+              example:
+                - disputeID: 6e356108-fdfa-4910-bbe4-1e3c8abf5520
+                  merchantAccountID: 34233b72-780c-4e0e-8b08-cbbe1bc878f8
+                  createdOn: 2024-12-23T17:55:00Z
+                  amount:
+                    currency: USD
+                    value: 257753
+                  networkReasonCode: '10.4'
+                  transfer:
+                    transferID: ecac148a-917e-4ee0-b46a-c51408939fff
+                  respondBy: 2024-12-23T18:55:00Z
+                  status: response-needed
+                  phase: chargeback
+        '401':
+          description: The request contained missing or expired authentication.
+        '403':
+          description: The user is not authorized to make the request.
+        '429':
+          description: Request was refused due to rate limiting.
+      tags:
+        - Disputes
+      security:
+        - BasicAuth: []
+        - OAuth2Auth:
+            - /accounts/{accountID}/transfers.read
+  /accounts/{accountID}/disputes/{disputeID}:
+    get:
+      operationId: getDispute
+      description: |-
+        Get a dispute by ID. 
+
+        Read our [disputes guide](https://docs.moov.io/guides/money-movement/accept-payments/card-acceptance/disputes/) to learn more.
+
+        To use this endpoint from the browser, you'll need to specify the `/accounts/{accountID}/transfers.read` scope when generating 
+        a [token](https://docs.moov.io/api/authentication/access-tokens/).
+      parameters:
+        - $ref: '#/components/parameters/CommonHeaders'
+        - name: accountID
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: disputeID
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: The request completed successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Dispute'
+              example:
+                disputeID: 6e356108-fdfa-4910-bbe4-1e3c8abf5520
+                merchantAccountID: 34233b72-780c-4e0e-8b08-cbbe1bc878f8
+                createdOn: 2024-12-23T17:55:00Z
+                amount:
+                  currency: USD
+                  value: 257753
+                networkReasonCode: '10.4'
+                transfer:
+                  transferID: ecac148a-917e-4ee0-b46a-c51408939fff
+                respondBy: 2024-12-23T18:55:00Z
+                status: response-needed
+                phase: chargeback
+        '401':
+          description: The request contained missing or expired authentication.
+        '403':
+          description: The user is not authorized to make the request.
+        '404':
+          description: The requested resource was not found.
+        '429':
+          description: Request was refused due to rate limiting.
+      tags:
+        - Disputes
+      security:
+        - BasicAuth: []
+        - OAuth2Auth:
+            - /accounts/{accountID}/transfers.read
+  /accounts/{accountID}/disputes/{disputeID}/accept:
+    post:
+      operationId: acceptDispute
+      description: |-
+        Accepts a dispute. 
+
+        Read our [disputes guide](https://docs.moov.io/guides/money-movement/accept-payments/card-acceptance/disputes/) to learn more.
+
+        To use this endpoint from the browser, you'll need to specify the `/accounts/{accountID}/transfers.write` scope when generating 
+        a [token](https://docs.moov.io/api/authentication/access-tokens/).
+      parameters:
+        - $ref: '#/components/parameters/CommonHeaders'
+        - name: accountID
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: disputeID
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: The request completed successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Dispute'
+              example:
+                disputeID: 6e356108-fdfa-4910-bbe4-1e3c8abf5520
+                merchantAccountID: 34233b72-780c-4e0e-8b08-cbbe1bc878f8
+                createdOn: 2024-12-23T17:55:00Z
+                amount:
+                  currency: USD
+                  value: 257753
+                networkReasonCode: '10.4'
+                transfer:
+                  transferID: ecac148a-917e-4ee0-b46a-c51408939fff
+                respondBy: 2024-12-23T18:55:00Z
+                status: accepted
+                phase: chargeback
+        '400':
+          description: The server could not understand the request due to invalid syntax.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+        '401':
+          description: The request contained missing or expired authentication.
+        '403':
+          description: The user is not authorized to make the request.
+        '404':
+          description: The requested resource was not found.
+        '409':
+          description: The request conflicted with the current state of the target resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+        '429':
+          description: Request was refused due to rate limiting.
+      tags:
+        - Disputes
+      security:
+        - BasicAuth: []
+        - OAuth2Auth:
+            - /accounts/{accountID}/transfers.write
+  /accounts/{accountID}/disputes/{disputeID}/evidence:
+    get:
+      operationId: listDisputeEvidence
+      description: |-
+        Returns a dispute's public evidence by its ID. 
+
+        Read our [disputes guide](https://docs.moov.io/guides/money-movement/accept-payments/card-acceptance/disputes/) to learn more.
+
+        To use this endpoint from the browser, you'll need to specify the `/accounts/{accountID}/transfers.read` scope when generating 
+        a [token](https://docs.moov.io/api/authentication/access-tokens/).
+      parameters:
+        - $ref: '#/components/parameters/CommonHeaders'
+        - name: accountID
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: disputeID
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: The request completed successfully.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/DisputeEvidenceMetadata'
+        '401':
+          description: The request contained missing or expired authentication.
+        '403':
+          description: The user is not authorized to make the request.
+        '429':
+          description: Request was refused due to rate limiting.
+      tags:
+        - Disputes
+      security:
+        - BasicAuth: []
+        - OAuth2Auth:
+            - /accounts/{accountID}/transfers.read
+  /accounts/{accountID}/disputes/{disputeID}/evidence-file:
+    post:
+      operationId: uploadDisputeEvidenceFile
+      description: |-
+        Uploads a file as evidence for a dispute. 
+
+        Read our [disputes guide](https://docs.moov.io/guides/money-movement/accept-payments/card-acceptance/disputes/) to learn more.
+
+        To use this endpoint from the browser, you'll need to specify the `/accounts/{accountID}/transfers.write` scope when generating 
+        a [token](https://docs.moov.io/api/authentication/access-tokens/).
+      parameters:
+        - $ref: '#/components/parameters/CommonHeaders'
+        - name: accountID
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: disputeID
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '204':
+          description: The request completed successfully, but there is no content to return.
+        '400':
+          description: The server could not understand the request due to invalid syntax.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+        '401':
+          description: The request contained missing or expired authentication.
+        '403':
+          description: The user is not authorized to make the request.
+        '404':
+          description: The requested resource was not found.
+        '409':
+          description: The request conflicted with the current state of the target resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+        '429':
+          description: Request was refused due to rate limiting.
+      tags:
+        - Disputes
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/CreateEvidenceFileMultiPart'
+      security:
+        - BasicAuth: []
+        - OAuth2Auth:
+            - /accounts/{accountID}/transfers.write
+  /accounts/{accountID}/disputes/{disputeID}/evidence-text:
+    post:
+      operationId: uploadDisputeEvidenceText
+      description: |-
+        Uploads text as evidence for a dispute.
+
+        Read our [disputes guide](https://docs.moov.io/guides/money-movement/accept-payments/card-acceptance/disputes/) to learn more.
+
+        To use this endpoint from the browser, you'll need to specify the `/accounts/{accountID}/transfers.write` scope when generating 
+        a [token](https://docs.moov.io/api/authentication/access-tokens/).
+      parameters:
+        - $ref: '#/components/parameters/CommonHeaders'
+        - name: accountID
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: disputeID
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '201':
+          description: The resource was successfully created.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EvidenceText'
+        '400':
+          description: The server could not understand the request due to invalid syntax.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+        '401':
+          description: The request contained missing or expired authentication.
+        '403':
+          description: The user is not authorized to make the request.
+        '404':
+          description: The requested resource was not found.
+        '409':
+          description: The request conflicted with the current state of the target resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+        '429':
+          description: Request was refused due to rate limiting.
+      tags:
+        - Disputes
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateEvidenceText'
+      security:
+        - BasicAuth: []
+        - OAuth2Auth:
+            - /accounts/{accountID}/transfers.write
+  /accounts/{accountID}/disputes/{disputeID}/evidence/submit:
+    post:
+      operationId: submitDisputeEvidence
+      description: |-
+        Submit the evidence associated with a dispute.
+
+        Evidence items must be uploaded using the appropriate endpoint(s) prior to calling this endpoint to submit it. **Evidence can only
+        be submitted once per dispute.**
+
+        Read our [disputes guide](https://docs.moov.io/guides/money-movement/accept-payments/card-acceptance/disputes/) to learn more.
+
+        To use this endpoint from the browser, you'll need to specify the `/accounts/{accountID}/transfers.write` scope when generating 
+        a [token](https://docs.moov.io/api/authentication/access-tokens/).
+      parameters:
+        - $ref: '#/components/parameters/CommonHeaders'
+        - name: accountID
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: disputeID
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: The request completed successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Dispute'
+        '400':
+          description: The server could not understand the request due to invalid syntax.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+        '401':
+          description: The request contained missing or expired authentication.
+        '403':
+          description: The user is not authorized to make the request.
+        '404':
+          description: The requested resource was not found.
+        '409':
+          description: The request conflicted with the current state of the target resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+        '429':
+          description: Request was refused due to rate limiting.
+      tags:
+        - Disputes
+      security:
+        - BasicAuth: []
+        - OAuth2Auth:
+            - /accounts/{accountID}/transfers.write
+  /accounts/{accountID}/disputes/{disputeID}/evidence/{evidenceID}:
+    get:
+      operationId: getDisputeEvidence
+      description: |-
+        Get dispute evidence by ID.
+
+        Read our [disputes guide](https://docs.moov.io/guides/money-movement/accept-payments/card-acceptance/disputes/) to learn more.
+
+        To use this endpoint from the browser, you'll need to specify the `/accounts/{accountID}/transfers.read` scope when generating 
+        a [token](https://docs.moov.io/api/authentication/access-tokens/).
+      parameters:
+        - $ref: '#/components/parameters/CommonHeaders'
+        - name: accountID
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: disputeID
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: evidenceID
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: The request completed successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DisputeEvidenceMetadata'
+        '401':
+          description: The request contained missing or expired authentication.
+        '403':
+          description: The user is not authorized to make the request.
+        '404':
+          description: The requested resource was not found.
+        '429':
+          description: Request was refused due to rate limiting.
+      tags:
+        - Disputes
+      security:
+        - BasicAuth: []
+        - OAuth2Auth:
+            - /accounts/{accountID}/transfers.read
+    patch:
+      operationId: updateDisputeEvidence
+      description: |-
+        Updates dispute evidence by ID.
+
+        Read our [disputes guide](https://docs.moov.io/guides/money-movement/accept-payments/card-acceptance/disputes/) to learn more.
+
+        To use this endpoint from the browser, you'll need to specify the `/accounts/{accountID}/transfers.write` scope when generating
+        a [token](https://docs.moov.io/api/authentication/access-tokens/).
+      parameters:
+        - $ref: '#/components/parameters/CommonHeaders'
+        - name: accountID
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: disputeID
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: evidenceID
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: The request completed successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DisputeEvidenceMetadata'
+        '400':
+          description: The server could not understand the request due to invalid syntax.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+        '401':
+          description: The request contained missing or expired authentication.
+        '403':
+          description: The user is not authorized to make the request.
+        '404':
+          description: The requested resource was not found.
+        '429':
+          description: Request was refused due to rate limiting.
+      tags:
+        - Disputes
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateEvidence'
+      security:
+        - BasicAuth: []
+        - OAuth2Auth:
+            - /accounts/{accountID}/transfers.write
+    delete:
+      operationId: deleteDisputeEvidenceFile
+      description: |-
+        Deletes dispute evidence by ID. 
+
+        Read our [disputes guide](https://docs.moov.io/guides/money-movement/accept-payments/card-acceptance/disputes/) to learn more.
+
+        To use this endpoint from the browser, you'll need to specify the `/accounts/{accountID}/transfers.write` scope when generating 
+        a [token](https://docs.moov.io/api/authentication/access-tokens/).
+      parameters:
+        - $ref: '#/components/parameters/CommonHeaders'
+        - name: accountID
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: disputeID
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: evidenceID
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '204':
+          description: The request completed successfully, but there is no content to return.
+        '401':
+          description: The request contained missing or expired authentication.
+        '403':
+          description: The user is not authorized to make the request.
+        '404':
+          description: The requested resource was not found.
+        '409':
+          description: The request conflicted with the current state of the target resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+        '429':
+          description: Request was refused due to rate limiting.
+      tags:
+        - Disputes
+      security:
+        - BasicAuth: []
+        - OAuth2Auth:
+            - /accounts/{accountID}/transfers.write
+  /accounts/{accountID}/disputes/{disputeID}/evidence/{evidenceID}/data:
+    get:
+      operationId: getDisputeEvidenceData
+      description: |-
+        Downloads dispute evidence data by ID.
+
+        Read our [disputes guide](https://docs.moov.io/guides/money-movement/accept-payments/card-acceptance/disputes/) to learn more.
+
+        To use this endpoint from the browser, you'll need to specify the `/accounts/{accountID}/transfers.read` scope when generating 
+        a [token](https://docs.moov.io/api/authentication/access-tokens/).
+      parameters:
+        - $ref: '#/components/parameters/CommonHeaders'
+        - name: accountID
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: disputeID
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: evidenceID
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/pdf:
+              schema:
+                type: string
+                format: binary
+            image/jpeg:
+              schema:
+                type: string
+                format: binary
+            image/tiff:
+              schema:
+                type: string
+                format: binary
+        '401':
+          description: The request contained missing or expired authentication.
+        '403':
+          description: The user is not authorized to make the request.
+        '404':
+          description: The requested resource was not found.
+        '429':
+          description: Request was refused due to rate limiting.
+      tags:
+        - Disputes
+      security:
+        - BasicAuth: []
+        - OAuth2Auth:
+            - /accounts/{accountID}/transfers.read
   /accounts/{accountID}/payment-methods:
     get:
       operationId: listPaymentMethods
@@ -3577,6 +4222,95 @@ components:
       description: Specify an API version.
       schema:
         $ref: '#/components/schemas/Versions'
+    DisputeListFilters.cardholderAccountID:
+      name: cardholderAccountID
+      in: query
+      required: false
+      description: Optional parameter to filter by cardholder account ID.
+      schema:
+        type: string
+        format: uuid
+      explode: false
+    DisputeListFilters.disputeIDs:
+      name: disputeIDs
+      in: query
+      required: false
+      description: Optional parameter to filter by a comma separated list of dispute IDs.
+      schema:
+        type: array
+        items:
+          type: string
+      explode: false
+    DisputeListFilters.endDateTime:
+      name: endDateTime
+      in: query
+      required: false
+      description: Optional date-time parameter to filter all disputes created on and before the provided date and time.
+      schema:
+        type: string
+        format: date-time
+      explode: false
+    DisputeListFilters.merchantAccountID:
+      name: merchantAccountID
+      in: query
+      required: false
+      description: Optional parameter to filter by merchant account ID.
+      schema:
+        type: string
+        format: uuid
+      explode: false
+    DisputeListFilters.orderBy:
+      name: orderBy
+      in: query
+      required: false
+      schema:
+        type: string
+      explode: false
+    DisputeListFilters.respondEndDateTime:
+      name: respondEndDateTime
+      in: query
+      required: false
+      description: Optional date-time which exclusively filters all disputes with respond by before this date-time.
+      schema:
+        type: string
+        format: date-time
+      explode: false
+    DisputeListFilters.respondStartDateTime:
+      name: respondStartDateTime
+      in: query
+      required: false
+      description: Optional date-time which exclusively filters all disputes with respond by before this date-time.
+      schema:
+        type: string
+        format: date-time
+      explode: false
+    DisputeListFilters.startDateTime:
+      name: startDateTime
+      in: query
+      required: false
+      description: Optional date-time parameter to filter all disputes created on and after the provided date and time.
+      schema:
+        type: string
+        format: date-time
+      explode: false
+    DisputeListFilters.status:
+      name: status
+      in: query
+      required: false
+      description: Optional dispute status by which to filter the disputes.
+      schema:
+        $ref: '#/components/schemas/DisputeStatus'
+      explode: false
+    DisputeListFilters.transferIDs:
+      name: transferIDs
+      in: query
+      required: false
+      description: Optional parameter to filter by a comma separated list of transfer IDs.
+      schema:
+        type: array
+        items:
+          type: string
+      explode: false
     Pagination.count:
       name: count
       in: query
@@ -5467,6 +6201,30 @@ components:
           $ref: '#/components/schemas/IndustryCodesUpdate'
         primaryRegulator:
           $ref: '#/components/schemas/PrimaryRegulator'
+    CreateEvidenceFileMultiPart:
+      type: object
+      required:
+        - file
+        - evidenceType
+      properties:
+        file:
+          type: string
+          format: binary
+          description: The file to upload as evidence. Valid types are [jpeg, tiff, pdf].
+        evidenceType:
+          $ref: '#/components/schemas/EvidenceType'
+    CreateEvidenceText:
+      type: object
+      required:
+        - text
+        - evidenceType
+      properties:
+        text:
+          type: string
+          maxLength: 750
+          description: The text to associate with the dispute as evidence.
+        evidenceType:
+          $ref: '#/components/schemas/EvidenceType'
     CreateIndividualError:
       type: object
       properties:
@@ -5749,6 +6507,131 @@ components:
         - 2-days
       example: 2-days
       description: An optional override of your default ACH hold period in banking days. The hold period must be longer than or equal to your default setting.
+    Dispute:
+      type: object
+      required:
+        - disputeID
+        - merchantAccountID
+        - amount
+        - networkReasonCode
+        - transfer
+        - respondBy
+        - status
+        - phase
+        - createdOn
+      properties:
+        disputeID:
+          type: string
+          format: uuid
+        merchantAccountID:
+          type: string
+          format: uuid
+        amount:
+          $ref: '#/components/schemas/Amount'
+        networkReasonCode:
+          type: string
+          description: |-
+            Indicates the card network's category for the dispute. 
+
+            These codes may differ between card brands. You can find more information on the code from the networkReasonDescription field.
+        networkReasonDescription:
+          type: string
+          description: Provides detail on the card network's categorization of the dispute.
+        transfer:
+          $ref: '#/components/schemas/DisputeTransferDetails'
+        respondBy:
+          type: string
+          format: date-time
+        status:
+          $ref: '#/components/schemas/DisputeStatus'
+        phase:
+          $ref: '#/components/schemas/DisputePhase'
+        createdOn:
+          type: string
+          format: date-time
+      example:
+        disputeID: 6e356108-fdfa-4910-bbe4-1e3c8abf5520
+        merchantAccountID: 34233b72-780c-4e0e-8b08-cbbe1bc878f8
+        createdOn: 2024-12-23T17:55:00Z
+        amount:
+          currency: USD
+          value: 257753
+        networkReasonCode: '10.4'
+        transfer:
+          transferID: ecac148a-917e-4ee0-b46a-c51408939fff
+        respondBy: 2024-12-23T18:55:00Z
+        status: response-needed
+        phase: chargeback
+      description: Details of a card transaction dispute.
+    DisputeEvidenceMetadata:
+      type: object
+      required:
+        - evidenceID
+        - disputeID
+        - mimeType
+        - filename
+        - size
+        - evidenceType
+        - text
+        - createdOn
+        - updatedOn
+      properties:
+        evidenceID:
+          type: string
+          format: uuid
+        disputeID:
+          type: string
+          format: uuid
+        mimeType:
+          type: string
+        filename:
+          type: string
+        size:
+          type: integer
+          format: int64
+        evidenceType:
+          $ref: '#/components/schemas/EvidenceType'
+        text:
+          type: string
+          description: The text submited as evidence.
+        createdOn:
+          type: string
+          format: date-time
+        updatedOn:
+          type: string
+          format: date-time
+    DisputePhase:
+      type: string
+      enum:
+        - pre-dispute
+        - inquiry
+        - chargeback
+        - unknown
+      description: The phase of a dispute within the dispute lifecycle.
+    DisputeStatus:
+      type: string
+      enum:
+        - response-needed
+        - resolved
+        - under-review
+        - closed
+        - accepted
+        - expired
+        - won
+        - lost
+      description: |-
+        The status of a particular dispute. 
+
+        Read our [disputes guide](https://docs.moov.io/guides/money-movement/accept-payments/card-acceptance/disputes/#dispute-statuses) to learn what each status means.
+    DisputeTransferDetails:
+      type: object
+      required:
+        - transferID
+      properties:
+        transferID:
+          type: string
+          format: uuid
+          description: The disputed transfer's ID.
     Document:
       type: object
       required:
@@ -5844,6 +6727,39 @@ components:
         This is the output of using compact serialization of a JWE token that wraps an AES key and uses the public key returned from /end-to-end-keys.
         Examples of how to create this token can be found on our [GitHub](https://github.com/moovfinancial/moov-go/blob/main/examples/e2ee/e2ee_test.go).
         Body for a JWE token following [RFC](https://datatracker.ietf.org/doc/html/rfc7516).
+    EvidenceText:
+      type: object
+      required:
+        - evidenceID
+        - disputeID
+        - evidenceType
+        - text
+        - createdOn
+      properties:
+        evidenceID:
+          type: string
+          format: uuid
+        disputeID:
+          type: string
+          format: uuid
+        evidenceType:
+          $ref: '#/components/schemas/EvidenceType'
+        text:
+          type: string
+        createdOn:
+          type: string
+          format: date-time
+    EvidenceType:
+      type: string
+      enum:
+        - receipt
+        - proof-of-delivery
+        - cancelation-policy
+        - terms-of-service
+        - customer-communication
+        - generic-evidence
+        - cover-letter
+        - other
     FacilitatorFee:
       type: object
       properties:
@@ -6433,6 +7349,10 @@ components:
       type: string
       example: United States
       maxLength: 64
+    OrderBy:
+      type: string
+      example: created-at:desc
+      description: Optional parameter to order the results in the query.
     PatchAccount:
       type: object
       properties:
@@ -7704,6 +8624,16 @@ components:
           $ref: '#/components/schemas/UpdateColor'
         light:
           $ref: '#/components/schemas/UpdateColor'
+    UpdateEvidence:
+      type: object
+      properties:
+        text:
+          type: string
+          maxLength: 750
+          description: The text to associate with the dispute as evidence.
+        evidenceType:
+          $ref: '#/components/schemas/EvidenceType'
+      description: The template for adding optional properties.
     UpsertSchedule:
       type: object
       properties:
@@ -7948,11 +8878,11 @@ components:
             /accounts/{accountID}/capabilities.read: ''
             /accounts/{accountID}/capabilities.write: ''
             /accounts/{accountID}/cards.read: ''
+            /accounts/{accountID}/transfers.read: ''
+            /accounts/{accountID}/transfers.write: ''
             /accounts/{accountID}/payment-methods.read: ''
             /accounts/{your-account-id}/transfers.write: ''
             /accounts/{your-account-id}/transfers.read: ''
-            /accounts/{accountID}/transfers.read: ''
-            /accounts/{accountID}/transfers.write: ''
             /accounts/{yourAccountID}/transfers.write: ''
             /accounts/{accountID}/wallets.read: ''
             /accounts/{accountID}/wallets.write: ''

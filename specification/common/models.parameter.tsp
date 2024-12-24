@@ -12,6 +12,10 @@ scalar Skip extends int64;
 @example(20)
 scalar Count extends int64;
 
+@doc("Optional parameter to order the results in the query.")
+@example("created-at:desc")
+scalar OrderBy extends string;
+
 model Pagination {
   @query
   skip?: Skip;
