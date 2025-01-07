@@ -127,7 +127,7 @@ namespace MoovAPI {
   @doc("""
       Generates a non-expiring token that can then be used to accept Moov’s terms of service. 
     
-      This token can only be generated via API. Any Moov account requesting the collect-funds, send-funds, wallet, or card-issuing capabilities 
+      This token can only be generated via API. Any Moov account requesting the collect funds, send funds, wallet, or card issuing capabilities 
       must accept Moov’s terms of service, then have the generated terms of service token patched to the account. Read more in our [documentation](https://docs.moov.io/guides/accounts/requirements/platform-agreement/).
     """)
   @tag("Accounts")
@@ -135,5 +135,13 @@ namespace MoovAPI {
   @get
   op getTermsOfServiceToken(
     ...CommonHeaders,
+
+    @doc("Indicates the domain from which the request originated. Required if referer header is not present.")
+    @header
+    origin?: TosWaitForOrigin,
+
+    @doc("Specifies the URL of the resource from which the request originated. Required if origin header is not present.")
+    @header
+    referer?: TosWaitForReferer,
   ): GetResponses<TermsOfServiceToken>;
 }
