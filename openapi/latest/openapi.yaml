@@ -4108,13 +4108,13 @@ paths:
           required: false
           description: Indicates the domain from which the request originated. Required if referer header is not present.
           schema:
-            $ref: '#/components/schemas/TosWaitForOrigin'
+            type: string
         - name: referer
           in: header
           required: false
           description: Specifies the URL of the resource from which the request originated. Required if origin header is not present.
           schema:
-            $ref: '#/components/schemas/TosWaitForReferer'
+            type: string
       responses:
         '200':
           description: The request completed successfully.
@@ -8346,14 +8346,6 @@ components:
 
           - opaque: A token following a proprietary format.
           - jwt: A JSON Web Token (JWT), a self-contained token that contains claims about the user and is cryptographically signed.
-    TosWaitForOrigin:
-      type: string
-      enum:
-        - origin
-    TosWaitForReferer:
-      type: string
-      enum:
-        - referer
     TransactionSource:
       type: string
       enum:

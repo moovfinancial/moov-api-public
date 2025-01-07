@@ -272,11 +272,3 @@ model AccountsQuery {
 enum AccountWaitFor {
   connection,
 }
-
-enum TosWaitForOrigin {
-  origin,
-}
-
-enum TosWaitForReferer {
-  referer,
-}

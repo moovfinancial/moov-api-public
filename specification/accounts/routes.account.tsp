@@ -138,10 +138,12 @@ namespace MoovAPI {
 
     @doc("Indicates the domain from which the request originated. Required if referer header is not present.")
     @header
-    origin?: TosWaitForOrigin,
+    @example("https://example.com")
+    origin?: string,
 
     @doc("Specifies the URL of the resource from which the request originated. Required if origin header is not present.")
     @header
-    referer?: TosWaitForReferer,
+    @example("https://example.com/previous-page")
+    referer?: string,
   ): GetResponses<TermsOfServiceToken>;
 }
