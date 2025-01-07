@@ -2656,6 +2656,44 @@ paths:
         - BasicAuth: []
         - OAuth2Auth:
             - /accounts/{accountID}/files.read
+  /accounts/{accountID}/merchant-agreement:
+    get:
+      operationId: getMerchantProcessingAgreement
+      description: |-
+        Retrieve a merchant account's processing agreement.
+
+        To access this endpoint using a [token](https://docs.moov.io/api/authentication/access-tokens/) you'll need 
+        to specify the `/accounts/{accountID}/profile.read` scope.
+      parameters:
+        - $ref: '#/components/parameters/CommonHeaders'
+        - name: accountID
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/pdf:
+              schema:
+                type: string
+                format: binary
+        '401':
+          description: The request contained missing or expired authentication.
+        '403':
+          description: The user is not authorized to make the request.
+        '404':
+          description: The requested resource was not found.
+        '429':
+          description: Request was refused due to rate limiting.
+      tags:
+        - Accounts
+      security:
+        - BasicAuth: []
+        - OAuth2Auth:
+            - /accounts/{accountID}/profile.read
   /accounts/{accountID}/payment-methods:
     get:
       operationId: listPaymentMethods
