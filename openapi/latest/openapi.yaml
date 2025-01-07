@@ -22,6 +22,7 @@ tags:
   - name: Branding
   - name: Capabilities
   - name: Disputes
+  - name: Files
   - name: Payment methods
   - name: Scheduling
   - name: Transfers
@@ -2512,6 +2513,149 @@ paths:
         - BasicAuth: []
         - OAuth2Auth:
             - /accounts/{accountID}/transfers.read
+  /accounts/{accountID}/files:
+    post:
+      operationId: uploadFile
+      description: |-
+        Upload a file and link it to the specified Moov account. 
+
+        The maximum file size is 10MB. Each account is allowed a maximum of 50 files. Acceptable file types include csv, jpg, pdf, 
+        and png. 
+
+        To access this endpoint using a [token](https://docs.moov.io/api/authentication/access-tokens/) you'll need to specify the 
+        `/accounts/{accountID}/files.write` scope.
+      parameters:
+        - $ref: '#/components/parameters/CommonHeaders'
+        - name: accountID
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: The request completed successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FileDetails'
+        '400':
+          description: The server could not understand the request due to invalid syntax.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+        '401':
+          description: The request contained missing or expired authentication.
+        '403':
+          description: The user is not authorized to make the request.
+        '404':
+          description: The requested resource was not found.
+        '409':
+          description: The request conflicted with the current state of the target resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+        '422':
+          description: The request was well-formed, but the contents failed validation. Check the request for missing or invalid fields.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FileValidationError'
+        '429':
+          description: Request was refused due to rate limiting.
+      tags:
+        - Files
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/FileUploadRequestMultiPart'
+      security:
+        - BasicAuth: []
+        - OAuth2Auth:
+            - /accounts/{accountID}/files.write
+    get:
+      operationId: listFiles
+      description: |-
+        List all the files associated with a particular Moov account.
+
+        To access this endpoint using a [token](https://docs.moov.io/api/authentication/access-tokens/) you'll need to specify the 
+        `/accounts/{accountID}/files.read` scope.
+      parameters:
+        - $ref: '#/components/parameters/CommonHeaders'
+        - name: accountID
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: The request completed successfully.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/FileDetails'
+        '401':
+          description: The request contained missing or expired authentication.
+        '403':
+          description: The user is not authorized to make the request.
+        '429':
+          description: Request was refused due to rate limiting.
+      tags:
+        - Files
+      security:
+        - BasicAuth: []
+        - OAuth2Auth:
+            - /accounts/{accountID}/files.read
+  /accounts/{accountID}/files/{fileID}:
+    get:
+      operationId: getFileDetails
+      description: |-
+        Retrieve file details associated with a specific Moov account.
+
+        To access this endpoint using a [token](https://docs.moov.io/api/authentication/access-tokens/) you'll need to specify the 
+        `/accounts/{accountID}/files.read` scope.
+      parameters:
+        - $ref: '#/components/parameters/CommonHeaders'
+        - name: accountID
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: fileID
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: The request completed successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FileDetails'
+        '401':
+          description: The request contained missing or expired authentication.
+        '403':
+          description: The user is not authorized to make the request.
+        '404':
+          description: The requested resource was not found.
+        '429':
+          description: Request was refused due to rate limiting.
+      tags:
+        - Files
+      security:
+        - BasicAuth: []
+        - OAuth2Auth:
+            - /accounts/{accountID}/files.read
   /accounts/{accountID}/payment-methods:
     get:
       operationId: listPaymentMethods
@@ -6793,6 +6937,101 @@ components:
             Same as `markup`, but a decimal-formatted numerical string that represents up to 9 decimal place precision. 
             Only either `markup` or `markupDecimal` can be set. Set this field if you expect the fee to be in fractions of a cent.
       description: Total or markup fee.
+    FileDetails:
+      type: object
+      required:
+        - fileID
+        - fileName
+        - accountID
+        - filePurpose
+        - fileStatus
+        - metadata
+        - decisionReason
+        - fileSizeBytes
+        - createdOn
+        - updatedOn
+      properties:
+        fileID:
+          type: string
+          format: uuid
+        fileName:
+          type: string
+          example: logo.png
+          maxLength: 64
+        accountID:
+          type: string
+          format: uuid
+        filePurpose:
+          $ref: '#/components/schemas/FilePurpose'
+        fileStatus:
+          $ref: '#/components/schemas/FileStatus'
+        metadata:
+          type: string
+          example: '{"error_code": "document-name-mismatch", "requirement_id": "document.individual.verification", "representative_id": "c63ab175-251d-497e-a267-7346d087e180", "comment": "testing comment"'
+          format: json
+        decisionReason:
+          type: string
+          example: not correct file
+        fileSizeBytes:
+          type: integer
+        createdOn:
+          type: string
+          format: date-time
+        updatedOn:
+          type: string
+          format: date-time
+      description: Describes a file linked to a Moov account.
+    FilePurpose:
+      type: string
+      enum:
+        - business_verification
+        - representative_verification
+        - individual_verification
+        - merchant_underwriting
+        - account_requirement
+        - identity_verification
+      example: representative_verification
+      description: The file's purpose.
+    FileStatus:
+      type: string
+      enum:
+        - pending
+        - approved
+        - rejected
+      example: pending
+      description: The file's status.
+    FileUploadRequestMultiPart:
+      type: object
+      required:
+        - file
+        - filePurpose
+      properties:
+        file:
+          type: string
+          format: binary
+          description: The file to be added. Valid types are `csv`, `png`, `jpeg`, `pdf`.
+        filePurpose:
+          $ref: '#/components/schemas/FilePurpose'
+        metadata:
+          type: string
+          example: '{"requirement_id": "document.individual.verification"}'
+          format: json
+          description: |-
+            Additional metadata to be stored with the file, formatted as a JSON string.
+
+            Valid keys are `representative_id`, `comment`, `requirement_id`, `error_code`.
+      description: Request to upload a file for an account.
+    FileValidationError:
+      type: object
+      properties:
+        error:
+          type: string
+        file:
+          type: string
+        filePurpose:
+          type: string
+        metadata:
+          type: string
     GenericError:
       type: object
       required:
@@ -8886,6 +9125,8 @@ components:
             /accounts/{accountID}/cards.read: ''
             /accounts/{accountID}/transfers.read: ''
             /accounts/{accountID}/transfers.write: ''
+            /accounts/{accountID}/files.write: ''
+            /accounts/{accountID}/files.read: ''
             /accounts/{accountID}/payment-methods.read: ''
             /accounts/{your-account-id}/transfers.write: ''
             /accounts/{your-account-id}/transfers.read: ''
