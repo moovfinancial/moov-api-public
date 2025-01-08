@@ -15,6 +15,7 @@ import "./common";
 import "./disputes";
 import "./end2end";
 import "./files";
+import "./paymentlinks";
 import "./paymentmethods";
 import "./schedules";
 import "./transfers";
