@@ -23,6 +23,7 @@ tags:
   - name: Capabilities
   - name: Disputes
   - name: Files
+  - name: Enriched address
   - name: Payment methods
   - name: Scheduling
   - name: Transfers
@@ -4227,6 +4228,49 @@ paths:
         - BasicAuth: []
         - OAuth2Auth:
             - /accounts/{accountID}/wallets.read
+  /enrichment/address:
+    get:
+      operationId: getEnrichmentAddress
+      description: |2-
+          Fetch enriched address suggestions. Requires a partial address. 
+          
+          To use this endpoint from the browser, you'll need to specify the `/profile-enrichment.read` scope when generating a [token](https://docs.moov.io/api/authentication/access-tokens/).
+      parameters:
+        - $ref: '#/components/parameters/CommonHeaders'
+        - $ref: '#/components/parameters/EnrichedAddressFilters.search'
+        - $ref: '#/components/parameters/EnrichedAddressFilters.maxResults'
+        - $ref: '#/components/parameters/EnrichedAddressFilters.includeCities'
+        - $ref: '#/components/parameters/EnrichedAddressFilters.includeStates'
+        - $ref: '#/components/parameters/EnrichedAddressFilters.includeZipcodes'
+        - $ref: '#/components/parameters/EnrichedAddressFilters.excludeStates'
+        - $ref: '#/components/parameters/EnrichedAddressFilters.preferCities'
+        - $ref: '#/components/parameters/EnrichedAddressFilters.preferStates'
+        - $ref: '#/components/parameters/EnrichedAddressFilters.preferZipcodes'
+        - $ref: '#/components/parameters/EnrichedAddressFilters.preferRatio'
+        - $ref: '#/components/parameters/EnrichedAddressFilters.preferGeolocation'
+        - $ref: '#/components/parameters/EnrichedAddressFilters.selected'
+        - $ref: '#/components/parameters/EnrichedAddressFilters.source'
+      responses:
+        '200':
+          description: The request completed successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EnrichedAddressResponse'
+        '401':
+          description: The request contained missing or expired authentication.
+        '403':
+          description: The user is not authorized to make the request.
+        '404':
+          description: The requested resource was not found.
+        '429':
+          description: Request was refused due to rate limiting.
+      tags:
+        - Enriched address
+      security:
+        - BasicAuth: []
+        - OAuth2Auth:
+            - /profile-enrichment.read
   /oauth2/token:
     post:
       operationId: createAuthToken
@@ -4531,6 +4575,113 @@ components:
         type: array
         items:
           type: string
+      explode: false
+    EnrichedAddressFilters.excludeStates:
+      name: excludeStates
+      in: query
+      required: false
+      description: Exclude list of states from results. No `include` pararmeters may be used with this parameter.
+      schema:
+        type: string
+      explode: false
+    EnrichedAddressFilters.includeCities:
+      name: includeCities
+      in: query
+      required: false
+      description: Limits results to a list of given cities.
+      schema:
+        type: string
+      explode: false
+    EnrichedAddressFilters.includeStates:
+      name: includeStates
+      in: query
+      required: false
+      description: Limits results to a list of given states.
+      schema:
+        type: string
+      explode: false
+    EnrichedAddressFilters.includeZipcodes:
+      name: includeZipcodes
+      in: query
+      required: false
+      description: Limits results to a list of given zipcodes.
+      schema:
+        type: string
+      explode: false
+    EnrichedAddressFilters.maxResults:
+      name: maxResults
+      in: query
+      required: false
+      description: Maximum number of results to return.
+      schema:
+        type: integer
+      explode: false
+    EnrichedAddressFilters.preferCities:
+      name: preferCities
+      in: query
+      required: false
+      description: Display results with the listed cities at the top.
+      schema:
+        type: string
+      explode: false
+    EnrichedAddressFilters.preferGeolocation:
+      name: preferGeolocation
+      in: query
+      required: false
+      description: |2-
+          If omitted or set to `city`, it uses the sender’s IP address to determine location, then automatically adds the city and state 
+          to the preferCities value. This parameter takes precedence over other `include` or `exclude` parameters meaning that if it is 
+          not set to `none`, you may see addresses from areas you do not wish to see.
+      schema:
+        type: string
+      explode: false
+    EnrichedAddressFilters.preferRatio:
+      name: preferRatio
+      in: query
+      required: false
+      description: Specifies the percentage of address suggestions that should be preferred and will appear at the top of the results.
+      schema:
+        type: integer
+      explode: false
+    EnrichedAddressFilters.preferStates:
+      name: preferStates
+      in: query
+      required: false
+      description: Display results with the listed states at the top.
+      schema:
+        type: string
+      explode: false
+    EnrichedAddressFilters.preferZipcodes:
+      name: preferZipcodes
+      in: query
+      required: false
+      description: Display results with the listed zipcodes at the top.
+      schema:
+        type: string
+      explode: false
+    EnrichedAddressFilters.search:
+      name: search
+      in: query
+      required: true
+      description: Partial or complete address to search.
+      schema:
+        type: string
+      explode: false
+    EnrichedAddressFilters.selected:
+      name: selected
+      in: query
+      required: false
+      description: Useful for narrowing results with `addressLine2` suggestions such as `Apt` (denotes an apartment building with multiple residences).
+      schema:
+        type: string
+      explode: false
+    EnrichedAddressFilters.source:
+      name: source
+      in: query
+      required: false
+      description: Include results from alternate data sources. Allowed values are `all` (non-postal addresses), or `postal` (postal addresses only).
+      schema:
+        type: string
       explode: false
     Pagination.count:
       name: count
@@ -6954,6 +7105,22 @@ components:
         This is the output of using compact serialization of a JWE token that wraps an AES key and uses the public key returned from /end-to-end-keys.
         Examples of how to create this token can be found on our [GitHub](https://github.com/moovfinancial/moov-go/blob/main/examples/e2ee/e2ee_test.go).
         Body for a JWE token following [RFC](https://datatracker.ietf.org/doc/html/rfc7516).
+    EnrichedAddressResponse:
+      type: object
+      properties:
+        addressLine1:
+          type: string
+        addressLine2:
+          type: string
+        city:
+          type: string
+        entries:
+          type: integer
+          description: The number of units at an address. For example the number of apartments or businesses in a building.
+        postalCode:
+          type: string
+        stateOrProvince:
+          type: string
     EvidenceText:
       type: object
       required:
@@ -9204,6 +9371,7 @@ components:
             /accounts/{accountID}/transfers.write: ''
             /accounts/{accountID}/files.write: ''
             /accounts/{accountID}/files.read: ''
+            /profile-enrichment.read: ''
             /accounts/{accountID}/payment-methods.read: ''
             /accounts/{your-account-id}/transfers.write: ''
             /accounts/{your-account-id}/transfers.read: ''
