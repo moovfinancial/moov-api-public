@@ -4511,6 +4511,43 @@ paths:
         - BasicAuth: []
         - OAuth2Auth:
             - /accounts/{accountID}/wallets.read
+  /avatars/{uniqueID}:
+    get:
+      operationId: getAvatar
+      description: |-
+        Get avatar image for an account using a unique ID.    
+
+        To use this endpoint from the browser, you'll need to specify the `/profile-enrichment.read` scope when generating a [token](https://docs.moov.io/api/authentication/access-tokens/).
+      parameters:
+        - $ref: '#/components/parameters/CommonHeaders'
+        - name: uniqueID
+          in: path
+          required: true
+          description: Any unique ID associated with an account such as accountID, representativeID, routing number, or userID.
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: The request completed successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EnrichedAvatarResponse'
+        '401':
+          description: The request contained missing or expired authentication.
+        '403':
+          description: The user is not authorized to make the request.
+        '404':
+          description: The requested resource was not found.
+        '429':
+          description: Request was refused due to rate limiting.
+      tags:
+        - Enriched profile
+      security:
+        - BasicAuth: []
+        - OAuth2Auth:
+            - /profile-enrichment.read
   /enrichment/address:
     get:
       operationId: getEnrichmentAddress
@@ -7586,6 +7623,11 @@ components:
         postalCode:
           type: string
         stateOrProvince:
+          type: string
+    EnrichedAvatarResponse:
+      type: object
+      properties:
+        image:
           type: string
     EnrichedBusinessProfile:
       type: object

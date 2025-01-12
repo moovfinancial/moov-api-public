@@ -1,6 +1,7 @@
 import "@typespec/http";
 import "./models.address.tsp";
 import "./models.profile.tsp";
+import "./models.avatar.tsp";
 import "../auth/models.auth.tsp";
 import "../common/models.response.tsp";
 import "../common/models.header.tsp";
@@ -38,4 +39,22 @@ namespace MoovAPI {
     @query
     email: string,
   ): GetResponses<EnrichedBusinessProfile>;
+
+  @doc("""
+    Get avatar image for an account using a unique ID.    
+    
+    To use this endpoint from the browser, you'll need to specify the `/profile-enrichment.read` scope when generating a [token](https://docs.moov.io/api/authentication/access-tokens/).
+    """)
+  @tag("Enriched profile")
+  @route("/avatars/{uniqueID}")
+  @get
+  @useAuth(BasicAuth | OAuth2<["/profile-enrichment.read"]>)
+  op getAvatar(
+    ...CommonHeaders,
+
+    @doc("Any unique ID associated with an account such as accountID, representativeID, routing number, or userID.")
+    @format("uuid")
+    @path
+    uniqueID: string,
+  ): GetResponses<EnrichedAvatarResponse>;
 }
