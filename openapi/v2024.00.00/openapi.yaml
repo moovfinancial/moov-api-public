@@ -25,6 +25,7 @@ tags:
   - name: Files
   - name: Enriched address
   - name: Enriched profile
+  - name: Industries
   - name: Payment links
   - name: Payment methods
   - name: Scheduling
@@ -4590,6 +4591,36 @@ paths:
         - BasicAuth: []
         - OAuth2Auth:
             - /profile-enrichment.read
+  /industries:
+    get:
+      operationId: listIndustries
+      description: |2-
+          Returns a list of all industry titles and their corresponding MCC/SIC/NAICS codes. Results are ordered by title.    
+          
+          To use this endpoint from the browser, you'll need to specify the `/profile-enrichment.read` scope when generating a [token](https://docs.moov.io/api/authentication/access-tokens/).
+      parameters:
+        - $ref: '#/components/parameters/CommonHeaders'
+      responses:
+        '200':
+          description: The request completed successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EnrichedIndustryResponse'
+        '401':
+          description: The request contained missing or expired authentication.
+        '403':
+          description: The user is not authorized to make the request.
+        '404':
+          description: The requested resource was not found.
+        '429':
+          description: Request was refused due to rate limiting.
+      tags:
+        - Industries
+      security:
+        - BasicAuth: []
+        - OAuth2Auth:
+            - /profile-enrichment.read
   /oauth2/token:
     post:
       operationId: createAuthToken
@@ -7615,6 +7646,15 @@ components:
           example: '7991'
           minLength: 4
           maxLength: 4
+    EnrichedIndustryResponse:
+      type: object
+      properties:
+        industryCodes:
+          $ref: '#/components/schemas/IndustryCodes'
+        title:
+          type: string
+          example: AC, Refrigeration Repair
+      description: A list of industries and their MCC/SIC/NAICS codes.
     EvidenceText:
       type: object
       required:

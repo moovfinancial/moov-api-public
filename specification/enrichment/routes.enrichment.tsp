@@ -1,6 +1,7 @@
 import "@typespec/http";
 import "./models.address.tsp";
 import "./models.profile.tsp";
+import "./models.industries.tsp";
 import "../auth/models.auth.tsp";
 import "../common/models.response.tsp";
 import "../common/models.header.tsp";
@@ -38,4 +39,15 @@ namespace MoovAPI {
     @query
     email: string,
   ): GetResponses<EnrichedBusinessProfile>;
+
+  @doc("""
+      Returns a list of all industry titles and their corresponding MCC/SIC/NAICS codes. Results are ordered by title.    
+      
+      To use this endpoint from the browser, you'll need to specify the `/profile-enrichment.read` scope when generating a [token](https://docs.moov.io/api/authentication/access-tokens/).
+    """)
+  @tag("Industries")
+  @route("/industries")
+  @get
+  @useAuth(BasicAuth | OAuth2<["/profile-enrichment.read"]>)
+  op listIndustries(...CommonHeaders): GetResponses<EnrichedIndustryResponse>;
 }
