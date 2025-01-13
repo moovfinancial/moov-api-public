@@ -4606,13 +4606,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/EnrichedIndustryResponse'
+                type: array
+                items:
+                  $ref: '#/components/schemas/EnrichedIndustryResponse'
         '401':
           description: The request contained missing or expired authentication.
         '403':
           description: The user is not authorized to make the request.
-        '404':
-          description: The requested resource was not found.
         '429':
           description: Request was refused due to rate limiting.
       tags:
@@ -7648,6 +7648,9 @@ components:
           maxLength: 4
     EnrichedIndustryResponse:
       type: object
+      required:
+        - industryCodes
+        - title
       properties:
         industryCodes:
           $ref: '#/components/schemas/IndustryCodes'
