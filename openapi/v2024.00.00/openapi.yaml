@@ -22,9 +22,11 @@ tags:
   - name: Branding
   - name: Capabilities
   - name: Disputes
-  - name: Files
   - name: Enriched address
   - name: Enriched profile
+  - name: Files
+  - name: Card issuing
+  - name: Issuing transactions
   - name: Payment links
   - name: Payment methods
   - name: Scheduling
@@ -4590,6 +4592,484 @@ paths:
         - BasicAuth: []
         - OAuth2Auth:
             - /profile-enrichment.read
+  /issuing/{accountID}/authorizations:
+    get:
+      operationId: listIssuedCardAuthorizations
+      description: |-
+        List issued card authorizations associated with a Moov account.
+
+        To access this endpoint using a [token](https://docs.moov.io/api/authentication/access-tokens/) you'll need to specify 
+        the `/accounts/{accountID}/issued-cards.read` scope.
+      parameters:
+        - $ref: '#/components/parameters/CommonHeaders'
+        - name: accountID
+          in: path
+          required: true
+          description: The Moov business account for which cards have been issued.
+          schema:
+            type: string
+            format: uuid
+        - $ref: '#/components/parameters/Pagination.skip'
+        - $ref: '#/components/parameters/Pagination.count'
+        - $ref: '#/components/parameters/ListIssuingAuthorizationsQuery.issuedCardID'
+        - $ref: '#/components/parameters/ListIssuingAuthorizationsQuery.startDateTime'
+        - $ref: '#/components/parameters/ListIssuingAuthorizationsQuery.endDateTime'
+        - $ref: '#/components/parameters/ListIssuingAuthorizationsQuery.statuses'
+      responses:
+        '200':
+          description: The request completed successfully.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/IssuedCardAuthorization'
+        '401':
+          description: The request contained missing or expired authentication.
+        '403':
+          description: The user is not authorized to make the request.
+        '429':
+          description: Request was refused due to rate limiting.
+      tags:
+        - Issuing transactions
+      security:
+        - BasicAuth: []
+        - OAuth2Auth:
+            - /accounts/{accountID}/issued-cards.read
+  /issuing/{accountID}/authorizations/{authorizationID}:
+    get:
+      operationId: getIssuedCardAuthorization
+      description: |-
+        Retrieves details of an authorization associated with a specific Moov account.
+
+        To access this endpoint using a [token](https://docs.moov.io/api/authentication/access-tokens/) you'll need to specify 
+        the `/accounts/{accountID}/issued-cards.read` scope.
+      parameters:
+        - $ref: '#/components/parameters/CommonHeaders'
+        - name: accountID
+          in: path
+          required: true
+          description: The Moov business account for which cards have been issued.
+          schema:
+            type: string
+            format: uuid
+        - name: authorizationID
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: The request completed successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IssuedCardAuthorization'
+        '401':
+          description: The request contained missing or expired authentication.
+        '403':
+          description: The user is not authorized to make the request.
+        '404':
+          description: The requested resource was not found.
+        '429':
+          description: Request was refused due to rate limiting.
+      tags:
+        - Issuing transactions
+      security:
+        - BasicAuth: []
+        - OAuth2Auth:
+            - /accounts/{accountID}/issued-cards.read
+  /issuing/{accountID}/authorizations/{authorizationID}/events:
+    get:
+      operationId: listIssuedCardAuthorizationEvents
+      description: |-
+        List card network and Moov platform events that affect the authorization and its hold on a wallet balance.
+
+        To access this endpoint using a [token](https://docs.moov.io/api/authentication/access-tokens/) you'll need to specify 
+        the `/accounts/{accountID}/issued-cards.read` scope.
+      parameters:
+        - $ref: '#/components/parameters/CommonHeaders'
+        - name: accountID
+          in: path
+          required: true
+          description: The Moov business account for which cards have been issued.
+          schema:
+            type: string
+            format: uuid
+        - name: authorizationID
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - $ref: '#/components/parameters/Pagination.skip'
+        - $ref: '#/components/parameters/Pagination.count'
+      responses:
+        '200':
+          description: The request completed successfully.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/IssuedCardAuthorizationEvent'
+        '401':
+          description: The request contained missing or expired authentication.
+        '403':
+          description: The user is not authorized to make the request.
+        '429':
+          description: Request was refused due to rate limiting.
+      tags:
+        - Issuing transactions
+      security:
+        - BasicAuth: []
+        - OAuth2Auth:
+            - /accounts/{accountID}/issued-cards.read
+  /issuing/{accountID}/card-transactions:
+    get:
+      operationId: listIssuedCardTransactions
+      description: |-
+        List issued card transactions associated with a Moov account.
+
+        To access this endpoint using a [token](https://docs.moov.io/api/authentication/access-tokens/) you'll need to specify 
+        the `/accounts/{accountID}/issued-cards.read` scope.
+      parameters:
+        - $ref: '#/components/parameters/CommonHeaders'
+        - name: accountID
+          in: path
+          required: true
+          description: The Moov business account for which cards have been issued.
+          schema:
+            type: string
+            format: uuid
+        - $ref: '#/components/parameters/Pagination.skip'
+        - $ref: '#/components/parameters/Pagination.count'
+        - $ref: '#/components/parameters/ListIssuingTransactionsQuery.issuedCardID'
+        - $ref: '#/components/parameters/ListIssuingTransactionsQuery.startDateTime'
+        - $ref: '#/components/parameters/ListIssuingTransactionsQuery.endDateTime'
+      responses:
+        '200':
+          description: The request completed successfully.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/IssuedCardTransaction'
+        '401':
+          description: The request contained missing or expired authentication.
+        '403':
+          description: The user is not authorized to make the request.
+        '429':
+          description: Request was refused due to rate limiting.
+      tags:
+        - Issuing transactions
+      security:
+        - BasicAuth: []
+        - OAuth2Auth:
+            - /accounts/{accountID}/issued-cards.read
+  /issuing/{accountID}/card-transactions/{cardTransactionID}:
+    get:
+      operationId: getIssuedCardTransaction
+      description: |-
+        Retrieves details of an issued card transaction associated with a specific Moov account.
+
+        To access this endpoint using a [token](https://docs.moov.io/api/authentication/access-tokens/) you'll need to specify 
+        the `/accounts/{accountID}/issued-cards.read` scope.
+      parameters:
+        - $ref: '#/components/parameters/CommonHeaders'
+        - name: accountID
+          in: path
+          required: true
+          description: The Moov business account for which cards have been issued.
+          schema:
+            type: string
+            format: uuid
+        - name: cardTransactionID
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: The request completed successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IssuedCardTransaction'
+        '401':
+          description: The request contained missing or expired authentication.
+        '403':
+          description: The user is not authorized to make the request.
+        '404':
+          description: The requested resource was not found.
+        '429':
+          description: Request was refused due to rate limiting.
+      tags:
+        - Issuing transactions
+      security:
+        - BasicAuth: []
+        - OAuth2Auth:
+            - /accounts/{accountID}/issued-cards.read
+  /issuing/{accountID}/issued-cards:
+    post:
+      operationId: requestCard
+      description: |-
+        Request a virtual card be issued.
+
+        To use this endpoint from the browser, you'll need to specify the `/accounts/{accountID}/issued-cards.write` scope when generating 
+        a [token](https://docs.moov.io/api/authentication/access-tokens/).
+      parameters:
+        - $ref: '#/components/parameters/CommonHeaders'
+        - name: accountID
+          in: path
+          required: true
+          description: The Moov business account for which the card is to be issued.
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: The request completed successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IssuedCard'
+        '400':
+          description: The server could not understand the request due to invalid syntax.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+        '401':
+          description: The request contained missing or expired authentication.
+        '403':
+          description: The user is not authorized to make the request.
+        '404':
+          description: The requested resource was not found.
+        '422':
+          description: The request was well-formed, but the contents failed validation. Check the request for missing or invalid fields.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RequestCardError'
+        '429':
+          description: Request was refused due to rate limiting.
+      tags:
+        - Card issuing
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RequestCard'
+      security:
+        - BasicAuth: []
+        - OAuth2Auth:
+            - /accounts/{accountID}/issued-cards.write
+    get:
+      operationId: listIssuedCards
+      description: |-
+        List Moov issued cards existing for the account.
+
+        To use this endpoint from the browser, you'll need to specify the `/accounts/{accountID}/issued-cards.read` scope when generating 
+        a [token](https://docs.moov.io/api/authentication/access-tokens/).
+      parameters:
+        - $ref: '#/components/parameters/CommonHeaders'
+        - name: accountID
+          in: path
+          required: true
+          description: The Moov business account for which the cards have been issued.
+          schema:
+            type: string
+            format: uuid
+        - $ref: '#/components/parameters/Pagination.skip'
+        - $ref: '#/components/parameters/Pagination.count'
+        - name: states
+          in: query
+          required: false
+          description: Optional, comma-separated states to filter the Moov list issued cards response. For example `active,pending-verification`
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/IssuedCardState'
+          explode: false
+      responses:
+        '200':
+          description: The request completed successfully.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/IssuedCard'
+        '401':
+          description: The request contained missing or expired authentication.
+        '403':
+          description: The user is not authorized to make the request.
+        '429':
+          description: Request was refused due to rate limiting.
+      tags:
+        - Card issuing
+      security:
+        - BasicAuth: []
+        - OAuth2Auth:
+            - /accounts/{accountID}/issued-cards.read
+  /issuing/{accountID}/issued-cards/{issuedCardID}:
+    get:
+      operationId: getIssuedCard
+      description: |-
+        Retrieve a single issued card associated with a Moov account.
+
+        To use this endpoint from the browser, you'll need to specify the `/accounts/{accountID}/issued-cards.read` scope when generating 
+        a [token](https://docs.moov.io/api/authentication/access-tokens/).
+      parameters:
+        - $ref: '#/components/parameters/CommonHeaders'
+        - name: accountID
+          in: path
+          required: true
+          description: The Moov business account for which the card was issued.
+          schema:
+            type: string
+            format: uuid
+        - name: issuedCardID
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: The request completed successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IssuedCard'
+        '401':
+          description: The request contained missing or expired authentication.
+        '403':
+          description: The user is not authorized to make the request.
+        '404':
+          description: The requested resource was not found.
+        '429':
+          description: Request was refused due to rate limiting.
+      tags:
+        - Card issuing
+      security:
+        - BasicAuth: []
+        - OAuth2Auth:
+            - /accounts/{accountID}/issued-cards.read
+    patch:
+      operationId: updateIssuedCard
+      description: |-
+        Update a Moov issued card.
+
+        To use this endpoint from the browser, you'll need to specify the `/accounts/{accountID}/issued-cards.write` scope when generating 
+        a [token](https://docs.moov.io/api/authentication/access-tokens/).
+      parameters:
+        - $ref: '#/components/parameters/CommonHeaders'
+        - name: accountID
+          in: path
+          required: true
+          description: The Moov business account for which the card was issued.
+          schema:
+            type: string
+            format: uuid
+        - name: issuedCardID
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '204':
+          description: The request completed successfully, but there is no content to return.
+        '400':
+          description: The server could not understand the request due to invalid syntax.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+        '401':
+          description: The request contained missing or expired authentication.
+        '403':
+          description: The user is not authorized to make the request.
+        '404':
+          description: The requested resource was not found.
+        '409':
+          description: The request conflicted with the current state of the target resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+        '422':
+          description: The request was well-formed, but the contents failed validation. Check the request for missing or invalid fields.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UpdateIssuedCardError'
+        '429':
+          description: Request was refused due to rate limiting.
+      tags:
+        - Card issuing
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateIssuedCard'
+      security:
+        - BasicAuth: []
+        - OAuth2Auth:
+            - /accounts/{accountID}/issued-cards.write
+  /issuing/{accountID}/issued-cards/{issuedCardID}/details:
+    get:
+      operationId: getFullIssuedCard
+      description: |-
+        Get issued card with PAN, CVV, and expiration. 
+
+        Only use this endpoint if you have provided Moov with a copy of your PCI attestation of compliance.
+
+        To use this endpoint from the browser, you'll need to specify the `/accounts/{accountID}/issued-cards.read-secure` scope when generating 
+        a [token](https://docs.moov.io/api/authentication/access-tokens/).
+      parameters:
+        - $ref: '#/components/parameters/CommonHeaders'
+        - name: accountID
+          in: path
+          required: true
+          description: The Moov business account for which the card was issued.
+          schema:
+            type: string
+            format: uuid
+        - name: issuedCardID
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: The request completed successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FullIssuedCard'
+        '401':
+          description: The request contained missing or expired authentication.
+        '403':
+          description: The user is not authorized to make the request.
+        '404':
+          description: The requested resource was not found.
+        '429':
+          description: Request was refused due to rate limiting.
+      tags:
+        - Card issuing
+      security:
+        - BasicAuth: []
+        - OAuth2Auth:
+            - /accounts/{accountID}/issued-cards.read-secure
   /oauth2/token:
     post:
       operationId: createAuthToken
@@ -5001,6 +5481,70 @@ components:
       description: Include results from alternate data sources. Allowed values are `all` (non-postal addresses), or `postal` (postal addresses only).
       schema:
         type: string
+      explode: false
+    ListIssuingAuthorizationsQuery.endDateTime:
+      name: endDateTime
+      in: query
+      required: false
+      description: Optional date-time which exclusively filters all authorizations created before this date-time.
+      schema:
+        type: string
+        format: date-time
+      explode: false
+    ListIssuingAuthorizationsQuery.issuedCardID:
+      name: issuedCardID
+      in: query
+      required: false
+      description: Optional ID of the issued card to filter results.
+      schema:
+        type: string
+        format: uuid
+      explode: false
+    ListIssuingAuthorizationsQuery.startDateTime:
+      name: startDateTime
+      in: query
+      required: false
+      description: Optional date-time which inclusively filters all authorizations created after this date-time.
+      schema:
+        type: string
+        format: date-time
+      explode: false
+    ListIssuingAuthorizationsQuery.statuses:
+      name: statuses
+      in: query
+      required: false
+      description: Optional, comma-separated statuses of the authorization to filter results.
+      schema:
+        type: array
+        items:
+          $ref: '#/components/schemas/IssuingAuthorizationStatus'
+      explode: false
+    ListIssuingTransactionsQuery.endDateTime:
+      name: endDateTime
+      in: query
+      required: false
+      description: Optional date-time which exclusively filters all card transactions created before this date-time.
+      schema:
+        type: string
+        format: date-time
+      explode: false
+    ListIssuingTransactionsQuery.issuedCardID:
+      name: issuedCardID
+      in: query
+      required: false
+      description: Optional ID of the issued card to filter results.
+      schema:
+        type: string
+        format: uuid
+      explode: false
+    ListIssuingTransactionsQuery.startDateTime:
+      name: startDateTime
+      in: query
+      required: false
+      description: Optional date-time which inclusively filters all card transactions created after this date-time.
+      schema:
+        type: string
+        format: date-time
       explode: false
     Pagination.count:
       name: count
@@ -5783,6 +6327,17 @@ components:
           type: string
           example: /moov/support.read /moov/support.write
           description: A space delimited list of scopes
+    AuthorizedUser:
+      type: object
+      required:
+        - firstName
+        - lastName
+      properties:
+        firstName:
+          type: string
+        lastName:
+          type: string
+      description: Fields for identifying an authorized individual.
     BankAccount:
       type: object
       required:
@@ -6499,6 +7054,13 @@ components:
       example: 01234567-89ab-cdef-0123-456789abcdef
       format: uuid
       description: ID of the card.
+    CardIssuingNetwork:
+      type: string
+      enum:
+        - discover
+        - shazam
+        - visa
+      description: The name of the network a card transaction is routed through.
     CardPaymentDetails:
       type: object
       properties:
@@ -6848,6 +7410,38 @@ components:
           description: A fully qualified top-level or sub-domain name where you will accept Apple Pay. Should not include "https".
         displayName:
           $ref: '#/components/schemas/DomainDisplayName'
+    CreateAuthorizedUser:
+      type: object
+      required:
+        - firstName
+        - lastName
+      properties:
+        firstName:
+          type: string
+        lastName:
+          type: string
+        birthDate:
+          $ref: '#/components/schemas/BirthDate'
+      description: Fields for identifying an authorized individual.
+    CreateAuthorizedUserError:
+      type: object
+      properties:
+        firstName:
+          type: string
+        lastName:
+          type: string
+        birthDate:
+          $ref: '#/components/schemas/BirthDateError'
+    CreateAuthorizedUserUpdate:
+      type: object
+      properties:
+        firstName:
+          type: string
+        lastName:
+          type: string
+        birthDate:
+          $ref: '#/components/schemas/BirthDateUpdate'
+      description: Fields for identifying an authorized individual.
     CreateBusinessError:
       type: object
       properties:
@@ -7770,6 +8364,58 @@ components:
           type: string
         metadata:
           type: string
+    FullIssuedCard:
+      type: object
+      required:
+        - issuedCardID
+        - brand
+        - lastFourCardNumber
+        - expiration
+        - authorizedUser
+        - fundingWalletID
+        - state
+        - formFactor
+        - createdOn
+        - pan
+        - cvv
+      properties:
+        issuedCardID:
+          type: string
+          format: uuid
+        brand:
+          $ref: '#/components/schemas/CardBrand'
+        lastFourCardNumber:
+          type: string
+        expiration:
+          $ref: '#/components/schemas/CardExpiration'
+        authorizedUser:
+          $ref: '#/components/schemas/AuthorizedUser'
+        memo:
+          type: string
+          description: Optional descriptor for the card.
+        fundingWalletID:
+          type: string
+          description: Unique identifier for the wallet funding the card.
+        state:
+          $ref: '#/components/schemas/IssuedCardState'
+        formFactor:
+          $ref: '#/components/schemas/IssuedCardFormFactor'
+        controls:
+          $ref: '#/components/schemas/IssuingControls'
+        createdOn:
+          type: string
+          format: date-time
+        pan:
+          type: string
+          minLength: 16
+          maxLength: 19
+          description: The issued card's Primary Account Number (PAN)
+        cvv:
+          type: string
+          minLength: 3
+          maxLength: 4
+          description: The issued card's 3- or 4-digit Card Verification Value (CVV).
+      description: The full details of an issued card, including PAN and CVV.
     GenericError:
       type: object
       required:
@@ -7922,6 +8568,260 @@ components:
           example: '7997'
           minLength: 4
           maxLength: 4
+    IssuedCard:
+      type: object
+      required:
+        - issuedCardID
+        - brand
+        - lastFourCardNumber
+        - expiration
+        - authorizedUser
+        - fundingWalletID
+        - state
+        - formFactor
+        - createdOn
+      properties:
+        issuedCardID:
+          type: string
+          format: uuid
+        brand:
+          $ref: '#/components/schemas/CardBrand'
+        lastFourCardNumber:
+          type: string
+        expiration:
+          $ref: '#/components/schemas/CardExpiration'
+        authorizedUser:
+          $ref: '#/components/schemas/AuthorizedUser'
+        memo:
+          type: string
+          description: Optional descriptor for the card.
+        fundingWalletID:
+          type: string
+          description: Unique identifier for the wallet funding the card.
+        state:
+          $ref: '#/components/schemas/IssuedCardState'
+        formFactor:
+          $ref: '#/components/schemas/IssuedCardFormFactor'
+        controls:
+          $ref: '#/components/schemas/IssuingControls'
+        createdOn:
+          type: string
+          format: date-time
+    IssuedCardAuthorization:
+      type: object
+      required:
+        - authorizationID
+        - issuedCardID
+        - fundingWalletID
+        - network
+        - authorizedAmount
+        - status
+        - merchantData
+        - createdOn
+      properties:
+        authorizationID:
+          type: string
+          format: uuid
+        issuedCardID:
+          type: string
+          format: uuid
+        fundingWalletID:
+          type: string
+          format: uuid
+        network:
+          $ref: '#/components/schemas/CardIssuingNetwork'
+        authorizedAmount:
+          $ref: '#/components/schemas/SignedDecimalString'
+        status:
+          $ref: '#/components/schemas/IssuingAuthorizationStatus'
+        merchantData:
+          $ref: '#/components/schemas/IssuingMerchantData'
+        createdOn:
+          type: string
+          format: date-time
+        cardTransactions:
+          type: array
+          items:
+            type: string
+          description: List of card transaction IDs associated with this authorization.
+    IssuedCardAuthorizationEvent:
+      type: object
+      required:
+        - eventID
+        - eventType
+        - amount
+        - result
+        - createdOn
+      properties:
+        eventID:
+          type: string
+          format: uuid
+          description: The identifier for this event. Use the `eventType` field to determine what resource is identified by this ID (`authorization`, `reversal`, etc.).
+        eventType:
+          $ref: '#/components/schemas/IssuedCardEventType'
+        amount:
+          $ref: '#/components/schemas/SignedDecimalString'
+        result:
+          $ref: '#/components/schemas/IssuedCardAuthorizationEventResult'
+        createdOn:
+          type: string
+          format: date-time
+    IssuedCardAuthorizationEventResult:
+      type: string
+      enum:
+        - approved
+        - declined
+        - processed
+      description: The result of an event.
+    IssuedCardEventType:
+      type: string
+      enum:
+        - authorization
+        - reversal
+        - authorization-advice
+        - authorization-expiration
+        - authorization-incremental
+        - clearing
+      description: The type of event that occurred on the card.
+    IssuedCardFormFactor:
+      type: string
+      enum:
+        - virtual
+      description: Specifies the type of spend card to be issued. Presently supports virtual only, providing a digital number without a physical card.
+    IssuedCardState:
+      type: string
+      enum:
+        - active
+        - inactive
+        - pending-verification
+        - closed
+      description: |-
+        The `state` represents the operational status of an issued card. A card can only approve incoming authorizations if it is in an active state.
+
+        - `active`: The card is operational and approves authorizations. Generally becomes active shortly after card creation.
+        - `inactive`: The card cannot approve authorizations. This is currently a temporary state assigned post-creation during the activation process.
+        - `closed`: The card is permanently deactivated and cannot approve authorizations. A card can be closed by request or when it expires.
+        - `pending-verification`: Awaiting additional authorized user verification before the card can be activated.
+    IssuedCardTransaction:
+      type: object
+      required:
+        - cardTransactionID
+        - issuedCardID
+        - fundingWalletID
+        - amount
+        - authorizedOn
+        - merchantData
+        - createdOn
+      properties:
+        cardTransactionID:
+          type: string
+          format: uuid
+        issuedCardID:
+          type: string
+          format: uuid
+        fundingWalletID:
+          type: string
+          format: uuid
+        amount:
+          $ref: '#/components/schemas/SignedDecimalString'
+        authorizationID:
+          type: string
+          format: uuid
+        authorizedOn:
+          type: string
+          format: date-time
+        merchantData:
+          $ref: '#/components/schemas/IssuingMerchantData'
+        createdOn:
+          type: string
+          format: date-time
+    IssuingAuthorizationStatus:
+      type: string
+      enum:
+        - pending
+        - declined
+        - canceled
+        - cleared
+        - expired
+      description: Status of a card issuing authorization.
+    IssuingControls:
+      type: object
+      properties:
+        singleUse:
+          type: boolean
+          description: Indicates if the card is single-use. If true, the card closes after the first authorization.
+        velocityLimits:
+          type: array
+          items:
+            $ref: '#/components/schemas/IssuingVelocityLimit'
+          description: Sets the spending limit per time interval. Only one limit per interval is supported.
+    IssuingControlsError:
+      type: object
+      properties:
+        velocityLimits:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/IssuingVelocityLimitError'
+      example:
+        velocityLimits:
+          '0':
+            amount: must be no less than 1
+            interval: must be a valid value
+    IssuingIntervalLimit:
+      type: string
+      enum:
+        - per-transaction
+      description: Specifies the time frame for the velocity limit. Currently supports only per-transaction limits.
+    IssuingMerchantData:
+      type: object
+      properties:
+        networkID:
+          type: string
+          description: External identifier used to identify the merchant with the card brand.
+        name:
+          type: string
+          example: Whole Body Fitness
+          description: Name of the merchant.
+        city:
+          type: string
+          example: San Francisco
+          description: The merchant's location.
+        country:
+          type: string
+          example: US
+          description: Two-letter country code.
+        postalCode:
+          type: string
+          example: '94107'
+          description: The merchant's five-digit postal code.
+        state:
+          type: string
+          example: CA
+          description: The merchant's two-letter state abbreviation.
+        mcc:
+          type: string
+          example: '7298'
+          description: The Merchant Category Code.
+    IssuingVelocityLimit:
+      type: object
+      required:
+        - amount
+        - interval
+      properties:
+        amount:
+          type: integer
+          format: int64
+          example: 10000
+          description: The maximum amount in cents that can be spent in a given interval.
+        interval:
+          $ref: '#/components/schemas/IssuingIntervalLimit'
+    IssuingVelocityLimitError:
+      type: object
+      properties:
+        amount:
+          type: string
+        interval:
+          type: string
     LinkApplePay:
       type: object
       required:
@@ -9075,6 +9975,42 @@ components:
           example: CEO
           maxLength: 64
       description: Describes the job responsibilities of a business representative.
+    RequestCard:
+      type: object
+      required:
+        - fundingWalletID
+        - authorizedUser
+        - formFactor
+      properties:
+        fundingWalletID:
+          type: string
+          format: uuid
+        authorizedUser:
+          $ref: '#/components/schemas/CreateAuthorizedUser'
+        formFactor:
+          $ref: '#/components/schemas/IssuedCardFormFactor'
+        memo:
+          type: string
+          description: An optional descriptive name for the card.
+        expiration:
+          $ref: '#/components/schemas/CardExpiration'
+        controls:
+          $ref: '#/components/schemas/IssuingControls'
+    RequestCardError:
+      type: object
+      properties:
+        fundingWalletID:
+          type: string
+        formFactor:
+          type: string
+        authorizedUser:
+          $ref: '#/components/schemas/CreateAuthorizedUserError'
+        memo:
+          type: string
+        expiration:
+          $ref: '#/components/schemas/CardExpirationError'
+        controls:
+          $ref: '#/components/schemas/IssuingControlsError'
     RequirementError:
       type: object
       required:
@@ -9305,6 +10241,11 @@ components:
         achPayment:
           $ref: '#/components/schemas/ACHPaymentSettingsUpdate'
       description: User provided settings to manage an account.
+    SignedDecimalString:
+      type: string
+      example: '-14.89'
+      format: ^\d+\.\d{1,2}$
+      description: A decimal-formatted numerical string that represents up to 2 decimal place precision. In USD for example, 12.34 is $12.34 and 0.99 is $0.99.
     Skip:
       type: integer
       format: int64
@@ -9852,6 +10793,24 @@ components:
         evidenceType:
           $ref: '#/components/schemas/EvidenceType'
       description: The template for adding optional properties.
+    UpdateIssuedCard:
+      type: object
+      properties:
+        state:
+          $ref: '#/components/schemas/IssuedCardState'
+        memo:
+          type: string
+        authorizedUser:
+          $ref: '#/components/schemas/CreateAuthorizedUserUpdate'
+    UpdateIssuedCardError:
+      type: object
+      properties:
+        state:
+          type: string
+        memo:
+          type: string
+        authorizedUser:
+          $ref: '#/components/schemas/CreateAuthorizedUserError'
     UpdatePaymentLink:
       type: object
       properties:
@@ -10128,9 +11087,12 @@ components:
             /accounts/{accountID}/cards.read: ''
             /accounts/{accountID}/transfers.read: ''
             /accounts/{accountID}/transfers.write: ''
+            /profile-enrichment.read: ''
             /accounts/{accountID}/files.write: ''
             /accounts/{accountID}/files.read: ''
-            /profile-enrichment.read: ''
+            /accounts/{accountID}/issued-cards.write: ''
+            /accounts/{accountID}/issued-cards.read: ''
+            /accounts/{accountID}/issued-cards.read-secure: ''
             /accounts/{accountID}/payment-methods.read: ''
             /accounts/{your-account-id}/transfers.write: ''
             /accounts/{your-account-id}/transfers.read: ''

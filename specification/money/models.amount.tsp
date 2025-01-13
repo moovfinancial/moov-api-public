@@ -4,6 +4,11 @@ namespace MoovAPI;
 @pattern("^[A-Za-z]{3}$")
 scalar Currency extends string;
 
+@doc("A decimal-formatted numerical string that represents up to 2 decimal place precision. In USD for example, 12.34 is $12.34 and 0.99 is $0.99.")
+@format(Decimal2StringPattern)
+@example("-14.89")
+scalar SignedDecimalString extends string;
+
 model Amount {
   currency: Currency;
 
