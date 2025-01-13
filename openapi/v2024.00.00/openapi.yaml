@@ -4608,7 +4608,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/EnrichedIndustryResponse'
+                  $ref: '#/components/schemas/EnrichedIndustry'
         '401':
           description: The request contained missing or expired authentication.
         '403':
@@ -7633,6 +7633,33 @@ components:
           $ref: '#/components/schemas/PhoneNumber'
         website:
           type: string
+    EnrichedIndustry:
+      type: object
+      required:
+        - title
+        - naics
+        - sic
+        - mcc
+      properties:
+        title:
+          type: string
+          example: AC, Refrigeration Repair
+        naics:
+          type: string
+          example: '811412'
+          maxLength: 6
+          description: North American Industry Classification System
+        sic:
+          type: string
+          example: '7623'
+          maxLength: 4
+          description: Standard Industrial Classification
+        mcc:
+          type: string
+          example: '7623'
+          maxLength: 4
+          description: Merchant Category Code
+      description: An industry's MCC/SIC/NAICS codes, along with descriptive title.
     EnrichedIndustryCodes:
       type: object
       properties:
@@ -7646,18 +7673,6 @@ components:
           example: '7991'
           minLength: 4
           maxLength: 4
-    EnrichedIndustryResponse:
-      type: object
-      required:
-        - industryCodes
-        - title
-      properties:
-        industryCodes:
-          $ref: '#/components/schemas/IndustryCodes'
-        title:
-          type: string
-          example: AC, Refrigeration Repair
-      description: A list of industries and their MCC/SIC/NAICS codes.
     EvidenceText:
       type: object
       required:

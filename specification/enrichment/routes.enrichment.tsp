@@ -49,5 +49,5 @@ namespace MoovAPI {
   @route("/industries")
   @get
   @useAuth(BasicAuth | OAuth2<["/profile-enrichment.read"]>)
-  op listIndustries(...CommonHeaders): ListResponses<EnrichedIndustryResponse>;
+  op listIndustries(...CommonHeaders): ListResponses<EnrichedIndustry>;
 }
