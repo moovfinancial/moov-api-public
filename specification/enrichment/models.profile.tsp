@@ -17,10 +17,10 @@ model EnrichedIndustryCodes {
   @example("713940")
   @minLength(2)
   @maxLength(6)
-  naics: string;
+  naics?: string;
 
   @example("7991")
   @minLength(4)
   @maxLength(4)
-  sic: string;
+  sic?: string;
 }

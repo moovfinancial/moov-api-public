@@ -7604,9 +7604,6 @@ components:
           type: string
     EnrichedIndustryCodes:
       type: object
-      required:
-        - naics
-        - sic
       properties:
         naics:
           type: string
