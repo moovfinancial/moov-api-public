@@ -15,7 +15,7 @@ import "./common";
 import "./disputes";
 import "./end2end";
 import "./files";
-import "./formshortening";
+import "./enrichment";
 import "./paymentlinks";
 import "./paymentmethods";
 import "./schedules";

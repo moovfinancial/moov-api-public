@@ -24,6 +24,7 @@ tags:
   - name: Disputes
   - name: Files
   - name: Enriched address
+  - name: Enriched profile
   - name: Payment links
   - name: Payment methods
   - name: Scheduling
@@ -4553,6 +4554,42 @@ paths:
         - BasicAuth: []
         - OAuth2Auth:
             - /profile-enrichment.read
+  /enrichment/profile:
+    get:
+      operationId: getEnrichmentProfile
+      description: |2-
+          Fetch enriched profile data. Requires a valid email address. This service is offered in collaboration with Clearbit. 
+
+          To use this endpoint from the browser, you'll need to specify the `/profile-enrichment.read` scope when generating a [token](https://docs.moov.io/api/authentication/access-tokens/).
+      parameters:
+        - $ref: '#/components/parameters/CommonHeaders'
+        - name: email
+          in: query
+          required: true
+          schema:
+            type: string
+          explode: false
+      responses:
+        '200':
+          description: The request completed successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EnrichedBusinessProfile'
+        '401':
+          description: The request contained missing or expired authentication.
+        '403':
+          description: The user is not authorized to make the request.
+        '404':
+          description: The requested resource was not found.
+        '429':
+          description: Request was refused due to rate limiting.
+      tags:
+        - Enriched profile
+      security:
+        - BasicAuth: []
+        - OAuth2Auth:
+            - /profile-enrichment.read
   /oauth2/token:
     post:
       operationId: createAuthToken
@@ -7550,6 +7587,34 @@ components:
           type: string
         stateOrProvince:
           type: string
+    EnrichedBusinessProfile:
+      type: object
+      properties:
+        address:
+          $ref: '#/components/schemas/Address'
+        email:
+          $ref: '#/components/schemas/Email'
+        industryCodes:
+          $ref: '#/components/schemas/EnrichedIndustryCodes'
+        legalBusinessName:
+          type: string
+        phone:
+          $ref: '#/components/schemas/PhoneNumber'
+        website:
+          type: string
+    EnrichedIndustryCodes:
+      type: object
+      properties:
+        naics:
+          type: string
+          example: '713940'
+          minLength: 2
+          maxLength: 6
+        sic:
+          type: string
+          example: '7991'
+          minLength: 4
+          maxLength: 4
     EvidenceText:
       type: object
       required:
