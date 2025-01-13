@@ -24,6 +24,7 @@ tags:
   - name: Disputes
   - name: Enriched address
   - name: Enriched profile
+  - name: Industries
   - name: Files
   - name: Card issuing
   - name: Issuing transactions
@@ -4592,6 +4593,36 @@ paths:
         - BasicAuth: []
         - OAuth2Auth:
             - /profile-enrichment.read
+  /industries:
+    get:
+      operationId: listIndustries
+      description: |2-
+          Returns a list of all industry titles and their corresponding MCC/SIC/NAICS codes. Results are ordered by title.    
+          
+          To use this endpoint from the browser, you'll need to specify the `/profile-enrichment.read` scope when generating a [token](https://docs.moov.io/api/authentication/access-tokens/).
+      parameters:
+        - $ref: '#/components/parameters/CommonHeaders'
+      responses:
+        '200':
+          description: The request completed successfully.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/EnrichedIndustry'
+        '401':
+          description: The request contained missing or expired authentication.
+        '403':
+          description: The user is not authorized to make the request.
+        '429':
+          description: Request was refused due to rate limiting.
+      tags:
+        - Industries
+      security:
+        - BasicAuth: []
+        - OAuth2Auth:
+            - /profile-enrichment.read
   /issuing/{accountID}/authorizations:
     get:
       operationId: listIssuedCardAuthorizations
@@ -8196,6 +8227,33 @@ components:
           $ref: '#/components/schemas/PhoneNumber'
         website:
           type: string
+    EnrichedIndustry:
+      type: object
+      required:
+        - title
+        - naics
+        - sic
+        - mcc
+      properties:
+        title:
+          type: string
+          example: AC, Refrigeration Repair
+        naics:
+          type: string
+          example: '811412'
+          maxLength: 6
+          description: North American Industry Classification System
+        sic:
+          type: string
+          example: '7623'
+          maxLength: 4
+          description: Standard Industrial Classification
+        mcc:
+          type: string
+          example: '7623'
+          maxLength: 4
+          description: Merchant Category Code
+      description: An industry's MCC/SIC/NAICS codes, along with descriptive title.
     EnrichedIndustryCodes:
       type: object
       properties:
