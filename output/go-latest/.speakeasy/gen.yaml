@@ -31,5 +31,5 @@ go:
   maxMethodParams: 4
   methodArguments: require-security-and-request
   outputModelSuffix: output
-  packageName: openapi
+  packageName: moov-go
   responseFormat: envelope-http

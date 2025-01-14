@@ -7,12 +7,8 @@ sources:
             - location: ./openapi/v2024.00.00/openapi.yaml
         registry:
             location: registry.speakeasyapi.dev/moov/moov/latest
-    # v2024.00.00:
-    #     inputs:
 targets:
     go-latest:
         target: go
         source: latest
-    # go-v2024.00.00:
-    #     target: go
-    #     source: latest
+        output: ./output/go-latest
