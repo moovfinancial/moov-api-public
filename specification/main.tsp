@@ -16,6 +16,7 @@ import "./disputes";
 import "./end2end";
 import "./enrichment";
 import "./files";
+import "./enrichment";
 import "./issuing";
 import "./paymentlinks";
 import "./paymentmethods";
