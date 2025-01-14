@@ -4530,7 +4530,6 @@ paths:
           description: Any unique ID associated with an account such as accountID, representativeID, routing number, or userID.
           schema:
             type: string
-            format: uuid
       responses:
         '200':
           description: The request has succeeded.

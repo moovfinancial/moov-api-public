@@ -65,7 +65,6 @@ namespace MoovAPI {
     ...CommonHeaders,
 
     @doc("Any unique ID associated with an account such as accountID, representativeID, routing number, or userID.")
-    @format("uuid")
     @path
     uniqueID: string,
   ):
