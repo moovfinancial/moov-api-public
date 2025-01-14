@@ -1,6 +1,7 @@
 import "@typespec/http";
 import "./models.address.tsp";
 import "./models.profile.tsp";
+import "./models.industries.tsp";
 import "./models.avatar.tsp";
 import "../auth/models.auth.tsp";
 import "../common/models.response.tsp";
@@ -41,11 +42,22 @@ namespace MoovAPI {
   ): GetResponses<EnrichedBusinessProfile>;
 
   @doc("""
+      Returns a list of all industry titles and their corresponding MCC/SIC/NAICS codes. Results are ordered by title.    
+      
+      To use this endpoint from the browser, you'll need to specify the `/profile-enrichment.read` scope when generating a [token](https://docs.moov.io/api/authentication/access-tokens/).
+    """)
+  @tag("Industries")
+  @route("/industries")
+  @get
+  @useAuth(BasicAuth | OAuth2<["/profile-enrichment.read"]>)
+  op listIndustries(...CommonHeaders): ListResponses<EnrichedIndustry>;
+
+  @doc("""
     Get avatar image for an account using a unique ID.    
     
     To use this endpoint from the browser, you'll need to specify the `/profile-enrichment.read` scope when generating a [token](https://docs.moov.io/api/authentication/access-tokens/).
     """)
-  @tag("Enriched profile")
+  @tag("Avatars")
   @route("/avatars/{uniqueID}")
   @get
   @useAuth(BasicAuth | OAuth2<["/profile-enrichment.read"]>)
@@ -56,5 +68,10 @@ namespace MoovAPI {
     @format("uuid")
     @path
     uniqueID: string,
-  ): GetResponses<EnrichedAvatarResponse>;
+  ):
+    | EnrichedAvatar
+    | UnauthorizedResponse
+    | ForbiddenResponse
+    | NotFoundResponse
+    | RateLimitedResponse;
 }
