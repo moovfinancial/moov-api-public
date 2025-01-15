@@ -5,16 +5,20 @@ import "../accounts/models.profile.tsp";
 
 namespace MoovAPI;
 
-model CreateRepresentative
-  extends OmitProperties<
-    Representative,
+alias RepresentativePropsNotInCreate =
+  | "representativeID"
+  | "createdOn"
+  | "updatedOn"
+  | "governmentIDProvided"
+  | "birthDateProvided";
 
-      | "createdOn"
-      | "updatedOn"
-      | "representativeID"
-      | "governmentIDProvided"
-      | "birthDateProvided"
-  > {}
+// Omit the properties of Representative are not present in the create operation to get the create model
+model CreateRepresentative
+  extends OmitProperties<Representative, RepresentativePropsNotInCreate> {}
+
+// Take the CreateRepresentative model and make all the properties optional, then add representativeID as required
+alias UpdateRepresentative = OptionalProperties<CreateRepresentative> &
+  PickProperties<Representative, "representativeID">;
 
 model BirthDateObjectValidationError {
   day?: string;
