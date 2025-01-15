@@ -22,6 +22,7 @@ tags:
   - name: Branding
   - name: Capabilities
   - name: Disputes
+  - name: End to End Encryption
   - name: Enriched address
   - name: Enriched profile
   - name: Industries
@@ -4556,6 +4557,56 @@ paths:
         - BasicAuth: []
         - OAuth2Auth:
             - /profile-enrichment.read
+  /debug/end-to-end-token:
+    post:
+      operationId: testEndToEndToken
+      description: |-
+        Allows for testing a JWE token to ensure it's acceptable by Moov. 
+
+        To access this endpoint using a [token](https://docs.moov.io/api/authentication/access-tokens/) you'll need 
+        to specify the `/ping.read` scope.
+      parameters:
+        - $ref: '#/components/parameters/CommonHeaders'
+      responses:
+        '204':
+          description: The request completed successfully, but there is no content to return.
+        '400':
+          description: The server could not understand the request due to invalid syntax.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+        '429':
+          description: Request was refused due to rate limiting.
+      tags:
+        - End to End Encryption
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/E2EEToken'
+      security:
+        - BasicAuth: []
+        - OAuth2Auth:
+            - /ping.read
+  /end-to-end-keys:
+    post:
+      operationId: generateEndToEndKey
+      description: Generates a public key used to create a JWE token for passing secure authentication data through non-PCI compliant intermediaries.
+      parameters:
+        - $ref: '#/components/parameters/CommonHeaders'
+      responses:
+        '200':
+          description: The request completed successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JSONWebKey'
+        '429':
+          description: Request was refused due to rate limiting.
+      tags:
+        - End to End Encryption
   /enrichment/address:
     get:
       operationId: getEnrichmentAddress
@@ -8250,44 +8301,40 @@ components:
         - unknown
       example: standard
       description: Indicates which level of domestic push-to-card transfer is supported by the card, if any.
-    Email:
-      type: string
-      example: jordan.lee@classbooker.dev
-      maxLength: 255
-      format: email
-    End2EndEncryption:
+    E2EEToken:
       type: object
       required:
         - token
       properties:
         token:
-          type: string
-          format: JWE
+          $ref: '#/components/schemas/JSONWebEncryptionToken'
       example:
         token: eyJhbGciOiJFQ0RILUVTK0EyNTZLVyIsImVuYyI6IkEyNTZHQ00iLCJlcGsiOnsia3R5IjoiRUMiLCJjcnYiOiJQLTUyMSIsIngiOiJBS0NYVDM1WVdvTm8wbzExNy1SU0dqUGg3alN1NjFmLUhnYkx1dW0xVG1ueTRlcW5yX2hyU0hpY0w1d3gwODRCWDBRZjVTdEtkRUoydzY2ZUJqWHprRV9OIiwieSI6IkFIMEJfT2RaYTQtbG43dGJ4M3VBdlc1NDNQRE9HUXBCTDloRFFNWjlTQXNfOW05UWN3dnhRd1hrb1VrM3VzT1FnVV9ySVFrNFRoZ1NTUzV4UlhKcm5ZaTkifSwia2lkIjoiYmRvV3pLekpKUGw0TVFIaENDa05WYTZlZ1dmYi02V1haSjZKTFZqQ0hWMD0ifQ.HalyoHsfufBJEODd2lD9ThQvvVWw3b2kgWDLHGxmHhMv8rODyLL_Ug.rpQP178t8Ed_pUU2.Sn9UFeVoegAxiMUv11q7l3M0y9YHSLYi2n_JB7n7Pc777_47-icfaxstJemT0IC81w.akkq1EBxzWkBr4vEomSpWA
       description: |-
-        Optional and only used if planning to use End to End Encryption to pass PCI data through an intermediary. 
-        This is the output of using compact serialization of a JWE token that wraps an AES key and uses the public key returned from /end-to-end-keys.
-        Examples of how to create this token can be found on our [GitHub](https://github.com/moovfinancial/moov-go/blob/main/examples/e2ee/e2ee_test.go).
-        Body for a JWE token following [RFC](https://datatracker.ietf.org/doc/html/rfc7516).
+        Wraps a compact-serialized JSON Web Encryption (JWE) token used for secure transmission of sensitive data (e.g., PCI information) through intermediaries. 
+        This token is encrypted using the public key from /end-to-end-keys and wraps an AES key. For details and examples, refer to our 
+        [GitHub repository](https://github.com/moovfinancial/moov-go/blob/main/examples/e2ee/e2ee_test.go).
+    E2EETokenUpdate:
+      type: object
+      properties:
+        token:
+          $ref: '#/components/schemas/JSONWebEncryptionToken'
+      example:
+        token: eyJhbGciOiJFQ0RILUVTK0EyNTZLVyIsImVuYyI6IkEyNTZHQ00iLCJlcGsiOnsia3R5IjoiRUMiLCJjcnYiOiJQLTUyMSIsIngiOiJBS0NYVDM1WVdvTm8wbzExNy1SU0dqUGg3alN1NjFmLUhnYkx1dW0xVG1ueTRlcW5yX2hyU0hpY0w1d3gwODRCWDBRZjVTdEtkRUoydzY2ZUJqWHprRV9OIiwieSI6IkFIMEJfT2RaYTQtbG43dGJ4M3VBdlc1NDNQRE9HUXBCTDloRFFNWjlTQXNfOW05UWN3dnhRd1hrb1VrM3VzT1FnVV9ySVFrNFRoZ1NTUzV4UlhKcm5ZaTkifSwia2lkIjoiYmRvV3pLekpKUGw0TVFIaENDa05WYTZlZ1dmYi02V1haSjZKTFZqQ0hWMD0ifQ.HalyoHsfufBJEODd2lD9ThQvvVWw3b2kgWDLHGxmHhMv8rODyLL_Ug.rpQP178t8Ed_pUU2.Sn9UFeVoegAxiMUv11q7l3M0y9YHSLYi2n_JB7n7Pc777_47-icfaxstJemT0IC81w.akkq1EBxzWkBr4vEomSpWA
+      description: |-
+        Wraps a compact-serialized JSON Web Encryption (JWE) token used for secure transmission of sensitive data (e.g., PCI information) through intermediaries. 
+        This token is encrypted using the public key from /end-to-end-keys and wraps an AES key. For details and examples, refer to our 
+        [GitHub repository](https://github.com/moovfinancial/moov-go/blob/main/examples/e2ee/e2ee_test.go).
+    Email:
+      type: string
+      example: jordan.lee@classbooker.dev
+      maxLength: 255
+      format: email
     End2EndEncryptionError:
       type: object
       properties:
         token:
           type: string
-    End2EndEncryptionUpdate:
-      type: object
-      properties:
-        token:
-          type: string
-          format: JWE
-      example:
-        token: eyJhbGciOiJFQ0RILUVTK0EyNTZLVyIsImVuYyI6IkEyNTZHQ00iLCJlcGsiOnsia3R5IjoiRUMiLCJjcnYiOiJQLTUyMSIsIngiOiJBS0NYVDM1WVdvTm8wbzExNy1SU0dqUGg3alN1NjFmLUhnYkx1dW0xVG1ueTRlcW5yX2hyU0hpY0w1d3gwODRCWDBRZjVTdEtkRUoydzY2ZUJqWHprRV9OIiwieSI6IkFIMEJfT2RaYTQtbG43dGJ4M3VBdlc1NDNQRE9HUXBCTDloRFFNWjlTQXNfOW05UWN3dnhRd1hrb1VrM3VzT1FnVV9ySVFrNFRoZ1NTUzV4UlhKcm5ZaTkifSwia2lkIjoiYmRvV3pLekpKUGw0TVFIaENDa05WYTZlZ1dmYi02V1haSjZKTFZqQ0hWMD0ifQ.HalyoHsfufBJEODd2lD9ThQvvVWw3b2kgWDLHGxmHhMv8rODyLL_Ug.rpQP178t8Ed_pUU2.Sn9UFeVoegAxiMUv11q7l3M0y9YHSLYi2n_JB7n7Pc777_47-icfaxstJemT0IC81w.akkq1EBxzWkBr4vEomSpWA
-      description: |-
-        Optional and only used if planning to use End to End Encryption to pass PCI data through an intermediary. 
-        This is the output of using compact serialization of a JWE token that wraps an AES key and uses the public key returned from /end-to-end-keys.
-        Examples of how to create this token can be found on our [GitHub](https://github.com/moovfinancial/moov-go/blob/main/examples/e2ee/e2ee_test.go).
-        Body for a JWE token following [RFC](https://datatracker.ietf.org/doc/html/rfc7516).
     EnrichedAddressResponse:
       type: object
       properties:
@@ -8976,6 +9023,74 @@ components:
           type: string
         interval:
           type: string
+    JSONWebEncryptionToken:
+      type: string
+      format: jwe
+      description: An [RFC](https://datatracker.ietf.org/doc/html/rfc7516) compact-serialized JSON Web Encryption (JWE) token.
+    JSONWebKey:
+      type: object
+      required:
+        - kty
+      properties:
+        kty:
+          type: string
+          description: The cryptographic algorithm family used with the key (e.g., 'RSA', 'EC', 'oct').
+        use:
+          type: string
+          enum:
+            - sig
+            - enc
+          description: The intended use of the key. 'sig' for signature, 'enc' for encryption.
+        key_ops:
+          type: array
+          items:
+            type: string
+          description: The permitted operations for the key, e.g., 'sign', 'verify', 'encrypt', 'decrypt'.
+        alg:
+          type: string
+          description: The algorithm intended for use with the key, e.g., 'RS256' or 'ES256'.
+        kid:
+          type: string
+          description: A unique identifier for the key.
+        crv:
+          type: string
+          description: |-
+            The curve for Elliptic Curve keys, e.g., 'P-256', 'P-384', or 'P-521'.
+
+            This field is required when `kty` is 'EC'.
+        x:
+          type: string
+          description: |-
+            The x coordinate for Elliptic Curve keys.
+
+            This field is required when `kty` is 'EC'.
+        y:
+          type: string
+          description: |-
+            The y coordinate for Elliptic Curve keys.
+
+            This field is required when `kty` is 'EC'.
+        n:
+          type: string
+          description: |-
+            The modulus value for RSA keys.
+
+            This field is required when `kty` is 'RSA'.
+        e:
+          type: string
+          description: |-
+            The exponent value for RSA keys.
+
+            This field is required when `kty` is 'RSA'.
+      example:
+        use: enc
+        kty: EC
+        kid: bOaoOIgm-7dI_gBIvsr0jQrPyYp6H_od0Ok-hSYZQ-g=
+        crv: P-521
+        alg: ECDH-ES+A256KW
+        x: ABcm3wzKpPzYYwjDC0HSrxxVM3ULbuMDUuzkR5wNciaMHkZvQ02gLFdqTL65evV7EWaQyC7zRc28eW20p5MVDdQr
+        y: AVa-eQsoiltOcQYy1QEcrQ9NbWktl_D4ewfg8diOZ2_svLEgEu4T1PqNcLbBGozP_VqPkXOMwNCUNI7pxajVGiIP
+      description: Describes an [RFC7517](https://datatracker.ietf.org/doc/html/rfc7517) web key.
     LinkApplePay:
       type: object
       required:
@@ -9091,7 +9206,7 @@ components:
         - billingAddress
       properties:
         e2ee:
-          $ref: '#/components/schemas/End2EndEncryption'
+          $ref: '#/components/schemas/E2EEToken'
         cardNumber:
           type: string
         cardCvv:
@@ -10885,7 +11000,7 @@ components:
       type: object
       properties:
         e2ee:
-          $ref: '#/components/schemas/End2EndEncryptionUpdate'
+          $ref: '#/components/schemas/E2EETokenUpdate'
         billingAddress:
           $ref: '#/components/schemas/UpdateCardAddress'
         expiration:
@@ -11275,6 +11390,7 @@ components:
             /accounts/{accountID}/cards.read: ''
             /accounts/{accountID}/transfers.read: ''
             /accounts/{accountID}/transfers.write: ''
+            /ping.read: ''
             /profile-enrichment.read: ''
             /accounts/{accountID}/files.write: ''
             /accounts/{accountID}/files.read: ''

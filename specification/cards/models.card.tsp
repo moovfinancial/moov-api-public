@@ -337,7 +337,7 @@ model UpdateCardAddress {
   verifyName: true,
 })
 model LinkCard {
-  e2ee?: End2EndEncryption;
+  e2ee?: E2EEToken;
   cardNumber: string;
   cardCvv: string;
   expiration: CardExpiration;
@@ -350,7 +350,7 @@ model LinkCard {
 
 @example(#{ cardCvv: "456" })
 model UpdateCard {
-  e2ee?: End2EndEncryption;
+  e2ee?: E2EEToken;
   billingAddress?: UpdateCardAddress;
   expiration?: UpdateCardExpiration;
   cardCvv?: string;
