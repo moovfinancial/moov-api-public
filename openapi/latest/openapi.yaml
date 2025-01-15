@@ -36,6 +36,7 @@ tags:
   - name: Sweeps
   - name: Wallet transactions
   - name: Wallets
+  - name: Representatives
 paths:
   /accounts:
     post:
@@ -3085,6 +3086,260 @@ paths:
         - BasicAuth: []
         - OAuth2Auth:
             - /accounts/{accountID}/payment-methods.read
+  /accounts/{accountID}/representatives:
+    post:
+      operationId: createRepresentative
+      description: |-
+        Moov accounts associated with businesses require information regarding individuals who represent the business. 
+        You can provide this information by creating a representative. Each account is allowed a maximum of 7 representatives. 
+        Read our [business representatives guide](https://docs.moov.io/guides/accounts/requirements/business-representatives/) to learn more.
+
+        To use this endpoint from the browser, you’ll need to specify the `/accounts/{accountID}/representatives.write` scope when generating a [token](https://docs.moov.io/api/authentication/access-tokens/).
+      parameters:
+        - $ref: '#/components/parameters/CommonHeaders'
+        - name: accountID
+          in: path
+          required: true
+          description: ID of the account.
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: The request completed successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Representative'
+        '400':
+          description: The server could not understand the request due to invalid syntax.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+        '404':
+          description: The requested resource was not found.
+        '422':
+          description: The request was well-formed, but the contents failed validation. Check the request for missing or invalid fields.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RepresentativeValidationError'
+        '429':
+          description: Request was refused due to rate limiting.
+      tags:
+        - Representatives
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateRepresentative'
+      security:
+        - BasicAuth: []
+        - OAuth2Auth:
+            - /accounts/{accountID}/representatives.write
+    get:
+      operationId: listRepresentatives
+      description: |-
+        A Moov account may have multiple representatives depending on the associated business’s ownership and management structure. 
+        You can use this method to list all the representatives for a given Moov account. 
+        Note that Moov accounts associated with an individual do not have representatives. 
+        Read our [business representatives guide](https://docs.moov.io/guides/accounts/requirements/business-representatives/) to learn more.
+
+        To use this endpoint from the browser, you’ll need to specify the `/accounts/{accountID}/representatives.read` scope when generating a [token](https://docs.moov.io/api/authentication/access-tokens/).
+      parameters:
+        - $ref: '#/components/parameters/CommonHeaders'
+        - name: accountID
+          in: path
+          required: true
+          description: ID of the account.
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: The request completed successfully.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Representative'
+        '429':
+          description: Request was refused due to rate limiting.
+      tags:
+        - Representatives
+      security:
+        - BasicAuth: []
+        - OAuth2Auth:
+            - /accounts/{accountID}/representatives.read
+    patch:
+      operationId: updateRepresentative
+      description: |-
+        If a representative’s information has changed you can patch the information associated with a specific representative ID. 
+        Read our [business representatives guide](https://docs.moov.io/guides/accounts/requirements/business-representatives/) to learn more.
+
+        To use this endpoint from the browser, you’ll need to specify the `/accounts/{accountID}/representatives.write` scope when generating a [token](https://docs.moov.io/api/authentication/access-tokens/).
+
+        When **can** profile data be updated:
+
+        - For unverified representatives, all profile data can be edited.
+        - During the verification process, missing or incomplete profile data can be edited.
+        - Verified representatives can only add missing profile data.
+
+        When **can’t** profile data be updated:
+
+        - Verified representatives cannot change any existing profile data.
+
+        If you need to update information in a locked state, please contact Moov support.
+      parameters:
+        - $ref: '#/components/parameters/CommonHeaders'
+        - name: accountID
+          in: path
+          required: true
+          description: ID of the account.
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: The request completed successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Representative'
+        '400':
+          description: The server could not understand the request due to invalid syntax.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+        '404':
+          description: The requested resource was not found.
+        '409':
+          description: The request conflicted with the current state of the target resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+        '422':
+          description: The request was well-formed, but the contents failed validation. Check the request for missing or invalid fields.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RepresentativeValidationError'
+        '429':
+          description: Request was refused due to rate limiting.
+      tags:
+        - Representatives
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  $ref: '#/components/schemas/IndividualNameUpdate'
+                phone:
+                  $ref: '#/components/schemas/PhoneNumber'
+                email:
+                  $ref: '#/components/schemas/Email'
+                address:
+                  $ref: '#/components/schemas/AddressUpdate'
+                birthDate:
+                  $ref: '#/components/schemas/BirthDateUpdate'
+                governmentID:
+                  $ref: '#/components/schemas/GovernmentID'
+                responsibilities:
+                  $ref: '#/components/schemas/RepresentativeResponsibilitiesUpdate'
+                disabledOn:
+                  type: string
+                  format: date-time
+                representativeID:
+                  type: string
+                  format: uuid
+                  description: Unique identifier for this representative.
+      security:
+        - BasicAuth: []
+        - OAuth2Auth:
+            - /accounts/{accountID}/representatives.write
+  /accounts/{accountID}/representatives/{representativeID}:
+    delete:
+      operationId: deleteRepresentative
+      description: |-
+        Deletes a business representative associated with a Moov account. Read our [business representatives guide](https://docs.moov.io/guides/accounts/requirements/business-representatives/) to learn more.
+
+        To use this endpoint from the browser, you’ll need to specify the `/accounts/{accountID}/representatives.write` scope when generating a [token](https://docs.moov.io/api/authentication/access-tokens/).
+      parameters:
+        - $ref: '#/components/parameters/CommonHeaders'
+        - name: accountID
+          in: path
+          required: true
+          description: ID of the account.
+          schema:
+            type: string
+            format: uuid
+        - name: representativeID
+          in: path
+          required: true
+          description: ID of the representative.
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '204':
+          description: The request completed successfully, but there is no content to return.
+        '404':
+          description: The requested resource was not found.
+        '429':
+          description: Request was refused due to rate limiting.
+      tags:
+        - Representatives
+      security:
+        - BasicAuth: []
+        - OAuth2Auth:
+            - /accounts/{accountID}/representatives.write
+    get:
+      operationId: getRepresentative
+      description: |-
+        Retrieve a specific representative associated with a given Moov account. Read our [business representatives guide](https://docs.moov.io/guides/accounts/requirements/business-representatives/) to learn more.
+
+        To use this endpoint from the browser, you’ll need to specify the `/accounts/{accountID}/representatives.read` scope when generating a [token](https://docs.moov.io/api/authentication/access-tokens/).
+      parameters:
+        - $ref: '#/components/parameters/CommonHeaders'
+        - name: accountID
+          in: path
+          required: true
+          description: ID of the account.
+          schema:
+            type: string
+            format: uuid
+        - name: representativeID
+          in: path
+          required: true
+          description: ID of the representative.
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: The request completed successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Representative'
+        '404':
+          description: The requested resource was not found.
+        '429':
+          description: Request was refused due to rate limiting.
+      tags:
+        - Representatives
+      security:
+        - BasicAuth: []
+        - OAuth2Auth:
+            - /accounts/{accountID}/representatives.read
   /accounts/{accountID}/schedules:
     post:
       operationId: createSchedule
@@ -6650,6 +6905,15 @@ components:
           type: string
         year:
           type: string
+    BirthDateObjectValidationError:
+      type: object
+      properties:
+        day:
+          type: string
+        month:
+          type: string
+        year:
+          type: string
     BirthDateUpdate:
       type: object
       properties:
@@ -7818,6 +8082,32 @@ components:
       oneOf:
         - $ref: '#/components/schemas/CardAcquiringRefund'
         - $ref: '#/components/schemas/AsyncCreatedRefund'
+    CreateRepresentative:
+      type: object
+      allOf:
+        - type: object
+          required:
+            - name
+            - email
+          properties:
+            name:
+              $ref: '#/components/schemas/IndividualName'
+            phone:
+              $ref: '#/components/schemas/PhoneNumber'
+            email:
+              $ref: '#/components/schemas/Email'
+            address:
+              $ref: '#/components/schemas/Address'
+            birthDate:
+              $ref: '#/components/schemas/BirthDate'
+            governmentID:
+              $ref: '#/components/schemas/GovernmentID'
+            responsibilities:
+              $ref: '#/components/schemas/RepresentativeResponsibilities'
+            disabledOn:
+              type: string
+              format: date-time
+          description: The template for omitting properties.
     CreateSweepConfig:
       type: object
       required:
@@ -8540,6 +8830,23 @@ components:
             full:
               type: string
               pattern: ^\d{3}[-]?\d{2}[-]?\d{4}$
+            lastFour:
+              type: string
+    GovernmentIDError:
+      type: object
+      properties:
+        ssn:
+          type: object
+          properties:
+            full:
+              type: string
+            lastFour:
+              type: string
+        itin:
+          type: object
+          properties:
+            full:
+              type: string
             lastFour:
               type: string
     GrantType:
@@ -10040,6 +10347,10 @@ components:
         governmentIDProvided:
           type: boolean
           description: Indicates whether a government ID (SSN, ITIN, etc.) has been provided for this representative.
+        birthDate:
+          $ref: '#/components/schemas/BirthDate'
+        governmentID:
+          $ref: '#/components/schemas/GovernmentID'
         responsibilities:
           $ref: '#/components/schemas/RepresentativeResponsibilities'
         createdOn:
@@ -10075,6 +10386,61 @@ components:
           example: CEO
           maxLength: 64
       description: Describes the job responsibilities of a business representative.
+    RepresentativeResponsibilitiesError:
+      type: object
+      properties:
+        isController:
+          type: string
+        isOwner:
+          type: string
+        ownershipPercentage:
+          type: string
+        jobTitle:
+          type: string
+    RepresentativeResponsibilitiesUpdate:
+      type: object
+      properties:
+        isController:
+          type: boolean
+          description: Indicates whether this individual has significant management responsibilities within the business.
+        isOwner:
+          type: boolean
+          description: |-
+            If `true`, this field indicates that the individual has a business ownership stake of at least 25% in the
+            business. If the representative does not own at least 25% of the business, this field should be `false`.
+        ownershipPercentage:
+          type: integer
+          example: 38
+          description: The percentage of ownership this individual has in the business (required if `isOwner` is `true`).
+        jobTitle:
+          type: string
+          example: CEO
+          maxLength: 64
+      description: Describes the job responsibilities of a business representative.
+    RepresentativeValidationError:
+      type: object
+      required:
+        - error
+      properties:
+        error:
+          type: object
+          properties:
+            name:
+              $ref: '#/components/schemas/IndividualNameError'
+            phone:
+              $ref: '#/components/schemas/PhoneNumberError'
+            email:
+              type: string
+            address:
+              $ref: '#/components/schemas/AddressError'
+            birthDate:
+              anyOf:
+                - $ref: '#/components/schemas/BirthDateObjectValidationError'
+                - type: string
+            governmentID:
+              $ref: '#/components/schemas/GovernmentIDError'
+            responsibilities:
+              $ref: '#/components/schemas/RepresentativeResponsibilitiesError'
     RequestCard:
       type: object
       required:
@@ -11199,6 +11565,8 @@ components:
             /accounts/{yourAccountID}/transfers.write: ''
             /accounts/{accountID}/wallets.read: ''
             /accounts/{accountID}/wallets.write: ''
+            /accounts/{accountID}/representatives.write: ''
+            /accounts/{accountID}/representatives.read: ''
 servers:
   - url: https://api.moov.io
     description: Production API host
