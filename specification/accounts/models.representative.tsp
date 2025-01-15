@@ -17,6 +17,8 @@ model Representative {
   @doc("Indicates whether a government ID (SSN, ITIN, etc.) has been provided for this representative.")
   governmentIDProvided?: boolean;
 
+  birthDate?: BirthDate;
+  governmentID?: GovernmentID;
   responsibilities?: RepresentativeResponsibilities;
   createdOn: utcDateTime;
   updatedOn: utcDateTime;
