@@ -5143,32 +5143,20 @@ paths:
         - BasicAuth: []
         - OAuth2Auth:
             - /accounts/{accountID}/issued-cards.read-secure
-  /oauth2/token:
+  /oauth2/revoke:
     post:
-      operationId: createAuthToken
-      description: Use the `client_id` and `client_secret` to generate an access token.
-      parameters: []
+      operationId: revokeAuthToken
+      description: |-
+        Revoke an auth token.
+
+        Allows clients to notify the authorization server that a previously obtained refresh or access token is no longer needed.
+      parameters:
+        - $ref: '#/components/parameters/CommonHeaders'
       responses:
-        '200':
-          description: The request completed successfully.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/AccessToken'
+        '204':
+          description: The request completed successfully, but there is no content to return.
         '400':
           description: The server could not understand the request due to invalid syntax.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericError'
-        '401':
-          description: The request contained missing or expired authentication.
-        '403':
-          description: The user is not authorized to make the request.
-        '404':
-          description: The requested resource was not found.
-        '409':
-          description: The request conflicted with the current state of the target resource.
           content:
             application/json:
               schema:
@@ -5178,7 +5166,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
+                $ref: '#/components/schemas/RevokeTokenRequestError'
         '429':
           description: Request was refused due to rate limiting.
       tags:
@@ -5187,6 +5175,49 @@ paths:
         required: true
         content:
           application/json:
+            schema:
+              $ref: '#/components/schemas/RevokeTokenRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/RevokeTokenRequest'
+      security:
+        - BasicAuth: []
+  /oauth2/token:
+    post:
+      operationId: createAuthToken
+      description: Create or refresh an access token.
+      parameters:
+        - $ref: '#/components/parameters/CommonHeaders'
+      responses:
+        '200':
+          description: The request completed successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthToken'
+        '400':
+          description: The server could not understand the request due to invalid syntax.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+        '422':
+          description: The request was well-formed, but the contents failed validation. Check the request for missing or invalid fields.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthTokenRequestError'
+        '429':
+          description: Request was refused due to rate limiting.
+      tags:
+        - Authentication
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthTokenRequest'
+          application/x-www-form-urlencoded:
             schema:
               $ref: '#/components/schemas/AuthTokenRequest'
       security:
@@ -5867,33 +5898,10 @@ components:
       example: '#111111'
       description: A CSS hex color representing an accent color.
     AccessToken:
-      type: object
-      required:
-        - access_token
-        - expires_in
-        - refresh_token
-        - scope
-        - token_type
-      properties:
-        access_token:
-          type: string
-          example: i1qxz68gu50zp4i8ceyxqogmq7y0yienm52351c6...
-          description: String passed to the authorization server to gain access to the system.
-        expires_in:
-          type: integer
-          format: int32
-          example: 900
-          description: Number of seconds for which the token is valid.
-        refresh_token:
-          type: string
-          example: i1qxz68gu50zp4i8ceyxqogmq7y0yienm52351c6...
-          description: String passed to the authorization server to gain access to the system.
-        scope:
-          type: string
-          example: /accounts.write
-          description: A space-delimited list of [scopes](https://docs.moov.io/api/authentication/scopes/) that are allowed.
-        token_type:
-          $ref: '#/components/schemas/TokenType'
+      type: string
+      example: eyJhbGciOiJFZERTQSIsImN0eSI6IkpXVCIsImtpZCI6IkR...
+      maxLength: 4096
+      description: A value passed to the authorization server to gain access to the system.
     Account:
       type: object
       required:
@@ -6388,18 +6396,60 @@ components:
         createdOn:
           type: string
           format: date-time
+    AuthToken:
+      type: object
+      required:
+        - token_type
+        - access_token
+        - refresh_token
+        - expires_in
+        - scope
+      properties:
+        token_type:
+          $ref: '#/components/schemas/TokenType'
+        access_token:
+          $ref: '#/components/schemas/AccessToken'
+        refresh_token:
+          $ref: '#/components/schemas/RefreshToken'
+        expires_in:
+          type: integer
+          format: int32
+          example: 1736964352
+          description: Unix timestamp indicating when this token expires.
+        scope:
+          type: string
+          example: /accounts.read /accounts.write
+          description: A space-delimited list of [scopes](https://docs.moov.io/api/authentication/scopes/) that are allowed.
     AuthTokenRequest:
       type: object
       required:
         - grant_type
-        - scopes
       properties:
         grant_type:
           $ref: '#/components/schemas/GrantType'
-        scopes:
+        client_id:
           type: string
-          example: /moov/support.read /moov/support.write
-          description: A space delimited list of scopes
+          example: 5clTR_MdVrrkgxw2
+          description: Client ID can be provided here in the body, or as the Username in HTTP Basic Auth.
+        client_secret:
+          type: string
+          example: dNC-hg7sVm22jc3g_Eogtyu0_1Mqh_4-
+          description: Client secret can be provided here in the body, or as the Password in HTTP Basic Auth.
+        scope:
+          type: string
+          example: /accounts.read /accounts.write
+          description: A space delimited list of scopes. Required when `grant_type` is `client_credentials`.
+        refresh_token:
+          type: string
+          example: eyJhbGc0eSI6TQSIsImN0kpXVCIsImtp6IkpXVsImtpZC0a...
+          description: The refresh_token returned alongside the access token being refreshed. Required when `grant_type` is `refresh_token`.
+    AuthTokenRequestError:
+      type: object
+      properties:
+        scope:
+          type: string
+        refresh_token:
+          type: string
     AuthorizedUser:
       type: object
       required:
@@ -8547,7 +8597,11 @@ components:
       enum:
         - client_credentials
         - refresh_token
-      description: The type of grant being requested.
+      description: |-
+        The type of grant being requested.
+
+          - `client_credentials`: A grant type used by clients to obtain an access token
+          - `refresh_token`: A grant type used by clients to obtain a new access token using a refresh token
     IndividualName:
       type: object
       required:
@@ -9954,6 +10008,11 @@ components:
           format: date-time
           example: 2009-11-10T23:00:00Z
       description: Defines configuration for recurring transfers.
+    RefreshToken:
+      type: string
+      example: eyJhbGc0eSI6TQSIsImN0kpXVCIsImtp6IkpXVsImtpZC0a...
+      maxLength: 4096
+      description: A value passed to the authorization server to obtain a new access token.
     RefundCardDetails:
       type: object
       required:
@@ -10199,6 +10258,35 @@ components:
         - representative.{rep-uuid}.ownership
         - document.{doc-uuid}
       description: The unique ID of what the requirement is asking to be filled out.
+    RevokeTokenRequest:
+      type: object
+      required:
+        - token
+      properties:
+        token:
+          type: string
+          description: The access or refresh token to revoke.
+        token_type_hint:
+          type: string
+          enum:
+            - access_token
+            - refresh_token
+          description: The type of token being revoked.
+        client_id:
+          type: string
+          example: 5clTR_MdVrrkgxw2
+          description: Client ID can be provided here in the body, or as the Username in HTTP Basic Auth.
+        client_secret:
+          type: string
+          example: dNC-hg7sVm22jc3g_Eogtyu0_1Mqh_4-
+          description: Client secret can be provided here in the body, or as the Password in HTTP Basic Auth.
+    RevokeTokenRequestError:
+      type: object
+      properties:
+        token:
+          type: string
+        token_type_hint:
+          type: string
     RtpCreditPaymentMethod:
       type: object
       required:
@@ -10564,8 +10652,8 @@ components:
       description: |-
         Type of token returned.
 
-          - opaque: A token following a proprietary format.
-          - jwt: A JSON Web Token (JWT), a self-contained token that contains claims about the user and is cryptographically signed.
+          - `opaque`: A token following a proprietary format.
+          - `jwt`: A JSON Web Token (JWT), a self-contained token that contains claims about the user and is cryptographically signed.
     TransactionSource:
       type: string
       enum:
