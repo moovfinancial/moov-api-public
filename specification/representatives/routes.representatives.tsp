@@ -1,6 +1,5 @@
 import "@typespec/http";
-import "../accounts/models.representative.tsp";
-import "./model.representatives.tsp";
+import "../representatives/models.representatives.tsp";
 import "../auth/models.auth.tsp";
 import "../common/models.header.tsp";
 import "../common/models.response.tsp";
@@ -29,12 +28,7 @@ op createRepresentative(
   accountID: string,
 
   @body body: CreateRepresentative,
-):
-  | MoovAPI.OkResponse<Representative>
-  | MoovAPI.BadRequestResponse
-  | MoovAPI.NotFoundResponse
-  | MoovAPI.UnprocessableEntityResponse<RepresentativeValidationError>
-  | MoovAPI.RateLimitedResponse;
+): PostResponses<Representative, RepresentativeValidationError>;
 
 @doc("""
   A Moov account may have multiple representatives depending on the associated business’s ownership and management structure. 
@@ -55,7 +49,7 @@ op listRepresentatives(
   @format("uuid")
   @path
   accountID: string,
-): MoovAPI.OkResponse<Representative[]> | MoovAPI.RateLimitedResponse;
+): ListResponses<Representative>;
 
 @doc("""
   Deletes a business representative associated with a Moov account. Read our [business representatives guide](https://docs.moov.io/guides/accounts/requirements/business-representatives/) to learn more.
@@ -78,7 +72,7 @@ op deleteRepresentative(
   @format("uuid")
   @path
   representativeID: string,
-): MoovAPI.NoContentResponse | MoovAPI.NotFoundResponse | MoovAPI.RateLimitedResponse;
+): DisableResponses;
 
 @doc("""
   Retrieve a specific representative associated with a given Moov account. Read our [business representatives guide](https://docs.moov.io/guides/accounts/requirements/business-representatives/) to learn more.
@@ -101,7 +95,7 @@ op getRepresentative(
   @format("uuid")
   @path
   representativeID: string,
-): MoovAPI.OkResponse<Representative> | MoovAPI.NotFoundResponse | MoovAPI.RateLimitedResponse;
+): GetResponses<Representative>;
 
 @doc("""
   If a representative’s information has changed you can patch the information associated with a specific representative ID. 
@@ -134,10 +128,4 @@ op updateRepresentative(
   accountID: string,
 
   @body body: UpdateRepresentative,
-):
-  | MoovAPI.OkResponse<Representative>
-  | MoovAPI.BadRequestResponse
-  | MoovAPI.NotFoundResponse
-  | MoovAPI.StateConflictResponse // 409 Because the representative is locked
-  | MoovAPI.UnprocessableEntityResponse<RepresentativeValidationError>
-  | MoovAPI.RateLimitedResponse;
+): UpdateResponses<Representative, RepresentativeValidationError>;

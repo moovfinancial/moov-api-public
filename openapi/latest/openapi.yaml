@@ -3117,8 +3117,18 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/GenericError'
+        '401':
+          description: The request contained missing or expired authentication.
+        '403':
+          description: The user is not authorized to make the request.
         '404':
           description: The requested resource was not found.
+        '409':
+          description: The request conflicted with the current state of the target resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
         '422':
           description: The request was well-formed, but the contents failed validation. Check the request for missing or invalid fields.
           content:
@@ -3166,6 +3176,10 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Representative'
+        '401':
+          description: The request contained missing or expired authentication.
+        '403':
+          description: The user is not authorized to make the request.
         '429':
           description: Request was refused due to rate limiting.
       tags:
@@ -3215,6 +3229,10 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/GenericError'
+        '401':
+          description: The request contained missing or expired authentication.
+        '403':
+          description: The user is not authorized to make the request.
         '404':
           description: The requested resource was not found.
         '409':
@@ -3240,6 +3258,10 @@ paths:
             schema:
               type: object
               properties:
+                birthDate:
+                  $ref: '#/components/schemas/BirthDateUpdate'
+                governmentID:
+                  $ref: '#/components/schemas/GovernmentID'
                 name:
                   $ref: '#/components/schemas/IndividualNameUpdate'
                 phone:
@@ -3248,10 +3270,6 @@ paths:
                   $ref: '#/components/schemas/Email'
                 address:
                   $ref: '#/components/schemas/AddressUpdate'
-                birthDate:
-                  $ref: '#/components/schemas/BirthDateUpdate'
-                governmentID:
-                  $ref: '#/components/schemas/GovernmentID'
                 responsibilities:
                   $ref: '#/components/schemas/RepresentativeResponsibilitiesUpdate'
                 disabledOn:
@@ -3291,8 +3309,24 @@ paths:
       responses:
         '204':
           description: The request completed successfully, but there is no content to return.
+        '400':
+          description: The server could not understand the request due to invalid syntax.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+        '401':
+          description: The request contained missing or expired authentication.
+        '403':
+          description: The user is not authorized to make the request.
         '404':
           description: The requested resource was not found.
+        '409':
+          description: The request conflicted with the current state of the target resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
         '429':
           description: Request was refused due to rate limiting.
       tags:
@@ -3330,6 +3364,10 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Representative'
+        '401':
+          description: The request contained missing or expired authentication.
+        '403':
+          description: The user is not authorized to make the request.
         '404':
           description: The requested resource was not found.
         '429':
@@ -6905,15 +6943,6 @@ components:
           type: string
         year:
           type: string
-    BirthDateObjectValidationError:
-      type: object
-      properties:
-        day:
-          type: string
-        month:
-          type: string
-        year:
-          type: string
     BirthDateUpdate:
       type: object
       properties:
@@ -6926,6 +6955,15 @@ components:
         year:
           type: integer
           example: 1989
+    BirthDateValidationError:
+      type: object
+      properties:
+        day:
+          type: string
+        month:
+          type: string
+        year:
+          type: string
     Brand:
       type: object
       required:
@@ -8084,6 +8122,11 @@ components:
         - $ref: '#/components/schemas/AsyncCreatedRefund'
     CreateRepresentative:
       type: object
+      properties:
+        birthDate:
+          $ref: '#/components/schemas/BirthDate'
+        governmentID:
+          $ref: '#/components/schemas/GovernmentID'
       allOf:
         - type: object
           required:
@@ -8098,10 +8141,6 @@ components:
               $ref: '#/components/schemas/Email'
             address:
               $ref: '#/components/schemas/Address'
-            birthDate:
-              $ref: '#/components/schemas/BirthDate'
-            governmentID:
-              $ref: '#/components/schemas/GovernmentID'
             responsibilities:
               $ref: '#/components/schemas/RepresentativeResponsibilities'
             disabledOn:
@@ -10347,10 +10386,6 @@ components:
         governmentIDProvided:
           type: boolean
           description: Indicates whether a government ID (SSN, ITIN, etc.) has been provided for this representative.
-        birthDate:
-          $ref: '#/components/schemas/BirthDate'
-        governmentID:
-          $ref: '#/components/schemas/GovernmentID'
         responsibilities:
           $ref: '#/components/schemas/RepresentativeResponsibilities'
         createdOn:
@@ -10434,9 +10469,7 @@ components:
             address:
               $ref: '#/components/schemas/AddressError'
             birthDate:
-              anyOf:
-                - $ref: '#/components/schemas/BirthDateObjectValidationError'
-                - type: string
+              $ref: '#/components/schemas/BirthDateValidationError'
             governmentID:
               $ref: '#/components/schemas/GovernmentIDError'
             responsibilities:
