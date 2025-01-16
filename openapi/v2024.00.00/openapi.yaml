@@ -26,6 +26,7 @@ tags:
   - name: Enriched profile
   - name: Industries
   - name: Avatars
+  - name: Institutions
   - name: Files
   - name: Card issuing
   - name: Issuing transactions
@@ -4665,6 +4666,36 @@ paths:
         - BasicAuth: []
         - OAuth2Auth:
             - /profile-enrichment.read
+  /institutions/ach/search:
+    get:
+      operationId: listInstitutions
+      description: |2-
+          Search for institutions by either their name or routing number.
+          
+          To use this endpoint from the browser, you'll need to specify the `/fed.read` scope when generating a [token](https://docs.moov.io/api/authentication/access-tokens/).
+      parameters:
+        - $ref: '#/components/parameters/CommonHeaders'
+      responses:
+        '200':
+          description: The request completed successfully.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AchParticipants'
+        '401':
+          description: The request contained missing or expired authentication.
+        '403':
+          description: The user is not authorized to make the request.
+        '429':
+          description: Request was refused due to rate limiting.
+      tags:
+        - Institutions
+      security:
+        - BasicAuth: []
+        - OAuth2Auth:
+            - /fed.read
   /issuing/{accountID}/authorizations:
     get:
       operationId: listIssuedCardAuthorizations
@@ -6095,6 +6126,66 @@ components:
           type: string
           enum:
             - ach-debit-fund
+    AchLocation:
+      type: object
+      properties:
+        address:
+          type: string
+          example: 123 Main Street
+          maxLength: 32
+        city:
+          type: string
+          example: Boulder
+          maxLength: 24
+        postalCode:
+          type: string
+          example: '80301'
+          maxLength: 5
+        postalCodeExtension:
+          type: string
+          example: '0000'
+          maxLength: 4
+        state:
+          type: string
+          example: Colorado
+          maxLength: 24
+    AchParticipants:
+      type: object
+      properties:
+        achLocation:
+          $ref: '#/components/schemas/AchLocation'
+        customerName:
+          type: string
+          example: Main Street Bank
+        newRoutingNumber:
+          type: string
+          example: '987654321'
+          maxLength: 9
+        officeCode:
+          type: string
+          example: '0'
+        phoneNumber:
+          type: string
+          example: 123-456-7789
+        recordTypeCode:
+          type: string
+          example: '1'
+        revised:
+          type: string
+          example: '041921'
+        routingNumber:
+          type: string
+          example: '123456789'
+          maxLength: 9
+        servicingFRBNumber:
+          type: string
+          example: '123456789'
+        statusCode:
+          type: string
+          example: '1'
+        viewCode:
+          type: string
+          example: '1'
     AddCapabilities:
       type: object
       required:
@@ -8668,6 +8759,30 @@ components:
           example: '7997'
           minLength: 4
           maxLength: 4
+    InstitutionsFilters:
+      type: object
+      required:
+        - name
+        - routingNumber
+        - state
+        - limit
+      properties:
+        name:
+          type: string
+          example: Farmers
+          description: Name of the financial institution. Either `name` or `routingNumber` is required.
+        routingNumber:
+          type: string
+          example: '044112187'
+          description: Routing number for a financial institution. Either `routingNumber` or `name` is required.
+        state:
+          type: string
+          example: IA
+          description: The state where a financial institution is based.
+        limit:
+          type: integer
+          example: 499
+          description: Maximum results returned by a search.
     IssuedCard:
       type: object
       required:
@@ -11188,6 +11303,7 @@ components:
             /accounts/{accountID}/transfers.read: ''
             /accounts/{accountID}/transfers.write: ''
             /profile-enrichment.read: ''
+            /fed.read: ''
             /accounts/{accountID}/files.write: ''
             /accounts/{accountID}/files.read: ''
             /accounts/{accountID}/issued-cards.write: ''
