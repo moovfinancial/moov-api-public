@@ -21,7 +21,7 @@ model Representative {
   @doc("Indicates whether a government ID (SSN, ITIN, etc.) has been provided for this representative.")
   governmentIDProvided?: boolean;
 
-  responsibilities: RepresentativeResponsibilities;
+  responsibilities?: RepresentativeResponsibilities;
   createdOn: utcDateTime;
   updatedOn: utcDateTime;
   disabledOn?: utcDateTime;
@@ -40,11 +40,11 @@ model RepresentativeResponsibilities {
 
   @doc("The percentage of ownership this individual has in the business (required if `isOwner` is `true`).")
   @example(38)
-  ownershipPercentage: integer;
+  ownershipPercentage?: integer;
 
   @example("CEO")
   @maxLength(64)
-  jobTitle: string;
+  jobTitle?: string;
 }
 
 alias RepresentativePropsNotInCreate =
@@ -66,7 +66,7 @@ model CreateRepresentative
   responsibilities?: RepresentativeResponsibilities;
 }
 
-alias UpdateRepresentative = {
+model UpdateRepresentative {
   name?: IndividualName;
   phone?: PhoneNumber | null;
   email?: Email | null;
@@ -74,7 +74,7 @@ alias UpdateRepresentative = {
   birthDate?: BirthDate | null;
   governmentID?: GovernmentID | null;
   responsibilities?: RepresentativeResponsibilities | null;
-};
+}
 
 model BirthDateValidationError {
   day?: string;
