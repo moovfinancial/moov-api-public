@@ -7,25 +7,29 @@ model InstitutionsFilters {
   @doc("Name of the financial institution. Either `name` or `routingNumber` is required.")
   @example("Farmers")
   @query
-  name: string;
+  name?: string;
 
   @doc("Routing number for a financial institution. Either `routingNumber` or `name` is required.")
   @example("044112187")
   @query
-  routingNumber: string;
+  routingNumber?: string;
 
   @doc("The state where a financial institution is based.")
   @example("IA")
   @query
-  state: string;
+  state?: string;
 
   @doc("Maximum results returned by a search.")
   @example(499)
   @query
-  limit: integer;
+  limit?: integer;
 }
 
-model AchParticipants {
+model FinancialInstitutions {
+  achParticipants: AchParticipant[];
+}
+
+model AchParticipant {
   achLocation?: AchLocation;
 
   @example("Main Street Bank")

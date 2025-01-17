@@ -4675,6 +4675,10 @@ paths:
           To use this endpoint from the browser, you'll need to specify the `/fed.read` scope when generating a [token](https://docs.moov.io/api/authentication/access-tokens/).
       parameters:
         - $ref: '#/components/parameters/CommonHeaders'
+        - $ref: '#/components/parameters/InstitutionsFilters.name'
+        - $ref: '#/components/parameters/InstitutionsFilters.routingNumber'
+        - $ref: '#/components/parameters/InstitutionsFilters.state'
+        - $ref: '#/components/parameters/InstitutionsFilters.limit'
       responses:
         '200':
           description: The request completed successfully.
@@ -4683,7 +4687,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/AchParticipants'
+                  $ref: '#/components/schemas/FinancialInstitutions'
         '401':
           description: The request contained missing or expired authentication.
         '403':
@@ -5586,6 +5590,38 @@ components:
       schema:
         type: string
       explode: false
+    InstitutionsFilters.limit:
+      name: limit
+      in: query
+      required: false
+      description: Maximum results returned by a search.
+      schema:
+        type: integer
+      explode: false
+    InstitutionsFilters.name:
+      name: name
+      in: query
+      required: false
+      description: Name of the financial institution. Either `name` or `routingNumber` is required.
+      schema:
+        type: string
+      explode: false
+    InstitutionsFilters.routingNumber:
+      name: routingNumber
+      in: query
+      required: false
+      description: Routing number for a financial institution. Either `routingNumber` or `name` is required.
+      schema:
+        type: string
+      explode: false
+    InstitutionsFilters.state:
+      name: state
+      in: query
+      required: false
+      description: The state where a financial institution is based.
+      schema:
+        type: string
+      explode: false
     ListIssuingAuthorizationsQuery.endDateTime:
       name: endDateTime
       in: query
@@ -6149,7 +6185,7 @@ components:
           type: string
           example: Colorado
           maxLength: 24
-    AchParticipants:
+    AchParticipant:
       type: object
       properties:
         achLocation:
@@ -8555,6 +8591,15 @@ components:
           type: string
         metadata:
           type: string
+    FinancialInstitutions:
+      type: object
+      required:
+        - achParticipants
+      properties:
+        achParticipants:
+          type: array
+          items:
+            $ref: '#/components/schemas/AchParticipant'
     FullIssuedCard:
       type: object
       required:
@@ -8759,30 +8804,6 @@ components:
           example: '7997'
           minLength: 4
           maxLength: 4
-    InstitutionsFilters:
-      type: object
-      required:
-        - name
-        - routingNumber
-        - state
-        - limit
-      properties:
-        name:
-          type: string
-          example: Farmers
-          description: Name of the financial institution. Either `name` or `routingNumber` is required.
-        routingNumber:
-          type: string
-          example: '044112187'
-          description: Routing number for a financial institution. Either `routingNumber` or `name` is required.
-        state:
-          type: string
-          example: IA
-          description: The state where a financial institution is based.
-        limit:
-          type: integer
-          example: 499
-          description: Maximum results returned by a search.
     IssuedCard:
       type: object
       required:
