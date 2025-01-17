@@ -8,7 +8,7 @@ on:
 
 jobs:
   build:
-    name: Go Build
+    name: Ensure no diff after build
     runs-on: [ubuntu-latest]
     steps:
       - uses: webfactory/ssh-agent@v0.8.0

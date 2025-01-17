@@ -3250,40 +3250,7 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                name:
-                  $ref: '#/components/schemas/IndividualNameUpdate'
-                phone:
-                  type: object
-                  allOf:
-                    - $ref: '#/components/schemas/PhoneNumber'
-                  nullable: true
-                email:
-                  type: object
-                  allOf:
-                    - $ref: '#/components/schemas/Email'
-                  nullable: true
-                address:
-                  type: object
-                  allOf:
-                    - $ref: '#/components/schemas/AddressUpdate'
-                  nullable: true
-                birthDate:
-                  type: object
-                  allOf:
-                    - $ref: '#/components/schemas/BirthDateUpdate'
-                  nullable: true
-                governmentID:
-                  type: object
-                  allOf:
-                    - $ref: '#/components/schemas/GovernmentID'
-                  nullable: true
-                responsibilities:
-                  type: object
-                  allOf:
-                    - $ref: '#/components/schemas/RepresentativeResponsibilitiesUpdate'
-                  nullable: true
+              $ref: '#/components/schemas/UpdateRepresentative'
       security:
         - BasicAuth: []
         - OAuth2Auth:
@@ -10365,7 +10332,6 @@ components:
       required:
         - representativeID
         - name
-        - responsibilities
         - createdOn
         - updatedOn
       properties:
@@ -10401,9 +10367,6 @@ components:
       description: Describes a business representative.
     RepresentativeResponsibilities:
       type: object
-      required:
-        - ownershipPercentage
-        - jobTitle
       properties:
         isController:
           type: boolean
@@ -10433,26 +10396,6 @@ components:
           type: string
         jobTitle:
           type: string
-    RepresentativeResponsibilitiesUpdate:
-      type: object
-      properties:
-        isController:
-          type: boolean
-          description: Indicates whether this individual has significant management responsibilities within the business.
-        isOwner:
-          type: boolean
-          description: |-
-            If `true`, this field indicates that the individual has a business ownership stake of at least 25% in the
-            business. If the representative does not own at least 25% of the business, this field should be `false`.
-        ownershipPercentage:
-          type: integer
-          example: 38
-          description: The percentage of ownership this individual has in the business (required if `isOwner` is `true`).
-        jobTitle:
-          type: string
-          example: CEO
-          maxLength: 64
-      description: Describes the job responsibilities of a business representative.
     RepresentativeValidationError:
       type: object
       required:
@@ -11341,6 +11284,41 @@ components:
           $ref: '#/components/schemas/PaymentDetailsError'
         payout:
           $ref: '#/components/schemas/PayoutDetailsError'
+    UpdateRepresentative:
+      type: object
+      properties:
+        name:
+          $ref: '#/components/schemas/IndividualNameUpdate'
+        phone:
+          type: object
+          allOf:
+            - $ref: '#/components/schemas/PhoneNumber'
+          nullable: true
+        email:
+          type: object
+          allOf:
+            - $ref: '#/components/schemas/Email'
+          nullable: true
+        address:
+          type: object
+          allOf:
+            - $ref: '#/components/schemas/AddressUpdate'
+          nullable: true
+        birthDate:
+          type: object
+          allOf:
+            - $ref: '#/components/schemas/BirthDateUpdate'
+          nullable: true
+        governmentID:
+          type: object
+          allOf:
+            - $ref: '#/components/schemas/GovernmentID'
+          nullable: true
+        responsibilities:
+          type: object
+          allOf:
+            - $ref: '#/components/schemas/RepresentativeResponsibilities'
+          nullable: true
     UpsertSchedule:
       type: object
       properties:
