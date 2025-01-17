@@ -84,8 +84,10 @@ namespace MoovAPI {
   @route("/institutions/ach/search")
   @get
   @useAuth(BasicAuth | OAuth2<["/fed.read"]>)
-  op listInstitutions(
-    ...CommonHeaders,
-    ...InstitutionsFilters,
-  ): ListResponses<FinancialInstitutions>;
+  op listInstitutions(...CommonHeaders, ...InstitutionsFilters):
+    | OkResponse<FinancialInstitutions[]>
+    | BadRequestResponse
+    | UnauthorizedResponse
+    | ForbiddenResponse
+    | RateLimitedResponse;
 }

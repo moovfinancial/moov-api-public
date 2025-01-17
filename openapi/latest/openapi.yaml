@@ -5004,6 +5004,12 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/FinancialInstitutions'
+        '400':
+          description: The server could not understand the request due to invalid syntax.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
         '401':
           description: The request contained missing or expired authentication.
         '403':
