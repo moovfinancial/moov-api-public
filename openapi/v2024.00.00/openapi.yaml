@@ -3241,12 +3241,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/GenericError'
-        '422':
-          description: The request was well-formed, but the contents failed validation. Check the request for missing or invalid fields.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/RepresentativeValidationError'
         '429':
           description: Request was refused due to rate limiting.
       tags:
@@ -3258,27 +3252,38 @@ paths:
             schema:
               type: object
               properties:
-                birthDate:
-                  $ref: '#/components/schemas/BirthDateUpdate'
-                governmentID:
-                  $ref: '#/components/schemas/GovernmentID'
                 name:
                   $ref: '#/components/schemas/IndividualNameUpdate'
                 phone:
-                  $ref: '#/components/schemas/PhoneNumber'
+                  type: object
+                  allOf:
+                    - $ref: '#/components/schemas/PhoneNumber'
+                  nullable: true
                 email:
-                  $ref: '#/components/schemas/Email'
+                  type: object
+                  allOf:
+                    - $ref: '#/components/schemas/Email'
+                  nullable: true
                 address:
-                  $ref: '#/components/schemas/AddressUpdate'
+                  type: object
+                  allOf:
+                    - $ref: '#/components/schemas/AddressUpdate'
+                  nullable: true
+                birthDate:
+                  type: object
+                  allOf:
+                    - $ref: '#/components/schemas/BirthDateUpdate'
+                  nullable: true
+                governmentID:
+                  type: object
+                  allOf:
+                    - $ref: '#/components/schemas/GovernmentID'
+                  nullable: true
                 responsibilities:
-                  $ref: '#/components/schemas/RepresentativeResponsibilitiesUpdate'
-                disabledOn:
-                  type: string
-                  format: date-time
-                representativeID:
-                  type: string
-                  format: uuid
-                  description: Unique identifier for this representative.
+                  type: object
+                  allOf:
+                    - $ref: '#/components/schemas/RepresentativeResponsibilitiesUpdate'
+                  nullable: true
       security:
         - BasicAuth: []
         - OAuth2Auth:
@@ -8127,11 +8132,12 @@ components:
           $ref: '#/components/schemas/BirthDate'
         governmentID:
           $ref: '#/components/schemas/GovernmentID'
+        responsibilities:
+          $ref: '#/components/schemas/RepresentativeResponsibilities'
       allOf:
         - type: object
           required:
             - name
-            - email
           properties:
             name:
               $ref: '#/components/schemas/IndividualName'
@@ -8141,11 +8147,6 @@ components:
               $ref: '#/components/schemas/Email'
             address:
               $ref: '#/components/schemas/Address'
-            responsibilities:
-              $ref: '#/components/schemas/RepresentativeResponsibilities'
-            disabledOn:
-              type: string
-              format: date-time
           description: The template for omitting properties.
     CreateSweepConfig:
       type: object
@@ -10364,7 +10365,7 @@ components:
       required:
         - representativeID
         - name
-        - email
+        - responsibilities
         - createdOn
         - updatedOn
       properties:

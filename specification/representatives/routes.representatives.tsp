@@ -128,4 +128,11 @@ op updateRepresentative(
   accountID: string,
 
   @body body: UpdateRepresentative,
-): UpdateResponses<Representative, RepresentativeValidationError>;
+):
+  | OkResponse<Representative>
+  | BadRequestResponse
+  | UnauthorizedResponse
+  | ForbiddenResponse
+  | NotFoundResponse
+  | StateConflictResponse
+  | RateLimitedResponse;

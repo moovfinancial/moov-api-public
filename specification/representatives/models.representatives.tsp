@@ -12,7 +12,7 @@ model Representative {
 
   name: IndividualName;
   phone?: PhoneNumber;
-  email: Email;
+  email?: Email;
   address?: Address;
 
   @doc("Indicates whether this representative's birth date has been provided.")
@@ -21,7 +21,7 @@ model Representative {
   @doc("Indicates whether a government ID (SSN, ITIN, etc.) has been provided for this representative.")
   governmentIDProvided?: boolean;
 
-  responsibilities?: RepresentativeResponsibilities;
+  responsibilities: RepresentativeResponsibilities;
   createdOn: utcDateTime;
   updatedOn: utcDateTime;
   disabledOn?: utcDateTime;
@@ -51,19 +51,30 @@ alias RepresentativePropsNotInCreate =
   | "representativeID"
   | "createdOn"
   | "updatedOn"
+  | "disabledOn"
   | "governmentIDProvided"
   | "birthDateProvided";
 
-// Omit the properties of Representative are not present in the create operation to get the create model
+// Omit the properties of Representative are not present in the create operation to get the create model. Omit responsibilities as it is optional for create.
 model CreateRepresentative
-  extends OmitProperties<Representative, RepresentativePropsNotInCreate> {
+  extends OmitProperties<
+    Representative,
+    RepresentativePropsNotInCreate | "responsibilities"
+  > {
   birthDate?: BirthDate;
   governmentID?: GovernmentID;
+  responsibilities?: RepresentativeResponsibilities;
 }
 
-// Take the CreateRepresentative model and make all the properties optional, then add representativeID as required
-alias UpdateRepresentative = OptionalProperties<CreateRepresentative> &
-  PickProperties<Representative, "representativeID">;
+alias UpdateRepresentative = {
+  name?: IndividualName;
+  phone?: PhoneNumber | null;
+  email?: Email | null;
+  address?: Address | null;
+  birthDate?: BirthDate | null;
+  governmentID?: GovernmentID | null;
+  responsibilities?: RepresentativeResponsibilities | null;
+};
 
 model BirthDateValidationError {
   day?: string;
