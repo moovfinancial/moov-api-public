@@ -23,6 +23,7 @@ import "./paymentmethods";
 import "./schedules";
 import "./transfers";
 import "./wallets";
+import "./representatives";
 
 using TypeSpec.Http;
 using TypeSpec.OpenAPI;

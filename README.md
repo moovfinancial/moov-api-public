@@ -4,11 +4,12 @@ Specifications for Moov's public API endpoints.
 ## Setup
 
 1. Install the [EditorConfig](https://marketplace.visualstudio.com/items?itemName=EditorConfig.EditorConfig) extension
-2. Install Node `22.10.0`
+2. Install the [TSP extension for VSCode](https://marketplace.visualstudio.com/items?itemName=typespec.typespec-vscode)
+3. Install Node `22.10.0`
   - The recommended way is to install `mise` ([link](https://github.com/jdx/mise?tab=readme-ov-file#quickstart)) or `nvm` ([link](https://github.com/nvm-sh/nvm?tab=readme-ov-file#installing-and-updating)) and just rely on the `.nvmrc` file to manage your Node version.
   - Once either `nvm` or `mise` are installed, run `nvm install` or `mise i` in the root of this project to install the Node version specified in the `.nvmrc` file.
   - This node project also has scripts that run automatically after you pull from main that will check your `node` version, try to update it with the version at `.nvmrc` automatically through `nvm` and `mise`, so ideally you wouldn't need to worry at all about maintaining your `node` up to date once youset it up through `nvm` or `mise`
-3. Run `npm i`
+4. Run `npm i`
 
 ## Versioning
 

@@ -1,4 +1,4 @@
-import "./models.representative.tsp";
+import "../representatives/models.representatives.tsp";
 import "./models.governmentid.tsp";
 
 namespace MoovAPI;
