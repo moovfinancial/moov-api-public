@@ -30,59 +30,70 @@ model FinancialInstitutions {
 }
 
 model AchParticipant {
-  achLocation?: AchLocation;
+  achLocation: AchLocation;
 
   @example("Main Street Bank")
-  customerName?: string;
+  customerName: string;
 
   @example("987654321")
   @maxLength(9)
-  newRoutingNumber?: string;
+  newRoutingNumber: string;
 
   @example("0")
-  officeCode?: string;
+  officeCode: string;
 
-  @example("123-456-7789")
-  phoneNumber?: string;
+  @example("1234567789")
+  phoneNumber: string;
 
   @example("1")
-  recordTypeCode?: string;
+  recordTypeCode: string;
 
   @example("041921")
-  revised?: string;
+  revised: string;
 
   @example("123456789")
   @maxLength(9)
-  routingNumber?: string;
+  routingNumber: string;
 
   @example("123456789")
-  servicingFRBNumber?: string;
+  servicingFRBNumber: string;
 
   @example("1")
-  statusCode?: string;
+  statusCode: string;
 
   @example("1")
-  viewCode?: string;
+  viewCode: string;
+
+  @example("Main Street Bank")
+  cleanName: string;
+
+  @example(null)
+  logo: InstitutionLogo | null;
 }
 
 model AchLocation {
   @example("123 Main Street")
   @maxLength(32)
-  address?: string;
+  address: string;
 
   @example("Boulder")
   @maxLength(24)
-  city?: string;
+  city: string;
 
   @example("80301")
   @maxLength(5)
-  postalCode?: string;
+  postalCode: string;
 
   @example("0000")
   @maxLength(4)
-  postalCodeExtension?: string;
+  postalCodeExtension: string;
 
   @example("Colorado")
   @maxLength(24)
-  state?: string;
+  state: string;
+}
+
+model InstitutionLogo {
+  name: string;
+  url: string;
 }
