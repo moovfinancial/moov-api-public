@@ -3,6 +3,7 @@ import "./models.address.tsp";
 import "./models.profile.tsp";
 import "./models.industries.tsp";
 import "./models.avatar.tsp";
+import "./models.institutions.tsp";
 import "../auth/models.auth.tsp";
 import "../common/models.response.tsp";
 import "../common/models.header.tsp";
@@ -73,4 +74,18 @@ namespace MoovAPI {
     | ForbiddenResponse
     | NotFoundResponse
     | RateLimitedResponse;
+
+  @doc("""
+      Search for institutions by either their name or routing number.
+      
+      To use this endpoint from the browser, you'll need to specify the `/fed.read` scope when generating a [token](https://docs.moov.io/api/authentication/access-tokens/).
+    """)
+  @tag("Institutions")
+  @route("/institutions/ach/search")
+  @get
+  @useAuth(BasicAuth | OAuth2<["/fed.read"]>)
+  op listInstitutions(
+    ...CommonHeaders,
+    ...InstitutionsFilters,
+  ): ListResponses<FinancialInstitutions>;
 }
