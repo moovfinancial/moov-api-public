@@ -15,9 +15,9 @@ info:
     works at a high level, read our [concepts](https://docs.moov.io/guides/get-started/glossary/) guide.
   version: latest
 tags:
-  - name: Authentication
-  - name: Cards
   - name: Accounts
+  - name: Cards
+  - name: Authentication
   - name: Bank accounts
   - name: Branding
   - name: Capabilities
@@ -31,14 +31,15 @@ tags:
   - name: Files
   - name: Card issuing
   - name: Issuing transactions
+  - name: Onboarding
   - name: Payment links
   - name: Payment methods
+  - name: Representatives
   - name: Scheduling
   - name: Transfers
   - name: Sweeps
   - name: Wallet transactions
   - name: Wallets
-  - name: Representatives
 paths:
   /accounts:
     post:
@@ -5579,6 +5580,150 @@ paths:
               $ref: '#/components/schemas/AuthTokenRequest'
       security:
         - BasicAuth: []
+  /onboarding-invites:
+    post:
+      operationId: createOnboardingInvite
+      description: |-
+        Create an invitation containing a unique link that allows the recipient to onboard their organization with Moov.
+
+        To access this endpoint using a [token](https://docs.moov.io/api/authentication/access-tokens/) you'll need 
+        to specify the `/accounts.write` scope.
+      parameters:
+        - $ref: '#/components/parameters/CommonHeaders'
+      responses:
+        '200':
+          description: The request completed successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OnboardingInvite'
+        '400':
+          description: The server could not understand the request due to invalid syntax.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+        '401':
+          description: The request contained missing or expired authentication.
+        '403':
+          description: The user is not authorized to make the request.
+        '404':
+          description: The requested resource was not found.
+        '409':
+          description: The request conflicted with the current state of the target resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+        '422':
+          description: The request was well-formed, but the contents failed validation. Check the request for missing or invalid fields.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OnboardingInviteError'
+        '429':
+          description: Request was refused due to rate limiting.
+      tags:
+        - Onboarding
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OnboardingInviteRequest'
+      security:
+        - BasicAuth: []
+        - OAuth2Auth:
+            - /accounts.write
+    get:
+      operationId: listOnboardingInvites
+      description: |-
+        List all the onboarding invites created by the caller's account.
+
+        To access this endpoint using a [token](https://docs.moov.io/api/authentication/access-tokens/) you'll need 
+        to specify the `/accounts.read` scope.
+      parameters:
+        - $ref: '#/components/parameters/CommonHeaders'
+      responses:
+        '200':
+          description: The request completed successfully.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/OnboardingInvite'
+        '401':
+          description: The request contained missing or expired authentication.
+        '403':
+          description: The user is not authorized to make the request.
+        '429':
+          description: Request was refused due to rate limiting.
+      tags:
+        - Onboarding
+      security:
+        - BasicAuth: []
+        - OAuth2Auth:
+            - /accounts.read
+  /onboarding-invites/{code}:
+    get:
+      operationId: getOnboardingInvite
+      description: |-
+        Retrieve details about an onboarding invite.
+
+        To access this endpoint using a [token](https://docs.moov.io/api/authentication/access-tokens/) you'll need 
+        to specify the `/accounts.read` scope.
+      parameters:
+        - $ref: '#/components/parameters/CommonHeaders'
+        - name: code
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/OnboardingInviteCode'
+      responses:
+        '200':
+          description: The request completed successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OnboardingInvite'
+        '401':
+          description: The request contained missing or expired authentication.
+        '403':
+          description: The user is not authorized to make the request.
+        '404':
+          description: The requested resource was not found.
+        '429':
+          description: Request was refused due to rate limiting.
+      tags:
+        - Onboarding
+      security:
+        - BasicAuth: []
+        - OAuth2Auth:
+            - /accounts.read
+    delete:
+      operationId: revokeOnboardingInvite
+      description: |-
+        Revoke an onboarding invite, rendering the invitation link unusable.
+
+        To access this endpoint using a [token](https://docs.moov.io/api/authentication/access-tokens/) you'll need 
+        to specify the `/accounts.write` scope.
+      parameters:
+        - $ref: '#/components/parameters/CommonHeaders'
+        - name: code
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/OnboardingInviteCode'
+      responses:
+        '204':
+          description: The request completed successfully, but there is no content to return.
+      tags:
+        - Onboarding
+      security:
+        - BasicAuth: []
+        - OAuth2Auth:
+            - /accounts.write
   /tos-token:
     get:
       operationId: getTermsOfServiceToken
@@ -6839,6 +6984,48 @@ components:
         Stringified session object returned from Apple Pay.
 
         The string value should be deserialized as a JSON object before passing to Apple.
+    ApplicationScope:
+      type: string
+      enum:
+        - accounts.read
+        - accounts.write
+        - analytics.read
+        - apple-pay-merchant.read
+        - apple-pay-merchant.write
+        - apple-pay.read
+        - apple-pay.write
+        - bank-accounts.read
+        - bank-accounts.write
+        - capabilities.read
+        - capabilities.write
+        - cards.read
+        - cards.write
+        - documents.read
+        - documents.write
+        - fed.read
+        - files.read
+        - files.write
+        - issued-cards.read
+        - issued-cards.write
+        - issued-cards.read-secure
+        - payment-methods.read
+        - ping.read
+        - profile-enrichment.read
+        - profile.read
+        - profile.write
+        - profile.disconnect
+        - representatives.read
+        - representatives.write
+        - transfers.read
+        - transfers.write
+        - wallets.read
+      description: A permission that the application requests on another account.
+    ArrayValidationError:
+      type: object
+      additionalProperties:
+        type: string
+      example:
+        '0': first element failed validation...
     AssignCountriesError:
       type: object
       required:
@@ -7962,9 +8149,7 @@ components:
         settings:
           $ref: '#/components/schemas/CreateAccountSettings'
         capabilities:
-          type: object
-          additionalProperties:
-            type: string
+          $ref: '#/components/schemas/ArrayValidationError'
     CreateAccountSettings:
       type: object
       properties:
@@ -9992,6 +10177,150 @@ components:
           format: uuid
         status:
           $ref: '#/components/schemas/OccurrenceStatus'
+    OnboardingInvite:
+      type: object
+      required:
+        - code
+        - link
+        - scopes
+        - capabilities
+        - feePlanCodes
+        - createdOn
+      properties:
+        code:
+          $ref: '#/components/schemas/OnboardingInviteCode'
+        link:
+          type: string
+          format: uri
+          description: A unique URL, including the invite code, that the recipient can follow to redeem the invitation.
+        returnURL:
+          type: string
+          description: The scopes requested by the inviter.
+        TermsOfServiceURL:
+          type: string
+          description: The terms of service URL set by the inviter.
+        scopes:
+          type: array
+          items:
+            $ref: '#/components/schemas/ApplicationScope'
+          example:
+            - accounts.read
+          minItems: 1
+          description: |-
+            List of [scopes](https://docs.moov.io/api/authentication/scopes/) you request to use on this
+            account. These values are used to determine what can be done with the account onboarded.
+        capabilities:
+          type: array
+          items:
+            $ref: '#/components/schemas/CapabilityID'
+          example:
+            - transfers
+          minItems: 1
+          description: |2-
+              List of [capabilities](https://docs.moov.io/guides/accounts/capabilities/) you intend to request for this
+              account. These values are used to determine what information to collect from the user during onboarding.
+        feePlanCodes:
+          type: array
+          items:
+            type: string
+          example:
+            - merchant-direct
+          minItems: 1
+          description: List of fee plan codes to assign the account created by the invitee.
+        prefill:
+          $ref: '#/components/schemas/CreateAccount'
+        partner:
+          $ref: '#/components/schemas/OnboardingPartnerAccount'
+        createdOn:
+          type: string
+          format: date-time
+        revokedOn:
+          type: string
+          format: date-time
+        redeemedOn:
+          type: string
+          format: date-time
+    OnboardingInviteCode:
+      type: string
+      example: N1IA5eWYNh
+      description: A unique code that identifies an onboarding invite.
+    OnboardingInviteError:
+      type: object
+      properties:
+        returnURL:
+          type: string
+        termsOfServiceURL:
+          type: string
+        scopes:
+          $ref: '#/components/schemas/ArrayValidationError'
+        capabilities:
+          $ref: '#/components/schemas/ArrayValidationError'
+        feePlanCodes:
+          $ref: '#/components/schemas/ArrayValidationError'
+    OnboardingInviteRequest:
+      type: object
+      required:
+        - scopes
+        - capabilities
+        - feePlanCodes
+      properties:
+        returnURL:
+          type: string
+          format: uri
+          description: Optional URL to redirect the user to after they complete the onboarding process.
+        termsOfServiceURL:
+          type: string
+          format: uri
+          description: Optional URL to your organization's terms of service.
+        scopes:
+          type: array
+          items:
+            $ref: '#/components/schemas/ApplicationScope'
+          example:
+            - accounts.read
+          minItems: 1
+          description: |2-
+              List of [scopes](https://docs.moov.io/api/authentication/scopes/) you request to use on this
+              account. These values are used to determine what can be done with the account onboarded.
+        capabilities:
+          type: array
+          items:
+            $ref: '#/components/schemas/CapabilityID'
+          example:
+            - transfers
+          minItems: 1
+          description: |2-
+              List of [capabilities](https://docs.moov.io/guides/accounts/capabilities/) you intend to request for this
+              account. These values are used to determine what information to collect from the user during onboarding.
+        feePlanCodes:
+          type: array
+          items:
+            type: string
+          example:
+            - merchant-direct
+          minItems: 1
+          description: List of fee plan codes to assign the account created by the invitee.
+        prefill:
+          $ref: '#/components/schemas/CreateAccount'
+      description: Request to create an onboarding invite.
+    OnboardingPartnerAccount:
+      type: object
+      required:
+        - accountID
+        - accountMode
+        - displayName
+      properties:
+        accountID:
+          type: string
+          format: uuid
+          description: The account ID of the partner that created the invite.
+        accountMode:
+          $ref: '#/components/schemas/Mode'
+        displayName:
+          type: string
+          example: Bob's Widgets
+          description: The name of the Moov account used to create the onboarding invite.
+      description: The account that created the onboarding invite.
     OperatingCountry:
       type: string
       example: United States
@@ -11932,14 +12261,14 @@ components:
           tokenUrl: /oauth2/token
           refreshUrl: /oauth2/token
           scopes:
-            /accounts/{accountID}/apple-pay.write: ''
-            /accounts/{accountID}/apple-pay.read: ''
-            /accounts/{accountID}/cards.write: ''
             /accounts.write: ''
             /accounts.read: ''
             /accounts/{accountID}/profile.read: ''
             /accounts/{accountID}/profile.write: ''
             /accounts/{accountID}/profile.disconnect: ''
+            /accounts/{accountID}/apple-pay.write: ''
+            /accounts/{accountID}/apple-pay.read: ''
+            /accounts/{accountID}/cards.write: ''
             /accounts/{accountID}/bank-accounts.write: ''
             /accounts/{accountID}/bank-accounts.read: ''
             /accounts/{accountID}/branding.write: ''
@@ -11958,13 +12287,13 @@ components:
             /accounts/{accountID}/issued-cards.read: ''
             /accounts/{accountID}/issued-cards.read-secure: ''
             /accounts/{accountID}/payment-methods.read: ''
+            /accounts/{accountID}/representatives.write: ''
+            /accounts/{accountID}/representatives.read: ''
             /accounts/{your-account-id}/transfers.write: ''
             /accounts/{your-account-id}/transfers.read: ''
             /accounts/{yourAccountID}/transfers.write: ''
             /accounts/{accountID}/wallets.read: ''
             /accounts/{accountID}/wallets.write: ''
-            /accounts/{accountID}/representatives.write: ''
-            /accounts/{accountID}/representatives.read: ''
 servers:
   - url: https://api.moov.io
     description: Production API host

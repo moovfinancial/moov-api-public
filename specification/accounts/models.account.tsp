@@ -9,6 +9,7 @@ import "./models.settings.tsp";
 import "../capabilities/models.capability.tsp";
 import "../common/models.address.tsp";
 import "../common/models.email.tsp";
+import "../common/models.error.tsp";
 import "../common/models.metadata.tsp";
 import "../common/models.phone.tsp";
 
@@ -48,7 +49,7 @@ model CreateAccountError {
   foreignID?: string;
   customerSupport?: CustomerSupportError;
   settings?: CreateAccountSettings;
-  capabilities?: Record<string>;
+  capabilities?: ArrayValidationError;
 }
 
 model CreateAccountSettings {

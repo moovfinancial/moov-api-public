@@ -1,5 +1,6 @@
 import "../accounts/models.profile.tsp";
 import "../cards/models.card.tsp";
+import "../common/models.error.tsp";
 
 namespace MoovAPI;
 
@@ -110,7 +111,7 @@ model IssuingControls {
   },
 })
 model IssuingControlsError {
-  velocityLimits?: Record<IssuingVelocityLimitError>;
+  velocityLimits?: ArrayValidationErrorObj<IssuingVelocityLimitError>;
 }
 
 model IssuingVelocityLimit {

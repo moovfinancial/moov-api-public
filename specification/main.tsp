@@ -4,9 +4,9 @@ import "@typespec/versioning";
 import "@moovfinancial/tsp-lib";
 
 // import each subdirectory's main
-import "./auth";
-import "./applepay";
 import "./accounts";
+import "./applepay";
+import "./auth";
 import "./bankaccounts";
 import "./branding";
 import "./capabilities";
@@ -16,14 +16,14 @@ import "./disputes";
 import "./end2end";
 import "./enrichment";
 import "./files";
-import "./enrichment";
 import "./issuing";
+import "./onboarding";
 import "./paymentlinks";
 import "./paymentmethods";
+import "./representatives";
 import "./schedules";
 import "./transfers";
 import "./wallets";
-import "./representatives";
 
 using TypeSpec.Http;
 using TypeSpec.OpenAPI;
