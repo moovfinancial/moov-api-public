@@ -28,4 +28,6 @@ op createTransferOptions(...CommonHeaders):
   | UnauthorizedResponse
   | ForbiddenResponse
   | UnprocessableEntityResponse<TransferOptionsValidationError>
-  | RateLimitedResponse;
+  | RateLimitedResponse
+  | InternalServerErrorResponse
+  | GatewayTimeoutResponse;

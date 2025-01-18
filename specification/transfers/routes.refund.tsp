@@ -58,13 +58,15 @@ op refundTransfer(
 
   @body body?: CreateRefund,
 ):
-  | MoovAPI.OkResponse<CreateRefundResponse>
+  | OkResponse<CreateRefundResponse>
   | CreateRefundTimeoutResponse
-  | MoovAPI.BadRequestResponse
-  | MoovAPI.NotFoundResponse
+  | BadRequestResponse
+  | NotFoundResponse
   | DuplicateRefundResponse
-  | MoovAPI.UnprocessableEntityResponse<RefundValidationError>
-  | MoovAPI.RateLimitedResponse;
+  | UnprocessableEntityResponse<RefundValidationError>
+  | RateLimitedResponse
+  | InternalServerErrorResponse
+  | GatewayTimeoutResponse;
 
 @doc("""
   Get a list of refunds for a card transfer.

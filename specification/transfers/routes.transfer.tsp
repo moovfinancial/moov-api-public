@@ -43,14 +43,16 @@ op createTransfer(
 
   @body body: CreateTransfer,
 ):
-  | MoovAPI.OkResponse<Transfer | AsyncTransfer>
+  | OkResponse<Transfer | AsyncTransfer>
   | CreatedTransferSyncErrorResponse
   | CreateTransferTimeoutResponse
-  | MoovAPI.BadRequestResponse
-  | MoovAPI.NotFoundResponse
+  | BadRequestResponse
+  | NotFoundResponse
   | DuplicateTransferResponse
-  | MoovAPI.UnprocessableEntityResponse<TransferValidationError>
-  | MoovAPI.RateLimitedResponse;
+  | UnprocessableEntityResponse<TransferValidationError>
+  | RateLimitedResponse
+  | InternalServerErrorResponse
+  | GatewayTimeoutResponse;
 
 @doc("""
   List all the transfers associated with a particular Moov account. 
@@ -128,8 +130,10 @@ op patchTransfer(
   @path
   accountID: string,
 ):
-  | MoovAPI.OkResponse<Transfer>
-  | MoovAPI.UnauthorizedResponse
-  | MoovAPI.ForbiddenResponse
-  | MoovAPI.NotFoundResponse
-  | MoovAPI.RateLimitedResponse;
+  | OkResponse<Transfer>
+  | UnauthorizedResponse
+  | ForbiddenResponse
+  | NotFoundResponse
+  | RateLimitedResponse
+  | InternalServerErrorResponse
+  | GatewayTimeoutResponse;

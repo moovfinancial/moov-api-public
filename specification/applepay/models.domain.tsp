@@ -40,10 +40,10 @@ scalar DomainDisplayName extends string;
 
 @doc("The requested domains were not verified.")
 model DomainNotVerifiedResponse {
-  @statusCode statusCode: "417";
+  @statusCode statusCode: HttpsStatusExpectationFailed;
 }
 
 @doc("Apple Pay domains are already registered for this account.")
 model DomainsAlreadyRegisteredResponse {
-  @statusCode statusCode: "409";
+  @statusCode statusCode: HttpStatusConflict;
 }

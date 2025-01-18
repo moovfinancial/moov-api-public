@@ -82,13 +82,15 @@ namespace MoovAPI {
     @path
     bankAccountID: string,
   ):
-    | MoovAPI.OkResponse<BankAccountVerificationCreated>
-    | MoovAPI.BadRequestResponse
-    | MoovAPI.UnauthorizedResponse
-    | MoovAPI.ForbiddenResponse
-    | MoovAPI.NotFoundResponse
-    | MoovAPI.StateConflictResponse
-    | MoovAPI.RateLimitedResponse;
+    | OkResponse<BankAccountVerificationCreated>
+    | BadRequestResponse
+    | UnauthorizedResponse
+    | ForbiddenResponse
+    | NotFoundResponse
+    | StateConflictResponse
+    | RateLimitedResponse
+    | InternalServerErrorResponse
+    | GatewayTimeoutResponse;
 
   @doc("""
     Finalize the instant micro-deposit verification by submitting the verification code displayed in the user’s bank account. 

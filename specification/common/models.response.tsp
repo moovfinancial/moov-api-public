@@ -14,6 +14,18 @@ model OkResponse<T> {
   body: T;
 }
 
+alias HttpStatusCreated = 201;
+
+@doc("The resource was successfully created.")
+model CreatedResponse<T> {
+  @statusCode statusCode: HttpStatusCreated;
+
+  @body
+  body: T;
+}
+
+alias HttpStatusAccepted = 202;
+
 alias HttpStatusNoContent = 204;
 
 @doc("The request completed successfully, but there is no content to return.")
@@ -75,6 +87,8 @@ model StateConflictResponse {
   error?: GenericError;
 }
 
+alias HttpsStatusExpectationFailed = 417;
+
 alias HttpStatusUnprocessableEntity = 422;
 
 @doc("The request was well-formed, but the contents failed validation. Check the request for missing or invalid fields.")
@@ -95,11 +109,29 @@ model RateLimitedResponse {
   @statusCode statusCode: HttpStatusRateLimited;
 }
 
+alias HttpStatusInternalServerError = 500;
+
+@doc("The request failed due to an unexpected error.")
+@error
+model InternalServerErrorResponse {
+  @statusCode statusCode: HttpStatusInternalServerError;
+}
+
+alias HttpStatusGatewayTimeout = 504;
+
+@doc("The request failed because a downstream service failed to respond.")
+@error
+model GatewayTimeoutResponse {
+  @statusCode statusCode: HttpStatusGatewayTimeout;
+}
+
 union ListResponses<T> {
   OkResponse<Array<T>>,
   UnauthorizedResponse,
   ForbiddenResponse,
   RateLimitedResponse,
+  InternalServerErrorResponse,
+  GatewayTimeoutResponse,
 }
 
 union GetResponses<T> {
@@ -108,6 +140,8 @@ union GetResponses<T> {
   ForbiddenResponse,
   NotFoundResponse,
   RateLimitedResponse,
+  InternalServerErrorResponse,
+  GatewayTimeoutResponse,
 }
 
 union PostResponses<OK, ValidationError> {
@@ -119,6 +153,21 @@ union PostResponses<OK, ValidationError> {
   StateConflictResponse,
   UnprocessableEntityResponse<ValidationError>,
   RateLimitedResponse,
+  InternalServerErrorResponse,
+  GatewayTimeoutResponse,
+}
+
+union PostResponsesCreated<OK, ValidationError> {
+  CreatedResponse<OK>,
+  BadRequestResponse,
+  UnauthorizedResponse,
+  ForbiddenResponse,
+  NotFoundResponse,
+  StateConflictResponse,
+  UnprocessableEntityResponse<ValidationError>,
+  RateLimitedResponse,
+  InternalServerErrorResponse,
+  GatewayTimeoutResponse,
 }
 
 union UpdateResponses<OK, ValidationError> {
@@ -130,6 +179,8 @@ union UpdateResponses<OK, ValidationError> {
   StateConflictResponse,
   UnprocessableEntityResponse<ValidationError>,
   RateLimitedResponse,
+  InternalServerErrorResponse,
+  GatewayTimeoutResponse,
 }
 
 union UpdateNoContentResponses<ValidationError> {
@@ -141,6 +192,8 @@ union UpdateNoContentResponses<ValidationError> {
   StateConflictResponse,
   UnprocessableEntityResponse<ValidationError>,
   RateLimitedResponse,
+  InternalServerErrorResponse,
+  GatewayTimeoutResponse,
 }
 
 union DisableResponses {
@@ -151,4 +204,6 @@ union DisableResponses {
   NotFoundResponse,
   StateConflictResponse,
   RateLimitedResponse,
+  InternalServerErrorResponse,
+  GatewayTimeoutResponse,
 }

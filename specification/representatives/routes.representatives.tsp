@@ -135,4 +135,6 @@ op updateRepresentative(
   | ForbiddenResponse
   | NotFoundResponse
   | StateConflictResponse
-  | RateLimitedResponse;
+  | RateLimitedResponse
+  | InternalServerErrorResponse
+  | GatewayTimeoutResponse;

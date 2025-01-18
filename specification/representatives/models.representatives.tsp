@@ -1,4 +1,5 @@
 import "../common/models.address.tsp";
+import "../common/models.email.tsp";
 import "../common/models.phone.tsp";
 import "../accounts/models.profile.tsp";
 

@@ -29,7 +29,9 @@ op generateEndToEndKey(
   to specify the `/ping.read` scope.
   """)
 @useAuth(BasicAuth | OAuth2<["/ping.read"]>)
-op testEndToEndToken(
-  ...CommonHeaders,
-  @body body: E2EEToken,
-): NoContentResponse | BadRequestResponse | RateLimitedResponse;
+op testEndToEndToken(...CommonHeaders, @body body: E2EEToken):
+  | NoContentResponse
+  | BadRequestResponse
+  | RateLimitedResponse
+  | InternalServerErrorResponse
+  | GatewayTimeoutResponse;

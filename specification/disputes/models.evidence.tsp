@@ -73,13 +73,6 @@ enum EvidenceType {
 
 // This is defined here instead of Common because 201 is NOT one of our standard response codes.
 // The disputes API is the only one I know of that uses it.
-@doc("The resource was successfully created.")
-model CreatedResponse<T> {
-  @statusCode statusCode: 201;
-
-  @body
-  body: T;
-}
 
 model EvidenceDataResponse {
   @statusCode statusCode: HttpStatusOK;

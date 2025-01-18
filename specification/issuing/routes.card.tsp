@@ -35,7 +35,9 @@ op requestCard(
   | ForbiddenResponse
   | NotFoundResponse
   | UnprocessableEntityResponse<RequestCardError>
-  | RateLimitedResponse;
+  | RateLimitedResponse
+  | InternalServerErrorResponse
+  | GatewayTimeoutResponse;
 
 @get
 @route("/issuing/{accountID}/issued-cards")

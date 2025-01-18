@@ -162,7 +162,7 @@ model PaymentLinkCustomerOptions {
 }
 
 model QRCodeImage {
-  @statusCode statusCode: 200;
+  @statusCode statusCode: HttpStatusOK;
   @header contentType: "image/png";
 
   @doc("PNG encoded QR code image.")
@@ -171,7 +171,7 @@ model QRCodeImage {
 }
 
 model QRCodeJSON {
-  @statusCode statusCode: 200;
+  @statusCode statusCode: HttpStatusOK;
   @header contentType: "application/json";
   @body body: QRCode;
 }

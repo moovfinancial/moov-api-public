@@ -138,4 +138,6 @@ op getPaymentLinkQRCode(
   | UnauthorizedResponse
   | ForbiddenResponse
   | NotFoundResponse
-  | RateLimitedResponse;
+  | RateLimitedResponse
+  | InternalServerErrorResponse
+  | GatewayTimeoutResponse;

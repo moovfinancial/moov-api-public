@@ -1,6 +1,7 @@
 import "@typespec/http";
 import "@typespec/openapi3";
 import "../money/models.amount.tsp";
+import "../common/models.response.tsp";
 
 using TypeSpec.Http;
 using TypeSpec.OpenAPI;
@@ -20,7 +21,7 @@ model CreateRefund {
 
 @doc("A refund was successfully created but an error occurred while waiting for a synchronous response.")
 model CreateRefundTimeoutResponse {
-  @statusCode statusCode: "202";
+  @statusCode statusCode: HttpStatusAccepted;
   @body body: CardAcquiringRefund;
 }
 
@@ -55,7 +56,7 @@ model CardAcquiringRefund {
 @doc("Attempted to create a refund using a duplicate X-Idempotency-Key header.")
 @error
 model DuplicateRefundResponse {
-  @statusCode statusCode: "409";
+  @statusCode statusCode: HttpStatusConflict;
   @body body: CardAcquiringRefund;
 }
 

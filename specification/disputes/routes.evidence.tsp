@@ -66,7 +66,9 @@ op uploadDisputeEvidenceFile(
   | ForbiddenResponse
   | NotFoundResponse
   | StateConflictResponse
-  | RateLimitedResponse;
+  | RateLimitedResponse
+  | InternalServerErrorResponse
+  | GatewayTimeoutResponse;
 
 @doc("""
   Uploads text as evidence for a dispute.
@@ -99,7 +101,9 @@ op uploadDisputeEvidenceText(
   | ForbiddenResponse
   | NotFoundResponse
   | StateConflictResponse
-  | RateLimitedResponse;
+  | RateLimitedResponse
+  | InternalServerErrorResponse
+  | GatewayTimeoutResponse;
 
 @doc("""
   Get dispute evidence by ID.
@@ -163,7 +167,9 @@ op updateDisputeEvidence(
   | UnauthorizedResponse
   | ForbiddenResponse
   | NotFoundResponse
-  | RateLimitedResponse;
+  | RateLimitedResponse
+  | InternalServerErrorResponse
+  | GatewayTimeoutResponse;
 
 @doc("""
   Deletes dispute evidence by ID. 
@@ -197,7 +203,9 @@ op deleteDisputeEvidenceFile(
   | ForbiddenResponse
   | NotFoundResponse
   | StateConflictResponse
-  | RateLimitedResponse;
+  | RateLimitedResponse
+  | InternalServerErrorResponse
+  | GatewayTimeoutResponse;
 
 @doc("""
   Downloads dispute evidence data by ID.
@@ -230,7 +238,9 @@ op getDisputeEvidenceData(
   | UnauthorizedResponse
   | ForbiddenResponse
   | NotFoundResponse
-  | RateLimitedResponse;
+  | RateLimitedResponse
+  | InternalServerErrorResponse
+  | GatewayTimeoutResponse;
 
 @doc("""
   Submit the evidence associated with a dispute.
@@ -264,4 +274,6 @@ op submitDisputeEvidence(
   | ForbiddenResponse
   | NotFoundResponse
   | StateConflictResponse
-  | RateLimitedResponse;
+  | RateLimitedResponse
+  | InternalServerErrorResponse
+  | GatewayTimeoutResponse;

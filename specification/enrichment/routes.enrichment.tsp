@@ -73,7 +73,9 @@ namespace MoovAPI {
     | UnauthorizedResponse
     | ForbiddenResponse
     | NotFoundResponse
-    | RateLimitedResponse;
+    | RateLimitedResponse
+    | InternalServerErrorResponse
+    | GatewayTimeoutResponse;
 
   @doc("""
       Search for institutions by either their name or routing number.
@@ -89,5 +91,7 @@ namespace MoovAPI {
     | BadRequestResponse
     | UnauthorizedResponse
     | ForbiddenResponse
-    | RateLimitedResponse;
+    | RateLimitedResponse
+    | InternalServerErrorResponse
+    | GatewayTimeoutResponse;
 }

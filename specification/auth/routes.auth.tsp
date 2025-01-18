@@ -22,7 +22,9 @@ op createAuthToken(
   | OkResponse<AuthToken>
   | BadRequestResponse
   | UnprocessableEntityResponse<AuthTokenRequestError>
-  | RateLimitedResponse;
+  | RateLimitedResponse
+  | InternalServerErrorResponse
+  | GatewayTimeoutResponse;
 
 @post
 @route("/oauth2/revoke")
@@ -41,4 +43,6 @@ op revokeAuthToken(
   | NoContentResponse
   | BadRequestResponse
   | UnprocessableEntityResponse<RevokeTokenRequestError>
-  | RateLimitedResponse;
+  | RateLimitedResponse
+  | InternalServerErrorResponse
+  | GatewayTimeoutResponse;

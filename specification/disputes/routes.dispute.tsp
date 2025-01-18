@@ -88,4 +88,6 @@ op acceptDispute(
   | ForbiddenResponse
   | NotFoundResponse
   | StateConflictResponse
-  | RateLimitedResponse;
+  | RateLimitedResponse
+  | InternalServerErrorResponse
+  | GatewayTimeoutResponse;

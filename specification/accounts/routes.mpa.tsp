@@ -29,4 +29,6 @@ op getMerchantProcessingAgreement(
   | UnauthorizedResponse
   | ForbiddenResponse
   | NotFoundResponse
-  | RateLimitedResponse;
+  | RateLimitedResponse
+  | InternalServerErrorResponse
+  | GatewayTimeoutResponse;

@@ -33,13 +33,15 @@ namespace MoovAPI {
     @path
     bankAccountID: string,
   ):
-    | MoovAPI.NoContentResponse
-    | MoovAPI.BadRequestResponse
-    | MoovAPI.UnauthorizedResponse
-    | MoovAPI.ForbiddenResponse
-    | MoovAPI.NotFoundResponse
-    | MoovAPI.StateConflictResponse
-    | MoovAPI.RateLimitedResponse;
+    | NoContentResponse
+    | BadRequestResponse
+    | UnauthorizedResponse
+    | ForbiddenResponse
+    | NotFoundResponse
+    | StateConflictResponse
+    | RateLimitedResponse
+    | InternalServerErrorResponse
+    | GatewayTimeoutResponse;
 
   @doc("""
     Complete the micro-deposit validation process by passing the amounts of the two transfers within three tries.

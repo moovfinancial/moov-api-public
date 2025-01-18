@@ -19,6 +19,7 @@ tags:
   - name: Cards
   - name: Authentication
   - name: Bank accounts
+  - name: Billing
   - name: Branding
   - name: Capabilities
   - name: Disputes
@@ -34,9 +35,11 @@ tags:
   - name: Onboarding
   - name: Payment links
   - name: Payment methods
+  - name: Ping
   - name: Representatives
   - name: Scheduling
   - name: Transfers
+  - name: Underwriting
   - name: Sweeps
   - name: Wallet transactions
   - name: Wallets
@@ -103,6 +106,10 @@ paths:
                   - error
         '429':
           description: Request was refused due to rate limiting.
+        '500':
+          description: The request failed due to an unexpected error.
+        '504':
+          description: The request failed because a downstream service failed to respond.
       tags:
         - Accounts
       requestBody:
@@ -159,6 +166,10 @@ paths:
           description: The user is not authorized to make the request.
         '429':
           description: Request was refused due to rate limiting.
+        '500':
+          description: The request failed due to an unexpected error.
+        '504':
+          description: The request failed because a downstream service failed to respond.
       tags:
         - Accounts
       security:
@@ -192,6 +203,10 @@ paths:
           description: The requested resource was not found.
         '429':
           description: Request was refused due to rate limiting.
+        '500':
+          description: The request failed due to an unexpected error.
+        '504':
+          description: The request failed because a downstream service failed to respond.
       tags:
         - Accounts
       security:
@@ -259,6 +274,10 @@ paths:
                   - error
         '429':
           description: Request was refused due to rate limiting.
+        '500':
+          description: The request failed due to an unexpected error.
+        '504':
+          description: The request failed because a downstream service failed to respond.
       tags:
         - Accounts
       requestBody:
@@ -310,6 +329,10 @@ paths:
                 $ref: '#/components/schemas/GenericError'
         '429':
           description: Request was refused due to rate limiting.
+        '500':
+          description: The request failed due to an unexpected error.
+        '504':
+          description: The request failed because a downstream service failed to respond.
       tags:
         - Accounts
       security:
@@ -359,6 +382,10 @@ paths:
           description: The requested domains were not verified.
         '429':
           description: Request was refused due to rate limiting.
+        '500':
+          description: The request failed due to an unexpected error.
+        '504':
+          description: The request failed because a downstream service failed to respond.
       tags:
         - Cards
       requestBody:
@@ -411,6 +438,10 @@ paths:
           description: The requested domains were not verified.
         '429':
           description: Request was refused due to rate limiting.
+        '500':
+          description: The request failed due to an unexpected error.
+        '504':
+          description: The request failed because a downstream service failed to respond.
       tags:
         - Cards
       requestBody:
@@ -456,6 +487,10 @@ paths:
           description: The requested resource was not found.
         '429':
           description: Request was refused due to rate limiting.
+        '500':
+          description: The request failed due to an unexpected error.
+        '504':
+          description: The request failed because a downstream service failed to respond.
       tags:
         - Cards
       security:
@@ -515,6 +550,10 @@ paths:
                 $ref: '#/components/schemas/GenericError'
         '429':
           description: Request was refused due to rate limiting.
+        '500':
+          description: The request failed due to an unexpected error.
+        '504':
+          description: The request failed because a downstream service failed to respond.
       tags:
         - Cards
       requestBody:
@@ -580,6 +619,10 @@ paths:
                 $ref: '#/components/schemas/LinkApplePayError'
         '429':
           description: Request was refused due to rate limiting.
+        '500':
+          description: The request failed due to an unexpected error.
+        '504':
+          description: The request failed because a downstream service failed to respond.
       tags:
         - Cards
       requestBody:
@@ -655,6 +698,10 @@ paths:
                 $ref: '#/components/schemas/BankAccountValidationError'
         '429':
           description: Request was refused due to rate limiting.
+        '500':
+          description: The request failed due to an unexpected error.
+        '504':
+          description: The request failed because a downstream service failed to respond.
       tags:
         - Bank accounts
       requestBody:
@@ -698,6 +745,10 @@ paths:
           description: The user is not authorized to make the request.
         '429':
           description: Request was refused due to rate limiting.
+        '500':
+          description: The request failed due to an unexpected error.
+        '504':
+          description: The request failed because a downstream service failed to respond.
       tags:
         - Bank accounts
       security:
@@ -742,6 +793,10 @@ paths:
           description: The requested resource was not found.
         '429':
           description: Request was refused due to rate limiting.
+        '500':
+          description: The request failed due to an unexpected error.
+        '504':
+          description: The request failed because a downstream service failed to respond.
       tags:
         - Bank accounts
       security:
@@ -792,6 +847,10 @@ paths:
                 $ref: '#/components/schemas/GenericError'
         '429':
           description: Request was refused due to rate limiting.
+        '500':
+          description: The request failed due to an unexpected error.
+        '504':
+          description: The request failed because a downstream service failed to respond.
       tags:
         - Bank accounts
       security:
@@ -848,6 +907,10 @@ paths:
                 $ref: '#/components/schemas/GenericError'
         '429':
           description: Request was refused due to rate limiting.
+        '500':
+          description: The request failed due to an unexpected error.
+        '504':
+          description: The request failed because a downstream service failed to respond.
       tags:
         - Bank accounts
       security:
@@ -908,6 +971,10 @@ paths:
                 $ref: '#/components/schemas/MicroDepositValidationError'
         '429':
           description: Request was refused due to rate limiting.
+        '500':
+          description: The request failed due to an unexpected error.
+        '504':
+          description: The request failed because a downstream service failed to respond.
       tags:
         - Bank accounts
       requestBody:
@@ -966,6 +1033,10 @@ paths:
           description: The requested resource was not found.
         '429':
           description: Request was refused due to rate limiting.
+        '500':
+          description: The request failed due to an unexpected error.
+        '504':
+          description: The request failed because a downstream service failed to respond.
       tags:
         - Bank accounts
       security:
@@ -1044,6 +1115,10 @@ paths:
                 $ref: '#/components/schemas/GenericError'
         '429':
           description: Request was refused due to rate limiting.
+        '500':
+          description: The request failed due to an unexpected error.
+        '504':
+          description: The request failed because a downstream service failed to respond.
       tags:
         - Bank accounts
       security:
@@ -1111,6 +1186,10 @@ paths:
                 $ref: '#/components/schemas/GenericError'
         '429':
           description: Request was refused due to rate limiting.
+        '500':
+          description: The request failed due to an unexpected error.
+        '504':
+          description: The request failed because a downstream service failed to respond.
       tags:
         - Bank accounts
       requestBody:
@@ -1168,6 +1247,10 @@ paths:
                 $ref: '#/components/schemas/BrandValidationError'
         '429':
           description: Request was refused due to rate limiting.
+        '500':
+          description: The request failed due to an unexpected error.
+        '504':
+          description: The request failed because a downstream service failed to respond.
       tags:
         - Branding
       requestBody:
@@ -1206,6 +1289,10 @@ paths:
           description: The requested resource was not found.
         '429':
           description: Request was refused due to rate limiting.
+        '500':
+          description: The request failed due to an unexpected error.
+        '504':
+          description: The request failed because a downstream service failed to respond.
       tags:
         - Branding
       security:
@@ -1256,6 +1343,10 @@ paths:
                 $ref: '#/components/schemas/BrandValidationError'
         '429':
           description: Request was refused due to rate limiting.
+        '500':
+          description: The request failed due to an unexpected error.
+        '504':
+          description: The request failed because a downstream service failed to respond.
       tags:
         - Branding
       requestBody:
@@ -1312,6 +1403,10 @@ paths:
           description: The user is not authorized to make the request.
         '429':
           description: Request was refused due to rate limiting.
+        '500':
+          description: The request failed due to an unexpected error.
+        '504':
+          description: The request failed because a downstream service failed to respond.
       tags:
         - Capabilities
       security:
@@ -1381,6 +1476,10 @@ paths:
                 $ref: '#/components/schemas/AddCapabilitiesError'
         '429':
           description: Request was refused due to rate limiting.
+        '500':
+          description: The request failed due to an unexpected error.
+        '504':
+          description: The request failed because a downstream service failed to respond.
       tags:
         - Capabilities
       requestBody:
@@ -1437,6 +1536,10 @@ paths:
           description: The requested resource was not found.
         '429':
           description: Request was refused due to rate limiting.
+        '500':
+          description: The request failed due to an unexpected error.
+        '504':
+          description: The request failed because a downstream service failed to respond.
       tags:
         - Capabilities
       security:
@@ -1485,6 +1588,10 @@ paths:
                 $ref: '#/components/schemas/GenericError'
         '429':
           description: Request was refused due to rate limiting.
+        '500':
+          description: The request failed due to an unexpected error.
+        '504':
+          description: The request failed because a downstream service failed to respond.
       tags:
         - Capabilities
       security:
@@ -1564,6 +1671,10 @@ paths:
                 $ref: '#/components/schemas/LinkCardError'
         '429':
           description: Request was refused due to rate limiting.
+        '500':
+          description: The request failed due to an unexpected error.
+        '504':
+          description: The request failed because a downstream service failed to respond.
       tags:
         - Cards
       requestBody:
@@ -1608,6 +1719,10 @@ paths:
           description: The user is not authorized to make the request.
         '429':
           description: Request was refused due to rate limiting.
+        '500':
+          description: The request failed due to an unexpected error.
+        '504':
+          description: The request failed because a downstream service failed to respond.
       tags:
         - Cards
       security:
@@ -1652,6 +1767,10 @@ paths:
           description: The requested resource was not found.
         '429':
           description: Request was refused due to rate limiting.
+        '500':
+          description: The request failed due to an unexpected error.
+        '504':
+          description: The request failed because a downstream service failed to respond.
       tags:
         - Cards
       security:
@@ -1720,6 +1839,10 @@ paths:
                 $ref: '#/components/schemas/UpdateCardError'
         '429':
           description: Request was refused due to rate limiting.
+        '500':
+          description: The request failed due to an unexpected error.
+        '504':
+          description: The request failed because a downstream service failed to respond.
       tags:
         - Cards
       requestBody:
@@ -1775,6 +1898,10 @@ paths:
                 $ref: '#/components/schemas/GenericError'
         '429':
           description: Request was refused due to rate limiting.
+        '500':
+          description: The request failed due to an unexpected error.
+        '504':
+          description: The request failed because a downstream service failed to respond.
       tags:
         - Cards
       security:
@@ -1812,6 +1939,10 @@ paths:
           description: The requested resource was not found.
         '429':
           description: Request was refused due to rate limiting.
+        '500':
+          description: The request failed due to an unexpected error.
+        '504':
+          description: The request failed because a downstream service failed to respond.
       tags:
         - Accounts
       security:
@@ -1868,6 +1999,10 @@ paths:
                 $ref: '#/components/schemas/AssignCountriesError'
         '429':
           description: Request was refused due to rate limiting.
+        '500':
+          description: The request failed due to an unexpected error.
+        '504':
+          description: The request failed because a downstream service failed to respond.
       tags:
         - Accounts
       requestBody:
@@ -1938,6 +2073,10 @@ paths:
           description: The user is not authorized to make the request.
         '429':
           description: Request was refused due to rate limiting.
+        '500':
+          description: The request failed due to an unexpected error.
+        '504':
+          description: The request failed because a downstream service failed to respond.
       tags:
         - Disputes
       security:
@@ -1996,6 +2135,10 @@ paths:
           description: The requested resource was not found.
         '429':
           description: Request was refused due to rate limiting.
+        '500':
+          description: The request failed due to an unexpected error.
+        '504':
+          description: The request failed because a downstream service failed to respond.
       tags:
         - Disputes
       security:
@@ -2066,6 +2209,10 @@ paths:
                 $ref: '#/components/schemas/GenericError'
         '429':
           description: Request was refused due to rate limiting.
+        '500':
+          description: The request failed due to an unexpected error.
+        '504':
+          description: The request failed because a downstream service failed to respond.
       tags:
         - Disputes
       security:
@@ -2111,6 +2258,10 @@ paths:
           description: The user is not authorized to make the request.
         '429':
           description: Request was refused due to rate limiting.
+        '500':
+          description: The request failed due to an unexpected error.
+        '504':
+          description: The request failed because a downstream service failed to respond.
       tags:
         - Disputes
       security:
@@ -2164,6 +2315,10 @@ paths:
                 $ref: '#/components/schemas/GenericError'
         '429':
           description: Request was refused due to rate limiting.
+        '500':
+          description: The request failed due to an unexpected error.
+        '504':
+          description: The request failed because a downstream service failed to respond.
       tags:
         - Disputes
       requestBody:
@@ -2227,6 +2382,10 @@ paths:
                 $ref: '#/components/schemas/GenericError'
         '429':
           description: Request was refused due to rate limiting.
+        '500':
+          description: The request failed due to an unexpected error.
+        '504':
+          description: The request failed because a downstream service failed to respond.
       tags:
         - Disputes
       requestBody:
@@ -2293,6 +2452,10 @@ paths:
                 $ref: '#/components/schemas/GenericError'
         '429':
           description: Request was refused due to rate limiting.
+        '500':
+          description: The request failed due to an unexpected error.
+        '504':
+          description: The request failed because a downstream service failed to respond.
       tags:
         - Disputes
       security:
@@ -2344,6 +2507,10 @@ paths:
           description: The requested resource was not found.
         '429':
           description: Request was refused due to rate limiting.
+        '500':
+          description: The request failed due to an unexpected error.
+        '504':
+          description: The request failed because a downstream service failed to respond.
       tags:
         - Disputes
       security:
@@ -2400,6 +2567,10 @@ paths:
           description: The requested resource was not found.
         '429':
           description: Request was refused due to rate limiting.
+        '500':
+          description: The request failed due to an unexpected error.
+        '504':
+          description: The request failed because a downstream service failed to respond.
       tags:
         - Disputes
       requestBody:
@@ -2458,6 +2629,10 @@ paths:
                 $ref: '#/components/schemas/GenericError'
         '429':
           description: Request was refused due to rate limiting.
+        '500':
+          description: The request failed due to an unexpected error.
+        '504':
+          description: The request failed because a downstream service failed to respond.
       tags:
         - Disputes
       security:
@@ -2518,12 +2693,190 @@ paths:
           description: The requested resource was not found.
         '429':
           description: Request was refused due to rate limiting.
+        '500':
+          description: The request failed due to an unexpected error.
+        '504':
+          description: The request failed because a downstream service failed to respond.
       tags:
         - Disputes
       security:
         - BasicAuth: []
         - OAuth2Auth:
             - /accounts/{accountID}/transfers.read
+  /accounts/{accountID}/fee-plan-agreements:
+    get:
+      operationId: listFeePlanAgreements
+      description: |-
+        List all fee plan agreements associated with an account.
+
+        To access this endpoint using a [token](https://docs.moov.io/api/authentication/access-tokens/) you'll need 
+        to specify the `/accounts/{accountID}/profile.read` scope.
+      parameters:
+        - $ref: '#/components/parameters/CommonHeaders'
+        - name: accountID
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: agreementID
+          in: query
+          required: false
+          description: A comma-separated list of agreement IDs to filter the results by.
+          schema:
+            type: array
+            items:
+              type: string
+          explode: false
+        - name: status
+          in: query
+          required: false
+          description: A comma-separated list of statuses to filter the results by.
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/FeePlanAgreementStatus'
+          explode: false
+      responses:
+        '200':
+          description: The request completed successfully.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/FeePlanAgreement'
+        '401':
+          description: The request contained missing or expired authentication.
+        '403':
+          description: The user is not authorized to make the request.
+        '429':
+          description: Request was refused due to rate limiting.
+        '500':
+          description: The request failed due to an unexpected error.
+        '504':
+          description: The request failed because a downstream service failed to respond.
+      tags:
+        - Billing
+      security:
+        - BasicAuth: []
+        - OAuth2Auth:
+            - /accounts/{accountID}/profile.read
+    post:
+      operationId: createFeePlanAgreements
+      description: |-
+        Creates the subscription of a fee plan to a merchant account. Merchants are required to accept the fee plan terms prior to activation.
+
+        To access this endpoint using a [token](https://docs.moov.io/api/authentication/access-tokens/) you'll need 
+        to specify the `/accounts/{accountID}/profile.write` scope.
+      parameters:
+        - $ref: '#/components/parameters/CommonHeaders'
+        - name: accountID
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '201':
+          description: The resource was successfully created.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FeePlanAgreement'
+        '400':
+          description: The server could not understand the request due to invalid syntax.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+        '401':
+          description: The request contained missing or expired authentication.
+        '403':
+          description: The user is not authorized to make the request.
+        '404':
+          description: The requested resource was not found.
+        '409':
+          description: The request conflicted with the current state of the target resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+        '422':
+          description: The request was well-formed, but the contents failed validation. Check the request for missing or invalid fields.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FeePlanAgreementError'
+        '429':
+          description: Request was refused due to rate limiting.
+        '500':
+          description: The request failed due to an unexpected error.
+        '504':
+          description: The request failed because a downstream service failed to respond.
+      tags:
+        - Billing
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateFeePlanAgreement'
+      security:
+        - BasicAuth: []
+        - OAuth2Auth:
+            - /accounts/{accountID}/profile.write
+  /accounts/{accountID}/fee-plans:
+    get:
+      operationId: listFeePlans
+      description: |-
+        List all fee plans available for use by an account. This is intended to be used by an account when 
+        selecting a fee plan to apply to a connected account.
+
+        To access this endpoint using a [token](https://docs.moov.io/api/authentication/access-tokens/) you'll need 
+        to specify the `/accounts/{accountID}/profile.read` scope.
+      parameters:
+        - $ref: '#/components/parameters/CommonHeaders'
+        - name: accountID
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: planIDs
+          in: query
+          required: false
+          description: A comma-separated list of plan IDs to filter the results by.
+          schema:
+            type: array
+            items:
+              type: string
+          explode: false
+      responses:
+        '200':
+          description: The request completed successfully.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/FeePlan'
+        '401':
+          description: The request contained missing or expired authentication.
+        '403':
+          description: The user is not authorized to make the request.
+        '429':
+          description: Request was refused due to rate limiting.
+        '500':
+          description: The request failed due to an unexpected error.
+        '504':
+          description: The request failed because a downstream service failed to respond.
+      tags:
+        - Billing
+      security:
+        - BasicAuth: []
+        - OAuth2Auth:
+            - /accounts/{accountID}/profile.read
   /accounts/{accountID}/files:
     post:
       operationId: uploadFile
@@ -2576,6 +2929,10 @@ paths:
                 $ref: '#/components/schemas/FileValidationError'
         '429':
           description: Request was refused due to rate limiting.
+        '500':
+          description: The request failed due to an unexpected error.
+        '504':
+          description: The request failed because a downstream service failed to respond.
       tags:
         - Files
       requestBody:
@@ -2618,6 +2975,10 @@ paths:
           description: The user is not authorized to make the request.
         '429':
           description: Request was refused due to rate limiting.
+        '500':
+          description: The request failed due to an unexpected error.
+        '504':
+          description: The request failed because a downstream service failed to respond.
       tags:
         - Files
       security:
@@ -2661,6 +3022,10 @@ paths:
           description: The requested resource was not found.
         '429':
           description: Request was refused due to rate limiting.
+        '500':
+          description: The request failed due to an unexpected error.
+        '504':
+          description: The request failed because a downstream service failed to respond.
       tags:
         - Files
       security:
@@ -2699,8 +3064,121 @@ paths:
           description: The requested resource was not found.
         '429':
           description: Request was refused due to rate limiting.
+        '500':
+          description: The request failed due to an unexpected error.
+        '504':
+          description: The request failed because a downstream service failed to respond.
       tags:
         - Accounts
+      security:
+        - BasicAuth: []
+        - OAuth2Auth:
+            - /accounts/{accountID}/profile.read
+  /accounts/{accountID}/partner-pricing:
+    get:
+      operationId: listPartnerPricing
+      description: |-
+        List all partner pricing plans available for use by an account.
+
+        To access this endpoint using a [token](https://docs.moov.io/api/authentication/access-tokens/) you'll need 
+        to specify the `/accounts/{accountID}/profile.read` scope.
+      parameters:
+        - $ref: '#/components/parameters/CommonHeaders'
+        - name: accountID
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: planIDs
+          in: query
+          required: false
+          description: A comma-separated list of plan IDs to filter the results by.
+          schema:
+            type: array
+            items:
+              type: string
+          explode: false
+      responses:
+        '200':
+          description: The request completed successfully.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PartnerPricing'
+        '401':
+          description: The request contained missing or expired authentication.
+        '403':
+          description: The user is not authorized to make the request.
+        '429':
+          description: Request was refused due to rate limiting.
+        '500':
+          description: The request failed due to an unexpected error.
+        '504':
+          description: The request failed because a downstream service failed to respond.
+      tags:
+        - Billing
+      security:
+        - BasicAuth: []
+        - OAuth2Auth:
+            - /accounts/{accountID}/profile.read
+  /accounts/{accountID}/partner-pricing-agreements:
+    get:
+      operationId: listPartnerPricingAgreements
+      description: |-
+        List all partner pricing agreements associated with an account.
+
+        To access this endpoint using a [token](https://docs.moov.io/api/authentication/access-tokens/) you'll need 
+        to specify the `/accounts/{accountID}/profile.read` scope.
+      parameters:
+        - $ref: '#/components/parameters/CommonHeaders'
+        - name: accountID
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: agreementID
+          in: query
+          required: false
+          description: A comma-separated list of agreement IDs to filter the results by.
+          schema:
+            type: array
+            items:
+              type: string
+          explode: false
+        - name: status
+          in: query
+          required: false
+          description: A comma-separated list of statuses to filter the results by.
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/FeePlanAgreementStatus'
+          explode: false
+      responses:
+        '200':
+          description: The request completed successfully.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PartnerPricingAgreement'
+        '401':
+          description: The request contained missing or expired authentication.
+        '403':
+          description: The user is not authorized to make the request.
+        '429':
+          description: Request was refused due to rate limiting.
+        '500':
+          description: The request failed due to an unexpected error.
+        '504':
+          description: The request failed because a downstream service failed to respond.
+      tags:
+        - Billing
       security:
         - BasicAuth: []
         - OAuth2Auth:
@@ -2754,6 +3232,10 @@ paths:
                 $ref: '#/components/schemas/CreatePaymentLinkError'
         '429':
           description: Request was refused due to rate limiting.
+        '500':
+          description: The request failed due to an unexpected error.
+        '504':
+          description: The request failed because a downstream service failed to respond.
       tags:
         - Payment links
       requestBody:
@@ -2796,6 +3278,10 @@ paths:
           description: The user is not authorized to make the request.
         '429':
           description: Request was refused due to rate limiting.
+        '500':
+          description: The request failed due to an unexpected error.
+        '504':
+          description: The request failed because a downstream service failed to respond.
       tags:
         - Payment links
       security:
@@ -2838,6 +3324,10 @@ paths:
           description: The requested resource was not found.
         '429':
           description: Request was refused due to rate limiting.
+        '500':
+          description: The request failed due to an unexpected error.
+        '504':
+          description: The request failed because a downstream service failed to respond.
       tags:
         - Payment links
       security:
@@ -2897,6 +3387,10 @@ paths:
                 $ref: '#/components/schemas/UpdatePaymentLinkError'
         '429':
           description: Request was refused due to rate limiting.
+        '500':
+          description: The request failed due to an unexpected error.
+        '504':
+          description: The request failed because a downstream service failed to respond.
       tags:
         - Payment links
       requestBody:
@@ -2980,6 +3474,10 @@ paths:
           description: The requested resource was not found.
         '429':
           description: Request was refused due to rate limiting.
+        '500':
+          description: The request failed due to an unexpected error.
+        '504':
+          description: The request failed because a downstream service failed to respond.
       tags:
         - Payment links
       security:
@@ -3038,6 +3536,10 @@ paths:
           description: The user is not authorized to make the request.
         '429':
           description: Request was refused due to rate limiting.
+        '500':
+          description: The request failed due to an unexpected error.
+        '504':
+          description: The request failed because a downstream service failed to respond.
       tags:
         - Payment methods
       security:
@@ -3083,6 +3585,10 @@ paths:
           description: The requested resource was not found.
         '429':
           description: Request was refused due to rate limiting.
+        '500':
+          description: The request failed due to an unexpected error.
+        '504':
+          description: The request failed because a downstream service failed to respond.
       tags:
         - Payment methods
       security:
@@ -3140,6 +3646,10 @@ paths:
                 $ref: '#/components/schemas/RepresentativeValidationError'
         '429':
           description: Request was refused due to rate limiting.
+        '500':
+          description: The request failed due to an unexpected error.
+        '504':
+          description: The request failed because a downstream service failed to respond.
       tags:
         - Representatives
       requestBody:
@@ -3185,6 +3695,10 @@ paths:
           description: The user is not authorized to make the request.
         '429':
           description: Request was refused due to rate limiting.
+        '500':
+          description: The request failed due to an unexpected error.
+        '504':
+          description: The request failed because a downstream service failed to respond.
       tags:
         - Representatives
       security:
@@ -3246,6 +3760,10 @@ paths:
                 $ref: '#/components/schemas/GenericError'
         '429':
           description: Request was refused due to rate limiting.
+        '500':
+          description: The request failed due to an unexpected error.
+        '504':
+          description: The request failed because a downstream service failed to respond.
       tags:
         - Representatives
       requestBody:
@@ -3304,6 +3822,10 @@ paths:
                 $ref: '#/components/schemas/GenericError'
         '429':
           description: Request was refused due to rate limiting.
+        '500':
+          description: The request failed due to an unexpected error.
+        '504':
+          description: The request failed because a downstream service failed to respond.
       tags:
         - Representatives
       security:
@@ -3347,6 +3869,10 @@ paths:
           description: The requested resource was not found.
         '429':
           description: Request was refused due to rate limiting.
+        '500':
+          description: The request failed due to an unexpected error.
+        '504':
+          description: The request failed because a downstream service failed to respond.
       tags:
         - Representatives
       security:
@@ -3398,6 +3924,10 @@ paths:
                 $ref: '#/components/schemas/ScheduleValidationError'
         '429':
           description: Request was refused due to rate limiting.
+        '500':
+          description: The request failed due to an unexpected error.
+        '504':
+          description: The request failed because a downstream service failed to respond.
       tags:
         - Scheduling
       requestBody:
@@ -3449,6 +3979,10 @@ paths:
           description: The user is not authorized to make the request.
         '429':
           description: Request was refused due to rate limiting.
+        '500':
+          description: The request failed due to an unexpected error.
+        '504':
+          description: The request failed because a downstream service failed to respond.
       tags:
         - Scheduling
       security:
@@ -3506,6 +4040,10 @@ paths:
                 $ref: '#/components/schemas/ScheduleValidationError'
         '429':
           description: Request was refused due to rate limiting.
+        '500':
+          description: The request failed due to an unexpected error.
+        '504':
+          description: The request failed because a downstream service failed to respond.
       tags:
         - Scheduling
       requestBody:
@@ -3550,6 +4088,10 @@ paths:
           description: The requested resource was not found.
         '429':
           description: Request was refused due to rate limiting.
+        '500':
+          description: The request failed due to an unexpected error.
+        '504':
+          description: The request failed because a downstream service failed to respond.
       tags:
         - Scheduling
       security:
@@ -3596,6 +4138,10 @@ paths:
                 $ref: '#/components/schemas/GenericError'
         '429':
           description: Request was refused due to rate limiting.
+        '500':
+          description: The request failed due to an unexpected error.
+        '504':
+          description: The request failed because a downstream service failed to respond.
       tags:
         - Scheduling
       security:
@@ -3646,6 +4192,10 @@ paths:
           description: The requested resource was not found.
         '429':
           description: Request was refused due to rate limiting.
+        '500':
+          description: The request failed due to an unexpected error.
+        '504':
+          description: The request failed because a downstream service failed to respond.
       tags:
         - Scheduling
       security:
@@ -3709,6 +4259,10 @@ paths:
                 $ref: '#/components/schemas/CreateSweepConfigError'
         '429':
           description: Request was refused due to rate limiting.
+        '500':
+          description: The request failed due to an unexpected error.
+        '504':
+          description: The request failed because a downstream service failed to respond.
       tags:
         - Sweeps
       requestBody:
@@ -3776,6 +4330,10 @@ paths:
           description: The user is not authorized to make the request.
         '429':
           description: Request was refused due to rate limiting.
+        '500':
+          description: The request failed due to an unexpected error.
+        '504':
+          description: The request failed because a downstream service failed to respond.
       tags:
         - Sweeps
       security:
@@ -3826,6 +4384,10 @@ paths:
           description: The requested resource was not found.
         '429':
           description: Request was refused due to rate limiting.
+        '500':
+          description: The request failed due to an unexpected error.
+        '504':
+          description: The request failed because a downstream service failed to respond.
       tags:
         - Sweeps
       security:
@@ -3894,6 +4456,10 @@ paths:
                 $ref: '#/components/schemas/PatchSweepConfigError'
         '429':
           description: Request was refused due to rate limiting.
+        '500':
+          description: The request failed due to an unexpected error.
+        '504':
+          description: The request failed because a downstream service failed to respond.
       tags:
         - Sweeps
       requestBody:
@@ -3985,6 +4551,10 @@ paths:
                 $ref: '#/components/schemas/TransferValidationError'
         '429':
           description: Request was refused due to rate limiting.
+        '500':
+          description: The request failed due to an unexpected error.
+        '504':
+          description: The request failed because a downstream service failed to respond.
       tags:
         - Transfers
       requestBody:
@@ -4043,6 +4613,10 @@ paths:
           description: The user is not authorized to make the request.
         '429':
           description: Request was refused due to rate limiting.
+        '500':
+          description: The request failed due to an unexpected error.
+        '504':
+          description: The request failed because a downstream service failed to respond.
       tags:
         - Transfers
       security:
@@ -4090,6 +4664,10 @@ paths:
           description: The requested resource was not found.
         '429':
           description: Request was refused due to rate limiting.
+        '500':
+          description: The request failed due to an unexpected error.
+        '504':
+          description: The request failed because a downstream service failed to respond.
       tags:
         - Transfers
       security:
@@ -4135,6 +4713,10 @@ paths:
           description: The requested resource was not found.
         '429':
           description: Request was refused due to rate limiting.
+        '500':
+          description: The request failed due to an unexpected error.
+        '504':
+          description: The request failed because a downstream service failed to respond.
       tags:
         - Transfers
       security:
@@ -4241,6 +4823,10 @@ paths:
                 $ref: '#/components/schemas/RefundValidationError'
         '429':
           description: Request was refused due to rate limiting.
+        '500':
+          description: The request failed due to an unexpected error.
+        '504':
+          description: The request failed because a downstream service failed to respond.
       tags:
         - Transfers
       requestBody:
@@ -4304,6 +4890,10 @@ paths:
           description: The user is not authorized to make the request.
         '429':
           description: Request was refused due to rate limiting.
+        '500':
+          description: The request failed due to an unexpected error.
+        '504':
+          description: The request failed because a downstream service failed to respond.
       tags:
         - Transfers
       security:
@@ -4369,12 +4959,125 @@ paths:
           description: The requested resource was not found.
         '429':
           description: Request was refused due to rate limiting.
+        '500':
+          description: The request failed due to an unexpected error.
+        '504':
+          description: The request failed because a downstream service failed to respond.
       tags:
         - Transfers
       security:
         - BasicAuth: []
         - OAuth2Auth:
             - /accounts/{accountID}/transfers.read
+  /accounts/{accountID}/underwriting:
+    get:
+      operationId: getUnderwriting
+      description: |-
+        Retrieve underwriting associated with a given Moov account. 
+
+        Read our [underwriting guide](https://docs.moov.io/guides/accounts/requirements/underwriting/) to learn more. 
+
+        To access this endpoint using a [token](https://docs.moov.io/api/authentication/access-tokens/) you'll need 
+        to specify the `/accounts/{accountID}/profile.read` scope.
+      parameters:
+        - $ref: '#/components/parameters/CommonHeaders'
+        - name: accountID
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: The request completed successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Underwriting'
+        '401':
+          description: The request contained missing or expired authentication.
+        '403':
+          description: The user is not authorized to make the request.
+        '404':
+          description: The requested resource was not found.
+        '429':
+          description: Request was refused due to rate limiting.
+        '500':
+          description: The request failed due to an unexpected error.
+        '504':
+          description: The request failed because a downstream service failed to respond.
+      tags:
+        - Underwriting
+      security:
+        - BasicAuth: []
+        - OAuth2Auth:
+            - /accounts/{accountID}/profile.read
+    put:
+      operationId: updateUnderwriting
+      description: |-
+        Update the account's underwriting by passing new values for one or more of the fields. 
+
+        Read our [underwriting guide](https://docs.moov.io/guides/accounts/requirements/underwriting/) to learn more.
+
+        To access this endpoint using a [token](https://docs.moov.io/api/authentication/access-tokens/) you'll need 
+        to specify the `/accounts/{accountID}/profile.write` scope.
+      parameters:
+        - $ref: '#/components/parameters/CommonHeaders'
+        - name: accountID
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: The request completed successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Underwriting'
+        '400':
+          description: The server could not understand the request due to invalid syntax.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+        '401':
+          description: The request contained missing or expired authentication.
+        '403':
+          description: The user is not authorized to make the request.
+        '404':
+          description: The requested resource was not found.
+        '409':
+          description: The request conflicted with the current state of the target resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+        '422':
+          description: The request was well-formed, but the contents failed validation. Check the request for missing or invalid fields.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UpdateUnderwritingError'
+        '429':
+          description: Request was refused due to rate limiting.
+        '500':
+          description: The request failed due to an unexpected error.
+        '504':
+          description: The request failed because a downstream service failed to respond.
+      tags:
+        - Underwriting
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateUnderwriting'
+      security:
+        - BasicAuth: []
+        - OAuth2Auth:
+            - /accounts/{accountID}/profile.write
   /accounts/{accountID}/wallets:
     get:
       operationId: listWallets
@@ -4411,6 +5114,10 @@ paths:
           description: The user is not authorized to make the request.
         '429':
           description: Request was refused due to rate limiting.
+        '500':
+          description: The request failed due to an unexpected error.
+        '504':
+          description: The request failed because a downstream service failed to respond.
       tags:
         - Wallets
       security:
@@ -4458,6 +5165,10 @@ paths:
           description: The requested resource was not found.
         '429':
           description: Request was refused due to rate limiting.
+        '500':
+          description: The request failed due to an unexpected error.
+        '504':
+          description: The request failed because a downstream service failed to respond.
       tags:
         - Wallets
       security:
@@ -4518,6 +5229,10 @@ paths:
           description: The user is not authorized to make the request.
         '429':
           description: Request was refused due to rate limiting.
+        '500':
+          description: The request failed due to an unexpected error.
+        '504':
+          description: The request failed because a downstream service failed to respond.
       tags:
         - Sweeps
       security:
@@ -4567,6 +5282,10 @@ paths:
           description: The requested resource was not found.
         '429':
           description: Request was refused due to rate limiting.
+        '500':
+          description: The request failed due to an unexpected error.
+        '504':
+          description: The request failed because a downstream service failed to respond.
       tags:
         - Sweeps
       security:
@@ -4712,6 +5431,10 @@ paths:
           description: The user is not authorized to make the request.
         '429':
           description: Request was refused due to rate limiting.
+        '500':
+          description: The request failed due to an unexpected error.
+        '504':
+          description: The request failed because a downstream service failed to respond.
       tags:
         - Wallet transactions
       security:
@@ -4777,6 +5500,10 @@ paths:
           description: The requested resource was not found.
         '429':
           description: Request was refused due to rate limiting.
+        '500':
+          description: The request failed due to an unexpected error.
+        '504':
+          description: The request failed because a downstream service failed to respond.
       tags:
         - Wallet transactions
       security:
@@ -4818,6 +5545,10 @@ paths:
           description: The requested resource was not found.
         '429':
           description: Request was refused due to rate limiting.
+        '500':
+          description: The request failed due to an unexpected error.
+        '504':
+          description: The request failed because a downstream service failed to respond.
       tags:
         - Avatars
       security:
@@ -4845,6 +5576,10 @@ paths:
                 $ref: '#/components/schemas/GenericError'
         '429':
           description: Request was refused due to rate limiting.
+        '500':
+          description: The request failed due to an unexpected error.
+        '504':
+          description: The request failed because a downstream service failed to respond.
       tags:
         - End to End Encryption
       requestBody:
@@ -4911,6 +5646,10 @@ paths:
           description: The requested resource was not found.
         '429':
           description: Request was refused due to rate limiting.
+        '500':
+          description: The request failed due to an unexpected error.
+        '504':
+          description: The request failed because a downstream service failed to respond.
       tags:
         - Enriched address
       security:
@@ -4947,6 +5686,10 @@ paths:
           description: The requested resource was not found.
         '429':
           description: Request was refused due to rate limiting.
+        '500':
+          description: The request failed due to an unexpected error.
+        '504':
+          description: The request failed because a downstream service failed to respond.
       tags:
         - Enriched profile
       security:
@@ -4977,6 +5720,10 @@ paths:
           description: The user is not authorized to make the request.
         '429':
           description: Request was refused due to rate limiting.
+        '500':
+          description: The request failed due to an unexpected error.
+        '504':
+          description: The request failed because a downstream service failed to respond.
       tags:
         - Industries
       security:
@@ -5017,6 +5764,10 @@ paths:
           description: The user is not authorized to make the request.
         '429':
           description: Request was refused due to rate limiting.
+        '500':
+          description: The request failed due to an unexpected error.
+        '504':
+          description: The request failed because a downstream service failed to respond.
       tags:
         - Institutions
       security:
@@ -5061,6 +5812,10 @@ paths:
           description: The user is not authorized to make the request.
         '429':
           description: Request was refused due to rate limiting.
+        '500':
+          description: The request failed due to an unexpected error.
+        '504':
+          description: The request failed because a downstream service failed to respond.
       tags:
         - Issuing transactions
       security:
@@ -5105,6 +5860,10 @@ paths:
           description: The requested resource was not found.
         '429':
           description: Request was refused due to rate limiting.
+        '500':
+          description: The request failed due to an unexpected error.
+        '504':
+          description: The request failed because a downstream service failed to respond.
       tags:
         - Issuing transactions
       security:
@@ -5151,6 +5910,10 @@ paths:
           description: The user is not authorized to make the request.
         '429':
           description: Request was refused due to rate limiting.
+        '500':
+          description: The request failed due to an unexpected error.
+        '504':
+          description: The request failed because a downstream service failed to respond.
       tags:
         - Issuing transactions
       security:
@@ -5194,6 +5957,10 @@ paths:
           description: The user is not authorized to make the request.
         '429':
           description: Request was refused due to rate limiting.
+        '500':
+          description: The request failed due to an unexpected error.
+        '504':
+          description: The request failed because a downstream service failed to respond.
       tags:
         - Issuing transactions
       security:
@@ -5238,6 +6005,10 @@ paths:
           description: The requested resource was not found.
         '429':
           description: Request was refused due to rate limiting.
+        '500':
+          description: The request failed due to an unexpected error.
+        '504':
+          description: The request failed because a downstream service failed to respond.
       tags:
         - Issuing transactions
       security:
@@ -5288,6 +6059,10 @@ paths:
                 $ref: '#/components/schemas/RequestCardError'
         '429':
           description: Request was refused due to rate limiting.
+        '500':
+          description: The request failed due to an unexpected error.
+        '504':
+          description: The request failed because a downstream service failed to respond.
       tags:
         - Card issuing
       requestBody:
@@ -5342,6 +6117,10 @@ paths:
           description: The user is not authorized to make the request.
         '429':
           description: Request was refused due to rate limiting.
+        '500':
+          description: The request failed due to an unexpected error.
+        '504':
+          description: The request failed because a downstream service failed to respond.
       tags:
         - Card issuing
       security:
@@ -5386,6 +6165,10 @@ paths:
           description: The requested resource was not found.
         '429':
           description: Request was refused due to rate limiting.
+        '500':
+          description: The request failed due to an unexpected error.
+        '504':
+          description: The request failed because a downstream service failed to respond.
       tags:
         - Card issuing
       security:
@@ -5443,6 +6226,10 @@ paths:
                 $ref: '#/components/schemas/UpdateIssuedCardError'
         '429':
           description: Request was refused due to rate limiting.
+        '500':
+          description: The request failed due to an unexpected error.
+        '504':
+          description: The request failed because a downstream service failed to respond.
       tags:
         - Card issuing
       requestBody:
@@ -5495,6 +6282,10 @@ paths:
           description: The requested resource was not found.
         '429':
           description: Request was refused due to rate limiting.
+        '500':
+          description: The request failed due to an unexpected error.
+        '504':
+          description: The request failed because a downstream service failed to respond.
       tags:
         - Card issuing
       security:
@@ -5527,6 +6318,10 @@ paths:
                 $ref: '#/components/schemas/RevokeTokenRequestError'
         '429':
           description: Request was refused due to rate limiting.
+        '500':
+          description: The request failed due to an unexpected error.
+        '504':
+          description: The request failed because a downstream service failed to respond.
       tags:
         - Authentication
       requestBody:
@@ -5567,6 +6362,10 @@ paths:
                 $ref: '#/components/schemas/AuthTokenRequestError'
         '429':
           description: Request was refused due to rate limiting.
+        '500':
+          description: The request failed due to an unexpected error.
+        '504':
+          description: The request failed because a downstream service failed to respond.
       tags:
         - Authentication
       requestBody:
@@ -5623,6 +6422,10 @@ paths:
                 $ref: '#/components/schemas/OnboardingInviteError'
         '429':
           description: Request was refused due to rate limiting.
+        '500':
+          description: The request failed due to an unexpected error.
+        '504':
+          description: The request failed because a downstream service failed to respond.
       tags:
         - Onboarding
       requestBody:
@@ -5659,6 +6462,10 @@ paths:
           description: The user is not authorized to make the request.
         '429':
           description: Request was refused due to rate limiting.
+        '500':
+          description: The request failed due to an unexpected error.
+        '504':
+          description: The request failed because a downstream service failed to respond.
       tags:
         - Onboarding
       security:
@@ -5695,6 +6502,10 @@ paths:
           description: The requested resource was not found.
         '429':
           description: Request was refused due to rate limiting.
+        '500':
+          description: The request failed due to an unexpected error.
+        '504':
+          description: The request failed because a downstream service failed to respond.
       tags:
         - Onboarding
       security:
@@ -5724,6 +6535,35 @@ paths:
         - BasicAuth: []
         - OAuth2Auth:
             - /accounts.write
+  /ping:
+    get:
+      operationId: ping
+      description: |-
+        A simple endpoint to check auth.
+
+        To access this endpoint using a [token](https://docs.moov.io/api/authentication/access-tokens/) you'll need 
+        to specify the `/ping.read` scope.
+      parameters:
+        - $ref: '#/components/parameters/CommonHeaders'
+      responses:
+        '200':
+          description: Successfully able to hit the ping endpoint.
+        '401':
+          description: The request contained missing or expired authentication.
+        '403':
+          description: The user is not authorized to make the request.
+        '404':
+          description: The requested resource was not found.
+        '429':
+          description: Request was refused due to rate limiting.
+        '500':
+          description: The request failed due to an unexpected error.
+      tags:
+        - Ping
+      security:
+        - BasicAuth: []
+        - OAuth2Auth:
+            - /ping.read
   /tos-token:
     get:
       operationId: getTermsOfServiceToken
@@ -5761,6 +6601,10 @@ paths:
           description: The requested resource was not found.
         '429':
           description: Request was refused due to rate limiting.
+        '500':
+          description: The request failed due to an unexpected error.
+        '504':
+          description: The request failed because a downstream service failed to respond.
       tags:
         - Accounts
   /transfer-options:
@@ -5802,6 +6646,10 @@ paths:
                 $ref: '#/components/schemas/TransferOptionsValidationError'
         '429':
           description: Request was refused due to rate limiting.
+        '500':
+          description: The request failed due to an unexpected error.
+        '504':
+          description: The request failed because a downstream service failed to respond.
       tags:
         - Transfers
       security:
@@ -7340,6 +8188,31 @@ components:
           $ref: '#/components/schemas/PaymentMethodID'
         paymentMethodType:
           $ref: '#/components/schemas/PaymentMethodType'
+    BillableFee:
+      type: object
+      required:
+        - feeModel
+        - feeCategory
+      properties:
+        billableFeeID:
+          type: string
+          format: uuid
+        billableEvent:
+          type: string
+          example: ach-volume
+          description: A unique code identifying a charge.
+        feeName:
+          type: string
+          example: ACH Direct Debit
+          description: Specifies the name of the fee that will be billed.
+        feeModel:
+          $ref: '#/components/schemas/FeeModel'
+        feeCategory:
+          $ref: '#/components/schemas/FeeCategory'
+        feeProperties:
+          $ref: '#/components/schemas/FeeProperties'
+        feeConditions:
+          $ref: '#/components/schemas/FeeConditions'
     BirthDate:
       type: object
       required:
@@ -7752,6 +8625,12 @@ components:
         cardDetails:
           $ref: '#/components/schemas/RefundCardDetails'
       description: Details of a card refund.
+    CardAcquringModel:
+      type: string
+      enum:
+        - cost-plus
+        - flat-rate
+      description: Specifies the card processing pricing model
     CardAddress:
       type: object
       required:
@@ -8030,6 +8909,37 @@ components:
         - unavailable
         - partialMatch
       example: match
+    CardVolumeDistribution:
+      type: object
+      required:
+        - ecommercePercentage
+        - cardPresentPercentage
+        - mailOrPhonePercentage
+        - debtRepaymentPercentage
+      properties:
+        ecommercePercentage:
+          type: integer
+          format: int32
+        cardPresentPercentage:
+          type: integer
+          format: int32
+        mailOrPhonePercentage:
+          type: integer
+          format: int32
+        debtRepaymentPercentage:
+          type: integer
+          format: int32
+    CardVolumeDistributionError:
+      type: object
+      properties:
+        ecommercePercentage:
+          type: string
+        cardPresentPercentage:
+          type: string
+        mailOrPhonePercentage:
+          type: string
+        debtRepaymentPercentage:
+          type: string
     CollectionPaymentMethodType:
       type: string
       enum:
@@ -8377,6 +9287,14 @@ components:
           description: The text to associate with the dispute as evidence.
         evidenceType:
           $ref: '#/components/schemas/EvidenceType'
+    CreateFeePlanAgreement:
+      type: object
+      required:
+        - planID
+      properties:
+        planID:
+          type: string
+          format: uuid
     CreateIndividualError:
       type: object
       properties:
@@ -9110,6 +10028,122 @@ components:
             Same as `markup`, but a decimal-formatted numerical string that represents up to 9 decimal place precision. 
             Only either `markup` or `markupDecimal` can be set. Set this field if you expect the fee to be in fractions of a cent.
       description: Total or markup fee.
+    FeeCategory:
+      type: string
+      enum:
+        - card-acquiring
+        - card-push
+        - card-pull
+        - ach
+        - rtp
+        - card-other
+        - network-passthrough
+        - other
+    FeeConditions:
+      type: object
+      additionalProperties: {}
+      example:
+        cardBrand:
+          - visa
+      description: Defines the specific conditions that must be met for the fee to be applied.
+    FeeModel:
+      type: string
+      enum:
+        - fixed
+        - blended
+      description: Specifies the pricing model used for the calculation of the final fee.
+    FeePlan:
+      type: object
+      required:
+        - planID
+        - name
+        - cardAcquringModel
+        - billableFees
+        - createdAt
+      properties:
+        planID:
+          type: string
+          format: uuid
+        name:
+          type: string
+          example: Fixed Rate Merchant Plan
+          description: The name of the fee plan.
+        description:
+          type: string
+          description: A description of the fee plan.
+        cardAcquringModel:
+          $ref: '#/components/schemas/CardAcquringModel'
+        billableFees:
+          type: array
+          items:
+            $ref: '#/components/schemas/BillableFee'
+          description: Additional usage-based fees for this plan.
+        createdAt:
+          type: string
+          format: date-time
+    FeePlanAgreement:
+      type: object
+      required:
+        - aggreementID
+        - planID
+        - acceptedOn
+        - status
+        - cardAcquringModel
+        - billableFees
+      properties:
+        aggreementID:
+          type: string
+          format: uuid
+        planID:
+          type: string
+          format: uuid
+        accountID:
+          type: string
+          format: uuid
+        acceptedOn:
+          type: string
+          format: date-time
+        status:
+          $ref: '#/components/schemas/FeePlanAgreementStatus'
+        cardAcquringModel:
+          $ref: '#/components/schemas/CardAcquringModel'
+        billableFees:
+          type: array
+          items:
+            $ref: '#/components/schemas/BillableFee'
+    FeePlanAgreementError:
+      type: object
+      properties:
+        planID:
+          type: string
+    FeePlanAgreementStatus:
+      type: string
+      enum:
+        - active
+        - terminated
+    FeeProperties:
+      type: object
+      properties:
+        fixedAmount:
+          type: string
+          example: '0.15'
+          pattern: ^[0-9]+.?[0-9]*$
+          description: A fixed fee that is applied to the amount of each transaction in the `fixed` and `blended` fee models, expressed as a decimal.
+        variableRate:
+          type: string
+          example: '0.14'
+          pattern: ^[0-9]+.?[0-9]*$
+          description: A percentage fee that is applied to the amount of each transaction in the `blended` fee model, expressed as a decimal.
+        minPerTransaction:
+          type: string
+          example: '1.75'
+          pattern: ^[0-9]+.?[0-9]*$
+          description: Specifies the minimum allowable spending for a single transaction, working as a transaction floor.
+        maxPerTransaction:
+          type: string
+          example: '3.50'
+          pattern: ^[0-9]+.?[0-9]*$
+          description: Specifies the maximum allowable spending for a single transaction, working as a transaction ceiling.
     FileDetails:
       type: object
       required:
@@ -9214,6 +10248,30 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/AchParticipant'
+    FulfillmentDetails:
+      type: object
+      required:
+        - hasPhysicalGoods
+        - isShippingProduct
+        - shipmentDurationDays
+        - returnPolicy
+      properties:
+        hasPhysicalGoods:
+          type: boolean
+        isShippingProduct:
+          type: boolean
+        shipmentDurationDays:
+          type: integer
+          format: int64
+        returnPolicy:
+          $ref: '#/components/schemas/ReturnPolicyType'
+    FulfillmentDetailsError:
+      type: object
+      properties:
+        shipmentDurationDays:
+          type: string
+        returnPolicy:
+          type: string
     FullIssuedCard:
       type: object
       required:
@@ -10329,6 +11387,50 @@ components:
       type: string
       example: created-at:desc
       description: Optional parameter to order the results in the query.
+    PartnerPricing:
+      type: object
+      required:
+        - planID
+        - name
+        - revenueShare
+        - cardAcquringModel
+        - billableFees
+        - createdAt
+      properties:
+        planID:
+          type: string
+          format: uuid
+        name:
+          type: string
+          example: Fixed Rate Merchant Plan
+          description: The name of the fee plan.
+        description:
+          type: string
+          description: A description of the fee plan.
+        revenueShare:
+          type: integer
+          example: 10
+          description: The integer percentage value of the revenue split for partner.
+        cardAcquringModel:
+          $ref: '#/components/schemas/CardAcquringModel'
+        billableFees:
+          type: array
+          items:
+            $ref: '#/components/schemas/BillableFee'
+        createdAt:
+          type: string
+          format: date-time
+    PartnerPricingAgreement:
+      type: object
+      required:
+        - revenueShare
+      properties:
+        revenueShare:
+          type: integer
+          example: 10
+          description: The integer percentage value of the revenue split for partner.
+      allOf:
+        - $ref: '#/components/schemas/FeePlanAgreement'
     PatchAccount:
       type: object
       properties:
@@ -11226,6 +12328,13 @@ components:
         - representative.{rep-uuid}.ownership
         - document.{doc-uuid}
       description: The unique ID of what the requirement is asking to be filled out.
+    ReturnPolicyType:
+      type: string
+      enum:
+        - none
+        - exchangeOnly
+        - withinThirtyDays
+        - other
     RevokeTokenRequest:
       type: object
       required:
@@ -11827,6 +12936,44 @@ components:
       type: string
       enum:
         - rail-response
+    Underwriting:
+      type: object
+      required:
+        - averageTransactionSize
+        - maxTransactionSize
+        - averageMonthlyTransactionVolume
+        - status
+        - volumeByCustomerType
+        - cardVolumeDistribution
+        - fulfillment
+      properties:
+        averageTransactionSize:
+          type: integer
+          format: int64
+        maxTransactionSize:
+          type: integer
+          format: int64
+        averageMonthlyTransactionVolume:
+          type: integer
+          format: int64
+        status:
+          $ref: '#/components/schemas/UnderwritingStatus'
+        volumeByCustomerType:
+          $ref: '#/components/schemas/VolumeByCustomerType'
+        cardVolumeDistribution:
+          $ref: '#/components/schemas/CardVolumeDistribution'
+        fulfillment:
+          $ref: '#/components/schemas/FulfillmentDetails'
+      description: Describes underwriting values (in USD) used for card payment acceptance.
+    UnderwritingStatus:
+      type: string
+      enum:
+        - approved
+        - rejected
+        - pendingReview
+        - pending
+        - notRequested
+      deprecated: true
     UpdateApplePayMerchantDomains:
       type: object
       properties:
@@ -12032,6 +13179,51 @@ components:
           allOf:
             - $ref: '#/components/schemas/RepresentativeResponsibilities'
           nullable: true
+    UpdateUnderwriting:
+      type: object
+      required:
+        - averageTransactionSize
+        - maxTransactionSize
+        - averageMonthlyTransactionVolume
+        - volumeByCustomerType
+        - cardVolumeDistribution
+        - fulfillment
+      properties:
+        averageTransactionSize:
+          type: integer
+          format: int64
+        maxTransactionSize:
+          type: integer
+          format: int64
+        averageMonthlyTransactionVolume:
+          type: integer
+          format: int64
+        volumeByCustomerType:
+          $ref: '#/components/schemas/VolumeByCustomerType'
+        cardVolumeDistribution:
+          $ref: '#/components/schemas/CardVolumeDistribution'
+        fulfillment:
+          $ref: '#/components/schemas/FulfillmentDetails'
+    UpdateUnderwritingError:
+      type: object
+      required:
+        - error
+      properties:
+        error:
+          type: object
+          properties:
+            averageMonthlyTransactionVolume:
+              type: string
+            averageTransactionSize:
+              type: string
+            maxTransactionSize:
+              type: string
+            volumeByCustomerType:
+              $ref: '#/components/schemas/VolumeByCustomerTypeError'
+            cardVolumeDistribution:
+              $ref: '#/components/schemas/CardVolumeDistributionError'
+            fulfillment:
+              $ref: '#/components/schemas/FulfillmentDetailsError'
     UpsertSchedule:
       type: object
       properties:
@@ -12090,6 +13282,25 @@ components:
         - v2024.00.00
         - latest
       description: Moov API versions. Version strings are formatted as `vYYYY.MM.DD`, except preVerioned and latest.
+    VolumeByCustomerType:
+      type: object
+      required:
+        - businessToBusinessPercentage
+        - consumerToBusinessPercentage
+      properties:
+        businessToBusinessPercentage:
+          type: integer
+          format: int32
+        consumerToBusinessPercentage:
+          type: integer
+          format: int32
+    VolumeByCustomerTypeError:
+      type: object
+      properties:
+        businessToBusinessPercentage:
+          type: string
+        consumerToBusinessPercentage:
+          type: string
     Wallet:
       type: object
       required:

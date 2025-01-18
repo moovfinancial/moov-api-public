@@ -38,7 +38,9 @@ op registerApplePayMerchantDomains(
   | ForbiddenResponse
   | DomainsAlreadyRegisteredResponse
   | DomainNotVerifiedResponse
-  | RateLimitedResponse;
+  | RateLimitedResponse
+  | InternalServerErrorResponse
+  | GatewayTimeoutResponse;
 
 @doc("""
     Add or remove domains to be registered with Apple Pay. 
@@ -70,7 +72,9 @@ op updateApplePayMerchantDomains(
   | NotFoundResponse
   | DomainsAlreadyRegisteredResponse
   | DomainNotVerifiedResponse
-  | RateLimitedResponse;
+  | RateLimitedResponse
+  | InternalServerErrorResponse
+  | GatewayTimeoutResponse;
 
 @doc("""
     Get domains registered with Apple Pay. 
@@ -96,4 +100,6 @@ op getApplePayMerchantDomains(
   | UnauthorizedResponse
   | ForbiddenResponse
   | NotFoundResponse
-  | RateLimitedResponse;
+  | RateLimitedResponse
+  | InternalServerErrorResponse
+  | GatewayTimeoutResponse;
