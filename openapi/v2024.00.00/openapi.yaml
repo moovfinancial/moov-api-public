@@ -4969,6 +4969,115 @@ paths:
         - BasicAuth: []
         - OAuth2Auth:
             - /accounts/{accountID}/transfers.read
+  /accounts/{accountID}/transfers/{transferID}/reversals:
+    post:
+      operationId: reverseTransfer
+      description: |-
+        Reverses a card transfer by initiating a cancellation or refund depending on the transaction status. 
+        Read our [reversals guide](https://docs.moov.io/guides/money-movement/accept-payments/card-acceptance/reversals/) 
+        to learn more.
+
+        To access this endpoint using a [token](https://docs.moov.io/api/authentication/access-tokens/) you'll need 
+        to specify the `/accounts/{accountID}/transfers.write` scope.
+      parameters:
+        - $ref: '#/components/parameters/CommonHeaders'
+        - name: x-idempotency-key
+          in: header
+          required: true
+          description: Prevents duplicate reversals from being created.
+          schema:
+            type: string
+            format: uuid
+        - name: accountID
+          in: path
+          required: true
+          description: The Moov account ID.
+          schema:
+            type: string
+            format: uuid
+        - name: transferID
+          in: path
+          required: true
+          description: The transfer ID to reverse.
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Successfully initiated a reversal.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Reversal'
+              examples:
+                Reversed by refund:
+                  summary: Reversed by refund
+                  value:
+                    refund:
+                      refundID: 89ca7f54-13ba-4714-b9af-17163eae2057
+                      createdOn: 2025-01-19T03:07:26.001024809Z
+                      updatedOn: 2025-01-19T03:07:26.602114307Z
+                      status: pending
+                      amount:
+                        currency: USD
+                        value: 1938
+                      cardDetails:
+                        status: confirmed
+                        confirmedOn: 2025-01-19T03:07:26.602114307Z
+                Reversed by cancellation:
+                  summary: Reversed by cancellation
+                  value:
+                    cancellation:
+                      status: completed
+                      createdOn: 2025-01-19T03:02:43.255309588Z
+        '202':
+          description: Successfully initiated a reversal but an error occurred while waiting for a synchronous response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Reversal'
+        '400':
+          description: The server could not understand the request due to invalid syntax.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+        '401':
+          description: The request contained missing or expired authentication.
+        '403':
+          description: The user is not authorized to make the request.
+        '404':
+          description: The requested resource was not found.
+        '409':
+          description: The request conflicted with the current state of the target resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+        '422':
+          description: The request was well-formed, but the contents failed validation. Check the request for missing or invalid fields.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReversalValidationError'
+        '429':
+          description: Request was refused due to rate limiting.
+        '500':
+          description: The request failed due to an unexpected error.
+        '504':
+          description: The request failed because a downstream service failed to respond.
+      tags:
+        - Transfers
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateReversal'
+      security:
+        - BasicAuth: []
+        - OAuth2Auth:
+            - /accounts/{accountID}/transfers.write
   /accounts/{accountID}/underwriting:
     get:
       operationId: getUnderwriting
@@ -8360,6 +8469,22 @@ components:
 
         If set to "auto" the UI will automatically select between 
         "pay" and "confirm" for payments and payouts respectively.
+    Cancellation:
+      type: object
+      required:
+        - status
+        - createdOn
+      properties:
+        status:
+          $ref: '#/components/schemas/CancellationStatus'
+        createdOn:
+          type: string
+          format: date-time
+    CancellationStatus:
+      type: string
+      enum:
+        - pending
+        - completed
     CapabilitiesError:
       type: object
       properties:
@@ -9481,6 +9606,16 @@ components:
             address:
               $ref: '#/components/schemas/Address'
           description: The template for omitting properties.
+    CreateReversal:
+      type: object
+      required:
+        - amount
+      properties:
+        amount:
+          type: integer
+          format: int64
+          example: 1000
+          description: Amount to reverse in cents. Partial amounts will automatically trigger a refund instead of a cancellation.
     CreateSweepConfig:
       type: object
       required:
@@ -12335,6 +12470,30 @@ components:
         - exchangeOnly
         - withinThirtyDays
         - other
+    Reversal:
+      oneOf:
+        - $ref: '#/components/schemas/ReversedWithCancellation'
+        - $ref: '#/components/schemas/ReversedWithRefund'
+      description: Contains either a cancellation or refund, depending on the method used to reverse the transfer.
+    ReversalValidationError:
+      type: object
+      properties:
+        amount:
+          type: string
+    ReversedWithCancellation:
+      type: object
+      required:
+        - cancellation
+      properties:
+        cancellation:
+          $ref: '#/components/schemas/Cancellation'
+    ReversedWithRefund:
+      type: object
+      required:
+        - refund
+      properties:
+        refund:
+          $ref: '#/components/schemas/CardAcquiringRefund'
     RevokeTokenRequest:
       type: object
       required:
