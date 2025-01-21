@@ -8905,13 +8905,13 @@ components:
           maxLength: 32
         city:
           type: string
-          maxLength: 24
+          maxLength: 32
         stateOrProvince:
           type: string
           maxLength: 2
         postalCode:
           type: string
-          maxLength: 5
+          maxLength: 10
         country:
           type: string
           maxLength: 2
@@ -13323,13 +13323,13 @@ components:
           maxLength: 32
         city:
           type: string
-          maxLength: 24
+          maxLength: 32
         stateOrProvince:
           type: string
           maxLength: 2
         postalCode:
           type: string
-          maxLength: 5
+          maxLength: 10
         country:
           type: string
           maxLength: 2

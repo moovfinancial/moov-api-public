@@ -185,13 +185,13 @@ model CardAddress {
   @maxLength(32)
   addressLine2?: string;
 
-  @maxLength(24)
+  @maxLength(32)
   city?: string;
 
   @maxLength(2)
   stateOrProvince?: string;
 
-  @maxLength(5)
+  @maxLength(10)
   postalCode: string;
 
   @maxLength(2)
@@ -313,13 +313,13 @@ model UpdateCardAddress {
   @maxLength(32)
   addressLine2?: string;
 
-  @maxLength(24)
+  @maxLength(32)
   city?: string;
 
   @maxLength(2)
   stateOrProvince?: string;
 
-  @maxLength(5)
+  @maxLength(10)
   postalCode?: string;
 
   @maxLength(2)
