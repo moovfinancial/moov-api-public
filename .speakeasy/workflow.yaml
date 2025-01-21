@@ -1,0 +1,14 @@
+workflowVersion: 1.0.0
+speakeasyVersion: latest
+sources:
+    latest:
+        inputs:
+            - location: ./openapi/latest/openapi.yaml
+        registry:
+            location: registry.speakeasyapi.dev/moov/moov/api-latest
+    v2024.01:
+        inputs:
+            - location: ./openapi/v2024.00.00/openapi.yaml
+        registry:
+            location: registry.speakeasyapi.dev/moov/moov/api-v2024.01
+targets: {}
