@@ -3705,77 +3705,6 @@ paths:
         - BasicAuth: []
         - OAuth2Auth:
             - /accounts/{accountID}/representatives.read
-    patch:
-      operationId: updateRepresentative
-      description: |-
-        If a representative’s information has changed you can patch the information associated with a specific representative ID. 
-        Read our [business representatives guide](https://docs.moov.io/guides/accounts/requirements/business-representatives/) to learn more.
-
-        To use this endpoint from the browser, you’ll need to specify the `/accounts/{accountID}/representatives.write` scope when generating a [token](https://docs.moov.io/api/authentication/access-tokens/).
-
-        When **can** profile data be updated:
-
-        - For unverified representatives, all profile data can be edited.
-        - During the verification process, missing or incomplete profile data can be edited.
-        - Verified representatives can only add missing profile data.
-
-        When **can’t** profile data be updated:
-
-        - Verified representatives cannot change any existing profile data.
-
-        If you need to update information in a locked state, please contact Moov support.
-      parameters:
-        - $ref: '#/components/parameters/CommonHeaders'
-        - name: accountID
-          in: path
-          required: true
-          description: ID of the account.
-          schema:
-            type: string
-            format: uuid
-      responses:
-        '200':
-          description: The request completed successfully.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Representative'
-        '400':
-          description: The server could not understand the request due to invalid syntax.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericError'
-        '401':
-          description: The request contained missing or expired authentication.
-        '403':
-          description: The user is not authorized to make the request.
-        '404':
-          description: The requested resource was not found.
-        '409':
-          description: The request conflicted with the current state of the target resource.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericError'
-        '429':
-          description: Request was refused due to rate limiting.
-        '500':
-          description: The request failed due to an unexpected error.
-        '504':
-          description: The request failed because a downstream service failed to respond.
-      tags:
-        - Representatives
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/UpdateRepresentative'
-      security:
-        - BasicAuth: []
-        - OAuth2Auth:
-            - /accounts/{accountID}/representatives.write
   /accounts/{accountID}/representatives/{representativeID}:
     delete:
       operationId: deleteRepresentative
@@ -3879,6 +3808,84 @@ paths:
         - BasicAuth: []
         - OAuth2Auth:
             - /accounts/{accountID}/representatives.read
+    patch:
+      operationId: updateRepresentative
+      description: |-
+        If a representative’s information has changed you can patch the information associated with a specific representative ID. 
+        Read our [business representatives guide](https://docs.moov.io/guides/accounts/requirements/business-representatives/) to learn more.
+
+        To use this endpoint from the browser, you’ll need to specify the `/accounts/{accountID}/representatives.write` scope when generating a [token](https://docs.moov.io/api/authentication/access-tokens/).
+
+        When **can** profile data be updated:
+
+        - For unverified representatives, all profile data can be edited.
+        - During the verification process, missing or incomplete profile data can be edited.
+        - Verified representatives can only add missing profile data.
+
+        When **can’t** profile data be updated:
+
+        - Verified representatives cannot change any existing profile data.
+
+        If you need to update information in a locked state, please contact Moov support.
+      parameters:
+        - $ref: '#/components/parameters/CommonHeaders'
+        - name: accountID
+          in: path
+          required: true
+          description: ID of the account.
+          schema:
+            type: string
+            format: uuid
+        - name: representativeID
+          in: path
+          required: true
+          description: ID of the representative.
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: The request completed successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Representative'
+        '400':
+          description: The server could not understand the request due to invalid syntax.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+        '401':
+          description: The request contained missing or expired authentication.
+        '403':
+          description: The user is not authorized to make the request.
+        '404':
+          description: The requested resource was not found.
+        '409':
+          description: The request conflicted with the current state of the target resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+        '429':
+          description: Request was refused due to rate limiting.
+        '500':
+          description: The request failed due to an unexpected error.
+        '504':
+          description: The request failed because a downstream service failed to respond.
+      tags:
+        - Representatives
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateRepresentative'
+      security:
+        - BasicAuth: []
+        - OAuth2Auth:
+            - /accounts/{accountID}/representatives.write
   /accounts/{accountID}/schedules:
     post:
       operationId: createSchedule

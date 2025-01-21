@@ -116,7 +116,7 @@ op getRepresentative(
   If you need to update information in a locked state, please contact Moov support.
   """)
 @patch
-@route("/accounts/{accountID}/representatives")
+@route("/accounts/{accountID}/representatives/{representativeID}")
 @tag("Representatives")
 @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/representatives.write"]>)
 op updateRepresentative(
@@ -126,6 +126,11 @@ op updateRepresentative(
   @format("uuid")
   @path
   accountID: string,
+
+  @doc("ID of the representative.")
+  @format("uuid")
+  @path
+  representativeID: string,
 
   @body body: UpdateRepresentative,
 ):
