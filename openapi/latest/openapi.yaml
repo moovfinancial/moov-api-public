@@ -16,6 +16,7 @@ info:
   version: latest
 tags:
   - name: Accounts
+  - name: Adjustments
   - name: Cards
   - name: Authentication
   - name: Bank accounts
@@ -339,6 +340,102 @@ paths:
         - BasicAuth: []
         - OAuth2Auth:
             - /accounts/{accountID}/profile.disconnect
+  /accounts/{accountID}/adjustments:
+    get:
+      operationId: listAdjustments
+      description: |-
+        List adjustments associated with a Moov account.
+
+        To access this endpoint using a [token](https://docs.moov.io/api/authentication/access-tokens/) you'll need 
+        to specify the `/accounts/{accountID}/wallets.read` scope.
+      parameters:
+        - $ref: '#/components/parameters/CommonHeaders'
+        - name: accountID
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: walletID
+          in: query
+          required: false
+          description: A wallet ID to filter adjustments by.
+          schema:
+            type: string
+            format: uuid
+          explode: false
+      responses:
+        '200':
+          description: The request completed successfully.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Adjustment'
+        '401':
+          description: The request contained missing or expired authentication.
+        '403':
+          description: The user is not authorized to make the request.
+        '429':
+          description: Request was refused due to rate limiting.
+        '500':
+          description: The request failed due to an unexpected error.
+        '504':
+          description: The request failed because a downstream service failed to respond.
+      tags:
+        - Adjustments
+      security:
+        - BasicAuth: []
+        - OAuth2Auth:
+            - /accounts/{accountID}/wallets.read
+  /accounts/{accountID}/adjustments/{adjustmentID}:
+    get:
+      operationId: getAdjustment
+      description: |-
+        Retrieve a specific adjustment associated with a Moov account.
+
+        To access this endpoint using a [token](https://docs.moov.io/api/authentication/access-tokens/) you'll need 
+        to specify the `/accounts/{accountID}/wallets.read` scope.
+      parameters:
+        - $ref: '#/components/parameters/CommonHeaders'
+        - name: accountID
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: adjustmentID
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: The request completed successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Adjustment'
+        '401':
+          description: The request contained missing or expired authentication.
+        '403':
+          description: The user is not authorized to make the request.
+        '404':
+          description: The requested resource was not found.
+        '429':
+          description: Request was refused due to rate limiting.
+        '500':
+          description: The request failed due to an unexpected error.
+        '504':
+          description: The request failed because a downstream service failed to respond.
+      tags:
+        - Adjustments
+      security:
+        - BasicAuth: []
+        - OAuth2Auth:
+            - /accounts/{accountID}/wallets.read
   /accounts/{accountID}/apple-pay/domains:
     post:
       operationId: registerApplePayMerchantDomains
@@ -3947,7 +4044,6 @@ paths:
         - BasicAuth: []
         - OAuth2Auth:
             - /accounts/{your-account-id}/transfers.write
-  /accounts/{accountID}/schedules/:
     get:
       operationId: listSchedules
       description: Describes a list of schedules associated with an account. Requires at least 1 occurrence or recurTransfer to be specified.
@@ -7779,6 +7875,26 @@ components:
           type: string
           example: US
           maxLength: 2
+    Adjustment:
+      type: object
+      required:
+        - adjustmentID
+        - walletID
+        - amount
+        - createdOn
+      properties:
+        adjustmentID:
+          type: string
+          format: uuid
+        walletID:
+          type: string
+          format: uuid
+        amount:
+          $ref: '#/components/schemas/AmountDecimal'
+        createdOn:
+          type: string
+          format: date-time
+      description: An adjustment to a wallet.
     Amount:
       type: object
       required:
@@ -7794,6 +7910,19 @@ components:
             Quantity in the smallest unit of the specified currency. 
 
             In USD this is cents, for example, $12.04 is 1204 and $0.99 is 99.
+    AmountDecimal:
+      type: object
+      required:
+        - currency
+        - valueDecimal
+      properties:
+        currency:
+          $ref: '#/components/schemas/Currency'
+        valueDecimal:
+          type: string
+          example: '12.987654321'
+          pattern: ^\d+\.\d{1,9}$
+          description: A decimal-formatted numerical string that represents up to 9 decimal place precision.
     AmountUpdate:
       type: object
       properties:
@@ -13643,6 +13772,7 @@ components:
             /accounts/{accountID}/profile.read: ''
             /accounts/{accountID}/profile.write: ''
             /accounts/{accountID}/profile.disconnect: ''
+            /accounts/{accountID}/wallets.read: ''
             /accounts/{accountID}/apple-pay.write: ''
             /accounts/{accountID}/apple-pay.read: ''
             /accounts/{accountID}/cards.write: ''
@@ -13669,7 +13799,6 @@ components:
             /accounts/{your-account-id}/transfers.write: ''
             /accounts/{your-account-id}/transfers.read: ''
             /accounts/{yourAccountID}/transfers.write: ''
-            /accounts/{accountID}/wallets.read: ''
             /accounts/{accountID}/wallets.write: ''
 servers:
   - url: https://api.moov.io

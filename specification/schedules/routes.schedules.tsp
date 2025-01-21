@@ -62,7 +62,7 @@ namespace MoovAPI {
 
   @doc("Describes a list of schedules associated with an account. Requires at least 1 occurrence or recurTransfer to be specified.")
   @tag("Scheduling")
-  @route("/accounts/{accountID}/schedules/")
+  @route("/accounts/{accountID}/schedules")
   @get
   @useAuth(BasicAuth | OAuth2<["/accounts/{your-account-id}/transfers.read"]>)
   op listSchedules(

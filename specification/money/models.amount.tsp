@@ -20,5 +20,16 @@ model Amount {
   value: int64;
 }
 
+model AmountDecimal {
+  currency: Currency;
+
+  @doc("""
+    A decimal-formatted numerical string that represents up to 9 decimal place precision.
+    """)
+  @pattern(Decimal9StringPattern)
+  @example("12.987654321")
+  valueDecimal: string;
+}
+
 const Decimal2StringPattern = "^\\d+\\.\\d{1,2}$";
 const Decimal9StringPattern = "^\\d+\\.\\d{1,9}$";

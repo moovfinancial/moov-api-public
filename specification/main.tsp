@@ -5,6 +5,7 @@ import "@moovfinancial/tsp-lib";
 
 // import each subdirectory's main
 import "./accounts";
+import "./adjustments";
 import "./applepay";
 import "./auth";
 import "./bankaccounts";
