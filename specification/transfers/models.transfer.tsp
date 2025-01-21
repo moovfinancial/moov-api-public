@@ -1,6 +1,7 @@
 import "@typespec/http";
 import "@typespec/openapi3";
 import "@typespec/versioning";
+import "./examples.transfer.tsp";
 import "./models.ach.tsp";
 import "./models.card.tsp";
 import "./models.dispute.tsp";
@@ -18,6 +19,7 @@ using TypeSpec.OpenAPI;
 namespace MoovAPI;
 
 @doc("Details of a Transfer.")
+@example(ExamplePendingCardToWalletTransfer)
 model Transfer {
   @format("uuid")
   transferID: string;
@@ -93,6 +95,7 @@ model TransferDestination {
   rtpDetails?: RTPTransactionDetails;
 }
 
+@example(ExampleCreateCardToWalletTransfer)
 model CreateTransfer {
   source: CreateTransferSource;
   destination: CreateTransferDestination;

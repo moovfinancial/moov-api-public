@@ -2,6 +2,7 @@ namespace MoovAPI;
 
 @doc("A 3-letter ISO 4217 currency code.")
 @pattern("^[A-Za-z]{3}$")
+@example("USD")
 scalar Currency extends string;
 
 @doc("A decimal-formatted numerical string that represents up to 2 decimal place precision. In USD for example, 12.34 is $12.34 and 0.99 is $0.99.")
@@ -17,6 +18,7 @@ model Amount {
     
     In USD this is cents, for example, $12.04 is 1204 and $0.99 is 99.
     """)
+  @example(1204)
   value: int64;
 }
 

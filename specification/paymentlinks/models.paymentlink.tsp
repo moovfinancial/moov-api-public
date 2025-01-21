@@ -1,4 +1,5 @@
 import "@typespec/http";
+import "./examples.paymentlink.tsp";
 import "./models.payment.tsp";
 import "./models.payout.tsp";
 import "../accounts/models.mode.tsp";
@@ -17,6 +18,7 @@ namespace MoovAPI;
   
   **Note:** The `payout` option is currently under development and is not yet available for general use.
   """)
+@example(ExampleCreatePaymentRequest)
 model CreatePaymentLink {
   @doc("The partner's Moov account ID.")
   @format("uuid")
@@ -56,6 +58,7 @@ model CreatePaymentLinkError {
   payout?: PayoutDetailsError;
 }
 
+@example(ExampleUpdatePaymentLink)
 model UpdatePaymentLink {
   amount?: Amount;
   expiresOn?: utcDateTime | null;
@@ -84,6 +87,7 @@ model AmountValidationError {
 @example("uc7ZYKrMhi")
 scalar PaymentLinkCode extends string;
 
+@example(ExampleCreatedPaymentLink)
 model PaymentLink {
   code: PaymentLinkCode;
   mode: Mode;
