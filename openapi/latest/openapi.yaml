@@ -13917,3 +13917,10 @@ servers:
   - url: https://api.moov.io
     description: Production API host
     variables: {}
+x-speakeasy-globals:
+  parameters:
+    - name: x-moov-version
+      in: header
+      schema:
+        type: string
+      x-speakeasy-globals-hidden: true

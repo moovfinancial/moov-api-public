@@ -55,4 +55,19 @@ using TypeSpec.Versioning;
 })
 @server("https://api.moov.io", "Production API host")
 @versioned(Versions)
+@extension(
+  "x-speakeasy-globals",
+  {
+    parameters: [
+      {
+        name: "x-moov-version",
+        in: "header",
+        schema: {
+          type: "string",
+        },
+        `x-speakeasy-globals-hidden`: true,
+      }
+    ],
+  }
+)
 namespace MoovAPI;
