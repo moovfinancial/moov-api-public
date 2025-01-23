@@ -26,7 +26,9 @@ model AmountDecimal {
   currency: Currency;
 
   @doc("""
-    A decimal-formatted numerical string that represents up to 9 decimal place precision.
+    A decimal-formatted numerical string that represents up to 9 decimal place precision. 
+    
+    For example, $12.987654321 is '12.987654321'.
     """)
   @pattern(Decimal9StringPattern)
   @example("12.987654321")

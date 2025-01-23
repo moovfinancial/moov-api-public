@@ -7923,7 +7923,10 @@ components:
           type: string
           example: '12.987654321'
           pattern: ^\d+\.\d{1,9}$
-          description: A decimal-formatted numerical string that represents up to 9 decimal place precision.
+          description: |-
+            A decimal-formatted numerical string that represents up to 9 decimal place precision. 
+
+            For example, $12.987654321 is '12.987654321'.
     AmountUpdate:
       type: object
       properties:
@@ -10428,25 +10431,43 @@ components:
       type: object
       properties:
         fixedAmount:
-          type: string
-          example: '0.15'
-          pattern: ^[0-9]+.?[0-9]*$
-          description: A fixed fee that is applied to the amount of each transaction in the `fixed` and `blended` fee models, expressed as a decimal.
+          type: object
+          allOf:
+            - $ref: '#/components/schemas/AmountDecimal'
+          nullable: true
+          description: A fixed fee that is applied to the amount of each transaction in the `fixed` and `blended` fee models.
         variableRate:
           type: string
-          example: '0.14'
+          example: '0.05'
           pattern: ^[0-9]+.?[0-9]*$
-          description: A percentage fee that is applied to the amount of each transaction in the `blended` fee model, expressed as a decimal.
+          description: |-
+            A percentage fee that is applied to the amount of each transaction in the `blended` fee model, expressed as a decimal. 
+
+            For example, 0.05% is '0.05'.
         minPerTransaction:
-          type: string
-          example: '1.75'
-          pattern: ^[0-9]+.?[0-9]*$
+          type: object
+          allOf:
+            - $ref: '#/components/schemas/AmountDecimal'
+          nullable: true
           description: Specifies the minimum allowable spending for a single transaction, working as a transaction floor.
         maxPerTransaction:
-          type: string
-          example: '3.50'
-          pattern: ^[0-9]+.?[0-9]*$
+          type: object
+          allOf:
+            - $ref: '#/components/schemas/AmountDecimal'
+          nullable: true
           description: Specifies the maximum allowable spending for a single transaction, working as a transaction ceiling.
+      example:
+        fixedAmount:
+          currency: USD
+          valueDecimal: '0.0195'
+        variableRate: '0.15'
+        minPerTransaction:
+          currency: USD
+          valueDecimal: '0.0195'
+        maxPerTransaction:
+          currency: USD
+          valueDecimal: '0.035'
+      description: Defines the specific parameters used for fee calculation.
     FileDetails:
       type: object
       required:

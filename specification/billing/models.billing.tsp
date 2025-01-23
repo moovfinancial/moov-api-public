@@ -1,6 +1,9 @@
+import "./examples.billing.tsp";
+import "../money/models.amount.tsp";
+
 namespace MoovAPI;
 
-const BillingDecimalStringPattern = "^[0-9]+.?[0-9]*$";
+const BillingRateStringPattern = "^[0-9]+.?[0-9]*$";
 
 model FeePlan {
   @format("uuid")
@@ -59,26 +62,26 @@ model BillableFee {
   feeConditions?: FeeConditions;
 }
 
+@doc("Defines the specific parameters used for fee calculation.")
+@example(ExampleFeeProperties)
 model FeeProperties {
-  @doc("A fixed fee that is applied to the amount of each transaction in the `fixed` and `blended` fee models, expressed as a decimal.")
-  @pattern(BillingDecimalStringPattern)
-  @example("0.15")
-  fixedAmount?: string;
+  @doc("A fixed fee that is applied to the amount of each transaction in the `fixed` and `blended` fee models.")
+  fixedAmount?: AmountDecimal | null;
 
-  @doc("A percentage fee that is applied to the amount of each transaction in the `blended` fee model, expressed as a decimal.")
-  @pattern(BillingDecimalStringPattern)
-  @example("0.14")
+  @doc("""
+    A percentage fee that is applied to the amount of each transaction in the `blended` fee model, expressed as a decimal. 
+    
+    For example, 0.05% is '0.05'.
+    """)
+  @pattern(BillingRateStringPattern)
+  @example("0.05")
   variableRate?: string;
 
   @doc("Specifies the minimum allowable spending for a single transaction, working as a transaction floor.")
-  @pattern(BillingDecimalStringPattern)
-  @example("1.75")
-  minPerTransaction?: string;
+  minPerTransaction?: AmountDecimal | null;
 
   @doc("Specifies the maximum allowable spending for a single transaction, working as a transaction ceiling.")
-  @pattern(BillingDecimalStringPattern)
-  @example("3.50")
-  maxPerTransaction?: string;
+  maxPerTransaction?: AmountDecimal | null;
 }
 
 @doc("Defines the specific conditions that must be met for the fee to be applied.")
