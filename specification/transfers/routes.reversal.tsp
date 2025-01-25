@@ -23,7 +23,7 @@ namespace MoovAPI;
 @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/transfers.write"]>)
 @opExample(ExampleReversalCancellation, #{ title: "Reversed by cancellation" })
 @opExample(ExampleReversalRefund, #{ title: "Reversed by refund" })
-op reverseTransfer(
+op createReversal(
   ...CommonHeaders,
 
   @doc("Prevents duplicate reversals from being created.")

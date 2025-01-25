@@ -1,26 +1,29 @@
 import "@typespec/http";
+import "@typespec/openapi";
 import "./models.transfer.tsp";
 import "../auth/models.auth.tsp";
 import "../common/models.header.tsp";
 import "../common/models.response.tsp";
 
 using TypeSpec.Http;
+using TypeSpec.OpenAPI;
 
 // TODO: refactor TransfersBff2 responses to use the standardized response codes and bodies from go-http.
 namespace MoovAPI;
 
+@post
+@route("/accounts/{accountID}/transfers")
+@tag("Transfers")
 @doc("""
   Move money by providing the source, destination, and amount in the request body.
   
   Read our [transfers overview guide](https://docs.moov.io/guides/money-movement/overview/) to learn more. 
   
-  To access this endpoint using a [token](https://docs.moov.io/api/authentication/access-tokens/) you'll need to specify the `/accounts/{accountID}/transfers.write` 
-  scope.
+  To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
+  you'll need to specify the `/accounts/{accountID}/transfers.write` scope.
   """)
-@post
-@route("/accounts/{accountID}/transfers")
-@tag("Transfers")
 @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/transfers.write"]>)
+@extension("x-speakeasy-name-override", "create")
 op createTransfer(
   ...CommonHeaders,
 
@@ -54,6 +57,9 @@ op createTransfer(
   | InternalServerErrorResponse
   | GatewayTimeoutResponse;
 
+@get
+@route("/accounts/{accountID}/transfers")
+@tag("Transfers")
 @doc("""
   List all the transfers associated with a particular Moov account. 
   
@@ -64,13 +70,11 @@ op createTransfer(
   process very slowly. To achieve faster performance, restrict the data as much as you can by using the `StartDateTime` and `EndDateTime` parameters for a limited 
   period of time. You can run multiple requests in smaller time window increments until you've retrieved all the transfers you need.
   
-  To access this endpoint using a [token](https://docs.moov.io/api/authentication/access-tokens/) you'll need to specify the `/accounts/{accountID}/transfers.read` 
-  scope.
+  To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
+  you'll need to specify the `/accounts/{accountID}/transfers.read` scope.
   """)
-@get
-@tag("Transfers")
-@route("/accounts/{accountID}/transfers")
 @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/transfers.read"]>)
+@extension("x-speakeasy-name-override", "list")
 op listTransfers(
   ...CommonHeaders,
   ...TransferListFilters,
@@ -80,19 +84,20 @@ op listTransfers(
   accountID: string,
 ): ListResponses<Transfer>;
 
+@get
+@route("/accounts/{accountID}/transfers/{transferID}")
+@tag("Transfers")
 @doc("""
   Retrieve full transfer details for an individual transfer of a particular Moov account. 
   
   Payment rail-specific details are included in the source and destination. Read our [transfers overview guide](https://docs.moov.io/guides/money-movement/overview/) 
   to learn more.
   
-  To access this endpoint using a [token](https://docs.moov.io/api/authentication/access-tokens/) you'll need to specify the `/accounts/{accountID}/transfers.read` 
-  scope.
+  To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
+  you'll need to specify the `/accounts/{accountID}/transfers.read` scope.
   """)
-@get
-@tag("Transfers")
-@route("/accounts/{accountID}/transfers/{transferID}")
 @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/transfers.read"]>)
+@extension("x-speakeasy-name-override", "get")
 op getTransfer(
   ...CommonHeaders,
 
@@ -106,19 +111,20 @@ op getTransfer(
   accountID: string,
 ): GetResponses<Transfer>;
 
+@patch
+@route("/accounts/{accountID}/transfers/{transferID}")
+@tag("Transfers")
 @doc("""
   Update the metadata contained on a transfer. 
   
   Read our [transfers overview guide](https://docs.moov.io/guides/money-movement/overview/) to learn more. 
   
-  To access this endpoint using a [token](https://docs.moov.io/api/authentication/access-tokens/) you'll need to specify the `/accounts/{accountID}/transfers.write` 
-  scope.
+  To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
+  you'll need to specify the `/accounts/{accountID}/transfers.write` scope.
   """)
-@patch
-@tag("Transfers")
-@route("/accounts/{accountID}/transfers/{transferID}")
 @useAuth(BasicAuth | OAuth2<["/accounts/{yourAccountID}/transfers.write"]>)
-op patchTransfer(
+@extension("x-speakeasy-name-override", "update")
+op updateTransfer(
   ...CommonHeaders,
 
   @doc("Identifier for the transfer.")

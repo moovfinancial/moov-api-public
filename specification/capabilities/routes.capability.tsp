@@ -1,4 +1,5 @@
 import "@typespec/http";
+import "@typespec/openapi";
 import "./examples.capability.tsp";
 import "./models.capability.tsp";
 import "../auth/models.auth.tsp";
@@ -8,19 +9,23 @@ import "../common/models.header.tsp";
 import "../common/models.parameter.tsp";
 
 using TypeSpec.Http;
+using TypeSpec.OpenAPI;
 
 namespace MoovAPI;
 
 // List
 
+@get
+@route("/accounts/{accountID}/capabilities")
+@tag("Capabilities")
 @doc("""
   Retrieve all the capabilities an account has requested.
   
   Read our [capabilities guide](https://docs.moov.io/guides/accounts/capabilities/) to learn more.
+  
+  To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
+  you'll need to specify the `/accounts/{accountID}/capabilities.read` scope.
   """)
-@tag("Capabilities")
-@route("/accounts/{accountID}/capabilities")
-@get
 @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/capabilities.read"]>)
 @opExample(#{
   parameters: #{ accountID: ExampleID },
@@ -29,6 +34,7 @@ namespace MoovAPI;
     body: #[ExampleTransfersCapability, ExampleCollectFundsCapability],
   },
 })
+@extension("x-speakeasy-name-override", "list")
 op listCapabilities(
   ...CommonHeaders,
 
@@ -39,14 +45,15 @@ op listCapabilities(
 
 // Add
 
+@post
+@route("/accounts/{accountID}/capabilities")
+@tag("Capabilities")
 @doc("""
   Request capabilities for a specific account. Read our [capabilities guide](https://docs.moov.io/guides/accounts/capabilities/) to learn more.
   
-  To use this endpoint from the browser, you'll need to specify the `/accounts/{accountID}/capabilities.write` scope when generating a [token](https://docs.moov.io/api/authentication/access-tokens/).
+  To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
+  you'll need to specify the `/accounts/{accountID}/capabilities.write` scope.
   """)
-@tag("Capabilities")
-@route("/accounts/{accountID}/capabilities")
-@post
 @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/capabilities.write"]>)
 @opExample(#{
   parameters: #{
@@ -58,7 +65,8 @@ op listCapabilities(
     body: #[ExampleTransfersCapability, ExampleCollectFundsCapability],
   },
 })
-op addCapabilities(
+@extension("x-speakeasy-name-override", "request")
+op requestCapabilities(
   ...CommonHeaders,
 
   @format("uuid")
@@ -70,19 +78,21 @@ op addCapabilities(
 
 // Get
 
+@get
+@route("/accounts/{accountID}/capabilities/{capabilityID}")
+@tag("Capabilities")
 @doc("""
   Retrieve a specific capability that an account has requested. Read our [capabilities guide](https://docs.moov.io/guides/accounts/capabilities/) to learn more.
   
-  To use this endpoint from the browser, you'll need to specify the `/accounts/{accountID}/capabilities.read` scope when generating a [token](https://docs.moov.io/api/authentication/access-tokens/).
+  To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
+  you'll need to specify the `/accounts/{accountID}/capabilities.read` scope.
   """)
-@tag("Capabilities")
-@route("/accounts/{accountID}/capabilities/{capabilityID}")
-@get
 @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/capabilities.read"]>)
 @opExample(#{
   parameters: #{ accountID: ExampleID, capabilityID: CapabilityID.transfers },
   returnType: #{ statusCode: HttpStatusOK, body: ExampleTransfersCapability },
 })
+@extension("x-speakeasy-name-override", "get")
 op getCapability(
   ...CommonHeaders,
 
@@ -96,14 +106,15 @@ op getCapability(
 
 // Disable
 
+@delete
+@route("/accounts/{accountID}/capabilities/{capabilityID}")
+@tag("Capabilities")
 @doc("""
   Disable a specific capability that an account has requested. Read our [capabilities guide](https://docs.moov.io/guides/accounts/capabilities/) to learn more.
   
-  To use this endpoint from the browser, you'll need to specify the `/accounts/{accountID}/capabilities.write` scope when generating a [token](https://docs.moov.io/api/authentication/access-tokens/).
+    To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
+  you'll need to specify the `/accounts/{accountID}/capabilities.write` scope.
   """)
-@tag("Capabilities")
-@route("/accounts/{accountID}/capabilities/{capabilityID}")
-@delete
 @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/capabilities.write"]>)
 @opExample(#{
   parameters: #{
@@ -112,6 +123,7 @@ op getCapability(
   },
   returnType: #{ statusCode: HttpStatusNoContent },
 })
+@extension("x-speakeasy-name-override", "disable")
 op disableCapability(
   ...CommonHeaders,
 

@@ -1,52 +1,72 @@
 import "@typespec/http";
+import "@typespec/openapi";
 import "./models.brand.tsp";
 import "../auth/models.auth.tsp";
 import "../common/models.response.tsp";
 import "../common/models.header.tsp";
 
 using TypeSpec.Http;
+using TypeSpec.OpenAPI;
 
-namespace MoovAPI {
-  @doc("Creates the brand properties for the specified account.")
-  @tag("Branding")
-  @route("/accounts/{accountID}/branding")
-  @post
-  @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/branding.write"]>)
-  op postBrand(
-    ...CommonHeaders,
+namespace MoovAPI;
 
-    @format("uuid")
-    @path
-    accountID: string,
+@post
+@route("/accounts/{accountID}/branding")
+@tag("Branding")
+@doc("""
+  Create brand properties for the specified account.
+  
+  To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
+  you'll need to specify the `/accounts/{accountID}/branding.write` scope.
+  """)
+@useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/branding.write"]>)
+@extension("x-speakeasy-name-override", "create")
+op createBrand(
+  ...CommonHeaders,
 
-    @body body: Brand,
-  ): PostResponses<Brand, BrandValidationError>;
+  @format("uuid")
+  @path
+  accountID: string,
 
-  @doc("Gets the brand properties for the specified account.")
-  @tag("Branding")
-  @route("/accounts/{accountID}/branding")
-  @get
-  @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/branding.read"]>)
-  op getBrand(
-    ...CommonHeaders,
+  @body body: Brand,
+): PostResponses<Brand, BrandValidationError>;
 
-    @format("uuid")
-    @path
-    accountID: string,
-  ): GetResponses<Brand>;
+@get
+@route("/accounts/{accountID}/branding")
+@tag("Branding")
+@doc("""
+  Get brand properties for the specified account.
+  
+  To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
+  you'll need to specify the `/accounts/{accountID}/branding.read` scope.
+  """)
+@useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/branding.read"]>)
+@extension("x-speakeasy-name-override", "get")
+op getBrand(
+  ...CommonHeaders,
 
-  @doc("Updates the brand properties for the specified account.")
-  @tag("Branding")
-  @route("/accounts/{accountID}/branding")
-  @patch
-  @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/branding.write"]>)
-  op updateBrand(
-    ...CommonHeaders,
+  @format("uuid")
+  @path
+  accountID: string,
+): GetResponses<Brand>;
 
-    @format("uuid")
-    @path
-    accountID: string,
+@patch
+@route("/accounts/{accountID}/branding")
+@tag("Branding")
+@doc("""
+  Updates the brand properties for the specified account.
+  
+  To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
+  you'll need to specify the `/accounts/{accountID}/branding.write` scope.
+  """)
+@useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/branding.write"]>)
+@extension("x-speakeasy-name-override", "update")
+op updateBrand(
+  ...CommonHeaders,
 
-    @body body: UpdateBrand,
-  ): UpdateResponses<Brand, BrandValidationError>;
-}
+  @format("uuid")
+  @path
+  accountID: string,
+
+  @body body: UpdateBrand,
+): UpdateResponses<Brand, BrandValidationError>;

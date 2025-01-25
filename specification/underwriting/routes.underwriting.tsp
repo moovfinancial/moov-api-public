@@ -1,10 +1,12 @@
 import "@typespec/http";
+import "@typespec/openapi";
 import "./models.underwriting.tsp";
 import "../auth/models.auth.tsp";
 import "../common/models.header.tsp";
 import "../common/models.response.tsp";
 
 using TypeSpec.Http;
+using TypeSpec.OpenAPI;
 
 namespace MoovAPI;
 
@@ -16,10 +18,11 @@ namespace MoovAPI;
   
   Read our [underwriting guide](https://docs.moov.io/guides/accounts/requirements/underwriting/) to learn more. 
   
-  To access this endpoint using a [token](https://docs.moov.io/api/authentication/access-tokens/) you'll need 
-  to specify the `/accounts/{accountID}/profile.read` scope.
+  To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
+  you'll need to specify the `/accounts/{accountID}/profile.read` scope.
   """)
 @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/profile.read"]>)
+@extension("x-speakeasy-name-override", "get")
 op getUnderwriting(
   ...CommonHeaders,
 
@@ -36,10 +39,11 @@ op getUnderwriting(
   
   Read our [underwriting guide](https://docs.moov.io/guides/accounts/requirements/underwriting/) to learn more.
   
-  To access this endpoint using a [token](https://docs.moov.io/api/authentication/access-tokens/) you'll need 
-  to specify the `/accounts/{accountID}/profile.write` scope.
+  To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
+  you'll need to specify the `/accounts/{accountID}/profile.write` scope.
   """)
 @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/profile.write"]>)
+@extension("x-speakeasy-name-override", "update")
 op updateUnderwriting(
   ...CommonHeaders,
 

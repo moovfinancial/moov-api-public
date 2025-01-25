@@ -1,10 +1,12 @@
 import "@typespec/http";
+import "@typespec/openapi";
 import "./models.adjustments.tsp";
 import "../auth/models.auth.tsp";
 import "../common/models.header.tsp";
 import "../common/models.response.tsp";
 
 using TypeSpec.Http;
+using TypeSpec.OpenAPI;
 
 namespace MoovAPI;
 
@@ -14,10 +16,11 @@ namespace MoovAPI;
 @doc("""
   List adjustments associated with a Moov account.
   
-  To access this endpoint using a [token](https://docs.moov.io/api/authentication/access-tokens/) you'll need 
-  to specify the `/accounts/{accountID}/wallets.read` scope.
+  To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
+  you'll need to specify the `/accounts/{accountID}/wallets.read` scope.
   """)
 @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/wallets.read"]>)
+@extension("x-speakeasy-name-override", "list")
 op listAdjustments(
   ...CommonHeaders,
 
@@ -37,10 +40,11 @@ op listAdjustments(
 @doc("""
   Retrieve a specific adjustment associated with a Moov account.
   
-  To access this endpoint using a [token](https://docs.moov.io/api/authentication/access-tokens/) you'll need 
-  to specify the `/accounts/{accountID}/wallets.read` scope.
+  To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
+  you'll need to specify the `/accounts/{accountID}/wallets.read` scope.
   """)
 @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/wallets.read"]>)
+@extension("x-speakeasy-name-override", "get")
 op getAdjustment(
   ...CommonHeaders,
 

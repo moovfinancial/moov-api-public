@@ -1,10 +1,12 @@
 import "@typespec/http";
+import "@typespec/openapi";
 import "./models.paymentlink.tsp";
 import "../auth/models.auth.tsp";
 import "../common/models.header.tsp";
 import "../common/models.response.tsp";
 
 using TypeSpec.Http;
+using TypeSpec.OpenAPI;
 
 namespace MoovAPI;
 
@@ -14,10 +16,11 @@ namespace MoovAPI;
 @doc("""
   Create a payment link that allows an end user to make a payment on Moov's hosted payment link page.
   
-  To access this endpoint using a [token](https://docs.moov.io/api/authentication/access-tokens/) you'll need 
-  to specify the `/accounts/{accountID}/transfers.write` scope.
+  To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
+  you'll need to specify the `/accounts/{accountID}/transfers.write` scope.
   """)
 @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/transfers.write"]>)
+@extension("x-speakeasy-name-override", "create")
 op createPaymentLink(
   ...CommonHeaders,
 
@@ -34,10 +37,11 @@ op createPaymentLink(
 @doc("""
   List all the payment links created under a Moov account.
   
-  To access this endpoint using a [token](https://docs.moov.io/api/authentication/access-tokens/) you'll need 
-  to specify the `/accounts/{accountID}/transfers.read` scope.
+  To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
+  you'll need to specify the `/accounts/{accountID}/transfers.read` scope.
   """)
 @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/transfers.read"]>)
+@extension("x-speakeasy-name-override", "list")
 op listPaymentLinks(
   ...CommonHeaders,
 
@@ -52,10 +56,11 @@ op listPaymentLinks(
 @doc("""
   Retrieve a payment link by code.
   
-  To access this endpoint using a [token](https://docs.moov.io/api/authentication/access-tokens/) you'll need 
-  to specify the `/accounts/{accountID}/transfers.read` scope.
+  To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
+  you'll need to specify the `/accounts/{accountID}/transfers.read` scope.
   """)
 @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/transfers.read"]>)
+@extension("x-speakeasy-name-override", "get")
 op getPaymentLink(
   ...CommonHeaders,
 
@@ -73,10 +78,11 @@ op getPaymentLink(
 @doc("""
   Update a payment link.
   
-  To access this endpoint using a [token](https://docs.moov.io/api/authentication/access-tokens/) you'll need 
-  to specify the `/accounts/{accountID}/transfers.write` scope.
+  To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
+  you'll need to specify the `/accounts/{accountID}/transfers.write` scope.
   """)
 @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/transfers.write"]>)
+@extension("x-speakeasy-name-override", "update")
 op updatePaymentLink(
   ...CommonHeaders,
 
@@ -96,10 +102,11 @@ op updatePaymentLink(
 @doc("""
   Disable a payment link.
   
-  To access this endpoint using a [token](https://docs.moov.io/api/authentication/access-tokens/) you'll need 
-  to specify the `/accounts/{accountID}/transfers.write` scope.
+  To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
+  you'll need to specify the `/accounts/{accountID}/transfers.write` scope.
   """)
 @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/transfers.write"]>)
+@extension("x-speakeasy-name-override", "disable")
 op disablePaymentLink(
   ...CommonHeaders,
 
@@ -119,10 +126,11 @@ op disablePaymentLink(
   
   Use the `Accept` header to specify the format of the response. Supported formats are `application/json` and `image/png`.
   
-  To access this endpoint using a [token](https://docs.moov.io/api/authentication/access-tokens/) you'll need 
-  to specify the `/accounts/{accountID}/transfers.write` scope.
+  To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
+  you'll need to specify the `/accounts/{accountID}/transfers.write` scope.
   """)
 @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/transfers.write"]>)
+@extension("x-speakeasy-name-override", "getQRCode")
 op getPaymentLinkQRCode(
   ...CommonHeaders,
 

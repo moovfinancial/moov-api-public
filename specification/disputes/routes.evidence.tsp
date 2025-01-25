@@ -1,4 +1,5 @@
 import "@typespec/http";
+import "@typespec/openapi";
 import "./models.dispute.tsp";
 import "./models.evidence.tsp";
 import "../auth/models.auth.tsp";
@@ -7,21 +8,23 @@ import "../common/models.parameter.tsp";
 import "../common/models.response.tsp";
 
 using TypeSpec.Http;
+using TypeSpec.OpenAPI;
 
 namespace MoovAPI;
 
+@get
+@route("/accounts/{accountID}/disputes/{disputeID}/evidence")
+@tag("Disputes")
 @doc("""
   Returns a dispute's public evidence by its ID. 
   
   Read our [disputes guide](https://docs.moov.io/guides/money-movement/accept-payments/card-acceptance/disputes/) to learn more.
   
-  To use this endpoint from the browser, you'll need to specify the `/accounts/{accountID}/transfers.read` scope when generating 
-  a [token](https://docs.moov.io/api/authentication/access-tokens/).
+  To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
+  you'll need to specify the `/accounts/{accountID}/transfers.read` scope.
   """)
-@get
-@tag("Disputes")
-@route("/accounts/{accountID}/disputes/{disputeID}/evidence")
 @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/transfers.read"]>)
+@extension("x-speakeasy-name-override", "listEvidence")
 op listDisputeEvidence(
   ...CommonHeaders,
 
@@ -34,18 +37,19 @@ op listDisputeEvidence(
   disputeID: string,
 ): ListResponses<DisputeEvidenceMetadata>;
 
+@post
+@route("/accounts/{accountID}/disputes/{disputeID}/evidence-file")
+@tag("Disputes")
 @doc("""
   Uploads a file as evidence for a dispute. 
   
   Read our [disputes guide](https://docs.moov.io/guides/money-movement/accept-payments/card-acceptance/disputes/) to learn more.
   
-  To use this endpoint from the browser, you'll need to specify the `/accounts/{accountID}/transfers.write` scope when generating 
-  a [token](https://docs.moov.io/api/authentication/access-tokens/).
+  To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
+  you'll need to specify the `/accounts/{accountID}/transfers.write` scope.
   """)
-@post
-@tag("Disputes")
-@route("/accounts/{accountID}/disputes/{disputeID}/evidence-file")
 @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/transfers.write"]>)
+@extension("x-speakeasy-name-override", "uploadEvidenceFile")
 op uploadDisputeEvidenceFile(
   ...CommonHeaders,
   @header contentType: "multipart/form-data",
@@ -70,18 +74,19 @@ op uploadDisputeEvidenceFile(
   | InternalServerErrorResponse
   | GatewayTimeoutResponse;
 
+@post
+@route("/accounts/{accountID}/disputes/{disputeID}/evidence-text")
+@tag("Disputes")
 @doc("""
   Uploads text as evidence for a dispute.
   
   Read our [disputes guide](https://docs.moov.io/guides/money-movement/accept-payments/card-acceptance/disputes/) to learn more.
   
-  To use this endpoint from the browser, you'll need to specify the `/accounts/{accountID}/transfers.write` scope when generating 
-  a [token](https://docs.moov.io/api/authentication/access-tokens/).
+  To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
+  you'll need to specify the `/accounts/{accountID}/transfers.write` scope.
   """)
-@post
-@tag("Disputes")
-@route("/accounts/{accountID}/disputes/{disputeID}/evidence-text")
 @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/transfers.write"]>)
+@extension("x-speakeasy-name-override", "uploadEvidenceText")
 op uploadDisputeEvidenceText(
   ...CommonHeaders,
 
@@ -105,18 +110,19 @@ op uploadDisputeEvidenceText(
   | InternalServerErrorResponse
   | GatewayTimeoutResponse;
 
+@get
+@route("/accounts/{accountID}/disputes/{disputeID}/evidence/{evidenceID}")
+@tag("Disputes")
 @doc("""
   Get dispute evidence by ID.
   
   Read our [disputes guide](https://docs.moov.io/guides/money-movement/accept-payments/card-acceptance/disputes/) to learn more.
   
-  To use this endpoint from the browser, you'll need to specify the `/accounts/{accountID}/transfers.read` scope when generating 
-  a [token](https://docs.moov.io/api/authentication/access-tokens/).
+  To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
+  you'll need to specify the `/accounts/{accountID}/transfers.read` scope.
   """)
-@get
-@tag("Disputes")
-@route("/accounts/{accountID}/disputes/{disputeID}/evidence/{evidenceID}")
 @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/transfers.read"]>)
+@extension("x-speakeasy-name-override", "getEvidence")
 op getDisputeEvidence(
   ...CommonHeaders,
 
@@ -133,18 +139,19 @@ op getDisputeEvidence(
   evidenceID: string,
 ): GetResponses<DisputeEvidenceMetadata>;
 
+@patch
+@route("/accounts/{accountID}/disputes/{disputeID}/evidence/{evidenceID}")
+@tag("Disputes")
 @doc("""
   Updates dispute evidence by ID.
   
   Read our [disputes guide](https://docs.moov.io/guides/money-movement/accept-payments/card-acceptance/disputes/) to learn more.
   
-  To use this endpoint from the browser, you'll need to specify the `/accounts/{accountID}/transfers.write` scope when generating
-  a [token](https://docs.moov.io/api/authentication/access-tokens/).
+  To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
+  you'll need to specify the `/accounts/{accountID}/transfers.write` scope.
   """)
-@patch
-@tag("Disputes")
-@route("/accounts/{accountID}/disputes/{disputeID}/evidence/{evidenceID}")
 @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/transfers.write"]>)
+@extension("x-speakeasy-name-override", "updateEvidence")
 op updateDisputeEvidence(
   ...CommonHeaders,
 
@@ -171,18 +178,19 @@ op updateDisputeEvidence(
   | InternalServerErrorResponse
   | GatewayTimeoutResponse;
 
+@delete
+@tag("Disputes")
+@route("/accounts/{accountID}/disputes/{disputeID}/evidence/{evidenceID}")
 @doc("""
   Deletes dispute evidence by ID. 
   
   Read our [disputes guide](https://docs.moov.io/guides/money-movement/accept-payments/card-acceptance/disputes/) to learn more.
   
-  To use this endpoint from the browser, you'll need to specify the `/accounts/{accountID}/transfers.write` scope when generating 
-  a [token](https://docs.moov.io/api/authentication/access-tokens/).
+  To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
+  you'll need to specify the `/accounts/{accountID}/transfers.write` scope.
   """)
-@delete
-@tag("Disputes")
-@route("/accounts/{accountID}/disputes/{disputeID}/evidence/{evidenceID}")
 @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/transfers.write"]>)
+@extension("x-speakeasy-name-override", "deleteEvidence")
 op deleteDisputeEvidenceFile(
   ...CommonHeaders,
 
@@ -207,18 +215,19 @@ op deleteDisputeEvidenceFile(
   | InternalServerErrorResponse
   | GatewayTimeoutResponse;
 
+@get
+@route("/accounts/{accountID}/disputes/{disputeID}/evidence/{evidenceID}/data")
+@tag("Disputes")
 @doc("""
   Downloads dispute evidence data by ID.
   
   Read our [disputes guide](https://docs.moov.io/guides/money-movement/accept-payments/card-acceptance/disputes/) to learn more.
   
-  To use this endpoint from the browser, you'll need to specify the `/accounts/{accountID}/transfers.read` scope when generating 
-  a [token](https://docs.moov.io/api/authentication/access-tokens/).
+  To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
+  you'll need to specify the `/accounts/{accountID}/transfers.read` scope.
   """)
-@get
-@tag("Disputes")
-@route("/accounts/{accountID}/disputes/{disputeID}/evidence/{evidenceID}/data")
 @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/transfers.read"]>)
+@extension("x-speakeasy-name-override", "getEvidenceData")
 op getDisputeEvidenceData(
   ...CommonHeaders,
 
@@ -242,6 +251,9 @@ op getDisputeEvidenceData(
   | InternalServerErrorResponse
   | GatewayTimeoutResponse;
 
+@post
+@tag("Disputes")
+@route("/accounts/{accountID}/disputes/{disputeID}/evidence/submit")
 @doc("""
   Submit the evidence associated with a dispute.
   
@@ -250,13 +262,11 @@ op getDisputeEvidenceData(
   
   Read our [disputes guide](https://docs.moov.io/guides/money-movement/accept-payments/card-acceptance/disputes/) to learn more.
   
-  To use this endpoint from the browser, you'll need to specify the `/accounts/{accountID}/transfers.write` scope when generating 
-  a [token](https://docs.moov.io/api/authentication/access-tokens/).
+  To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
+  you'll need to specify the `/accounts/{accountID}/transfers.write` scope.
   """)
-@post
-@tag("Disputes")
-@route("/accounts/{accountID}/disputes/{disputeID}/evidence/submit")
 @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/transfers.write"]>)
+@extension("x-speakeasy-name-override", "submitEvidence")
 op submitDisputeEvidence(
   ...CommonHeaders,
 

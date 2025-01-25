@@ -16,8 +16,8 @@ namespace MoovAPI;
   List all fee plans available for use by an account. This is intended to be used by an account when 
   selecting a fee plan to apply to a connected account.
   
-  To access this endpoint using a [token](https://docs.moov.io/api/authentication/access-tokens/) you'll need 
-  to specify the `/accounts/{accountID}/profile.read` scope.
+  To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
+  you'll need to specify the `/accounts/{accountID}/profile.read` scope.
   """)
 @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/profile.read"]>)
 op listFeePlans(
@@ -38,8 +38,8 @@ op listFeePlans(
 @doc("""
   List all fee plan agreements associated with an account.
   
-  To access this endpoint using a [token](https://docs.moov.io/api/authentication/access-tokens/) you'll need 
-  to specify the `/accounts/{accountID}/profile.read` scope.
+  To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
+  you'll need to specify the `/accounts/{accountID}/profile.read` scope.
   """)
 @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/profile.read"]>)
 op listFeePlanAgreements(
@@ -64,8 +64,8 @@ op listFeePlanAgreements(
 @doc("""
   Creates the subscription of a fee plan to a merchant account. Merchants are required to accept the fee plan terms prior to activation.
   
-  To access this endpoint using a [token](https://docs.moov.io/api/authentication/access-tokens/) you'll need 
-  to specify the `/accounts/{accountID}/profile.write` scope.
+  To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
+  you'll need to specify the `/accounts/{accountID}/profile.write` scope.
   """)
 @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/profile.write"]>)
 op createFeePlanAgreements(
@@ -84,8 +84,8 @@ op createFeePlanAgreements(
 @doc("""
   List all partner pricing plans available for use by an account.
   
-  To access this endpoint using a [token](https://docs.moov.io/api/authentication/access-tokens/) you'll need 
-  to specify the `/accounts/{accountID}/profile.read` scope.
+  To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
+  you'll need to specify the `/accounts/{accountID}/profile.read` scope.
   """)
 @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/profile.read"]>)
 op listPartnerPricing(
@@ -106,8 +106,8 @@ op listPartnerPricing(
 @doc("""
   List all partner pricing agreements associated with an account.
   
-  To access this endpoint using a [token](https://docs.moov.io/api/authentication/access-tokens/) you'll need 
-  to specify the `/accounts/{accountID}/profile.read` scope.
+  To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
+  you'll need to specify the `/accounts/{accountID}/profile.read` scope.
   """)
 @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/profile.read"]>)
 op listPartnerPricingAgreements(

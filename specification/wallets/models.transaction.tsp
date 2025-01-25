@@ -1,4 +1,7 @@
-import "../main.tsp";
+import "@typespec/http";
+import "../common/models.parameter.tsp";
+
+using TypeSpec.Http;
 
 namespace MoovAPI;
 
@@ -97,5 +100,67 @@ model WalletTransaction {
   @pattern(Decimal9StringPattern)
   availableBalanceDecimal?: string;
 
+  sweepID?: SweepID;
+}
+
+model ListTransactionsQuery {
+  ...Pagination;
+
+  @path
+  walletID: WalletID;
+
+  @doc("""
+    Optional parameter to filter by transaction type.
+    """)
+  @query
+  transactionType?: WalletTransactionType;
+
+  @doc("""
+    Optional parameter to filter by source type (i.e. transfer, dispute, issuing-transaction).
+    """)
+  @query
+  sourceType?: WalletTransactionSourceType;
+
+  @doc("""
+    Optional parameter to filter by source ID.
+    """)
+  @format("uuid")
+  @query
+  sourceID?: string;
+
+  @doc("""
+    Optional parameter to filter by status (`pending` or `completed`).
+    """)
+  @query
+  status?: WalletTransactionStatus;
+
+  @doc("""
+    Optional date-time which inclusively filters all transactions created after this date-time.  
+    """)
+  @query
+  createdStartDateTime?: utcDateTime;
+
+  @doc("""
+    Optional date-time which exclusively filters all transactions created before this date-time.
+    """)
+  @query
+  createdEndDateTime?: utcDateTime;
+
+  @doc("""
+    Optional date-time which inclusively filters all transactions completed after this date-time.
+    """)
+  @query
+  completedStartDateTime?: utcDateTime;
+
+  @doc("""
+    Optional date-time which exclusively filters all transactions completed before this date-time.
+    """)
+  @query
+  completedEndDateTime?: utcDateTime;
+
+  @doc("""
+    Optional ID to filter for transactions accrued in a sweep.
+    """)
+  @query
   sweepID?: SweepID;
 }

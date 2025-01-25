@@ -1,4 +1,5 @@
 import "@typespec/http";
+import "@typespec/openapi";
 import "./models.card.tsp";
 import "../auth/models.auth.tsp";
 import "../common/models.header.tsp";
@@ -6,6 +7,7 @@ import "../common/models.parameter.tsp";
 import "../common/models.response.tsp";
 
 using TypeSpec.Http;
+using TypeSpec.OpenAPI;
 
 namespace MoovAPI;
 
@@ -15,10 +17,11 @@ namespace MoovAPI;
 @doc("""
   Request a virtual card be issued.
   
-  To use this endpoint from the browser, you'll need to specify the `/accounts/{accountID}/issued-cards.write` scope when generating 
-  a [token](https://docs.moov.io/api/authentication/access-tokens/).
+  To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
+  you'll need to specify the `/accounts/{accountID}/issued-cards.write` scope.
   """)
 @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/issued-cards.write"]>)
+@extension("x-speakeasy-name-override", "request")
 op requestCard(
   ...CommonHeaders,
 
@@ -45,10 +48,11 @@ op requestCard(
 @doc("""
   List Moov issued cards existing for the account.
   
-  To use this endpoint from the browser, you'll need to specify the `/accounts/{accountID}/issued-cards.read` scope when generating 
-  a [token](https://docs.moov.io/api/authentication/access-tokens/).
+  To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
+  you'll need to specify the `/accounts/{accountID}/issued-cards.read` scope.
   """)
 @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/issued-cards.read"]>)
+@extension("x-speakeasy-name-override", "list")
 op listIssuedCards(
   ...CommonHeaders,
 
@@ -70,10 +74,11 @@ op listIssuedCards(
 @doc("""
   Retrieve a single issued card associated with a Moov account.
   
-  To use this endpoint from the browser, you'll need to specify the `/accounts/{accountID}/issued-cards.read` scope when generating 
-  a [token](https://docs.moov.io/api/authentication/access-tokens/).
+  To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
+  you'll need to specify the `/accounts/{accountID}/issued-cards.read` scope.
   """)
 @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/issued-cards.read"]>)
+@extension("x-speakeasy-name-override", "get")
 op getIssuedCard(
   ...CommonHeaders,
 
@@ -93,10 +98,11 @@ op getIssuedCard(
 @doc("""
   Update a Moov issued card.
   
-  To use this endpoint from the browser, you'll need to specify the `/accounts/{accountID}/issued-cards.write` scope when generating 
-  a [token](https://docs.moov.io/api/authentication/access-tokens/).
+  To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
+  you'll need to specify the `/accounts/{accountID}/issued-cards.write` scope.
   """)
 @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/issued-cards.write"]>)
+@extension("x-speakeasy-name-override", "update")
 op updateIssuedCard(
   ...CommonHeaders,
 
@@ -120,10 +126,11 @@ op updateIssuedCard(
   
   Only use this endpoint if you have provided Moov with a copy of your PCI attestation of compliance.
   
-  To use this endpoint from the browser, you'll need to specify the `/accounts/{accountID}/issued-cards.read-secure` scope when generating 
-  a [token](https://docs.moov.io/api/authentication/access-tokens/).
+  To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
+  you'll need to specify the `/accounts/{accountID}/issued-cards.read-secure` scope.
   """)
 @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/issued-cards.read-secure"]>)
+@extension("x-speakeasy-name-override", "getFull")
 op getFullIssuedCard(
   ...CommonHeaders,
 

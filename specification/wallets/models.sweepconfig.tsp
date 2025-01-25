@@ -6,6 +6,44 @@ namespace MoovAPI;
 @format("uuid")
 scalar SweepConfigID extends string;
 
+model CreateSweepConfig {
+  walletID: WalletID;
+  status: SweepConfigStatus;
+  pushPaymentMethodID: PaymentMethodID;
+  pullPaymentMethodID: PaymentMethodID;
+  statementDescriptor?: SweepStatementDescriptor;
+
+  @pattern(Decimal2StringPattern)
+  minimumBalance?: string;
+}
+
+model CreateSweepConfigError {
+  walletID?: string;
+  status?: string;
+  pushPaymentMethodID?: string;
+  pullPaymentMethodID?: string;
+  statementDescriptor?: string;
+  minimumBalance?: string;
+}
+
+model PatchSweepConfig {
+  status?: SweepConfigStatus;
+  pushPaymentMethodID?: PaymentMethodID;
+  pullPaymentMethodID?: PaymentMethodID;
+  statementDescriptor?: SweepStatementDescriptor;
+
+  @pattern(Decimal2StringPattern)
+  minimumBalance?: string;
+}
+
+model PatchSweepConfigError {
+  status?: string;
+  pushPaymentMethodID?: string;
+  pullPaymentMethodID?: string;
+  statementDescriptor?: string;
+  minimumBalance?: string;
+}
+
 enum SweepConfigStatus {
   enabled,
   disabled,

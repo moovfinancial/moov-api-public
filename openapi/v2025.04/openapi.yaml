@@ -17,12 +17,13 @@ info:
 tags:
   - name: Accounts
   - name: Adjustments
-  - name: Cards
+  - name: Apple pay
   - name: Authentication
   - name: Bank accounts
   - name: Billing
   - name: Branding
   - name: Capabilities
+  - name: Cards
   - name: Disputes
   - name: End to End Encryption
   - name: Enriched address
@@ -61,6 +62,9 @@ paths:
 
         Visit our documentation to read more about [creating accounts](https://docs.moov.io/guides/accounts/create-accounts/) and [verification requirements](https://docs.moov.io/guides/accounts/requirements/identity-verification/).
         Note that the `mode` field (for production or sandbox) is only required when creating a _facilitator_ account. All non-facilitator account requests will ignore the mode field and be set to the calling facilitator's mode.
+
+        To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) you'll need 
+        to specify the `/accounts.write` scope.
       parameters:
         - $ref: '#/components/parameters/CommonHeaders'
         - name: x-wait-for
@@ -123,14 +127,18 @@ paths:
         - BasicAuth: []
         - OAuth2Auth:
             - /accounts.write
+      x-speakeasy-name-override: create
     get:
       operationId: listAccounts
       description: |-
         List or search accounts to which the caller is connected.
 
         All supported query parameters are optional. If none are provided the response will include all connected accounts.
-        Pagination is supported via the `skip` and `count` query parameters.
-        Searching by name and email will overlap and return results based on relevance.
+        Pagination is supported via the `skip` and `count` query parameters. Searching by name and email will overlap and 
+        return results based on relevance.
+
+        To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) you'll need 
+        to specify the `/accounts.read` scope.
       parameters:
         - $ref: '#/components/parameters/CommonHeaders'
         - $ref: '#/components/parameters/AccountsQuery.name'
@@ -177,10 +185,15 @@ paths:
         - BasicAuth: []
         - OAuth2Auth:
             - /accounts.read
+      x-speakeasy-name-override: list
   /accounts/{accountID}:
     get:
       operationId: getAccount
-      description: Retrieves details for the account with the specified ID.
+      description: |-
+        Retrieves details for the account with the specified ID.
+
+        To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) you'll need 
+        to specify the `/accounts/{accountID}/profile.read` scope.
       parameters:
         - $ref: '#/components/parameters/CommonHeaders'
         - name: accountID
@@ -214,8 +227,9 @@ paths:
         - BasicAuth: []
         - OAuth2Auth:
             - /accounts/{accountID}/profile.read
+      x-speakeasy-name-override: get
     patch:
-      operationId: patchAccount
+      operationId: updateAccount
       description: |-
         When **can** profile data be updated:
           + For unverified accounts, all profile data can be edited.
@@ -227,8 +241,8 @@ paths:
 
         If you need to update information in a locked state, please contact Moov support.
 
-        To use this endpoint from the browser, you'll need to specify the `/accounts/{accountID}/profile.write` scope when generating 
-        a [token](https://docs.moov.io/api/authentication/access-tokens/), and provide the changed information.
+        To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) you'll need 
+        to specify the `/accounts/{accountID}/profile.write` scope.
       parameters:
         - $ref: '#/components/parameters/CommonHeaders'
         - name: accountID
@@ -291,14 +305,16 @@ paths:
         - BasicAuth: []
         - OAuth2Auth:
             - /accounts/{accountID}/profile.write
+      x-speakeasy-name-override: update
     delete:
       operationId: disconnectAccount
-      description: |2-
-          This will sever the connection between you and the account specified and it will no longer be listed as active in the list of accounts. 
-          This also means you'll only have read-only access to the account going forward for reporting purposes.
+      description: |-
+        This will sever the connection between you and the account specified and it will no longer be listed as 
+        active in the list of accounts. This also means you'll only have read-only access to the account going 
+        forward for reporting purposes.
 
-          To use this endpoint from the browser, you'll need to specify the `/accounts/{accountID}/profile.disconnect` scope when generating 
-          a [token](https://docs.moov.io/api/authentication/access-tokens/), and provide the changed information.
+        To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
+        you'll need to specify the `/accounts/{accountID}/profile.disconnect` scope.
       parameters:
         - $ref: '#/components/parameters/CommonHeaders'
         - name: accountID
@@ -340,14 +356,15 @@ paths:
         - BasicAuth: []
         - OAuth2Auth:
             - /accounts/{accountID}/profile.disconnect
+      x-speakeasy-name-override: disconnect
   /accounts/{accountID}/adjustments:
     get:
       operationId: listAdjustments
       description: |-
         List adjustments associated with a Moov account.
 
-        To access this endpoint using a [token](https://docs.moov.io/api/authentication/access-tokens/) you'll need 
-        to specify the `/accounts/{accountID}/wallets.read` scope.
+        To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
+        you'll need to specify the `/accounts/{accountID}/wallets.read` scope.
       parameters:
         - $ref: '#/components/parameters/CommonHeaders'
         - name: accountID
@@ -389,14 +406,15 @@ paths:
         - BasicAuth: []
         - OAuth2Auth:
             - /accounts/{accountID}/wallets.read
+      x-speakeasy-name-override: list
   /accounts/{accountID}/adjustments/{adjustmentID}:
     get:
       operationId: getAdjustment
       description: |-
         Retrieve a specific adjustment associated with a Moov account.
 
-        To access this endpoint using a [token](https://docs.moov.io/api/authentication/access-tokens/) you'll need 
-        to specify the `/accounts/{accountID}/wallets.read` scope.
+        To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
+        you'll need to specify the `/accounts/{accountID}/wallets.read` scope.
       parameters:
         - $ref: '#/components/parameters/CommonHeaders'
         - name: accountID
@@ -436,6 +454,7 @@ paths:
         - BasicAuth: []
         - OAuth2Auth:
             - /accounts/{accountID}/wallets.read
+      x-speakeasy-name-override: get
   /accounts/{accountID}/apple-pay/domains:
     post:
       operationId: registerApplePayMerchantDomains
@@ -445,8 +464,8 @@ paths:
         Any domains that will be used to accept payments must first be [verified](https://docs.moov.io/guides/sources/cards/apple-pay/#register-your-domains) 
         with Apple.
 
-        To use this endpoint from the browser, you'll need to specify the `/accounts/{accountID}/apple-pay.write` scope when generating a 
-        [token](https://docs.moov.io/api/authentication/access-tokens/).
+        To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
+        you'll need to specify the `/accounts/{accountID}/apple-pay.write` scope.
       parameters:
         - $ref: '#/components/parameters/CommonHeaders'
         - name: accountID
@@ -484,7 +503,7 @@ paths:
         '504':
           description: The request failed because a downstream service failed to respond.
       tags:
-        - Cards
+        - Apple pay
       requestBody:
         required: true
         content:
@@ -495,16 +514,17 @@ paths:
         - BasicAuth: []
         - OAuth2Auth:
             - /accounts/{accountID}/apple-pay.write
+      x-speakeasy-name-override: registerMerchantDomains
     patch:
       operationId: updateApplePayMerchantDomains
-      description: |2-
-          Add or remove domains to be registered with Apple Pay. 
+      description: |-
+        Add or remove domains to be registered with Apple Pay. 
 
-          Any domains that will be used to accept payments must first be [verified](https://docs.moov.io/guides/sources/cards/apple-pay/#register-your-domains) 
-          with Apple.
-          
-          To use this endpoint from the browser, you'll need to specify the `/accounts/{accountID}/apple-pay.write` scope when generating a 
-          [token](https://docs.moov.io/api/authentication/access-tokens/).
+        Any domains that will be used to accept payments must first be [verified](https://docs.moov.io/guides/sources/cards/apple-pay/#register-your-domains) 
+        with Apple.
+
+        To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
+        you'll need to specify the `/accounts/{accountID}/apple-pay.write` scope.
       parameters:
         - $ref: '#/components/parameters/CommonHeaders'
         - name: accountID
@@ -540,7 +560,7 @@ paths:
         '504':
           description: The request failed because a downstream service failed to respond.
       tags:
-        - Cards
+        - Apple pay
       requestBody:
         required: true
         content:
@@ -551,15 +571,16 @@ paths:
         - BasicAuth: []
         - OAuth2Auth:
             - /accounts/{accountID}/apple-pay.write
+      x-speakeasy-name-override: updateMerchantDomains
     get:
       operationId: getApplePayMerchantDomains
-      description: |2-
-          Get domains registered with Apple Pay. 
-          
-          Read our [Apple Pay tutorial](https://docs.moov.io/guides/sources/cards/apple-pay/#register-your-domains) to learn more. 
-          
-          To use this endpoint from the browser, you'll need to specify the `/accounts/{accountID}/apple-pay.read` scope when generating a 
-          [token](https://docs.moov.io/api/authentication/access-tokens/).
+      description: |-
+        Get domains registered with Apple Pay. 
+
+        Read our [Apple Pay tutorial](https://docs.moov.io/guides/sources/cards/apple-pay/#register-your-domains) to learn more. 
+
+        To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
+        you'll need to specify the `/accounts/{accountID}/apple-pay.read` scope.
       parameters:
         - $ref: '#/components/parameters/CommonHeaders'
         - name: accountID
@@ -589,11 +610,12 @@ paths:
         '504':
           description: The request failed because a downstream service failed to respond.
       tags:
-        - Cards
+        - Apple pay
       security:
         - BasicAuth: []
         - OAuth2Auth:
             - /accounts/{accountID}/apple-pay.read
+      x-speakeasy-name-override: getMerchantDomains
   /accounts/{accountID}/apple-pay/sessions:
     post:
       operationId: createApplePaySession
@@ -603,8 +625,8 @@ paths:
         Read our [Apple Pay tutorial](https://docs.moov.io/guides/sources/cards/apple-pay/#register-your-domains) to learn more. 
         A successful response from this endpoint should be passed through to Apple Pay unchanged. 
 
-        To use this endpoint from the browser, you'll need to specify the `/accounts/{accountID}/apple-pay.write` scope when generating 
-        a [token](https://docs.moov.io/api/authentication/access-tokens/).
+        To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
+        you'll need to specify the `/accounts/{accountID}/apple-pay.write` scope.
       parameters:
         - $ref: '#/components/parameters/CommonHeaders'
         - name: accountID
@@ -652,7 +674,7 @@ paths:
         '504':
           description: The request failed because a downstream service failed to respond.
       tags:
-        - Cards
+        - Apple pay
       requestBody:
         required: true
         content:
@@ -663,6 +685,7 @@ paths:
         - BasicAuth: []
         - OAuth2Auth:
             - /accounts/{accountID}/apple-pay.write
+      x-speakeasy-name-override: createSession
   /accounts/{accountID}/apple-pay/tokens:
     post:
       operationId: linkApplePayToken
@@ -672,8 +695,8 @@ paths:
         Read our [Apple Pay tutorial](https://docs.moov.io/guides/sources/cards/apple-pay/#register-your-domains) to learn more. 
         The `token` data is defined by Apple Pay and should be passed through from Apple Pay's response unmodified.
 
-        To use this endpoint from the browser, you'll need to specify the `/accounts/{accountID}/cards.write` scope when generating 
-        a [token](https://docs.moov.io/api/authentication/access-tokens/).
+        To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
+        you'll need to specify the `/accounts/{accountID}/cards.write` scope.
       parameters:
         - $ref: '#/components/parameters/CommonHeaders'
         - name: accountID
@@ -721,7 +744,7 @@ paths:
         '504':
           description: The request failed because a downstream service failed to respond.
       tags:
-        - Cards
+        - Apple pay
       requestBody:
         required: true
         content:
@@ -732,18 +755,20 @@ paths:
         - BasicAuth: []
         - OAuth2Auth:
             - /accounts/{accountID}/cards.write
+      x-speakeasy-name-override: linkToken
   /accounts/{accountID}/bank-accounts:
     post:
       operationId: linkBankAccount
       description: |-
         Link a bank account to an existing Moov account. Read our [bank accounts guide](https://docs.moov.io/guides/sources/bank-accounts/) to learn more.
 
-        To use this endpoint from the browser, you'll need to specify the `/accounts/{accountID}/bank-accounts.write` scope when generating a [token](https://docs.moov.io/api/authentication/access-tokens/).
-
         It is strongly recommended that callers include the `X-Wait-For` header, set to `payment-method`, if the newly linked
         bank-account is intended to be used right away. If this header is not included, the caller will need to poll the [List Payment
         Methods](https://docs.moov.io/api/sources/payment-methods/list/)
         endpoint to wait for the new payment methods to be available for use.
+
+        To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
+        you'll need to specify the `/accounts/{accountID}/bank-accounts.write` scope.
       parameters:
         - $ref: '#/components/parameters/CommonHeaders'
         - name: x-wait-for
@@ -811,14 +836,16 @@ paths:
         - BasicAuth: []
         - OAuth2Auth:
             - /accounts/{accountID}/bank-accounts.write
+      x-speakeasy-name-override: link
     get:
       operationId: listBankAccounts
       description: |-
         List all the bank accounts associated with a particular Moov account. 
 
-        Read our [bank accounts guide](https://docs.moov.io/guides/sources/bank-accounts/) to learn more. To use this endpoint 
-        from the browser, you'll need to specify the `/accounts/{accountID}/bank-accounts.read` scope when generating a 
-        [token](https://docs.moov.io/api/authentication/access-tokens/).
+        Read our [bank accounts guide](https://docs.moov.io/guides/sources/bank-accounts/) to learn more. 
+
+        To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
+        you'll need to specify the `/accounts/{accountID}/bank-accounts.read` scope.
       parameters:
         - $ref: '#/components/parameters/CommonHeaders'
         - name: accountID
@@ -852,15 +879,17 @@ paths:
         - BasicAuth: []
         - OAuth2Auth:
             - /accounts/{accountID}/bank-accounts.read
+      x-speakeasy-name-override: list
   /accounts/{accountID}/bank-accounts/{bankAccountID}:
     get:
       operationId: getBankAccount
       description: |-
         Retrieve bank account details (i.e. routing number or account type) associated with a specific Moov account. 
 
-        Read our [bank accounts guide](https://docs.moov.io/guides/sources/bank-accounts/) to learn more. To use this 
-        endpoint from the browser, you'll need to specify the `/accounts/{accountID}/bank-accounts.read` scope when 
-        generating a [token](https://docs.moov.io/api/authentication/access-tokens/).
+        Read our [bank accounts guide](https://docs.moov.io/guides/sources/bank-accounts/) to learn more. 
+
+        To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
+        you'll need to specify the `/accounts/{accountID}/bank-accounts.read` scope.
       parameters:
         - $ref: '#/components/parameters/CommonHeaders'
         - name: accountID
@@ -900,13 +929,14 @@ paths:
         - BasicAuth: []
         - OAuth2Auth:
             - /accounts/{accountID}/bank-accounts.read
+      x-speakeasy-name-override: get
     delete:
       operationId: disableBankAccount
       description: |-
         Discontinue using a specified bank account linked to a Moov account. 
 
-        To use this endpoint from the browser, you'll need to specify the `/accounts/{accountID}/bank-accounts.write` scope 
-        when generating a [token](https://docs.moov.io/api/authentication/access-tokens/).
+        To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
+        you'll need to specify the `/accounts/{accountID}/bank-accounts.write` scope.
       parameters:
         - $ref: '#/components/parameters/CommonHeaders'
         - name: accountID
@@ -954,19 +984,26 @@ paths:
         - BasicAuth: []
         - OAuth2Auth:
             - /accounts/{accountID}/bank-accounts.write
+      x-speakeasy-name-override: disable
   /accounts/{accountID}/bank-accounts/{bankAccountID}/micro-deposits:
     post:
       operationId: initiateMicroDeposits
       description: |-
-        Micro-deposits help confirm bank account ownership, helping reduce fraud and the risk of unauthorized activity. Use this method to initiate the micro-deposit verification, sending two small credit transfers to the bank account you want to confirm.
+        Micro-deposits help confirm bank account ownership, helping reduce fraud and the risk of unauthorized activity. 
+        Use this method to initiate the micro-deposit verification, sending two small credit transfers to the bank account 
+        you want to confirm.
 
-        If you request micro-deposits before 4:15PM ET, they will appear that same day. If you request micro-deposits any time after 4:15PM ET, they will appear the next banking day. When the two credits are initiated, Moov simultaneously initiates a debit to recoup the micro-deposits. 
+        If you request micro-deposits before 4:15PM ET, they will appear that same day. If you request micro-deposits any 
+        time after 4:15PM ET, they will appear the next banking day. When the two credits are initiated, Moov simultaneously
+        initiates a debit to recoup the micro-deposits. 
 
-        `sandbox` - Micro-deposits initiated for a `sandbox` bank account will always be `$0.00` / `$0.00` and instantly verifiable once initiated.
+        Micro-deposits initiated for a `sandbox` bank account will always be `$0.00` / `$0.00` and instantly verifiable once initiated.
 
-        You can simulate micro-deposit verification in test mode. See our [test mode](https://docs.moov.io/guides/get-started/test-mode/#micro-deposits) guide for more information.
+        You can simulate micro-deposit verification in test mode. See our [test mode](https://docs.moov.io/guides/get-started/test-mode/#micro-deposits)
+        guide for more information.
 
-        To use this endpoint from the browser, you'll need to specify the `/accounts/{accountID}/bank-accounts.write` scope when generating a [token](https://docs.moov.io/api/authentication/access-tokens/).
+        To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
+        you'll need to specify the `/accounts/{accountID}/bank-accounts.write` scope.
       parameters:
         - $ref: '#/components/parameters/CommonHeaders'
         - name: accountID
@@ -1019,8 +1056,8 @@ paths:
       description: |-
         Complete the micro-deposit validation process by passing the amounts of the two transfers within three tries.
 
-        To use this endpoint from the browser, you'll need to specify the `/accounts/{accountID}/bank-accounts.write` scope when generating a 
-        [token](https://docs.moov.io/api/authentication/access-tokens/).
+        To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
+        you'll need to specify the `/accounts/{accountID}/bank-accounts.write` scope.
       parameters:
         - $ref: '#/components/parameters/CommonHeaders'
         - name: accountID
@@ -1099,8 +1136,8 @@ paths:
         - `expired`: Verification expired after 14 days, initiate another verification
         - `max-attempts-exceeded`: Five incorrect code attempts exhausted, initiate another verification
 
-        To use this endpoint from the browser, you'll need to specify the `/accounts/{accountID}/bank-accounts.read` scope when generating a 
-        [token](https://docs.moov.io/api/authentication/access-tokens/).
+        To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
+        you'll need to specify the `/accounts/{accountID}/bank-accounts.read` scope.
       parameters:
         - $ref: '#/components/parameters/CommonHeaders'
         - name: accountID
@@ -1140,16 +1177,17 @@ paths:
         - BasicAuth: []
         - OAuth2Auth:
             - /accounts/{accountID}/bank-accounts.read
+      x-speakeasy-name-override: getVerification
     post:
       operationId: initiateBankAccountVerification
       description: |-
         Instant micro-deposit verification offers a quick and efficient way to verify bank account ownership. 
 
-        Send a $0.01 credit with a unique verification code via RTP or same-day ACH, depending on the receiving bank’s capabilities. This
+        Send a $0.01 credit with a unique verification code via RTP or same-day ACH, depending on the receiving bank's capabilities. This
         feature provides a faster alternative to traditional methods, allowing verification in a single session.
 
         It is recommended to use the `X-Wait-For: rail-response` header to synchronously receive the outcome of the instant credit in the
-         response payload.
+          response payload.
 
         Possible verification methods:
           - `instant`: Real-time verification credit sent via RTP
@@ -1160,8 +1198,8 @@ paths:
           - `sent-credit`: Credit sent, available for verification in the external bank account
           - `failed`: Verification failed due to credit rejection/return, details in `exceptionDetails`
 
-        To use this endpoint from the browser, you'll need to specify the `/accounts/{accountID}/bank-accounts.write` scope when generating a 
-        [token](https://docs.moov.io/api/authentication/access-tokens/).
+        To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
+        you'll need to specify the `/accounts/{accountID}/bank-accounts.write` scope.
       parameters:
         - $ref: '#/components/parameters/CommonHeaders'
         - name: x-wait-for
@@ -1222,10 +1260,11 @@ paths:
         - BasicAuth: []
         - OAuth2Auth:
             - /accounts/{accountID}/bank-accounts.write
+      x-speakeasy-name-override: initiateVerification
     put:
       operationId: completeBankAccountVerification
       description: |-
-        Finalize the instant micro-deposit verification by submitting the verification code displayed in the user’s bank account. 
+        Finalize the instant micro-deposit verification by submitting the verification code displayed in the user's bank account. 
 
         Upon successful verification, the bank account status will be updated to `verified` and eligible for ACH debit transactions.
 
@@ -1234,8 +1273,8 @@ paths:
         - `mv0000`
         - `0000`
 
-        To use this endpoint from the browser, you'll need to specify the `/accounts/{accountID}/bank-accounts.write` scope when 
-        generating a [token](https://docs.moov.io/api/authentication/access-tokens/).
+        To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
+        you'll need to specify the `/accounts/{accountID}/bank-accounts.write` scope.
       parameters:
         - $ref: '#/components/parameters/CommonHeaders'
         - name: accountID
@@ -1299,10 +1338,15 @@ paths:
         - BasicAuth: []
         - OAuth2Auth:
             - /accounts/{accountID}/bank-accounts.write
+      x-speakeasy-name-override: completeVerification
   /accounts/{accountID}/branding:
     post:
-      operationId: postBrand
-      description: Creates the brand properties for the specified account.
+      operationId: createBrand
+      description: |-
+        Create brand properties for the specified account.
+
+        To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
+        you'll need to specify the `/accounts/{accountID}/branding.write` scope.
       parameters:
         - $ref: '#/components/parameters/CommonHeaders'
         - name: accountID
@@ -1360,9 +1404,14 @@ paths:
         - BasicAuth: []
         - OAuth2Auth:
             - /accounts/{accountID}/branding.write
+      x-speakeasy-name-override: create
     get:
       operationId: getBrand
-      description: Gets the brand properties for the specified account.
+      description: |-
+        Get brand properties for the specified account.
+
+        To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
+        you'll need to specify the `/accounts/{accountID}/branding.read` scope.
       parameters:
         - $ref: '#/components/parameters/CommonHeaders'
         - name: accountID
@@ -1396,9 +1445,14 @@ paths:
         - BasicAuth: []
         - OAuth2Auth:
             - /accounts/{accountID}/branding.read
+      x-speakeasy-name-override: get
     patch:
       operationId: updateBrand
-      description: Updates the brand properties for the specified account.
+      description: |-
+        Updates the brand properties for the specified account.
+
+        To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
+        you'll need to specify the `/accounts/{accountID}/branding.write` scope.
       parameters:
         - $ref: '#/components/parameters/CommonHeaders'
         - name: accountID
@@ -1456,6 +1510,7 @@ paths:
         - BasicAuth: []
         - OAuth2Auth:
             - /accounts/{accountID}/branding.write
+      x-speakeasy-name-override: update
   /accounts/{accountID}/capabilities:
     get:
       operationId: listCapabilities
@@ -1463,6 +1518,9 @@ paths:
         Retrieve all the capabilities an account has requested.
 
         Read our [capabilities guide](https://docs.moov.io/guides/accounts/capabilities/) to learn more.
+
+        To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
+        you'll need to specify the `/accounts/{accountID}/capabilities.read` scope.
       parameters:
         - $ref: '#/components/parameters/CommonHeaders'
         - name: accountID
@@ -1510,12 +1568,14 @@ paths:
         - BasicAuth: []
         - OAuth2Auth:
             - /accounts/{accountID}/capabilities.read
+      x-speakeasy-name-override: list
     post:
-      operationId: addCapabilities
+      operationId: requestCapabilities
       description: |-
         Request capabilities for a specific account. Read our [capabilities guide](https://docs.moov.io/guides/accounts/capabilities/) to learn more.
 
-        To use this endpoint from the browser, you'll need to specify the `/accounts/{accountID}/capabilities.write` scope when generating a [token](https://docs.moov.io/api/authentication/access-tokens/).
+        To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
+        you'll need to specify the `/accounts/{accountID}/capabilities.write` scope.
       parameters:
         - $ref: '#/components/parameters/CommonHeaders'
         - name: accountID
@@ -1592,13 +1652,15 @@ paths:
         - BasicAuth: []
         - OAuth2Auth:
             - /accounts/{accountID}/capabilities.write
+      x-speakeasy-name-override: request
   /accounts/{accountID}/capabilities/{capabilityID}:
     get:
       operationId: getCapability
       description: |-
         Retrieve a specific capability that an account has requested. Read our [capabilities guide](https://docs.moov.io/guides/accounts/capabilities/) to learn more.
 
-        To use this endpoint from the browser, you'll need to specify the `/accounts/{accountID}/capabilities.read` scope when generating a [token](https://docs.moov.io/api/authentication/access-tokens/).
+        To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
+        you'll need to specify the `/accounts/{accountID}/capabilities.read` scope.
       parameters:
         - $ref: '#/components/parameters/CommonHeaders'
         - name: accountID
@@ -1643,12 +1705,14 @@ paths:
         - BasicAuth: []
         - OAuth2Auth:
             - /accounts/{accountID}/capabilities.read
+      x-speakeasy-name-override: get
     delete:
       operationId: disableCapability
       description: |-
         Disable a specific capability that an account has requested. Read our [capabilities guide](https://docs.moov.io/guides/accounts/capabilities/) to learn more.
 
-        To use this endpoint from the browser, you'll need to specify the `/accounts/{accountID}/capabilities.write` scope when generating a [token](https://docs.moov.io/api/authentication/access-tokens/).
+          To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
+        you'll need to specify the `/accounts/{accountID}/capabilities.write` scope.
       parameters:
         - $ref: '#/components/parameters/CommonHeaders'
         - name: accountID
@@ -1695,6 +1759,7 @@ paths:
         - BasicAuth: []
         - OAuth2Auth:
             - /accounts/{accountID}/capabilities.write
+      x-speakeasy-name-override: disable
   /accounts/{accountID}/cards:
     post:
       operationId: linkCard
@@ -1715,8 +1780,8 @@ paths:
         Methods](https://docs.moov.io/api/sources/payment-methods/list/)
         endpoint to wait for the new payment methods to be available for use.
 
-        To use this endpoint from the browser, you'll need to specify the `/accounts/{accountID}/cards.write` scope
-        when generating a [token](https://docs.moov.io/api/authentication/access-tokens/).
+        To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
+        you'll need to specify the `/accounts/{accountID}/cards.write` scope.
       parameters:
         - $ref: '#/components/parameters/CommonHeaders'
         - name: x-wait-for
@@ -1784,6 +1849,7 @@ paths:
         - BasicAuth: []
         - OAuth2Auth:
             - /accounts/{accountID}/cards.write
+      x-speakeasy-name-override: link
     get:
       operationId: listCards
       description: |-
@@ -1791,8 +1857,8 @@ paths:
 
         Read our [accept card payments guide](https://docs.moov.io/guides/sources/cards/accept-card-payments/) to learn more.
 
-        To use this endpoint from the browser, you'll need to specify the `/accounts/{accountID}/cards.read` scope when generating 
-        a [token](https://docs.moov.io/api/authentication/access-tokens/).
+        To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
+        you'll need to specify the `/accounts/{accountID}/cards.read` scope.
       parameters:
         - $ref: '#/components/parameters/CommonHeaders'
         - name: accountID
@@ -1826,6 +1892,7 @@ paths:
         - BasicAuth: []
         - OAuth2Auth:
             - /accounts/{accountID}/cards.read
+      x-speakeasy-name-override: list
   /accounts/{accountID}/cards/{cardID}:
     get:
       operationId: getCard
@@ -1834,8 +1901,8 @@ paths:
 
         Read our [accept card payments guide](https://docs.moov.io/guides/sources/cards/accept-card-payments/) to learn more.
 
-        To use this endpoint from the browser, you'll need to specify the `/accounts/{accountID}/cards.read` scope when generating 
-        a [token](https://docs.moov.io/api/authentication/access-tokens/).
+        To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
+        you'll need to specify the `/accounts/{accountID}/cards.read` scope.
       parameters:
         - $ref: '#/components/parameters/CommonHeaders'
         - name: accountID
@@ -1874,6 +1941,7 @@ paths:
         - BasicAuth: []
         - OAuth2Auth:
             - /accounts/{accountID}/cards.read
+      x-speakeasy-name-override: get
     patch:
       operationId: updateCard
       description: |-
@@ -1888,8 +1956,8 @@ paths:
 
         Only use this endpoint if you have provided Moov with a copy of your PCI attestation of compliance. 
 
-        To use this endpoint from the browser, you'll need to specify the `/accounts/{accountID}/cards.write` scope when generating 
-        a [token](https://docs.moov.io/api/authentication/access-tokens/).
+        To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
+        you'll need to specify the `/accounts/{accountID}/cards.write` scope.
       parameters:
         - $ref: '#/components/parameters/CommonHeaders'
         - name: accountID
@@ -1952,13 +2020,14 @@ paths:
         - BasicAuth: []
         - OAuth2Auth:
             - /accounts/{accountID}/cards.write
+      x-speakeasy-name-override: update
     delete:
       operationId: disableCard
       description: |-
         Disables a card associated with a Moov account.
 
-        To use this endpoint from the browser, you'll need to specify the `/accounts/{accountID}/cards.write` scope when generating 
-        a [token](https://docs.moov.io/api/authentication/access-tokens/).
+        To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
+        you'll need to specify the `/accounts/{accountID}/cards.write` scope.
       parameters:
         - $ref: '#/components/parameters/CommonHeaders'
         - name: accountID
@@ -2005,14 +2074,15 @@ paths:
         - BasicAuth: []
         - OAuth2Auth:
             - /accounts/{accountID}/cards.write
+      x-speakeasy-name-override: disable
   /accounts/{accountID}/countries:
     get:
       operationId: getAccountCountries
       description: |-
         Retrieve the specified countries of operation for an account. 
 
-        To use this endpoint from the browser, you'll need to specify the `/accounts/{accountID}/profile.read` scope when generating 
-        a [token](https://docs.moov.io/api/authentication/access-tokens/).
+        To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
+        you'll need to specify the `/accounts/{accountID}/profile.read` scope.
       parameters:
         - $ref: '#/components/parameters/CommonHeaders'
         - name: accountID
@@ -2046,6 +2116,7 @@ paths:
         - BasicAuth: []
         - OAuth2Auth:
             - /accounts/{accountID}/profile.read
+      x-speakeasy-name-override: getCountries
     put:
       operationId: assignAccountCountries
       description: |-
@@ -2053,8 +2124,8 @@ paths:
 
         This endpoint will always overwrite the previously assigned values. 
 
-        To use this endpoint from the browser, you'll need to specify the `/accounts/{accountID}/profile.write` scope when generating 
-        a [token](https://docs.moov.io/api/authentication/access-tokens/).
+        To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
+        you'll need to specify the `/accounts/{accountID}/profile.write` scope.
       parameters:
         - $ref: '#/components/parameters/CommonHeaders'
         - name: accountID
@@ -2112,6 +2183,7 @@ paths:
         - BasicAuth: []
         - OAuth2Auth:
             - /accounts/{accountID}/profile.write
+      x-speakeasy-name-override: assignCountries
   /accounts/{accountID}/disputes:
     get:
       operationId: listDisputes
@@ -2120,8 +2192,8 @@ paths:
 
         Read our [disputes guide](https://docs.moov.io/guides/money-movement/accept-payments/card-acceptance/disputes/) to learn more.
 
-        To use this endpoint from the browser, you'll need to specify the `/accounts/{accountID}/transfers.read` scope when generating 
-        a [token](https://docs.moov.io/api/authentication/access-tokens/).
+        To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
+        you'll need to specify the `/accounts/{accountID}/transfers.read` scope.
       parameters:
         - $ref: '#/components/parameters/CommonHeaders'
         - name: accountID
@@ -2180,6 +2252,7 @@ paths:
         - BasicAuth: []
         - OAuth2Auth:
             - /accounts/{accountID}/transfers.read
+      x-speakeasy-name-override: list
   /accounts/{accountID}/disputes/{disputeID}:
     get:
       operationId: getDispute
@@ -2188,8 +2261,8 @@ paths:
 
         Read our [disputes guide](https://docs.moov.io/guides/money-movement/accept-payments/card-acceptance/disputes/) to learn more.
 
-        To use this endpoint from the browser, you'll need to specify the `/accounts/{accountID}/transfers.read` scope when generating 
-        a [token](https://docs.moov.io/api/authentication/access-tokens/).
+        To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
+        you'll need to specify the `/accounts/{accountID}/transfers.read` scope.
       parameters:
         - $ref: '#/components/parameters/CommonHeaders'
         - name: accountID
@@ -2242,16 +2315,17 @@ paths:
         - BasicAuth: []
         - OAuth2Auth:
             - /accounts/{accountID}/transfers.read
+      x-speakeasy-name-override: get
   /accounts/{accountID}/disputes/{disputeID}/accept:
     post:
       operationId: acceptDispute
       description: |-
-        Accepts a dispute. 
+        Accepts liability for a dispute. 
 
         Read our [disputes guide](https://docs.moov.io/guides/money-movement/accept-payments/card-acceptance/disputes/) to learn more.
 
-        To use this endpoint from the browser, you'll need to specify the `/accounts/{accountID}/transfers.write` scope when generating 
-        a [token](https://docs.moov.io/api/authentication/access-tokens/).
+        To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
+        you'll need to specify the `/accounts/{accountID}/transfers.read` scope.
       parameters:
         - $ref: '#/components/parameters/CommonHeaders'
         - name: accountID
@@ -2316,6 +2390,7 @@ paths:
         - BasicAuth: []
         - OAuth2Auth:
             - /accounts/{accountID}/transfers.write
+      x-speakeasy-name-override: accept
   /accounts/{accountID}/disputes/{disputeID}/evidence:
     get:
       operationId: listDisputeEvidence
@@ -2324,8 +2399,8 @@ paths:
 
         Read our [disputes guide](https://docs.moov.io/guides/money-movement/accept-payments/card-acceptance/disputes/) to learn more.
 
-        To use this endpoint from the browser, you'll need to specify the `/accounts/{accountID}/transfers.read` scope when generating 
-        a [token](https://docs.moov.io/api/authentication/access-tokens/).
+        To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
+        you'll need to specify the `/accounts/{accountID}/transfers.read` scope.
       parameters:
         - $ref: '#/components/parameters/CommonHeaders'
         - name: accountID
@@ -2365,6 +2440,7 @@ paths:
         - BasicAuth: []
         - OAuth2Auth:
             - /accounts/{accountID}/transfers.read
+      x-speakeasy-name-override: listEvidence
   /accounts/{accountID}/disputes/{disputeID}/evidence-file:
     post:
       operationId: uploadDisputeEvidenceFile
@@ -2373,8 +2449,8 @@ paths:
 
         Read our [disputes guide](https://docs.moov.io/guides/money-movement/accept-payments/card-acceptance/disputes/) to learn more.
 
-        To use this endpoint from the browser, you'll need to specify the `/accounts/{accountID}/transfers.write` scope when generating 
-        a [token](https://docs.moov.io/api/authentication/access-tokens/).
+        To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
+        you'll need to specify the `/accounts/{accountID}/transfers.write` scope.
       parameters:
         - $ref: '#/components/parameters/CommonHeaders'
         - name: accountID
@@ -2428,6 +2504,7 @@ paths:
         - BasicAuth: []
         - OAuth2Auth:
             - /accounts/{accountID}/transfers.write
+      x-speakeasy-name-override: uploadEvidenceFile
   /accounts/{accountID}/disputes/{disputeID}/evidence-text:
     post:
       operationId: uploadDisputeEvidenceText
@@ -2436,8 +2513,8 @@ paths:
 
         Read our [disputes guide](https://docs.moov.io/guides/money-movement/accept-payments/card-acceptance/disputes/) to learn more.
 
-        To use this endpoint from the browser, you'll need to specify the `/accounts/{accountID}/transfers.write` scope when generating 
-        a [token](https://docs.moov.io/api/authentication/access-tokens/).
+        To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
+        you'll need to specify the `/accounts/{accountID}/transfers.write` scope.
       parameters:
         - $ref: '#/components/parameters/CommonHeaders'
         - name: accountID
@@ -2495,6 +2572,7 @@ paths:
         - BasicAuth: []
         - OAuth2Auth:
             - /accounts/{accountID}/transfers.write
+      x-speakeasy-name-override: uploadEvidenceText
   /accounts/{accountID}/disputes/{disputeID}/evidence/submit:
     post:
       operationId: submitDisputeEvidence
@@ -2506,8 +2584,8 @@ paths:
 
         Read our [disputes guide](https://docs.moov.io/guides/money-movement/accept-payments/card-acceptance/disputes/) to learn more.
 
-        To use this endpoint from the browser, you'll need to specify the `/accounts/{accountID}/transfers.write` scope when generating 
-        a [token](https://docs.moov.io/api/authentication/access-tokens/).
+        To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
+        you'll need to specify the `/accounts/{accountID}/transfers.write` scope.
       parameters:
         - $ref: '#/components/parameters/CommonHeaders'
         - name: accountID
@@ -2559,6 +2637,7 @@ paths:
         - BasicAuth: []
         - OAuth2Auth:
             - /accounts/{accountID}/transfers.write
+      x-speakeasy-name-override: submitEvidence
   /accounts/{accountID}/disputes/{disputeID}/evidence/{evidenceID}:
     get:
       operationId: getDisputeEvidence
@@ -2567,8 +2646,8 @@ paths:
 
         Read our [disputes guide](https://docs.moov.io/guides/money-movement/accept-payments/card-acceptance/disputes/) to learn more.
 
-        To use this endpoint from the browser, you'll need to specify the `/accounts/{accountID}/transfers.read` scope when generating 
-        a [token](https://docs.moov.io/api/authentication/access-tokens/).
+        To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
+        you'll need to specify the `/accounts/{accountID}/transfers.read` scope.
       parameters:
         - $ref: '#/components/parameters/CommonHeaders'
         - name: accountID
@@ -2614,6 +2693,7 @@ paths:
         - BasicAuth: []
         - OAuth2Auth:
             - /accounts/{accountID}/transfers.read
+      x-speakeasy-name-override: getEvidence
     patch:
       operationId: updateDisputeEvidence
       description: |-
@@ -2621,8 +2701,8 @@ paths:
 
         Read our [disputes guide](https://docs.moov.io/guides/money-movement/accept-payments/card-acceptance/disputes/) to learn more.
 
-        To use this endpoint from the browser, you'll need to specify the `/accounts/{accountID}/transfers.write` scope when generating
-        a [token](https://docs.moov.io/api/authentication/access-tokens/).
+        To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
+        you'll need to specify the `/accounts/{accountID}/transfers.write` scope.
       parameters:
         - $ref: '#/components/parameters/CommonHeaders'
         - name: accountID
@@ -2680,6 +2760,7 @@ paths:
         - BasicAuth: []
         - OAuth2Auth:
             - /accounts/{accountID}/transfers.write
+      x-speakeasy-name-override: updateEvidence
     delete:
       operationId: deleteDisputeEvidenceFile
       description: |-
@@ -2687,8 +2768,8 @@ paths:
 
         Read our [disputes guide](https://docs.moov.io/guides/money-movement/accept-payments/card-acceptance/disputes/) to learn more.
 
-        To use this endpoint from the browser, you'll need to specify the `/accounts/{accountID}/transfers.write` scope when generating 
-        a [token](https://docs.moov.io/api/authentication/access-tokens/).
+        To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
+        you'll need to specify the `/accounts/{accountID}/transfers.write` scope.
       parameters:
         - $ref: '#/components/parameters/CommonHeaders'
         - name: accountID
@@ -2736,6 +2817,7 @@ paths:
         - BasicAuth: []
         - OAuth2Auth:
             - /accounts/{accountID}/transfers.write
+      x-speakeasy-name-override: deleteEvidence
   /accounts/{accountID}/disputes/{disputeID}/evidence/{evidenceID}/data:
     get:
       operationId: getDisputeEvidenceData
@@ -2744,8 +2826,8 @@ paths:
 
         Read our [disputes guide](https://docs.moov.io/guides/money-movement/accept-payments/card-acceptance/disputes/) to learn more.
 
-        To use this endpoint from the browser, you'll need to specify the `/accounts/{accountID}/transfers.read` scope when generating 
-        a [token](https://docs.moov.io/api/authentication/access-tokens/).
+        To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
+        you'll need to specify the `/accounts/{accountID}/transfers.read` scope.
       parameters:
         - $ref: '#/components/parameters/CommonHeaders'
         - name: accountID
@@ -2800,14 +2882,15 @@ paths:
         - BasicAuth: []
         - OAuth2Auth:
             - /accounts/{accountID}/transfers.read
+      x-speakeasy-name-override: getEvidenceData
   /accounts/{accountID}/fee-plan-agreements:
     get:
       operationId: listFeePlanAgreements
       description: |-
         List all fee plan agreements associated with an account.
 
-        To access this endpoint using a [token](https://docs.moov.io/api/authentication/access-tokens/) you'll need 
-        to specify the `/accounts/{accountID}/profile.read` scope.
+        To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
+        you'll need to specify the `/accounts/{accountID}/profile.read` scope.
       parameters:
         - $ref: '#/components/parameters/CommonHeaders'
         - name: accountID
@@ -2864,8 +2947,8 @@ paths:
       description: |-
         Creates the subscription of a fee plan to a merchant account. Merchants are required to accept the fee plan terms prior to activation.
 
-        To access this endpoint using a [token](https://docs.moov.io/api/authentication/access-tokens/) you'll need 
-        to specify the `/accounts/{accountID}/profile.write` scope.
+        To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
+        you'll need to specify the `/accounts/{accountID}/profile.write` scope.
       parameters:
         - $ref: '#/components/parameters/CommonHeaders'
         - name: accountID
@@ -2930,8 +3013,8 @@ paths:
         List all fee plans available for use by an account. This is intended to be used by an account when 
         selecting a fee plan to apply to a connected account.
 
-        To access this endpoint using a [token](https://docs.moov.io/api/authentication/access-tokens/) you'll need 
-        to specify the `/accounts/{accountID}/profile.read` scope.
+        To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
+        you'll need to specify the `/accounts/{accountID}/profile.read` scope.
       parameters:
         - $ref: '#/components/parameters/CommonHeaders'
         - name: accountID
@@ -2983,8 +3066,8 @@ paths:
         The maximum file size is 10MB. Each account is allowed a maximum of 50 files. Acceptable file types include csv, jpg, pdf, 
         and png. 
 
-        To access this endpoint using a [token](https://docs.moov.io/api/authentication/access-tokens/) you'll need to specify the 
-        `/accounts/{accountID}/files.write` scope.
+        To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
+        you'll need to specify the `/accounts/{accountID}/files.write` scope.
       parameters:
         - $ref: '#/components/parameters/CommonHeaders'
         - name: accountID
@@ -3042,13 +3125,14 @@ paths:
         - BasicAuth: []
         - OAuth2Auth:
             - /accounts/{accountID}/files.write
+      x-speakeasy-name-override: upload
     get:
       operationId: listFiles
       description: |-
         List all the files associated with a particular Moov account.
 
-        To access this endpoint using a [token](https://docs.moov.io/api/authentication/access-tokens/) you'll need to specify the 
-        `/accounts/{accountID}/files.read` scope.
+        To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
+        you'll need to specify the `/accounts/{accountID}/files.read` scope.
       parameters:
         - $ref: '#/components/parameters/CommonHeaders'
         - name: accountID
@@ -3082,14 +3166,15 @@ paths:
         - BasicAuth: []
         - OAuth2Auth:
             - /accounts/{accountID}/files.read
+      x-speakeasy-name-override: list
   /accounts/{accountID}/files/{fileID}:
     get:
       operationId: getFileDetails
       description: |-
         Retrieve file details associated with a specific Moov account.
 
-        To access this endpoint using a [token](https://docs.moov.io/api/authentication/access-tokens/) you'll need to specify the 
-        `/accounts/{accountID}/files.read` scope.
+        To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
+        you'll need to specify the `/accounts/{accountID}/files.read` scope.
       parameters:
         - $ref: '#/components/parameters/CommonHeaders'
         - name: accountID
@@ -3129,14 +3214,15 @@ paths:
         - BasicAuth: []
         - OAuth2Auth:
             - /accounts/{accountID}/files.read
+      x-speakeasy-name-override: get
   /accounts/{accountID}/merchant-agreement:
     get:
       operationId: getMerchantProcessingAgreement
       description: |-
         Retrieve a merchant account's processing agreement.
 
-        To access this endpoint using a [token](https://docs.moov.io/api/authentication/access-tokens/) you'll need 
-        to specify the `/accounts/{accountID}/profile.read` scope.
+        To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
+        you'll need to specify the `/accounts/{accountID}/profile.read` scope.
       parameters:
         - $ref: '#/components/parameters/CommonHeaders'
         - name: accountID
@@ -3177,8 +3263,8 @@ paths:
       description: |-
         List all partner pricing plans available for use by an account.
 
-        To access this endpoint using a [token](https://docs.moov.io/api/authentication/access-tokens/) you'll need 
-        to specify the `/accounts/{accountID}/profile.read` scope.
+        To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
+        you'll need to specify the `/accounts/{accountID}/profile.read` scope.
       parameters:
         - $ref: '#/components/parameters/CommonHeaders'
         - name: accountID
@@ -3227,8 +3313,8 @@ paths:
       description: |-
         List all partner pricing agreements associated with an account.
 
-        To access this endpoint using a [token](https://docs.moov.io/api/authentication/access-tokens/) you'll need 
-        to specify the `/accounts/{accountID}/profile.read` scope.
+        To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
+        you'll need to specify the `/accounts/{accountID}/profile.read` scope.
       parameters:
         - $ref: '#/components/parameters/CommonHeaders'
         - name: accountID
@@ -3286,8 +3372,8 @@ paths:
       description: |-
         Create a payment link that allows an end user to make a payment on Moov's hosted payment link page.
 
-        To access this endpoint using a [token](https://docs.moov.io/api/authentication/access-tokens/) you'll need 
-        to specify the `/accounts/{accountID}/transfers.write` scope.
+        To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
+        you'll need to specify the `/accounts/{accountID}/transfers.write` scope.
       parameters:
         - $ref: '#/components/parameters/CommonHeaders'
         - name: accountID
@@ -3345,13 +3431,14 @@ paths:
         - BasicAuth: []
         - OAuth2Auth:
             - /accounts/{accountID}/transfers.write
+      x-speakeasy-name-override: create
     get:
       operationId: listPaymentLinks
       description: |-
         List all the payment links created under a Moov account.
 
-        To access this endpoint using a [token](https://docs.moov.io/api/authentication/access-tokens/) you'll need 
-        to specify the `/accounts/{accountID}/transfers.read` scope.
+        To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
+        you'll need to specify the `/accounts/{accountID}/transfers.read` scope.
       parameters:
         - $ref: '#/components/parameters/CommonHeaders'
         - name: accountID
@@ -3385,14 +3472,15 @@ paths:
         - BasicAuth: []
         - OAuth2Auth:
             - /accounts/{accountID}/transfers.read
+      x-speakeasy-name-override: list
   /accounts/{accountID}/payment-links/{paymentLinkCode}:
     get:
       operationId: getPaymentLink
       description: |-
         Retrieve a payment link by code.
 
-        To access this endpoint using a [token](https://docs.moov.io/api/authentication/access-tokens/) you'll need 
-        to specify the `/accounts/{accountID}/transfers.read` scope.
+        To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
+        you'll need to specify the `/accounts/{accountID}/transfers.read` scope.
       parameters:
         - $ref: '#/components/parameters/CommonHeaders'
         - name: accountID
@@ -3431,13 +3519,14 @@ paths:
         - BasicAuth: []
         - OAuth2Auth:
             - /accounts/{accountID}/transfers.read
+      x-speakeasy-name-override: get
     patch:
       operationId: updatePaymentLink
       description: |-
         Update a payment link.
 
-        To access this endpoint using a [token](https://docs.moov.io/api/authentication/access-tokens/) you'll need 
-        to specify the `/accounts/{accountID}/transfers.write` scope.
+        To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
+        you'll need to specify the `/accounts/{accountID}/transfers.write` scope.
       parameters:
         - $ref: '#/components/parameters/CommonHeaders'
         - name: accountID
@@ -3500,13 +3589,14 @@ paths:
         - BasicAuth: []
         - OAuth2Auth:
             - /accounts/{accountID}/transfers.write
+      x-speakeasy-name-override: update
     delete:
       operationId: disablePaymentLink
       description: |-
         Disable a payment link.
 
-        To access this endpoint using a [token](https://docs.moov.io/api/authentication/access-tokens/) you'll need 
-        to specify the `/accounts/{accountID}/transfers.write` scope.
+        To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
+        you'll need to specify the `/accounts/{accountID}/transfers.write` scope.
       parameters:
         - $ref: '#/components/parameters/CommonHeaders'
         - name: accountID
@@ -3529,6 +3619,7 @@ paths:
         - BasicAuth: []
         - OAuth2Auth:
             - /accounts/{accountID}/transfers.write
+      x-speakeasy-name-override: disable
   /accounts/{accountID}/payment-links/{paymentLinkCode}/qrcode:
     get:
       operationId: getPaymentLinkQRCode
@@ -3537,8 +3628,8 @@ paths:
 
         Use the `Accept` header to specify the format of the response. Supported formats are `application/json` and `image/png`.
 
-        To access this endpoint using a [token](https://docs.moov.io/api/authentication/access-tokens/) you'll need 
-        to specify the `/accounts/{accountID}/transfers.write` scope.
+        To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
+        you'll need to specify the `/accounts/{accountID}/transfers.write` scope.
       parameters:
         - $ref: '#/components/parameters/CommonHeaders'
         - name: accountID
@@ -3581,13 +3672,16 @@ paths:
         - BasicAuth: []
         - OAuth2Auth:
             - /accounts/{accountID}/transfers.write
+      x-speakeasy-name-override: getQRCode
   /accounts/{accountID}/payment-methods:
     get:
       operationId: listPaymentMethods
       description: |-
-        Retrieve a list of payment methods associated with a Moov account. Read our [payment methods guide](https://docs.moov.io/guides/money-movement/payment-methods/) to learn more.
+        Retrieve a list of payment methods associated with a Moov account. Read our [payment methods 
+        guide](https://docs.moov.io/guides/money-movement/payment-methods/) to learn more.
 
-        To use this endpoint from the browser, you'll need to specify the `/accounts/{accountID}/payment-methods.read` scope when generating a [token](https://docs.moov.io/api/authentication/access-tokens/).
+        To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
+        you'll need to specify the `/accounts/{accountID}/payment-methods.read` scope.
       parameters:
         - $ref: '#/components/parameters/CommonHeaders'
         - name: accountID
@@ -3599,7 +3693,11 @@ paths:
         - name: sourceID
           in: query
           required: false
-          description: Optional parameter to filter the account's payment methods by source ID. A source ID can be a [walletID](https://docs.moov.io/api/sources/wallets/list/), [cardID](https://docs.moov.io/api/sources/cards/list/), or [bankAccountID](https://docs.moov.io/api/sources/bank-accounts/list/).
+          description: |-
+            Optional parameter to filter the account's payment methods by source ID. 
+
+            A source ID can be a [walletID](https://docs.moov.io/api/sources/wallets/list/), [cardID](https://docs.moov.io/api/sources/cards/list/), 
+            or [bankAccountID](https://docs.moov.io/api/sources/bank-accounts/list/).
           schema:
             type: string
             format: uuid
@@ -3643,13 +3741,15 @@ paths:
         - BasicAuth: []
         - OAuth2Auth:
             - /accounts/{accountID}/payment-methods.read
+      x-speakeasy-name-override: list
   /accounts/{accountID}/payment-methods/{paymentMethodID}:
     get:
       operationId: getPaymentMethod
       description: |-
         Get the specified payment method associated with a Moov account. Read our [payment methods guide](https://docs.moov.io/guides/money-movement/payment-methods/) to learn more.
 
-        To use this endpoint from the browser, you'll need to specify the `/accounts/{accountID}/payment-methods.read` scope when generating a [token](https://docs.moov.io/api/authentication/access-tokens/).
+        To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
+        you'll need to specify the `/accounts/{accountID}/payment-methods.read` scope.
       parameters:
         - $ref: '#/components/parameters/CommonHeaders'
         - name: accountID
@@ -3692,6 +3792,7 @@ paths:
         - BasicAuth: []
         - OAuth2Auth:
             - /accounts/{accountID}/payment-methods.read
+      x-speakeasy-name-override: get
   /accounts/{accountID}/representatives:
     post:
       operationId: createRepresentative
@@ -3700,7 +3801,8 @@ paths:
         You can provide this information by creating a representative. Each account is allowed a maximum of 7 representatives. 
         Read our [business representatives guide](https://docs.moov.io/guides/accounts/requirements/business-representatives/) to learn more.
 
-        To use this endpoint from the browser, you’ll need to specify the `/accounts/{accountID}/representatives.write` scope when generating a [token](https://docs.moov.io/api/authentication/access-tokens/).
+        To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
+        you'll need to specify the `/accounts/{accountID}/representatives.write` scope.
       parameters:
         - $ref: '#/components/parameters/CommonHeaders'
         - name: accountID
@@ -3759,15 +3861,17 @@ paths:
         - BasicAuth: []
         - OAuth2Auth:
             - /accounts/{accountID}/representatives.write
+      x-speakeasy-name-override: create
     get:
       operationId: listRepresentatives
       description: |-
-        A Moov account may have multiple representatives depending on the associated business’s ownership and management structure. 
+        A Moov account may have multiple representatives depending on the associated business's ownership and management structure. 
         You can use this method to list all the representatives for a given Moov account. 
         Note that Moov accounts associated with an individual do not have representatives. 
         Read our [business representatives guide](https://docs.moov.io/guides/accounts/requirements/business-representatives/) to learn more.
 
-        To use this endpoint from the browser, you’ll need to specify the `/accounts/{accountID}/representatives.read` scope when generating a [token](https://docs.moov.io/api/authentication/access-tokens/).
+        To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
+        you'll need to specify the `/accounts/{accountID}/representatives.read` scope.
       parameters:
         - $ref: '#/components/parameters/CommonHeaders'
         - name: accountID
@@ -3802,13 +3906,15 @@ paths:
         - BasicAuth: []
         - OAuth2Auth:
             - /accounts/{accountID}/representatives.read
+      x-speakeasy-name-override: list
   /accounts/{accountID}/representatives/{representativeID}:
     delete:
       operationId: deleteRepresentative
       description: |-
         Deletes a business representative associated with a Moov account. Read our [business representatives guide](https://docs.moov.io/guides/accounts/requirements/business-representatives/) to learn more.
 
-        To use this endpoint from the browser, you’ll need to specify the `/accounts/{accountID}/representatives.write` scope when generating a [token](https://docs.moov.io/api/authentication/access-tokens/).
+        To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
+        you'll need to specify the `/accounts/{accountID}/representatives.write` scope.
       parameters:
         - $ref: '#/components/parameters/CommonHeaders'
         - name: accountID
@@ -3858,12 +3964,14 @@ paths:
         - BasicAuth: []
         - OAuth2Auth:
             - /accounts/{accountID}/representatives.write
+      x-speakeasy-name-override: delete
     get:
       operationId: getRepresentative
       description: |-
         Retrieve a specific representative associated with a given Moov account. Read our [business representatives guide](https://docs.moov.io/guides/accounts/requirements/business-representatives/) to learn more.
 
-        To use this endpoint from the browser, you’ll need to specify the `/accounts/{accountID}/representatives.read` scope when generating a [token](https://docs.moov.io/api/authentication/access-tokens/).
+        To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
+        you'll need to specify the `/accounts/{accountID}/representatives.read` scope.
       parameters:
         - $ref: '#/components/parameters/CommonHeaders'
         - name: accountID
@@ -3905,13 +4013,12 @@ paths:
         - BasicAuth: []
         - OAuth2Auth:
             - /accounts/{accountID}/representatives.read
+      x-speakeasy-name-override: get
     patch:
       operationId: updateRepresentative
       description: |-
-        If a representative’s information has changed you can patch the information associated with a specific representative ID. 
+        If a representative's information has changed you can patch the information associated with a specific representative ID. 
         Read our [business representatives guide](https://docs.moov.io/guides/accounts/requirements/business-representatives/) to learn more.
-
-        To use this endpoint from the browser, you’ll need to specify the `/accounts/{accountID}/representatives.write` scope when generating a [token](https://docs.moov.io/api/authentication/access-tokens/).
 
         When **can** profile data be updated:
 
@@ -3919,11 +4026,14 @@ paths:
         - During the verification process, missing or incomplete profile data can be edited.
         - Verified representatives can only add missing profile data.
 
-        When **can’t** profile data be updated:
+        When **can't** profile data be updated:
 
         - Verified representatives cannot change any existing profile data.
 
         If you need to update information in a locked state, please contact Moov support.
+
+        To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
+        you'll need to specify the `/accounts/{accountID}/representatives.write` scope.
       parameters:
         - $ref: '#/components/parameters/CommonHeaders'
         - name: accountID
@@ -3983,10 +4093,15 @@ paths:
         - BasicAuth: []
         - OAuth2Auth:
             - /accounts/{accountID}/representatives.write
+      x-speakeasy-name-override: update
   /accounts/{accountID}/schedules:
     post:
       operationId: createSchedule
-      description: Describes the schedule to create or modify.
+      description: |-
+        Describes the schedule to create or modify.
+
+        To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
+        you'll need to specify the `/accounts/{accountID}/transfers.write` scope.
       parameters:
         - $ref: '#/components/parameters/CommonHeaders'
         - name: accountID
@@ -4043,10 +4158,15 @@ paths:
       security:
         - BasicAuth: []
         - OAuth2Auth:
-            - /accounts/{your-account-id}/transfers.write
+            - /accounts/{accountID}/transfers.write
+      x-speakeasy-name-override: create
     get:
       operationId: listSchedules
-      description: Describes a list of schedules associated with an account. Requires at least 1 occurrence or recurTransfer to be specified.
+      description: |-
+        Describes a list of schedules associated with an account. Requires at least 1 occurrence or recurTransfer to be specified.
+
+        To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
+        you'll need to specify the `/accounts/{accountID}/transfers.read` scope.
       parameters:
         - $ref: '#/components/parameters/CommonHeaders'
         - name: skip
@@ -4091,11 +4211,16 @@ paths:
       security:
         - BasicAuth: []
         - OAuth2Auth:
-            - /accounts/{your-account-id}/transfers.read
+            - /accounts/{accountID}/transfers.read
+      x-speakeasy-name-override: list
   /accounts/{accountID}/schedules/{scheduleID}:
     put:
       operationId: updateSchedule
-      description: Describes the schedule to modify.
+      description: |-
+        Describes the schedule to modify.
+
+        To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
+        you'll need to specify the `/accounts/{accountID}/transfers.write` scope.
       parameters:
         - $ref: '#/components/parameters/CommonHeaders'
         - name: accountID
@@ -4158,10 +4283,15 @@ paths:
       security:
         - BasicAuth: []
         - OAuth2Auth:
-            - /accounts/{your-account-id}/transfers.write
+            - /accounts/{accountID}/transfers.write
+      x-speakeasy-name-override: update
     get:
       operationId: getSchedules
-      description: Describes a schedule associated with an account. Requires at least 1 occurrence or recurTransfer to be specified.
+      description: |-
+        Describes a schedule associated with an account. Requires at least 1 occurrence or recurTransfer to be specified.
+
+        To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
+        you'll need to specify the `/accounts/{accountID}/transfers.read` scope.
       parameters:
         - $ref: '#/components/parameters/CommonHeaders'
         - name: accountID
@@ -4200,10 +4330,15 @@ paths:
       security:
         - BasicAuth: []
         - OAuth2Auth:
-            - /accounts/{your-account-id}/transfers.read
+            - /accounts/{accountID}/transfers.read
+      x-speakeasy-name-override: get
     delete:
       operationId: cancelSchedule
-      description: Describes the schedule to cancel.
+      description: |-
+        Describes the schedule to cancel.
+
+        To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
+        you'll need to specify the `/accounts/{accountID}/transfers.write` scope.
       parameters:
         - $ref: '#/components/parameters/CommonHeaders'
         - name: accountID
@@ -4250,11 +4385,16 @@ paths:
       security:
         - BasicAuth: []
         - OAuth2Auth:
-            - /accounts/{your-account-id}/transfers.write
+            - /accounts/{accountID}/transfers.write
+      x-speakeasy-name-override: cancel
   /accounts/{accountID}/schedules/{scheduleID}/occurrences/{occurrenceFilter}:
     get:
       operationId: getScheduledOccurrence
-      description: Defines an occurrence for when to run a transfer.
+      description: |-
+        Defines an occurrence for when to run a transfer.
+
+        To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
+        you'll need to specify the `/accounts/{accountID}/transfers.read` scope.
       parameters:
         - $ref: '#/components/parameters/CommonHeaders'
         - name: accountID
@@ -4304,11 +4444,16 @@ paths:
       security:
         - BasicAuth: []
         - OAuth2Auth:
-            - /accounts/{your-account-id}/transfers.read
+            - /accounts/{accountID}/transfers.read
+      x-speakeasy-name-override: getOccurrance
   /accounts/{accountID}/sweep-configs:
     post:
       operationId: createSweepConfig
-      description: Create a sweep config for a wallet.
+      description: |-
+        Create a sweep config for a wallet.
+
+        To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
+        you'll need to specify the `/accounts/{accountID}/wallets.write` scope.
       parameters:
         - $ref: '#/components/parameters/CommonHeaders'
         - name: accountID
@@ -4383,9 +4528,14 @@ paths:
         - BasicAuth: []
         - OAuth2Auth:
             - /accounts/{accountID}/wallets.write
+      x-speakeasy-name-override: createConfig
     get:
       operationId: listSweepConfigs
-      description: List sweep configs associated with an account.
+      description: |-
+        List sweep configs associated with an account.
+
+        To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
+        you'll need to specify the `/accounts/{accountID}/wallets.read` scope.
       parameters:
         - $ref: '#/components/parameters/CommonHeaders'
         - name: accountID
@@ -4443,10 +4593,15 @@ paths:
         - BasicAuth: []
         - OAuth2Auth:
             - /accounts/{accountID}/wallets.read
+      x-speakeasy-name-override: listConfigs
   /accounts/{accountID}/sweep-configs/{sweepConfigID}:
     get:
       operationId: getSweepConfig
-      description: Get a sweep config associated with a wallet.
+      description: |-
+        Get a sweep config associated with a wallet.
+
+        To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
+        you'll need to specify the `/accounts/{accountID}/wallets.read` scope.
       parameters:
         - $ref: '#/components/parameters/CommonHeaders'
         - name: accountID
@@ -4497,9 +4652,14 @@ paths:
         - BasicAuth: []
         - OAuth2Auth:
             - /accounts/{accountID}/wallets.read
+      x-speakeasy-name-override: getConfig
     patch:
-      operationId: patchSweepConfig
-      description: Update settings on a sweep config.
+      operationId: updateSweepConfig
+      description: |-
+        Update settings on a sweep config.
+
+        To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
+        you'll need to specify the `/accounts/{accountID}/wallets.write` scope.
       parameters:
         - $ref: '#/components/parameters/CommonHeaders'
         - name: accountID
@@ -4577,6 +4737,7 @@ paths:
         - BasicAuth: []
         - OAuth2Auth:
             - /accounts/{accountID}/wallets.write
+      x-speakeasy-name-override: updateConfig
   /accounts/{accountID}/transfers:
     post:
       operationId: createTransfer
@@ -4585,8 +4746,8 @@ paths:
 
         Read our [transfers overview guide](https://docs.moov.io/guides/money-movement/overview/) to learn more. 
 
-        To access this endpoint using a [token](https://docs.moov.io/api/authentication/access-tokens/) you'll need to specify the `/accounts/{accountID}/transfers.write` 
-        scope.
+        To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
+        you'll need to specify the `/accounts/{accountID}/transfers.write` scope.
       parameters:
         - $ref: '#/components/parameters/CommonHeaders'
         - name: x-idempotency-key
@@ -4670,6 +4831,7 @@ paths:
         - BasicAuth: []
         - OAuth2Auth:
             - /accounts/{accountID}/transfers.write
+      x-speakeasy-name-override: create
     get:
       operationId: listTransfers
       description: |-
@@ -4682,8 +4844,8 @@ paths:
         process very slowly. To achieve faster performance, restrict the data as much as you can by using the `StartDateTime` and `EndDateTime` parameters for a limited 
         period of time. You can run multiple requests in smaller time window increments until you've retrieved all the transfers you need.
 
-        To access this endpoint using a [token](https://docs.moov.io/api/authentication/access-tokens/) you'll need to specify the `/accounts/{accountID}/transfers.read` 
-        scope.
+        To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
+        you'll need to specify the `/accounts/{accountID}/transfers.read` scope.
       parameters:
         - $ref: '#/components/parameters/CommonHeaders'
         - $ref: '#/components/parameters/TransferListFilters.accountIDs'
@@ -4726,6 +4888,7 @@ paths:
         - BasicAuth: []
         - OAuth2Auth:
             - /accounts/{accountID}/transfers.read
+      x-speakeasy-name-override: list
   /accounts/{accountID}/transfers/{transferID}:
     get:
       operationId: getTransfer
@@ -4735,8 +4898,8 @@ paths:
         Payment rail-specific details are included in the source and destination. Read our [transfers overview guide](https://docs.moov.io/guides/money-movement/overview/) 
         to learn more.
 
-        To access this endpoint using a [token](https://docs.moov.io/api/authentication/access-tokens/) you'll need to specify the `/accounts/{accountID}/transfers.read` 
-        scope.
+        To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
+        you'll need to specify the `/accounts/{accountID}/transfers.read` scope.
       parameters:
         - $ref: '#/components/parameters/CommonHeaders'
         - name: transferID
@@ -4777,15 +4940,16 @@ paths:
         - BasicAuth: []
         - OAuth2Auth:
             - /accounts/{accountID}/transfers.read
+      x-speakeasy-name-override: get
     patch:
-      operationId: patchTransfer
+      operationId: updateTransfer
       description: |-
         Update the metadata contained on a transfer. 
 
         Read our [transfers overview guide](https://docs.moov.io/guides/money-movement/overview/) to learn more. 
 
-        To access this endpoint using a [token](https://docs.moov.io/api/authentication/access-tokens/) you'll need to specify the `/accounts/{accountID}/transfers.write` 
-        scope.
+        To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
+        you'll need to specify the `/accounts/{accountID}/transfers.write` scope.
       parameters:
         - $ref: '#/components/parameters/CommonHeaders'
         - name: transferID
@@ -4826,17 +4990,18 @@ paths:
         - BasicAuth: []
         - OAuth2Auth:
             - /accounts/{yourAccountID}/transfers.write
+      x-speakeasy-name-override: update
   /accounts/{accountID}/transfers/{transferID}/refunds:
     post:
-      operationId: refundTransfer
+      operationId: initiateRefund
       description: |-
         Initiate a refund for a card transfer.
 
         **Use the [Cancel or refund a card transfer](https://docs.moov.io/api/money-movement/refunds/cancel/) endpoint for more comprehensive cancel and refund options.**    
         See the [reversals](https://docs.moov.io/guides/money-movement/accept-payments/card-acceptance/reversals/) guide for more information. 
 
-        To access this endpoint using a [token](https://docs.moov.io/api/authentication/access-tokens/) you'll need to specify the `/accounts/{accountID}/transfers.write` 
-        scope.
+        To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
+        you'll need to specify the `/accounts/{accountID}/transfers.write` scope.
       parameters:
         - $ref: '#/components/parameters/CommonHeaders'
         - name: x-idempotency-key
@@ -4947,8 +5112,8 @@ paths:
       description: |-
         Get a list of refunds for a card transfer.
 
-        To access this endpoint using a [token](https://docs.moov.io/api/authentication/access-tokens/) you'll need to specify the `/accounts/{accountID}/transfers.read` 
-        scope.
+        To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
+        you'll need to specify the `/accounts/{accountID}/transfers.read` scope.
       parameters:
         - $ref: '#/components/parameters/CommonHeaders'
         - name: accountID
@@ -5009,8 +5174,8 @@ paths:
       description: |-
         Get details of a refund for a card transfer.
 
-        To access this endpoint using a [token](https://docs.moov.io/api/authentication/access-tokens/) you'll need to specify the `/accounts/{accountID}/transfers.read` 
-        scope.
+        To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
+        you'll need to specify the `/accounts/{accountID}/transfers.read` scope.
       parameters:
         - $ref: '#/components/parameters/CommonHeaders'
         - name: transferID
@@ -5074,7 +5239,7 @@ paths:
             - /accounts/{accountID}/transfers.read
   /accounts/{accountID}/transfers/{transferID}/reversals:
     post:
-      operationId: reverseTransfer
+      operationId: createReversal
       description: |-
         Reverses a card transfer by initiating a cancellation or refund depending on the transaction status. 
         Read our [reversals guide](https://docs.moov.io/guides/money-movement/accept-payments/card-acceptance/reversals/) 
@@ -5189,8 +5354,8 @@ paths:
 
         Read our [underwriting guide](https://docs.moov.io/guides/accounts/requirements/underwriting/) to learn more. 
 
-        To access this endpoint using a [token](https://docs.moov.io/api/authentication/access-tokens/) you'll need 
-        to specify the `/accounts/{accountID}/profile.read` scope.
+        To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
+        you'll need to specify the `/accounts/{accountID}/profile.read` scope.
       parameters:
         - $ref: '#/components/parameters/CommonHeaders'
         - name: accountID
@@ -5224,6 +5389,7 @@ paths:
         - BasicAuth: []
         - OAuth2Auth:
             - /accounts/{accountID}/profile.read
+      x-speakeasy-name-override: get
     put:
       operationId: updateUnderwriting
       description: |-
@@ -5231,8 +5397,8 @@ paths:
 
         Read our [underwriting guide](https://docs.moov.io/guides/accounts/requirements/underwriting/) to learn more.
 
-        To access this endpoint using a [token](https://docs.moov.io/api/authentication/access-tokens/) you'll need 
-        to specify the `/accounts/{accountID}/profile.write` scope.
+        To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
+        you'll need to specify the `/accounts/{accountID}/profile.write` scope.
       parameters:
         - $ref: '#/components/parameters/CommonHeaders'
         - name: accountID
@@ -5290,13 +5456,17 @@ paths:
         - BasicAuth: []
         - OAuth2Auth:
             - /accounts/{accountID}/profile.write
+      x-speakeasy-name-override: update
   /accounts/{accountID}/wallets:
     get:
       operationId: listWallets
       description: |-
-        List the wallets associated with a Moov account. Read our [Moov wallets guide](https://docs.moov.io/guides/sources/wallets/) to learn more.
+        List the wallets associated with a Moov account. 
 
-        To use this endpoint from the browser, you'll need to specify the `/accounts/{accountID}/wallets.read` scope when generating a [token](https://docs.moov.io/api/authentication/access-tokens/).
+        Read our [Moov wallets guide](https://docs.moov.io/guides/sources/wallets/) to learn more.
+
+        To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
+        you'll need to specify the `/accounts/{accountID}/wallets.read` scope.
       parameters:
         - $ref: '#/components/parameters/CommonHeaders'
         - name: accountID
@@ -5336,13 +5506,17 @@ paths:
         - BasicAuth: []
         - OAuth2Auth:
             - /accounts/{accountID}/wallets.read
+      x-speakeasy-name-override: list
   /accounts/{accountID}/wallets/{walletID}:
     get:
       operationId: getWallet
       description: |-
-        Get information on a specific wallet (e.g., the available balance). Read our [Moov wallets guide](https://docs.moov.io/guides/sources/wallets/) to learn more.
+        Get information on a specific wallet (e.g., the available balance). 
 
-        To use this endpoint from the browser, you'll need to specify the `/accounts/{accountID}/wallets.read` scope when generating a [token](https://docs.moov.io/api/authentication/access-tokens/).
+        Read our [Moov wallets guide](https://docs.moov.io/guides/sources/wallets/) to learn more.
+
+        To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
+        you'll need to specify the `/accounts/{accountID}/wallets.read` scope.
       parameters:
         - $ref: '#/components/parameters/CommonHeaders'
         - name: accountID
@@ -5387,10 +5561,15 @@ paths:
         - BasicAuth: []
         - OAuth2Auth:
             - /accounts/{accountID}/wallets.read
+      x-speakeasy-name-override: get
   /accounts/{accountID}/wallets/{walletID}/sweeps:
     get:
       operationId: listSweeps
-      description: List sweeps associated with a wallet.
+      description: |-
+        List sweeps associated with a wallet.
+
+        To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
+        you'll need to specify the `/accounts/{accountID}/wallets.read` scope.
       parameters:
         - $ref: '#/components/parameters/CommonHeaders'
         - name: accountID
@@ -5451,10 +5630,15 @@ paths:
         - BasicAuth: []
         - OAuth2Auth:
             - /accounts/{accountID}/wallets.read
+      x-speakeasy-name-override: list
   /accounts/{accountID}/wallets/{walletID}/sweeps/{sweepID}:
     get:
       operationId: getSweep
-      description: Get details on a specific sweep.
+      description: |-
+        Get details on a specific sweep.
+
+        To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
+        you'll need to specify the `/accounts/{accountID}/wallets.read` scope.
       parameters:
         - $ref: '#/components/parameters/CommonHeaders'
         - name: accountID
@@ -5504,13 +5688,17 @@ paths:
         - BasicAuth: []
         - OAuth2Auth:
             - /accounts/{accountID}/wallets.read
+      x-speakeasy-name-override: get
   /accounts/{accountID}/wallets/{walletID}/transactions:
     get:
       operationId: listWalletTransactions
       description: |-
-        List all the transactions associated with a particular Moov wallet. Read our [wallet transactions guide](https://docs.moov.io/guides/sources/wallets/transactions/) to learn more.
+        List all the transactions associated with a particular Moov wallet. 
 
-        To use this endpoint from the browser, you'll need to specify the `/accounts/{accountID}/wallets.read` scope when generating a [token](https://docs.moov.io/api/authentication/access-tokens/).
+        Read our [wallet transactions guide](https://docs.moov.io/guides/sources/wallets/transactions/) to learn more.
+
+        To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
+        you'll need to specify the `/accounts/{accountID}/wallets.read` scope.
       parameters:
         - $ref: '#/components/parameters/CommonHeaders'
         - name: accountID
@@ -5519,81 +5707,18 @@ paths:
           schema:
             type: string
             format: uuid
-        - name: walletID
-          in: path
-          required: true
-          schema:
-            $ref: '#/components/schemas/WalletID'
         - $ref: '#/components/parameters/Pagination.skip'
         - $ref: '#/components/parameters/Pagination.count'
-        - name: transactionType
-          in: query
-          required: false
-          description: Optional parameter to filter by transaction type.
-          schema:
-            $ref: '#/components/schemas/WalletTransactionType'
-          explode: false
-        - name: sourceType
-          in: query
-          required: false
-          description: Optional parameter to filter by source type (i.e. transfer, dispute, issuing-transaction).
-          schema:
-            $ref: '#/components/schemas/WalletTransactionSourceType'
-          explode: false
-        - name: sourceID
-          in: query
-          required: false
-          description: Optional parameter to filter by source ID.
-          schema:
-            type: string
-            format: uuid
-          explode: false
-        - name: status
-          in: query
-          required: false
-          description: Optional parameter to filter by status (`pending` or `completed`).
-          schema:
-            $ref: '#/components/schemas/WalletTransactionStatus'
-          explode: false
-        - name: createdStartDateTime
-          in: query
-          required: false
-          description: 'Optional date-time which inclusively filters all transactions created after this date-time.  '
-          schema:
-            type: string
-            format: date-time
-          explode: false
-        - name: createdEndDateTime
-          in: query
-          required: false
-          description: Optional date-time which exclusively filters all transactions created before this date-time.
-          schema:
-            type: string
-            format: date-time
-          explode: false
-        - name: completedStartDateTime
-          in: query
-          required: false
-          description: Optional date-time which inclusively filters all transactions completed after this date-time.
-          schema:
-            type: string
-            format: date-time
-          explode: false
-        - name: completedEndDateTime
-          in: query
-          required: false
-          description: Optional date-time which exclusively filters all transactions completed before this date-time.
-          schema:
-            type: string
-            format: date-time
-          explode: false
-        - name: sweepID
-          in: query
-          required: false
-          description: Optional ID to filter for transactions accrued in a sweep.
-          schema:
-            $ref: '#/components/schemas/SweepID'
-          explode: false
+        - $ref: '#/components/parameters/ListTransactionsQuery.walletID'
+        - $ref: '#/components/parameters/ListTransactionsQuery.transactionType'
+        - $ref: '#/components/parameters/ListTransactionsQuery.sourceType'
+        - $ref: '#/components/parameters/ListTransactionsQuery.sourceID'
+        - $ref: '#/components/parameters/ListTransactionsQuery.status'
+        - $ref: '#/components/parameters/ListTransactionsQuery.createdStartDateTime'
+        - $ref: '#/components/parameters/ListTransactionsQuery.createdEndDateTime'
+        - $ref: '#/components/parameters/ListTransactionsQuery.completedStartDateTime'
+        - $ref: '#/components/parameters/ListTransactionsQuery.completedEndDateTime'
+        - $ref: '#/components/parameters/ListTransactionsQuery.sweepID'
       responses:
         '200':
           description: The request completed successfully.
@@ -5653,13 +5778,17 @@ paths:
         - BasicAuth: []
         - OAuth2Auth:
             - /accounts/{accountID}/wallets.read
+      x-speakeasy-name-override: list
   /accounts/{accountID}/wallets/{walletID}/transactions/{transactionID}:
     get:
       operationId: getWalletTransaction
       description: |-
-        Get details on a specific wallet transaction. Read our [wallet transactions guide](https://docs.moov.io/guides/sources/wallets/transactions/) to learn more.
+        Get details on a specific wallet transaction. 
 
-        To use this endpoint from a browser, you'll need to specify the `/accounts/{accountID}/wallets.read` scope when generating a [token](https://docs.moov.io/api/authentication/access-tokens/).
+        Read our [wallet transactions guide](https://docs.moov.io/guides/sources/wallets/transactions/) to learn more.
+
+        To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
+        you'll need to specify the `/accounts/{accountID}/wallets.read` scope.
       parameters:
         - $ref: '#/components/parameters/CommonHeaders'
         - name: accountID
@@ -5722,13 +5851,15 @@ paths:
         - BasicAuth: []
         - OAuth2Auth:
             - /accounts/{accountID}/wallets.read
+      x-speakeasy-name-override: get
   /avatars/{uniqueID}:
     get:
       operationId: getAvatar
       description: |-
         Get avatar image for an account using a unique ID.    
 
-        To use this endpoint from the browser, you'll need to specify the `/profile-enrichment.read` scope when generating a [token](https://docs.moov.io/api/authentication/access-tokens/).
+        To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
+        you'll need to specify the `/profile-enrichment.read` scope.
       parameters:
         - $ref: '#/components/parameters/CommonHeaders'
         - name: uniqueID
@@ -5767,14 +5898,15 @@ paths:
         - BasicAuth: []
         - OAuth2Auth:
             - /profile-enrichment.read
+      x-speakeasy-name-override: get
   /debug/end-to-end-token:
     post:
       operationId: testEndToEndToken
       description: |-
         Allows for testing a JWE token to ensure it's acceptable by Moov. 
 
-        To access this endpoint using a [token](https://docs.moov.io/api/authentication/access-tokens/) you'll need 
-        to specify the `/ping.read` scope.
+        To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
+        you'll need to specify the `/ping.read` scope.
       parameters:
         - $ref: '#/components/parameters/CommonHeaders'
       responses:
@@ -5804,6 +5936,7 @@ paths:
         - BasicAuth: []
         - OAuth2Auth:
             - /ping.read
+      x-speakeasy-name-override: testEncryptedToken
   /end-to-end-keys:
     post:
       operationId: generateEndToEndKey
@@ -5821,13 +5954,15 @@ paths:
           description: Request was refused due to rate limiting.
       tags:
         - End to End Encryption
+      x-speakeasy-name-override: generateKey
   /enrichment/address:
     get:
       operationId: getEnrichmentAddress
-      description: |2-
-          Fetch enriched address suggestions. Requires a partial address. 
+      description: |-
+        Fetch enriched address suggestions. Requires a partial address. 
           
-          To use this endpoint from the browser, you'll need to specify the `/profile-enrichment.read` scope when generating a [token](https://docs.moov.io/api/authentication/access-tokens/).
+        To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
+        you'll need to specify the `/profile-enrichment.read` scope.
       parameters:
         - $ref: '#/components/parameters/CommonHeaders'
         - $ref: '#/components/parameters/EnrichedAddressFilters.search'
@@ -5868,13 +6003,15 @@ paths:
         - BasicAuth: []
         - OAuth2Auth:
             - /profile-enrichment.read
+      x-speakeasy-name-override: get
   /enrichment/profile:
     get:
       operationId: getEnrichmentProfile
-      description: |2-
-          Fetch enriched profile data. Requires a valid email address. This service is offered in collaboration with Clearbit. 
+      description: |-
+        Fetch enriched profile data. Requires a valid email address. This service is offered in collaboration with Clearbit. 
 
-          To use this endpoint from the browser, you'll need to specify the `/profile-enrichment.read` scope when generating a [token](https://docs.moov.io/api/authentication/access-tokens/).
+        To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
+        you'll need to specify the `/profile-enrichment.read` scope.
       parameters:
         - $ref: '#/components/parameters/CommonHeaders'
         - name: email
@@ -5908,13 +6045,15 @@ paths:
         - BasicAuth: []
         - OAuth2Auth:
             - /profile-enrichment.read
+      x-speakeasy-name-override: get
   /industries:
     get:
       operationId: listIndustries
-      description: |2-
-          Returns a list of all industry titles and their corresponding MCC/SIC/NAICS codes. Results are ordered by title.    
-          
-          To use this endpoint from the browser, you'll need to specify the `/profile-enrichment.read` scope when generating a [token](https://docs.moov.io/api/authentication/access-tokens/).
+      description: |-
+        Returns a list of all industry titles and their corresponding MCC/SIC/NAICS codes. Results are ordered by title.    
+
+        To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
+        you'll need to specify the `/profile-enrichment.read` scope.
       parameters:
         - $ref: '#/components/parameters/CommonHeaders'
       responses:
@@ -5942,13 +6081,15 @@ paths:
         - BasicAuth: []
         - OAuth2Auth:
             - /profile-enrichment.read
+      x-speakeasy-name-override: list
   /institutions/ach/search:
     get:
       operationId: listInstitutions
-      description: |2-
-          Search for institutions by either their name or routing number.
-          
-          To use this endpoint from the browser, you'll need to specify the `/fed.read` scope when generating a [token](https://docs.moov.io/api/authentication/access-tokens/).
+      description: |-
+        Search for institutions by either their name or routing number.
+
+        To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
+        you'll need to specify the `/fed.read` scope.
       parameters:
         - $ref: '#/components/parameters/CommonHeaders'
         - $ref: '#/components/parameters/InstitutionsFilters.name'
@@ -5986,14 +6127,15 @@ paths:
         - BasicAuth: []
         - OAuth2Auth:
             - /fed.read
+      x-speakeasy-name-override: search
   /issuing/{accountID}/authorizations:
     get:
       operationId: listIssuedCardAuthorizations
       description: |-
         List issued card authorizations associated with a Moov account.
 
-        To access this endpoint using a [token](https://docs.moov.io/api/authentication/access-tokens/) you'll need to specify 
-        the `/accounts/{accountID}/issued-cards.read` scope.
+        To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
+        you'll need to specify the `/accounts/{accountID}/issued-cards.read` scope.
       parameters:
         - $ref: '#/components/parameters/CommonHeaders'
         - name: accountID
@@ -6034,14 +6176,15 @@ paths:
         - BasicAuth: []
         - OAuth2Auth:
             - /accounts/{accountID}/issued-cards.read
+      x-speakeasy-name-override: listAuthorizations
   /issuing/{accountID}/authorizations/{authorizationID}:
     get:
       operationId: getIssuedCardAuthorization
       description: |-
         Retrieves details of an authorization associated with a specific Moov account.
 
-        To access this endpoint using a [token](https://docs.moov.io/api/authentication/access-tokens/) you'll need to specify 
-        the `/accounts/{accountID}/issued-cards.read` scope.
+        To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
+        you'll need to specify the `/accounts/{accountID}/issued-cards.read` scope.
       parameters:
         - $ref: '#/components/parameters/CommonHeaders'
         - name: accountID
@@ -6082,14 +6225,15 @@ paths:
         - BasicAuth: []
         - OAuth2Auth:
             - /accounts/{accountID}/issued-cards.read
+      x-speakeasy-name-override: getAuthorization
   /issuing/{accountID}/authorizations/{authorizationID}/events:
     get:
       operationId: listIssuedCardAuthorizationEvents
       description: |-
         List card network and Moov platform events that affect the authorization and its hold on a wallet balance.
 
-        To access this endpoint using a [token](https://docs.moov.io/api/authentication/access-tokens/) you'll need to specify 
-        the `/accounts/{accountID}/issued-cards.read` scope.
+        To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
+        you'll need to specify the `/accounts/{accountID}/issued-cards.read` scope.
       parameters:
         - $ref: '#/components/parameters/CommonHeaders'
         - name: accountID
@@ -6132,14 +6276,15 @@ paths:
         - BasicAuth: []
         - OAuth2Auth:
             - /accounts/{accountID}/issued-cards.read
+      x-speakeasy-name-override: listAuthorizationEvents
   /issuing/{accountID}/card-transactions:
     get:
       operationId: listIssuedCardTransactions
       description: |-
         List issued card transactions associated with a Moov account.
 
-        To access this endpoint using a [token](https://docs.moov.io/api/authentication/access-tokens/) you'll need to specify 
-        the `/accounts/{accountID}/issued-cards.read` scope.
+        To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
+        you'll need to specify the `/accounts/{accountID}/issued-cards.read` scope.
       parameters:
         - $ref: '#/components/parameters/CommonHeaders'
         - name: accountID
@@ -6179,14 +6324,15 @@ paths:
         - BasicAuth: []
         - OAuth2Auth:
             - /accounts/{accountID}/issued-cards.read
+      x-speakeasy-name-override: list
   /issuing/{accountID}/card-transactions/{cardTransactionID}:
     get:
       operationId: getIssuedCardTransaction
       description: |-
         Retrieves details of an issued card transaction associated with a specific Moov account.
 
-        To access this endpoint using a [token](https://docs.moov.io/api/authentication/access-tokens/) you'll need to specify 
-        the `/accounts/{accountID}/issued-cards.read` scope.
+        To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
+        you'll need to specify the `/accounts/{accountID}/issued-cards.read` scope.
       parameters:
         - $ref: '#/components/parameters/CommonHeaders'
         - name: accountID
@@ -6227,14 +6373,15 @@ paths:
         - BasicAuth: []
         - OAuth2Auth:
             - /accounts/{accountID}/issued-cards.read
+      x-speakeasy-name-override: get
   /issuing/{accountID}/issued-cards:
     post:
       operationId: requestCard
       description: |-
         Request a virtual card be issued.
 
-        To use this endpoint from the browser, you'll need to specify the `/accounts/{accountID}/issued-cards.write` scope when generating 
-        a [token](https://docs.moov.io/api/authentication/access-tokens/).
+        To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
+        you'll need to specify the `/accounts/{accountID}/issued-cards.write` scope.
       parameters:
         - $ref: '#/components/parameters/CommonHeaders'
         - name: accountID
@@ -6287,13 +6434,14 @@ paths:
         - BasicAuth: []
         - OAuth2Auth:
             - /accounts/{accountID}/issued-cards.write
+      x-speakeasy-name-override: request
     get:
       operationId: listIssuedCards
       description: |-
         List Moov issued cards existing for the account.
 
-        To use this endpoint from the browser, you'll need to specify the `/accounts/{accountID}/issued-cards.read` scope when generating 
-        a [token](https://docs.moov.io/api/authentication/access-tokens/).
+        To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
+        you'll need to specify the `/accounts/{accountID}/issued-cards.read` scope.
       parameters:
         - $ref: '#/components/parameters/CommonHeaders'
         - name: accountID
@@ -6339,14 +6487,15 @@ paths:
         - BasicAuth: []
         - OAuth2Auth:
             - /accounts/{accountID}/issued-cards.read
+      x-speakeasy-name-override: list
   /issuing/{accountID}/issued-cards/{issuedCardID}:
     get:
       operationId: getIssuedCard
       description: |-
         Retrieve a single issued card associated with a Moov account.
 
-        To use this endpoint from the browser, you'll need to specify the `/accounts/{accountID}/issued-cards.read` scope when generating 
-        a [token](https://docs.moov.io/api/authentication/access-tokens/).
+        To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
+        you'll need to specify the `/accounts/{accountID}/issued-cards.read` scope.
       parameters:
         - $ref: '#/components/parameters/CommonHeaders'
         - name: accountID
@@ -6387,13 +6536,14 @@ paths:
         - BasicAuth: []
         - OAuth2Auth:
             - /accounts/{accountID}/issued-cards.read
+      x-speakeasy-name-override: get
     patch:
       operationId: updateIssuedCard
       description: |-
         Update a Moov issued card.
 
-        To use this endpoint from the browser, you'll need to specify the `/accounts/{accountID}/issued-cards.write` scope when generating 
-        a [token](https://docs.moov.io/api/authentication/access-tokens/).
+        To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
+        you'll need to specify the `/accounts/{accountID}/issued-cards.write` scope.
       parameters:
         - $ref: '#/components/parameters/CommonHeaders'
         - name: accountID
@@ -6454,6 +6604,7 @@ paths:
         - BasicAuth: []
         - OAuth2Auth:
             - /accounts/{accountID}/issued-cards.write
+      x-speakeasy-name-override: update
   /issuing/{accountID}/issued-cards/{issuedCardID}/details:
     get:
       operationId: getFullIssuedCard
@@ -6462,8 +6613,8 @@ paths:
 
         Only use this endpoint if you have provided Moov with a copy of your PCI attestation of compliance.
 
-        To use this endpoint from the browser, you'll need to specify the `/accounts/{accountID}/issued-cards.read-secure` scope when generating 
-        a [token](https://docs.moov.io/api/authentication/access-tokens/).
+        To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
+        you'll need to specify the `/accounts/{accountID}/issued-cards.read-secure` scope.
       parameters:
         - $ref: '#/components/parameters/CommonHeaders'
         - name: accountID
@@ -6504,9 +6655,10 @@ paths:
         - BasicAuth: []
         - OAuth2Auth:
             - /accounts/{accountID}/issued-cards.read-secure
+      x-speakeasy-name-override: getFull
   /oauth2/revoke:
     post:
-      operationId: revokeAuthToken
+      operationId: revokeAccessToken
       description: |-
         Revoke an auth token.
 
@@ -6549,7 +6701,7 @@ paths:
         - BasicAuth: []
   /oauth2/token:
     post:
-      operationId: createAuthToken
+      operationId: createAccessToken
       description: Create or refresh an access token.
       parameters:
         - $ref: '#/components/parameters/CommonHeaders'
@@ -6597,8 +6749,8 @@ paths:
       description: |-
         Create an invitation containing a unique link that allows the recipient to onboard their organization with Moov.
 
-        To access this endpoint using a [token](https://docs.moov.io/api/authentication/access-tokens/) you'll need 
-        to specify the `/accounts.write` scope.
+        To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
+        you'll need to specify the `/accounts.write` scope.
       parameters:
         - $ref: '#/components/parameters/CommonHeaders'
       responses:
@@ -6650,13 +6802,14 @@ paths:
         - BasicAuth: []
         - OAuth2Auth:
             - /accounts.write
+      x-speakeasy-name-override: createInvite
     get:
       operationId: listOnboardingInvites
       description: |-
         List all the onboarding invites created by the caller's account.
 
-        To access this endpoint using a [token](https://docs.moov.io/api/authentication/access-tokens/) you'll need 
-        to specify the `/accounts.read` scope.
+        To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
+        you'll need to specify the `/accounts.read` scope.
       parameters:
         - $ref: '#/components/parameters/CommonHeaders'
       responses:
@@ -6684,14 +6837,15 @@ paths:
         - BasicAuth: []
         - OAuth2Auth:
             - /accounts.read
+      x-speakeasy-name-override: listInvites
   /onboarding-invites/{code}:
     get:
       operationId: getOnboardingInvite
       description: |-
         Retrieve details about an onboarding invite.
 
-        To access this endpoint using a [token](https://docs.moov.io/api/authentication/access-tokens/) you'll need 
-        to specify the `/accounts.read` scope.
+        To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
+        you'll need to specify the `/accounts.read` scope.
       parameters:
         - $ref: '#/components/parameters/CommonHeaders'
         - name: code
@@ -6724,13 +6878,14 @@ paths:
         - BasicAuth: []
         - OAuth2Auth:
             - /accounts.read
+      x-speakeasy-name-override: getInvite
     delete:
       operationId: revokeOnboardingInvite
       description: |-
         Revoke an onboarding invite, rendering the invitation link unusable.
 
-        To access this endpoint using a [token](https://docs.moov.io/api/authentication/access-tokens/) you'll need 
-        to specify the `/accounts.write` scope.
+        To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
+        you'll need to specify the `/accounts.write` scope.
       parameters:
         - $ref: '#/components/parameters/CommonHeaders'
         - name: code
@@ -6747,14 +6902,15 @@ paths:
         - BasicAuth: []
         - OAuth2Auth:
             - /accounts.write
+      x-speakeasy-name-override: revokeInvite
   /ping:
     get:
       operationId: ping
       description: |-
         A simple endpoint to check auth.
 
-        To access this endpoint using a [token](https://docs.moov.io/api/authentication/access-tokens/) you'll need 
-        to specify the `/ping.read` scope.
+        To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
+        you'll need to specify the `/ping.read` scope.
       parameters:
         - $ref: '#/components/parameters/CommonHeaders'
       responses:
@@ -6779,11 +6935,12 @@ paths:
   /tos-token:
     get:
       operationId: getTermsOfServiceToken
-      description: |2-
-          Generates a non-expiring token that can then be used to accept Moov’s terms of service. 
+      description: |-
+        Generates a non-expiring token that can then be used to accept Moov's terms of service. 
 
-          This token can only be generated via API. Any Moov account requesting the collect funds, send funds, wallet, or card issuing capabilities 
-          must accept Moov’s terms of service, then have the generated terms of service token patched to the account. Read more in our [documentation](https://docs.moov.io/guides/accounts/requirements/platform-agreement/).
+        This token can only be generated via API. Any Moov account requesting the collect funds, send funds, wallet, 
+        or card issuing capabilities must accept Moov's terms of service, then have the generated terms of service 
+        token patched to the account. Read more in our [documentation](https://docs.moov.io/guides/accounts/requirements/platform-agreement/).
       parameters:
         - $ref: '#/components/parameters/CommonHeaders'
         - name: origin
@@ -6828,9 +6985,8 @@ paths:
 
         Read our [transfers overview guide](https://docs.moov.io/guides/money-movement/overview/) to learn more.
 
-        To use this endpoint from the browser, you'll need to specify the `/accounts/{yourAccountID}/transfers.read` scope when generating a 
-        [token](https://docs.moov.io/api/authentication/access-tokens/). The accountID included must be your accountID. You can find your 
-        accountID on the [Business details](https://dashboard.moov.io/settings/business) page.
+        To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
+        you'll need to specify the `/accounts/{accountID}/transfers.read` scope.
       parameters:
         - $ref: '#/components/parameters/CommonHeaders'
       responses:
@@ -6868,6 +7024,7 @@ paths:
         - BasicAuth: []
         - OAuth2Auth:
             - /accounts/{accountID}/transfers.read
+      x-speakeasy-name-override: generateOptions
 components:
   parameters:
     AccountsQuery.capability:
@@ -7094,7 +7251,7 @@ components:
       in: query
       required: false
       description: |2-
-          If omitted or set to `city`, it uses the sender’s IP address to determine location, then automatically adds the city and state 
+          If omitted or set to `city`, it uses the sender's IP address to determine location, then automatically adds the city and state 
           to the preferCities value. This parameter takes precedence over other `include` or `exclude` parameters meaning that if it is 
           not set to `none`, you may see addresses from areas you do not wish to see.
       schema:
@@ -7244,6 +7401,89 @@ components:
         type: string
         format: date-time
       explode: false
+    ListTransactionsQuery.completedEndDateTime:
+      name: completedEndDateTime
+      in: query
+      required: false
+      description: Optional date-time which exclusively filters all transactions completed before this date-time.
+      schema:
+        type: string
+        format: date-time
+      explode: false
+    ListTransactionsQuery.completedStartDateTime:
+      name: completedStartDateTime
+      in: query
+      required: false
+      description: Optional date-time which inclusively filters all transactions completed after this date-time.
+      schema:
+        type: string
+        format: date-time
+      explode: false
+    ListTransactionsQuery.createdEndDateTime:
+      name: createdEndDateTime
+      in: query
+      required: false
+      description: Optional date-time which exclusively filters all transactions created before this date-time.
+      schema:
+        type: string
+        format: date-time
+      explode: false
+    ListTransactionsQuery.createdStartDateTime:
+      name: createdStartDateTime
+      in: query
+      required: false
+      description: 'Optional date-time which inclusively filters all transactions created after this date-time.  '
+      schema:
+        type: string
+        format: date-time
+      explode: false
+    ListTransactionsQuery.sourceID:
+      name: sourceID
+      in: query
+      required: false
+      description: Optional parameter to filter by source ID.
+      schema:
+        type: string
+        format: uuid
+      explode: false
+    ListTransactionsQuery.sourceType:
+      name: sourceType
+      in: query
+      required: false
+      description: Optional parameter to filter by source type (i.e. transfer, dispute, issuing-transaction).
+      schema:
+        $ref: '#/components/schemas/WalletTransactionSourceType'
+      explode: false
+    ListTransactionsQuery.status:
+      name: status
+      in: query
+      required: false
+      description: Optional parameter to filter by status (`pending` or `completed`).
+      schema:
+        $ref: '#/components/schemas/WalletTransactionStatus'
+      explode: false
+    ListTransactionsQuery.sweepID:
+      name: sweepID
+      in: query
+      required: false
+      description: Optional ID to filter for transactions accrued in a sweep.
+      schema:
+        $ref: '#/components/schemas/SweepID'
+      explode: false
+    ListTransactionsQuery.transactionType:
+      name: transactionType
+      in: query
+      required: false
+      description: Optional parameter to filter by transaction type.
+      schema:
+        $ref: '#/components/schemas/WalletTransactionType'
+      explode: false
+    ListTransactionsQuery.walletID:
+      name: walletID
+      in: path
+      required: true
+      schema:
+        $ref: '#/components/schemas/WalletID'
     Pagination.count:
       name: count
       in: query
@@ -13943,8 +14183,6 @@ components:
             /accounts/{accountID}/payment-methods.read: ''
             /accounts/{accountID}/representatives.write: ''
             /accounts/{accountID}/representatives.read: ''
-            /accounts/{your-account-id}/transfers.write: ''
-            /accounts/{your-account-id}/transfers.read: ''
             /accounts/{yourAccountID}/transfers.write: ''
             /accounts/{accountID}/wallets.write: ''
 servers:

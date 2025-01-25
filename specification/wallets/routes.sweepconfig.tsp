@@ -1,39 +1,22 @@
 import "@typespec/http";
+import "@typespec/openapi";
 import "./models.sweepconfig.tsp";
 import "./examples.sweepconfig.tsp";
 
 using TypeSpec.Http;
+using TypeSpec.OpenAPI;
 
 namespace MoovAPI;
 
-// Create
-
-model CreateSweepConfig {
-  walletID: WalletID;
-  status: SweepConfigStatus;
-  pushPaymentMethodID: PaymentMethodID;
-  pullPaymentMethodID: PaymentMethodID;
-  statementDescriptor?: SweepStatementDescriptor;
-
-  @pattern(Decimal2StringPattern)
-  minimumBalance?: string;
-}
-
-model CreateSweepConfigError {
-  walletID?: string;
-  status?: string;
-  pushPaymentMethodID?: string;
-  pullPaymentMethodID?: string;
-  statementDescriptor?: string;
-  minimumBalance?: string;
-}
-
+@post
+@route("/accounts/{accountID}/sweep-configs")
+@tag("Sweeps")
 @doc("""
   Create a sweep config for a wallet.
+  
+  To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
+  you'll need to specify the `/accounts/{accountID}/wallets.write` scope.
   """)
-@tag("Sweeps")
-@route("/accounts/{accountID}/sweep-configs")
-@post
 @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/wallets.write"]>)
 @opExample(#{
   parameters: #{
@@ -47,6 +30,7 @@ model CreateSweepConfigError {
   },
   returnType: #{ statusCode: HttpStatusOK, body: ExampleEnabledSweepConfig },
 })
+@extension("x-speakeasy-name-override", "createConfig")
 op createSweepConfig(
   ...CommonHeaders,
 
@@ -57,14 +41,15 @@ op createSweepConfig(
   @body body: CreateSweepConfig,
 ): PostResponses<SweepConfig, CreateSweepConfigError>;
 
-// List
-
+@get
+@route("/accounts/{accountID}/sweep-configs")
+@tag("Sweeps")
 @doc("""
   List sweep configs associated with an account.
+  
+  To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
+  you'll need to specify the `/accounts/{accountID}/wallets.read` scope.
   """)
-@tag("Sweeps")
-@route("/accounts/{accountID}/sweep-configs")
-@get
 @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/wallets.read"]>)
 @opExample(#{
   parameters: #{ accountID: ExampleID },
@@ -73,6 +58,7 @@ op createSweepConfig(
     body: #[ExampleEnabledSweepConfig, ExampleDisabledSweepConfig],
   },
 })
+@extension("x-speakeasy-name-override", "listConfigs")
 op listSweepConfigs(
   ...CommonHeaders,
 
@@ -81,19 +67,21 @@ op listSweepConfigs(
   accountID: string,
 ): ListResponses<SweepConfig>;
 
-// Get
-
+@get
+@route("/accounts/{accountID}/sweep-configs/{sweepConfigID}")
+@tag("Sweeps")
 @doc("""
   Get a sweep config associated with a wallet.
+  
+  To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
+  you'll need to specify the `/accounts/{accountID}/wallets.read` scope.
   """)
-@tag("Sweeps")
-@route("/accounts/{accountID}/sweep-configs/{sweepConfigID}")
-@get
 @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/wallets.read"]>)
 @opExample(#{
   parameters: #{ accountID: ExampleID, sweepConfigID: ExampleID },
   returnType: #{ statusCode: HttpStatusOK, body: ExampleEnabledSweepConfig },
 })
+@extension("x-speakeasy-name-override", "getConfig")
 op getSweepConfig(
   ...CommonHeaders,
 
@@ -105,32 +93,15 @@ op getSweepConfig(
   sweepConfigID: SweepConfigID,
 ): GetResponses<SweepConfig>;
 
-// Patch
-
-model PatchSweepConfig {
-  status?: SweepConfigStatus;
-  pushPaymentMethodID?: PaymentMethodID;
-  pullPaymentMethodID?: PaymentMethodID;
-  statementDescriptor?: SweepStatementDescriptor;
-
-  @pattern(Decimal2StringPattern)
-  minimumBalance?: string;
-}
-
-model PatchSweepConfigError {
-  status?: string;
-  pushPaymentMethodID?: string;
-  pullPaymentMethodID?: string;
-  statementDescriptor?: string;
-  minimumBalance?: string;
-}
-
+@patch
+@route("/accounts/{accountID}/sweep-configs/{sweepConfigID}")
+@tag("Sweeps")
 @doc("""
   Update settings on a sweep config.
+  
+  To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
+  you'll need to specify the `/accounts/{accountID}/wallets.write` scope.
   """)
-@tag("Sweeps")
-@route("/accounts/{accountID}/sweep-configs/{sweepConfigID}")
-@patch
 @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/wallets.write"]>)
 @opExample(#{
   parameters: #{
@@ -140,7 +111,8 @@ model PatchSweepConfigError {
   },
   returnType: #{ statusCode: HttpStatusOK, body: ExampleDisabledSweepConfig },
 })
-op patchSweepConfig(
+@extension("x-speakeasy-name-override", "updateConfig")
+op updateSweepConfig(
   ...CommonHeaders,
 
   @format("uuid")

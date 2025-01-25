@@ -1,4 +1,5 @@
 import "@typespec/http";
+import "@typespec/openapi";
 import "./models.transaction.tsp";
 import "../auth/models.auth.tsp";
 import "../common/models.header.tsp";
@@ -6,6 +7,7 @@ import "../common/models.parameter.tsp";
 import "../common/models.response.tsp";
 
 using TypeSpec.Http;
+using TypeSpec.OpenAPI;
 
 namespace MoovAPI;
 
@@ -15,10 +17,11 @@ namespace MoovAPI;
 @doc("""
   List issued card transactions associated with a Moov account.
   
-  To access this endpoint using a [token](https://docs.moov.io/api/authentication/access-tokens/) you'll need to specify 
-  the `/accounts/{accountID}/issued-cards.read` scope.
+  To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
+  you'll need to specify the `/accounts/{accountID}/issued-cards.read` scope.
   """)
 @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/issued-cards.read"]>)
+@extension("x-speakeasy-name-override", "list")
 op listIssuedCardTransactions(
   ...CommonHeaders,
 
@@ -36,10 +39,11 @@ op listIssuedCardTransactions(
 @doc("""
   Retrieves details of an issued card transaction associated with a specific Moov account.
   
-  To access this endpoint using a [token](https://docs.moov.io/api/authentication/access-tokens/) you'll need to specify 
-  the `/accounts/{accountID}/issued-cards.read` scope.
+  To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
+  you'll need to specify the `/accounts/{accountID}/issued-cards.read` scope.
   """)
 @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/issued-cards.read"]>)
+@extension("x-speakeasy-name-override", "get")
 op getIssuedCardTransaction(
   ...CommonHeaders,
 

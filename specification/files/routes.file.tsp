@@ -1,4 +1,5 @@
 import "@typespec/http";
+import "@typespec/openapi";
 import "./models.file.tsp";
 import "../auth/models.auth.tsp";
 import "../common/models.response.tsp";
@@ -6,6 +7,7 @@ import "../common/models.header.tsp";
 import "../common/models.parameter.tsp";
 
 using TypeSpec.Http;
+using TypeSpec.OpenAPI;
 
 namespace MoovAPI;
 
@@ -18,10 +20,11 @@ namespace MoovAPI;
   The maximum file size is 10MB. Each account is allowed a maximum of 50 files. Acceptable file types include csv, jpg, pdf, 
   and png. 
   
-  To access this endpoint using a [token](https://docs.moov.io/api/authentication/access-tokens/) you'll need to specify the 
-  `/accounts/{accountID}/files.write` scope.
+  To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
+  you'll need to specify the `/accounts/{accountID}/files.write` scope.
   """)
 @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/files.write"]>)
+@extension("x-speakeasy-name-override", "upload")
 op uploadFile(
   ...CommonHeaders,
   @header contentType: "multipart/form-data",
@@ -39,10 +42,11 @@ op uploadFile(
 @doc("""
   List all the files associated with a particular Moov account.
   
-  To access this endpoint using a [token](https://docs.moov.io/api/authentication/access-tokens/) you'll need to specify the 
-  `/accounts/{accountID}/files.read` scope.
+  To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
+  you'll need to specify the `/accounts/{accountID}/files.read` scope.
   """)
 @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/files.read"]>)
+@extension("x-speakeasy-name-override", "list")
 op listFiles(
   ...CommonHeaders,
 
@@ -57,10 +61,11 @@ op listFiles(
 @doc("""
   Retrieve file details associated with a specific Moov account.
   
-  To access this endpoint using a [token](https://docs.moov.io/api/authentication/access-tokens/) you'll need to specify the 
-  `/accounts/{accountID}/files.read` scope.
+  To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
+  you'll need to specify the `/accounts/{accountID}/files.read` scope.
   """)
 @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/files.read"]>)
+@extension("x-speakeasy-name-override", "get")
 op getFileDetails(
   ...CommonHeaders,
 
