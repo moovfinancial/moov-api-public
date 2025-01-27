@@ -2,6 +2,7 @@ import "@typespec/http";
 import "@typespec/openapi";
 import "@typespec/versioning";
 import "@moovfinancial/tsp-lib";
+import "./auth/models.auth.tsp";
 
 // import each subdirectory's main
 import "./accounts";
@@ -54,6 +55,7 @@ using TypeSpec.Versioning;
   },
 })
 @server("https://api.moov.io", "Production API host")
+@useAuth(BasicAuth | OAuth2<[]>)
 @versioned(Versions)
 @extension(
   "x-speakeasy-globals",
@@ -63,7 +65,7 @@ using TypeSpec.Versioning;
         name: "x-moov-version",
         in: "header",
         schema: {
-          type: "string",
+          $ref: "#/components/schemas/Versions",
         },
         `x-speakeasy-globals-hidden`: true,
       }

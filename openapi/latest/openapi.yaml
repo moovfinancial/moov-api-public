@@ -4989,7 +4989,7 @@ paths:
       security:
         - BasicAuth: []
         - OAuth2Auth:
-            - /accounts/{yourAccountID}/transfers.write
+            - /accounts/{accountID}/transfers.write
       x-speakeasy-name-override: update
   /accounts/{accountID}/transfers/{transferID}/refunds:
     post:
@@ -7025,6 +7025,9 @@ paths:
         - OAuth2Auth:
             - /accounts/{accountID}/transfers.read
       x-speakeasy-name-override: generateOptions
+security:
+  - BasicAuth: []
+  - OAuth2Auth: []
 components:
   parameters:
     AccountsQuery.capability:
@@ -13335,14 +13338,9 @@ components:
     TokenType:
       type: string
       enum:
-        - opaque
-        - jwt
-      example: opaque
-      description: |-
-        Type of token returned.
-
-          - `opaque`: A token following a proprietary format.
-          - `jwt`: A JSON Web Token (JWT), a self-contained token that contains claims about the user and is cryptographically signed.
+        - Bearer
+      example: Bearer
+      description: An [RFC 6750](https://www.rfc-editor.org/rfc/rfc6750#section-6.1) token type.
     TransactionSource:
       type: string
       enum:
@@ -14149,8 +14147,7 @@ components:
     OAuth2Auth:
       type: oauth2
       flows:
-        authorizationCode:
-          authorizationUrl: /oauth2/authorize
+        clientCredentials:
           tokenUrl: /oauth2/token
           refreshUrl: /oauth2/token
           scopes:
@@ -14183,7 +14180,6 @@ components:
             /accounts/{accountID}/payment-methods.read: ''
             /accounts/{accountID}/representatives.write: ''
             /accounts/{accountID}/representatives.read: ''
-            /accounts/{yourAccountID}/transfers.write: ''
             /accounts/{accountID}/wallets.write: ''
 servers:
   - url: https://api.moov.io
@@ -14194,5 +14190,5 @@ x-speakeasy-globals:
     - name: x-moov-version
       in: header
       schema:
-        type: string
+        $ref: '#/components/schemas/Versions'
       x-speakeasy-globals-hidden: true

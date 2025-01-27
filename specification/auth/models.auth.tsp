@@ -9,13 +9,12 @@ namespace MoovAPI;
 alias OAuth2<Scopes extends string[]> = OAuth2Auth<
   [
     {
-      type: OAuth2FlowType.authorizationCode;
-      authorizationUrl: "/oauth2/authorize";
+      type: OAuth2FlowType.clientCredentials;
       tokenUrl: "/oauth2/token";
       refreshUrl: "/oauth2/token";
     }
   ],
-  Scopes = Scopes
+  Scopes
 >;
 
 // Auth token requests/responses
@@ -101,14 +100,8 @@ enum GrantType {
   RefreshToken: "refresh_token",
 }
 
-@doc("""
-  Type of token returned.
-  
-    - `opaque`: A token following a proprietary format.
-    - `jwt`: A JSON Web Token (JWT), a self-contained token that contains claims about the user and is cryptographically signed.
-  """)
-@example(TokenType.opaque)
+@doc("An [RFC 6750](https://www.rfc-editor.org/rfc/rfc6750#section-6.1) token type.")
+@example(TokenType.bearer)
 enum TokenType {
-  opaque,
-  jwt,
+  bearer: "Bearer",
 }
