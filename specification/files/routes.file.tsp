@@ -23,7 +23,8 @@ namespace MoovAPI;
   To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
   you'll need to specify the `/accounts/{accountID}/files.write` scope.
   """)
-@useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/files.write"]>)
+// @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/files.write"]>)
+@useAuth(BasicAuth)
 @extension("x-speakeasy-name-override", "upload")
 op uploadFile(
   ...CommonHeaders,
@@ -45,7 +46,8 @@ op uploadFile(
   To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
   you'll need to specify the `/accounts/{accountID}/files.read` scope.
   """)
-@useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/files.read"]>)
+// @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/files.read"]>)
+@useAuth(BasicAuth)
 @extension("x-speakeasy-name-override", "list")
 op listFiles(
   ...CommonHeaders,
@@ -64,7 +66,8 @@ op listFiles(
   To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
   you'll need to specify the `/accounts/{accountID}/files.read` scope.
   """)
-@useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/files.read"]>)
+// @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/files.read"]>)
+@useAuth(BasicAuth)
 @extension("x-speakeasy-name-override", "get")
 op getFileDetails(
   ...CommonHeaders,

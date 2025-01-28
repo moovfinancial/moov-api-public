@@ -31,7 +31,8 @@ op generateEndToEndKey(
   To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
   you'll need to specify the `/ping.read` scope.
   """)
-@useAuth(BasicAuth | OAuth2<["/ping.read"]>)
+// @useAuth(BasicAuth | OAuth2<["/ping.read"]>)
+@useAuth(BasicAuth)
 @extension("x-speakeasy-name-override", "testEncryptedToken")
 op testEndToEndToken(...CommonHeaders, @body body: E2EEToken):
   | NoContentResponse

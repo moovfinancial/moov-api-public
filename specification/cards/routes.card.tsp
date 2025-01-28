@@ -34,7 +34,8 @@ namespace MoovAPI;
   To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
   you'll need to specify the `/accounts/{accountID}/cards.write` scope.
   """)
-@useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/cards.write"]>)
+// @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/cards.write"]>)
+@useAuth(BasicAuth)
 @extension("x-speakeasy-name-override", "link")
 op linkCard(
   ...CommonHeaders,
@@ -67,7 +68,8 @@ op linkCard(
   To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
   you'll need to specify the `/accounts/{accountID}/cards.read` scope.
   """)
-@useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/cards.read"]>)
+// @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/cards.read"]>)
+@useAuth(BasicAuth)
 @extension("x-speakeasy-name-override", "list")
 op listCards(
   ...CommonHeaders,
@@ -88,7 +90,8 @@ op listCards(
   To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
   you'll need to specify the `/accounts/{accountID}/cards.read` scope.
   """)
-@useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/cards.read"]>)
+// @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/cards.read"]>)
+@useAuth(BasicAuth)
 @extension("x-speakeasy-name-override", "get")
 op getCard(
   ...CommonHeaders,
@@ -119,7 +122,8 @@ op getCard(
   To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
   you'll need to specify the `/accounts/{accountID}/cards.write` scope.
   """)
-@useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/cards.write"]>)
+// @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/cards.write"]>)
+@useAuth(BasicAuth)
 @extension("x-speakeasy-name-override", "update")
 op updateCard(
   ...CommonHeaders,
@@ -143,7 +147,8 @@ op updateCard(
   To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
   you'll need to specify the `/accounts/{accountID}/cards.write` scope.
   """)
-@useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/cards.write"]>)
+// @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/cards.write"]>)
+@useAuth(BasicAuth)
 @extension("x-speakeasy-name-override", "disable")
 op disableCard(
   ...CommonHeaders,

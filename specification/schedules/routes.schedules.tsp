@@ -21,7 +21,8 @@ namespace MoovAPI;
   To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
   you'll need to specify the `/accounts/{accountID}/transfers.write` scope.
   """)
-@useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/transfers.write"]>)
+// @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/transfers.write"]>)
+@useAuth(BasicAuth)
 @extension("x-speakeasy-name-override", "create")
 op createSchedule(
   ...CommonHeaders,
@@ -42,7 +43,8 @@ op createSchedule(
   To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
   you'll need to specify the `/accounts/{accountID}/transfers.write` scope.
   """)
-@useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/transfers.write"]>)
+// @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/transfers.write"]>)
+@useAuth(BasicAuth)
 @extension("x-speakeasy-name-override", "update")
 op updateSchedule(
   ...CommonHeaders,
@@ -67,7 +69,8 @@ op updateSchedule(
   To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
   you'll need to specify the `/accounts/{accountID}/transfers.read` scope.
   """)
-@useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/transfers.read"]>)
+// @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/transfers.read"]>)
+@useAuth(BasicAuth)
 @extension("x-speakeasy-name-override", "get")
 op getSchedules(
   ...CommonHeaders,
@@ -90,7 +93,8 @@ op getSchedules(
   To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
   you'll need to specify the `/accounts/{accountID}/transfers.read` scope.
   """)
-@useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/transfers.read"]>)
+// @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/transfers.read"]>)
+@useAuth(BasicAuth)
 @extension("x-speakeasy-name-override", "list")
 op listSchedules(
   ...CommonHeaders,
@@ -111,7 +115,8 @@ op listSchedules(
   To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
   you'll need to specify the `/accounts/{accountID}/transfers.read` scope.
   """)
-@useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/transfers.read"]>)
+// @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/transfers.read"]>)
+@useAuth(BasicAuth)
 @extension("x-speakeasy-name-override", "getOccurrance")
 op getScheduledOccurrence(
   ...CommonHeaders,
@@ -144,7 +149,8 @@ op getScheduledOccurrence(
   To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
   you'll need to specify the `/accounts/{accountID}/transfers.write` scope.
   """)
-@useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/transfers.write"]>)
+// @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/transfers.write"]>)
+@useAuth(BasicAuth)
 @extension("x-speakeasy-name-override", "cancel")
 op cancelSchedule(
   ...CommonHeaders,

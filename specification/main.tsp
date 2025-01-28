@@ -55,7 +55,8 @@ using TypeSpec.Versioning;
   },
 })
 @server("https://api.moov.io", "Production API host")
-@useAuth(BasicAuth | OAuth2<[]>)
+// @useAuth(BasicAuth | OAuth2<[]>)
+@useAuth(BasicAuth)
 @versioned(Versions)
 @extension(
   "x-speakeasy-globals",

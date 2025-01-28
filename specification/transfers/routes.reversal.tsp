@@ -20,7 +20,8 @@ namespace MoovAPI;
   To access this endpoint using a [token](https://docs.moov.io/api/authentication/access-tokens/) you'll need 
   to specify the `/accounts/{accountID}/transfers.write` scope.
   """)
-@useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/transfers.write"]>)
+// @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/transfers.write"]>)
+@useAuth(BasicAuth)
 @opExample(ExampleReversalCancellation, #{ title: "Reversed by cancellation" })
 @opExample(ExampleReversalRefund, #{ title: "Reversed by refund" })
 op createReversal(

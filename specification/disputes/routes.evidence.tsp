@@ -23,7 +23,8 @@ namespace MoovAPI;
   To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
   you'll need to specify the `/accounts/{accountID}/transfers.read` scope.
   """)
-@useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/transfers.read"]>)
+// @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/transfers.read"]>)
+@useAuth(BasicAuth)
 @extension("x-speakeasy-name-override", "listEvidence")
 op listDisputeEvidence(
   ...CommonHeaders,
@@ -48,7 +49,8 @@ op listDisputeEvidence(
   To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
   you'll need to specify the `/accounts/{accountID}/transfers.write` scope.
   """)
-@useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/transfers.write"]>)
+// @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/transfers.write"]>)
+@useAuth(BasicAuth)
 @extension("x-speakeasy-name-override", "uploadEvidenceFile")
 op uploadDisputeEvidenceFile(
   ...CommonHeaders,
@@ -85,7 +87,8 @@ op uploadDisputeEvidenceFile(
   To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
   you'll need to specify the `/accounts/{accountID}/transfers.write` scope.
   """)
-@useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/transfers.write"]>)
+// @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/transfers.write"]>)
+@useAuth(BasicAuth)
 @extension("x-speakeasy-name-override", "uploadEvidenceText")
 op uploadDisputeEvidenceText(
   ...CommonHeaders,
@@ -121,7 +124,8 @@ op uploadDisputeEvidenceText(
   To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
   you'll need to specify the `/accounts/{accountID}/transfers.read` scope.
   """)
-@useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/transfers.read"]>)
+// @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/transfers.read"]>)
+@useAuth(BasicAuth)
 @extension("x-speakeasy-name-override", "getEvidence")
 op getDisputeEvidence(
   ...CommonHeaders,
@@ -150,7 +154,8 @@ op getDisputeEvidence(
   To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
   you'll need to specify the `/accounts/{accountID}/transfers.write` scope.
   """)
-@useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/transfers.write"]>)
+// @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/transfers.write"]>)
+@useAuth(BasicAuth)
 @extension("x-speakeasy-name-override", "updateEvidence")
 op updateDisputeEvidence(
   ...CommonHeaders,
@@ -189,7 +194,8 @@ op updateDisputeEvidence(
   To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
   you'll need to specify the `/accounts/{accountID}/transfers.write` scope.
   """)
-@useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/transfers.write"]>)
+// @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/transfers.write"]>)
+@useAuth(BasicAuth)
 @extension("x-speakeasy-name-override", "deleteEvidence")
 op deleteDisputeEvidenceFile(
   ...CommonHeaders,
@@ -226,7 +232,8 @@ op deleteDisputeEvidenceFile(
   To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
   you'll need to specify the `/accounts/{accountID}/transfers.read` scope.
   """)
-@useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/transfers.read"]>)
+// @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/transfers.read"]>)
+@useAuth(BasicAuth)
 @extension("x-speakeasy-name-override", "getEvidenceData")
 op getDisputeEvidenceData(
   ...CommonHeaders,
@@ -265,7 +272,8 @@ op getDisputeEvidenceData(
   To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
   you'll need to specify the `/accounts/{accountID}/transfers.write` scope.
   """)
-@useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/transfers.write"]>)
+// @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/transfers.write"]>)
+@useAuth(BasicAuth)
 @extension("x-speakeasy-name-override", "submitEvidence")
 op submitDisputeEvidence(
   ...CommonHeaders,

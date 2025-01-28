@@ -23,7 +23,8 @@ namespace MoovAPI;
   To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
   you'll need to specify the `/profile-enrichment.read` scope.
   """)
-@useAuth(BasicAuth | OAuth2<["/profile-enrichment.read"]>)
+// @useAuth(BasicAuth | OAuth2<["/profile-enrichment.read"]>)
+@useAuth(BasicAuth)
 @extension("x-speakeasy-name-override", "get")
 op getEnrichmentAddress(
   ...CommonHeaders,
@@ -39,7 +40,8 @@ op getEnrichmentAddress(
   To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
   you'll need to specify the `/profile-enrichment.read` scope.
   """)
-@useAuth(BasicAuth | OAuth2<["/profile-enrichment.read"]>)
+// @useAuth(BasicAuth | OAuth2<["/profile-enrichment.read"]>)
+@useAuth(BasicAuth)
 @extension("x-speakeasy-name-override", "get")
 op getEnrichmentProfile(
   ...CommonHeaders,
@@ -58,7 +60,8 @@ op getEnrichmentProfile(
   To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
   you'll need to specify the `/profile-enrichment.read` scope.
   """)
-@useAuth(BasicAuth | OAuth2<["/profile-enrichment.read"]>)
+// @useAuth(BasicAuth | OAuth2<["/profile-enrichment.read"]>)
+@useAuth(BasicAuth)
 @extension("x-speakeasy-name-override", "list")
 op listIndustries(...CommonHeaders): ListResponses<EnrichedIndustry>;
 
@@ -71,7 +74,8 @@ op listIndustries(...CommonHeaders): ListResponses<EnrichedIndustry>;
   To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
   you'll need to specify the `/profile-enrichment.read` scope.
   """)
-@useAuth(BasicAuth | OAuth2<["/profile-enrichment.read"]>)
+// @useAuth(BasicAuth | OAuth2<["/profile-enrichment.read"]>)
+@useAuth(BasicAuth)
 @extension("x-speakeasy-name-override", "get")
 op getAvatar(
   ...CommonHeaders,
@@ -97,7 +101,8 @@ op getAvatar(
   To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
   you'll need to specify the `/fed.read` scope.
   """)
-@useAuth(BasicAuth | OAuth2<["/fed.read"]>)
+// @useAuth(BasicAuth | OAuth2<["/fed.read"]>)
+@useAuth(BasicAuth)
 @extension("x-speakeasy-name-override", "search")
 op listInstitutions(...CommonHeaders, ...InstitutionsFilters):
   | OkResponse<FinancialInstitutions[]>

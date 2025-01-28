@@ -13,6 +13,7 @@ namespace MoovAPI;
 @doc("""
   Create or refresh an access token.
   """)
+// @useAuth(BasicAuth)
 @useAuth(BasicAuth)
 op createAccessToken(
   ...CommonHeaders,
@@ -34,6 +35,7 @@ op createAccessToken(
   
   Allows clients to notify the authorization server that a previously obtained refresh or access token is no longer needed.
   """)
+// @useAuth(BasicAuth)
 @useAuth(BasicAuth)
 op revokeAccessToken(
   ...CommonHeaders,

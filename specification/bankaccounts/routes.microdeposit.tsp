@@ -28,7 +28,8 @@ namespace MoovAPI;
   To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
   you'll need to specify the `/accounts/{accountID}/bank-accounts.write` scope.
   """)
-@useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/bank-accounts.write"]>)
+// @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/bank-accounts.write"]>)
+@useAuth(BasicAuth)
 op initiateMicroDeposits(
   ...CommonHeaders,
 
@@ -59,7 +60,8 @@ op initiateMicroDeposits(
   To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
   you'll need to specify the `/accounts/{accountID}/bank-accounts.write` scope.
   """)
-@useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/bank-accounts.write"]>)
+// @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/bank-accounts.write"]>)
+@useAuth(BasicAuth)
 op completeMicroDeposits(
   ...CommonHeaders,
 

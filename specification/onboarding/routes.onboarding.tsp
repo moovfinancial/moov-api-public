@@ -19,7 +19,8 @@ namespace MoovAPI;
   To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
   you'll need to specify the `/accounts.write` scope.
   """)
-@useAuth(BasicAuth | OAuth2<["/accounts.write"]>)
+// @useAuth(BasicAuth | OAuth2<["/accounts.write"]>)
+@useAuth(BasicAuth)
 @extension("x-speakeasy-name-override", "createInvite")
 op createOnboardingInvite(
   ...CommonHeaders,
@@ -35,7 +36,8 @@ op createOnboardingInvite(
   To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
   you'll need to specify the `/accounts.read` scope.
   """)
-@useAuth(BasicAuth | OAuth2<["/accounts.read"]>)
+// @useAuth(BasicAuth | OAuth2<["/accounts.read"]>)
+@useAuth(BasicAuth)
 @extension("x-speakeasy-name-override", "listInvites")
 op listOnboardingInvites(...CommonHeaders): ListResponses<OnboardingInvite>;
 
@@ -47,7 +49,8 @@ op listOnboardingInvites(...CommonHeaders): ListResponses<OnboardingInvite>;
   To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
   you'll need to specify the `/accounts.read` scope.
   """)
-@useAuth(BasicAuth | OAuth2<["/accounts.read"]>)
+// @useAuth(BasicAuth | OAuth2<["/accounts.read"]>)
+@useAuth(BasicAuth)
 @extension("x-speakeasy-name-override", "getInvite")
 op getOnboardingInvite(
   ...CommonHeaders,
@@ -65,7 +68,8 @@ op getOnboardingInvite(
   To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
   you'll need to specify the `/accounts.write` scope.
   """)
-@useAuth(BasicAuth | OAuth2<["/accounts.write"]>)
+// @useAuth(BasicAuth | OAuth2<["/accounts.write"]>)
+@useAuth(BasicAuth)
 @extension("x-speakeasy-name-override", "revokeInvite")
 op revokeOnboardingInvite(
   ...CommonHeaders,

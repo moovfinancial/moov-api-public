@@ -20,7 +20,8 @@ namespace MoovAPI;
   To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
   you'll need to specify the `/accounts/{accountID}/issued-cards.write` scope.
   """)
-@useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/issued-cards.write"]>)
+// @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/issued-cards.write"]>)
+@useAuth(BasicAuth)
 @extension("x-speakeasy-name-override", "request")
 op requestCard(
   ...CommonHeaders,
@@ -51,7 +52,8 @@ op requestCard(
   To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
   you'll need to specify the `/accounts/{accountID}/issued-cards.read` scope.
   """)
-@useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/issued-cards.read"]>)
+// @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/issued-cards.read"]>)
+@useAuth(BasicAuth)
 @extension("x-speakeasy-name-override", "list")
 op listIssuedCards(
   ...CommonHeaders,
@@ -77,7 +79,8 @@ op listIssuedCards(
   To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
   you'll need to specify the `/accounts/{accountID}/issued-cards.read` scope.
   """)
-@useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/issued-cards.read"]>)
+// @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/issued-cards.read"]>)
+@useAuth(BasicAuth)
 @extension("x-speakeasy-name-override", "get")
 op getIssuedCard(
   ...CommonHeaders,
@@ -101,7 +104,8 @@ op getIssuedCard(
   To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
   you'll need to specify the `/accounts/{accountID}/issued-cards.write` scope.
   """)
-@useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/issued-cards.write"]>)
+// @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/issued-cards.write"]>)
+@useAuth(BasicAuth)
 @extension("x-speakeasy-name-override", "update")
 op updateIssuedCard(
   ...CommonHeaders,
@@ -129,7 +133,8 @@ op updateIssuedCard(
   To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
   you'll need to specify the `/accounts/{accountID}/issued-cards.read-secure` scope.
   """)
-@useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/issued-cards.read-secure"]>)
+// @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/issued-cards.read-secure"]>)
+@useAuth(BasicAuth)
 @extension("x-speakeasy-name-override", "getFull")
 op getFullIssuedCard(
   ...CommonHeaders,

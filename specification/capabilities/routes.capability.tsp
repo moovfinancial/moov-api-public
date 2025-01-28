@@ -26,7 +26,8 @@ namespace MoovAPI;
   To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
   you'll need to specify the `/accounts/{accountID}/capabilities.read` scope.
   """)
-@useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/capabilities.read"]>)
+// @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/capabilities.read"]>)
+@useAuth(BasicAuth)
 @opExample(#{
   parameters: #{ accountID: ExampleID },
   returnType: #{
@@ -54,7 +55,8 @@ op listCapabilities(
   To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
   you'll need to specify the `/accounts/{accountID}/capabilities.write` scope.
   """)
-@useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/capabilities.write"]>)
+// @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/capabilities.write"]>)
+@useAuth(BasicAuth)
 @opExample(#{
   parameters: #{
     accountID: ExampleID,
@@ -87,7 +89,8 @@ op requestCapabilities(
   To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
   you'll need to specify the `/accounts/{accountID}/capabilities.read` scope.
   """)
-@useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/capabilities.read"]>)
+// @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/capabilities.read"]>)
+@useAuth(BasicAuth)
 @opExample(#{
   parameters: #{ accountID: ExampleID, capabilityID: CapabilityID.transfers },
   returnType: #{ statusCode: HttpStatusOK, body: ExampleTransfersCapability },
@@ -115,7 +118,8 @@ op getCapability(
     To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
   you'll need to specify the `/accounts/{accountID}/capabilities.write` scope.
   """)
-@useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/capabilities.write"]>)
+// @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/capabilities.write"]>)
+@useAuth(BasicAuth)
 @opExample(#{
   parameters: #{
     accountID: ExampleID,

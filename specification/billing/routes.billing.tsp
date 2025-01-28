@@ -19,7 +19,8 @@ namespace MoovAPI;
   To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
   you'll need to specify the `/accounts/{accountID}/profile.read` scope.
   """)
-@useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/profile.read"]>)
+// @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/profile.read"]>)
+@useAuth(BasicAuth)
 op listFeePlans(
   ...CommonHeaders,
 
@@ -41,7 +42,8 @@ op listFeePlans(
   To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
   you'll need to specify the `/accounts/{accountID}/profile.read` scope.
   """)
-@useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/profile.read"]>)
+// @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/profile.read"]>)
+@useAuth(BasicAuth)
 op listFeePlanAgreements(
   ...CommonHeaders,
 
@@ -67,7 +69,8 @@ op listFeePlanAgreements(
   To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
   you'll need to specify the `/accounts/{accountID}/profile.write` scope.
   """)
-@useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/profile.write"]>)
+// @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/profile.write"]>)
+@useAuth(BasicAuth)
 op createFeePlanAgreements(
   ...CommonHeaders,
 
@@ -87,7 +90,8 @@ op createFeePlanAgreements(
   To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
   you'll need to specify the `/accounts/{accountID}/profile.read` scope.
   """)
-@useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/profile.read"]>)
+// @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/profile.read"]>)
+@useAuth(BasicAuth)
 op listPartnerPricing(
   ...CommonHeaders,
 
@@ -109,7 +113,8 @@ op listPartnerPricing(
   To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
   you'll need to specify the `/accounts/{accountID}/profile.read` scope.
   """)
-@useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/profile.read"]>)
+// @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/profile.read"]>)
+@useAuth(BasicAuth)
 op listPartnerPricingAgreements(
   ...CommonHeaders,
 

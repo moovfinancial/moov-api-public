@@ -123,10 +123,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/CreateAccount'
-      security:
-        - BasicAuth: []
-        - OAuth2Auth:
-            - /accounts.write
       x-speakeasy-name-override: create
     get:
       operationId: listAccounts
@@ -181,10 +177,6 @@ paths:
           description: The request failed because a downstream service failed to respond.
       tags:
         - Accounts
-      security:
-        - BasicAuth: []
-        - OAuth2Auth:
-            - /accounts.read
       x-speakeasy-name-override: list
   /accounts/{accountID}:
     get:
@@ -223,10 +215,6 @@ paths:
           description: The request failed because a downstream service failed to respond.
       tags:
         - Accounts
-      security:
-        - BasicAuth: []
-        - OAuth2Auth:
-            - /accounts/{accountID}/profile.read
       x-speakeasy-name-override: get
     patch:
       operationId: updateAccount
@@ -301,10 +289,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/CreateAccountUpdate'
-      security:
-        - BasicAuth: []
-        - OAuth2Auth:
-            - /accounts/{accountID}/profile.write
       x-speakeasy-name-override: update
     delete:
       operationId: disconnectAccount
@@ -352,10 +336,6 @@ paths:
           description: The request failed because a downstream service failed to respond.
       tags:
         - Accounts
-      security:
-        - BasicAuth: []
-        - OAuth2Auth:
-            - /accounts/{accountID}/profile.disconnect
       x-speakeasy-name-override: disconnect
   /accounts/{accountID}/adjustments:
     get:
@@ -402,10 +382,6 @@ paths:
           description: The request failed because a downstream service failed to respond.
       tags:
         - Adjustments
-      security:
-        - BasicAuth: []
-        - OAuth2Auth:
-            - /accounts/{accountID}/wallets.read
       x-speakeasy-name-override: list
   /accounts/{accountID}/adjustments/{adjustmentID}:
     get:
@@ -450,10 +426,6 @@ paths:
           description: The request failed because a downstream service failed to respond.
       tags:
         - Adjustments
-      security:
-        - BasicAuth: []
-        - OAuth2Auth:
-            - /accounts/{accountID}/wallets.read
       x-speakeasy-name-override: get
   /accounts/{accountID}/apple-pay/domains:
     post:
@@ -510,10 +482,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/RegisterApplePayMerchantDomains'
-      security:
-        - BasicAuth: []
-        - OAuth2Auth:
-            - /accounts/{accountID}/apple-pay.write
       x-speakeasy-name-override: registerMerchantDomains
     patch:
       operationId: updateApplePayMerchantDomains
@@ -567,10 +535,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/UpdateApplePayMerchantDomains'
-      security:
-        - BasicAuth: []
-        - OAuth2Auth:
-            - /accounts/{accountID}/apple-pay.write
       x-speakeasy-name-override: updateMerchantDomains
     get:
       operationId: getApplePayMerchantDomains
@@ -611,10 +575,6 @@ paths:
           description: The request failed because a downstream service failed to respond.
       tags:
         - Apple pay
-      security:
-        - BasicAuth: []
-        - OAuth2Auth:
-            - /accounts/{accountID}/apple-pay.read
       x-speakeasy-name-override: getMerchantDomains
   /accounts/{accountID}/apple-pay/sessions:
     post:
@@ -681,10 +641,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/CreateApplePaySession'
-      security:
-        - BasicAuth: []
-        - OAuth2Auth:
-            - /accounts/{accountID}/apple-pay.write
       x-speakeasy-name-override: createSession
   /accounts/{accountID}/apple-pay/tokens:
     post:
@@ -751,10 +707,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/LinkApplePay'
-      security:
-        - BasicAuth: []
-        - OAuth2Auth:
-            - /accounts/{accountID}/cards.write
       x-speakeasy-name-override: linkToken
   /accounts/{accountID}/bank-accounts:
     post:
@@ -832,10 +784,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/LinkBankAccount'
-      security:
-        - BasicAuth: []
-        - OAuth2Auth:
-            - /accounts/{accountID}/bank-accounts.write
       x-speakeasy-name-override: link
     get:
       operationId: listBankAccounts
@@ -875,10 +823,6 @@ paths:
           description: The request failed because a downstream service failed to respond.
       tags:
         - Bank accounts
-      security:
-        - BasicAuth: []
-        - OAuth2Auth:
-            - /accounts/{accountID}/bank-accounts.read
       x-speakeasy-name-override: list
   /accounts/{accountID}/bank-accounts/{bankAccountID}:
     get:
@@ -925,10 +869,6 @@ paths:
           description: The request failed because a downstream service failed to respond.
       tags:
         - Bank accounts
-      security:
-        - BasicAuth: []
-        - OAuth2Auth:
-            - /accounts/{accountID}/bank-accounts.read
       x-speakeasy-name-override: get
     delete:
       operationId: disableBankAccount
@@ -980,10 +920,6 @@ paths:
           description: The request failed because a downstream service failed to respond.
       tags:
         - Bank accounts
-      security:
-        - BasicAuth: []
-        - OAuth2Auth:
-            - /accounts/{accountID}/bank-accounts.write
       x-speakeasy-name-override: disable
   /accounts/{accountID}/bank-accounts/{bankAccountID}/micro-deposits:
     post:
@@ -1047,10 +983,6 @@ paths:
           description: The request failed because a downstream service failed to respond.
       tags:
         - Bank accounts
-      security:
-        - BasicAuth: []
-        - OAuth2Auth:
-            - /accounts/{accountID}/bank-accounts.write
     put:
       operationId: completeMicroDeposits
       description: |-
@@ -1117,10 +1049,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/CompleteMicroDeposits'
-      security:
-        - BasicAuth: []
-        - OAuth2Auth:
-            - /accounts/{accountID}/bank-accounts.write
   /accounts/{accountID}/bank-accounts/{bankAccountID}/verify:
     get:
       operationId: getBankAccountVerification
@@ -1173,10 +1101,6 @@ paths:
           description: The request failed because a downstream service failed to respond.
       tags:
         - Bank accounts
-      security:
-        - BasicAuth: []
-        - OAuth2Auth:
-            - /accounts/{accountID}/bank-accounts.read
       x-speakeasy-name-override: getVerification
     post:
       operationId: initiateBankAccountVerification
@@ -1256,10 +1180,6 @@ paths:
           description: The request failed because a downstream service failed to respond.
       tags:
         - Bank accounts
-      security:
-        - BasicAuth: []
-        - OAuth2Auth:
-            - /accounts/{accountID}/bank-accounts.write
       x-speakeasy-name-override: initiateVerification
     put:
       operationId: completeBankAccountVerification
@@ -1334,10 +1254,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/CompleteBankAccountVerification'
-      security:
-        - BasicAuth: []
-        - OAuth2Auth:
-            - /accounts/{accountID}/bank-accounts.write
       x-speakeasy-name-override: completeVerification
   /accounts/{accountID}/branding:
     post:
@@ -1400,10 +1316,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/Brand'
-      security:
-        - BasicAuth: []
-        - OAuth2Auth:
-            - /accounts/{accountID}/branding.write
       x-speakeasy-name-override: create
     get:
       operationId: getBrand
@@ -1441,10 +1353,6 @@ paths:
           description: The request failed because a downstream service failed to respond.
       tags:
         - Branding
-      security:
-        - BasicAuth: []
-        - OAuth2Auth:
-            - /accounts/{accountID}/branding.read
       x-speakeasy-name-override: get
     patch:
       operationId: updateBrand
@@ -1506,10 +1414,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/UpdateBrand'
-      security:
-        - BasicAuth: []
-        - OAuth2Auth:
-            - /accounts/{accountID}/branding.write
       x-speakeasy-name-override: update
   /accounts/{accountID}/capabilities:
     get:
@@ -1564,10 +1468,6 @@ paths:
           description: The request failed because a downstream service failed to respond.
       tags:
         - Capabilities
-      security:
-        - BasicAuth: []
-        - OAuth2Auth:
-            - /accounts/{accountID}/capabilities.read
       x-speakeasy-name-override: list
     post:
       operationId: requestCapabilities
@@ -1648,10 +1548,6 @@ paths:
             example:
               capabilities:
                 - collect-funds
-      security:
-        - BasicAuth: []
-        - OAuth2Auth:
-            - /accounts/{accountID}/capabilities.write
       x-speakeasy-name-override: request
   /accounts/{accountID}/capabilities/{capabilityID}:
     get:
@@ -1701,10 +1597,6 @@ paths:
           description: The request failed because a downstream service failed to respond.
       tags:
         - Capabilities
-      security:
-        - BasicAuth: []
-        - OAuth2Auth:
-            - /accounts/{accountID}/capabilities.read
       x-speakeasy-name-override: get
     delete:
       operationId: disableCapability
@@ -1755,10 +1647,6 @@ paths:
           description: The request failed because a downstream service failed to respond.
       tags:
         - Capabilities
-      security:
-        - BasicAuth: []
-        - OAuth2Auth:
-            - /accounts/{accountID}/capabilities.write
       x-speakeasy-name-override: disable
   /accounts/{accountID}/cards:
     post:
@@ -1845,10 +1733,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/LinkCard'
-      security:
-        - BasicAuth: []
-        - OAuth2Auth:
-            - /accounts/{accountID}/cards.write
       x-speakeasy-name-override: link
     get:
       operationId: listCards
@@ -1888,10 +1772,6 @@ paths:
           description: The request failed because a downstream service failed to respond.
       tags:
         - Cards
-      security:
-        - BasicAuth: []
-        - OAuth2Auth:
-            - /accounts/{accountID}/cards.read
       x-speakeasy-name-override: list
   /accounts/{accountID}/cards/{cardID}:
     get:
@@ -1937,10 +1817,6 @@ paths:
           description: The request failed because a downstream service failed to respond.
       tags:
         - Cards
-      security:
-        - BasicAuth: []
-        - OAuth2Auth:
-            - /accounts/{accountID}/cards.read
       x-speakeasy-name-override: get
     patch:
       operationId: updateCard
@@ -2016,10 +1892,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/UpdateCard'
-      security:
-        - BasicAuth: []
-        - OAuth2Auth:
-            - /accounts/{accountID}/cards.write
       x-speakeasy-name-override: update
     delete:
       operationId: disableCard
@@ -2070,10 +1942,6 @@ paths:
           description: The request failed because a downstream service failed to respond.
       tags:
         - Cards
-      security:
-        - BasicAuth: []
-        - OAuth2Auth:
-            - /accounts/{accountID}/cards.write
       x-speakeasy-name-override: disable
   /accounts/{accountID}/countries:
     get:
@@ -2112,10 +1980,6 @@ paths:
           description: The request failed because a downstream service failed to respond.
       tags:
         - Accounts
-      security:
-        - BasicAuth: []
-        - OAuth2Auth:
-            - /accounts/{accountID}/profile.read
       x-speakeasy-name-override: getCountries
     put:
       operationId: assignAccountCountries
@@ -2179,10 +2043,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/AccountCountries'
-      security:
-        - BasicAuth: []
-        - OAuth2Auth:
-            - /accounts/{accountID}/profile.write
       x-speakeasy-name-override: assignCountries
   /accounts/{accountID}/disputes:
     get:
@@ -2248,10 +2108,6 @@ paths:
           description: The request failed because a downstream service failed to respond.
       tags:
         - Disputes
-      security:
-        - BasicAuth: []
-        - OAuth2Auth:
-            - /accounts/{accountID}/transfers.read
       x-speakeasy-name-override: list
   /accounts/{accountID}/disputes/{disputeID}:
     get:
@@ -2311,10 +2167,6 @@ paths:
           description: The request failed because a downstream service failed to respond.
       tags:
         - Disputes
-      security:
-        - BasicAuth: []
-        - OAuth2Auth:
-            - /accounts/{accountID}/transfers.read
       x-speakeasy-name-override: get
   /accounts/{accountID}/disputes/{disputeID}/accept:
     post:
@@ -2386,10 +2238,6 @@ paths:
           description: The request failed because a downstream service failed to respond.
       tags:
         - Disputes
-      security:
-        - BasicAuth: []
-        - OAuth2Auth:
-            - /accounts/{accountID}/transfers.write
       x-speakeasy-name-override: accept
   /accounts/{accountID}/disputes/{disputeID}/evidence:
     get:
@@ -2436,10 +2284,6 @@ paths:
           description: The request failed because a downstream service failed to respond.
       tags:
         - Disputes
-      security:
-        - BasicAuth: []
-        - OAuth2Auth:
-            - /accounts/{accountID}/transfers.read
       x-speakeasy-name-override: listEvidence
   /accounts/{accountID}/disputes/{disputeID}/evidence-file:
     post:
@@ -2500,10 +2344,6 @@ paths:
           multipart/form-data:
             schema:
               $ref: '#/components/schemas/CreateEvidenceFileMultiPart'
-      security:
-        - BasicAuth: []
-        - OAuth2Auth:
-            - /accounts/{accountID}/transfers.write
       x-speakeasy-name-override: uploadEvidenceFile
   /accounts/{accountID}/disputes/{disputeID}/evidence-text:
     post:
@@ -2568,10 +2408,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/CreateEvidenceText'
-      security:
-        - BasicAuth: []
-        - OAuth2Auth:
-            - /accounts/{accountID}/transfers.write
       x-speakeasy-name-override: uploadEvidenceText
   /accounts/{accountID}/disputes/{disputeID}/evidence/submit:
     post:
@@ -2633,10 +2469,6 @@ paths:
           description: The request failed because a downstream service failed to respond.
       tags:
         - Disputes
-      security:
-        - BasicAuth: []
-        - OAuth2Auth:
-            - /accounts/{accountID}/transfers.write
       x-speakeasy-name-override: submitEvidence
   /accounts/{accountID}/disputes/{disputeID}/evidence/{evidenceID}:
     get:
@@ -2689,10 +2521,6 @@ paths:
           description: The request failed because a downstream service failed to respond.
       tags:
         - Disputes
-      security:
-        - BasicAuth: []
-        - OAuth2Auth:
-            - /accounts/{accountID}/transfers.read
       x-speakeasy-name-override: getEvidence
     patch:
       operationId: updateDisputeEvidence
@@ -2756,10 +2584,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/UpdateEvidence'
-      security:
-        - BasicAuth: []
-        - OAuth2Auth:
-            - /accounts/{accountID}/transfers.write
       x-speakeasy-name-override: updateEvidence
     delete:
       operationId: deleteDisputeEvidenceFile
@@ -2813,10 +2637,6 @@ paths:
           description: The request failed because a downstream service failed to respond.
       tags:
         - Disputes
-      security:
-        - BasicAuth: []
-        - OAuth2Auth:
-            - /accounts/{accountID}/transfers.write
       x-speakeasy-name-override: deleteEvidence
   /accounts/{accountID}/disputes/{disputeID}/evidence/{evidenceID}/data:
     get:
@@ -2878,10 +2698,6 @@ paths:
           description: The request failed because a downstream service failed to respond.
       tags:
         - Disputes
-      security:
-        - BasicAuth: []
-        - OAuth2Auth:
-            - /accounts/{accountID}/transfers.read
       x-speakeasy-name-override: getEvidenceData
   /accounts/{accountID}/fee-plan-agreements:
     get:
@@ -2938,10 +2754,6 @@ paths:
           description: The request failed because a downstream service failed to respond.
       tags:
         - Billing
-      security:
-        - BasicAuth: []
-        - OAuth2Auth:
-            - /accounts/{accountID}/profile.read
     post:
       operationId: createFeePlanAgreements
       description: |-
@@ -3002,10 +2814,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/CreateFeePlanAgreement'
-      security:
-        - BasicAuth: []
-        - OAuth2Auth:
-            - /accounts/{accountID}/profile.write
   /accounts/{accountID}/fee-plans:
     get:
       operationId: listFeePlans
@@ -3053,10 +2861,6 @@ paths:
           description: The request failed because a downstream service failed to respond.
       tags:
         - Billing
-      security:
-        - BasicAuth: []
-        - OAuth2Auth:
-            - /accounts/{accountID}/profile.read
   /accounts/{accountID}/files:
     post:
       operationId: uploadFile
@@ -3121,10 +2925,6 @@ paths:
           multipart/form-data:
             schema:
               $ref: '#/components/schemas/FileUploadRequestMultiPart'
-      security:
-        - BasicAuth: []
-        - OAuth2Auth:
-            - /accounts/{accountID}/files.write
       x-speakeasy-name-override: upload
     get:
       operationId: listFiles
@@ -3162,10 +2962,6 @@ paths:
           description: The request failed because a downstream service failed to respond.
       tags:
         - Files
-      security:
-        - BasicAuth: []
-        - OAuth2Auth:
-            - /accounts/{accountID}/files.read
       x-speakeasy-name-override: list
   /accounts/{accountID}/files/{fileID}:
     get:
@@ -3210,10 +3006,6 @@ paths:
           description: The request failed because a downstream service failed to respond.
       tags:
         - Files
-      security:
-        - BasicAuth: []
-        - OAuth2Auth:
-            - /accounts/{accountID}/files.read
       x-speakeasy-name-override: get
   /accounts/{accountID}/merchant-agreement:
     get:
@@ -3253,10 +3045,6 @@ paths:
           description: The request failed because a downstream service failed to respond.
       tags:
         - Accounts
-      security:
-        - BasicAuth: []
-        - OAuth2Auth:
-            - /accounts/{accountID}/profile.read
   /accounts/{accountID}/partner-pricing:
     get:
       operationId: listPartnerPricing
@@ -3303,10 +3091,6 @@ paths:
           description: The request failed because a downstream service failed to respond.
       tags:
         - Billing
-      security:
-        - BasicAuth: []
-        - OAuth2Auth:
-            - /accounts/{accountID}/profile.read
   /accounts/{accountID}/partner-pricing-agreements:
     get:
       operationId: listPartnerPricingAgreements
@@ -3362,10 +3146,6 @@ paths:
           description: The request failed because a downstream service failed to respond.
       tags:
         - Billing
-      security:
-        - BasicAuth: []
-        - OAuth2Auth:
-            - /accounts/{accountID}/profile.read
   /accounts/{accountID}/payment-links:
     post:
       operationId: createPaymentLink
@@ -3427,10 +3207,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/CreatePaymentLink'
-      security:
-        - BasicAuth: []
-        - OAuth2Auth:
-            - /accounts/{accountID}/transfers.write
       x-speakeasy-name-override: create
     get:
       operationId: listPaymentLinks
@@ -3468,10 +3244,6 @@ paths:
           description: The request failed because a downstream service failed to respond.
       tags:
         - Payment links
-      security:
-        - BasicAuth: []
-        - OAuth2Auth:
-            - /accounts/{accountID}/transfers.read
       x-speakeasy-name-override: list
   /accounts/{accountID}/payment-links/{paymentLinkCode}:
     get:
@@ -3515,10 +3287,6 @@ paths:
           description: The request failed because a downstream service failed to respond.
       tags:
         - Payment links
-      security:
-        - BasicAuth: []
-        - OAuth2Auth:
-            - /accounts/{accountID}/transfers.read
       x-speakeasy-name-override: get
     patch:
       operationId: updatePaymentLink
@@ -3585,10 +3353,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/UpdatePaymentLink'
-      security:
-        - BasicAuth: []
-        - OAuth2Auth:
-            - /accounts/{accountID}/transfers.write
       x-speakeasy-name-override: update
     delete:
       operationId: disablePaymentLink
@@ -3615,10 +3379,6 @@ paths:
           description: The request completed successfully, but there is no content to return.
       tags:
         - Payment links
-      security:
-        - BasicAuth: []
-        - OAuth2Auth:
-            - /accounts/{accountID}/transfers.write
       x-speakeasy-name-override: disable
   /accounts/{accountID}/payment-links/{paymentLinkCode}/qrcode:
     get:
@@ -3668,10 +3428,6 @@ paths:
           description: The request failed because a downstream service failed to respond.
       tags:
         - Payment links
-      security:
-        - BasicAuth: []
-        - OAuth2Auth:
-            - /accounts/{accountID}/transfers.write
       x-speakeasy-name-override: getQRCode
   /accounts/{accountID}/payment-methods:
     get:
@@ -3737,10 +3493,6 @@ paths:
           description: The request failed because a downstream service failed to respond.
       tags:
         - Payment methods
-      security:
-        - BasicAuth: []
-        - OAuth2Auth:
-            - /accounts/{accountID}/payment-methods.read
       x-speakeasy-name-override: list
   /accounts/{accountID}/payment-methods/{paymentMethodID}:
     get:
@@ -3788,10 +3540,6 @@ paths:
           description: The request failed because a downstream service failed to respond.
       tags:
         - Payment methods
-      security:
-        - BasicAuth: []
-        - OAuth2Auth:
-            - /accounts/{accountID}/payment-methods.read
       x-speakeasy-name-override: get
   /accounts/{accountID}/representatives:
     post:
@@ -3857,10 +3605,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/CreateRepresentative'
-      security:
-        - BasicAuth: []
-        - OAuth2Auth:
-            - /accounts/{accountID}/representatives.write
       x-speakeasy-name-override: create
     get:
       operationId: listRepresentatives
@@ -3902,10 +3646,6 @@ paths:
           description: The request failed because a downstream service failed to respond.
       tags:
         - Representatives
-      security:
-        - BasicAuth: []
-        - OAuth2Auth:
-            - /accounts/{accountID}/representatives.read
       x-speakeasy-name-override: list
   /accounts/{accountID}/representatives/{representativeID}:
     delete:
@@ -3960,10 +3700,6 @@ paths:
           description: The request failed because a downstream service failed to respond.
       tags:
         - Representatives
-      security:
-        - BasicAuth: []
-        - OAuth2Auth:
-            - /accounts/{accountID}/representatives.write
       x-speakeasy-name-override: delete
     get:
       operationId: getRepresentative
@@ -4009,10 +3745,6 @@ paths:
           description: The request failed because a downstream service failed to respond.
       tags:
         - Representatives
-      security:
-        - BasicAuth: []
-        - OAuth2Auth:
-            - /accounts/{accountID}/representatives.read
       x-speakeasy-name-override: get
     patch:
       operationId: updateRepresentative
@@ -4089,10 +3821,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/UpdateRepresentative'
-      security:
-        - BasicAuth: []
-        - OAuth2Auth:
-            - /accounts/{accountID}/representatives.write
       x-speakeasy-name-override: update
   /accounts/{accountID}/schedules:
     post:
@@ -4155,10 +3883,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/UpsertSchedule'
-      security:
-        - BasicAuth: []
-        - OAuth2Auth:
-            - /accounts/{accountID}/transfers.write
       x-speakeasy-name-override: create
     get:
       operationId: listSchedules
@@ -4208,10 +3932,6 @@ paths:
           description: The request failed because a downstream service failed to respond.
       tags:
         - Scheduling
-      security:
-        - BasicAuth: []
-        - OAuth2Auth:
-            - /accounts/{accountID}/transfers.read
       x-speakeasy-name-override: list
   /accounts/{accountID}/schedules/{scheduleID}:
     put:
@@ -4280,10 +4000,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/UpsertSchedule'
-      security:
-        - BasicAuth: []
-        - OAuth2Auth:
-            - /accounts/{accountID}/transfers.write
       x-speakeasy-name-override: update
     get:
       operationId: getSchedules
@@ -4327,10 +4043,6 @@ paths:
           description: The request failed because a downstream service failed to respond.
       tags:
         - Scheduling
-      security:
-        - BasicAuth: []
-        - OAuth2Auth:
-            - /accounts/{accountID}/transfers.read
       x-speakeasy-name-override: get
     delete:
       operationId: cancelSchedule
@@ -4382,10 +4094,6 @@ paths:
           description: The request failed because a downstream service failed to respond.
       tags:
         - Scheduling
-      security:
-        - BasicAuth: []
-        - OAuth2Auth:
-            - /accounts/{accountID}/transfers.write
       x-speakeasy-name-override: cancel
   /accounts/{accountID}/schedules/{scheduleID}/occurrences/{occurrenceFilter}:
     get:
@@ -4441,10 +4149,6 @@ paths:
           description: The request failed because a downstream service failed to respond.
       tags:
         - Scheduling
-      security:
-        - BasicAuth: []
-        - OAuth2Auth:
-            - /accounts/{accountID}/transfers.read
       x-speakeasy-name-override: getOccurrance
   /accounts/{accountID}/sweep-configs:
     post:
@@ -4524,10 +4228,6 @@ paths:
               status: enabled
               pushPaymentMethodID: 01234567-89ab-cdef-0123-456789abcdef
               pullPaymentMethodID: 01234567-89ab-cdef-0123-456789abcdef
-      security:
-        - BasicAuth: []
-        - OAuth2Auth:
-            - /accounts/{accountID}/wallets.write
       x-speakeasy-name-override: createConfig
     get:
       operationId: listSweepConfigs
@@ -4589,10 +4289,6 @@ paths:
           description: The request failed because a downstream service failed to respond.
       tags:
         - Sweeps
-      security:
-        - BasicAuth: []
-        - OAuth2Auth:
-            - /accounts/{accountID}/wallets.read
       x-speakeasy-name-override: listConfigs
   /accounts/{accountID}/sweep-configs/{sweepConfigID}:
     get:
@@ -4648,10 +4344,6 @@ paths:
           description: The request failed because a downstream service failed to respond.
       tags:
         - Sweeps
-      security:
-        - BasicAuth: []
-        - OAuth2Auth:
-            - /accounts/{accountID}/wallets.read
       x-speakeasy-name-override: getConfig
     patch:
       operationId: updateSweepConfig
@@ -4733,10 +4425,6 @@ paths:
               $ref: '#/components/schemas/PatchSweepConfig'
             example:
               status: disabled
-      security:
-        - BasicAuth: []
-        - OAuth2Auth:
-            - /accounts/{accountID}/wallets.write
       x-speakeasy-name-override: updateConfig
   /accounts/{accountID}/transfers:
     post:
@@ -4827,10 +4515,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/CreateTransfer'
-      security:
-        - BasicAuth: []
-        - OAuth2Auth:
-            - /accounts/{accountID}/transfers.write
       x-speakeasy-name-override: create
     get:
       operationId: listTransfers
@@ -4884,10 +4568,6 @@ paths:
           description: The request failed because a downstream service failed to respond.
       tags:
         - Transfers
-      security:
-        - BasicAuth: []
-        - OAuth2Auth:
-            - /accounts/{accountID}/transfers.read
       x-speakeasy-name-override: list
   /accounts/{accountID}/transfers/{transferID}:
     get:
@@ -4936,10 +4616,6 @@ paths:
           description: The request failed because a downstream service failed to respond.
       tags:
         - Transfers
-      security:
-        - BasicAuth: []
-        - OAuth2Auth:
-            - /accounts/{accountID}/transfers.read
       x-speakeasy-name-override: get
     patch:
       operationId: updateTransfer
@@ -4986,10 +4662,6 @@ paths:
           description: The request failed because a downstream service failed to respond.
       tags:
         - Transfers
-      security:
-        - BasicAuth: []
-        - OAuth2Auth:
-            - /accounts/{accountID}/transfers.write
       x-speakeasy-name-override: update
   /accounts/{accountID}/transfers/{transferID}/refunds:
     post:
@@ -5103,10 +4775,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/CreateRefund'
-      security:
-        - BasicAuth: []
-        - OAuth2Auth:
-            - /accounts/{accountID}/transfers.write
     get:
       operationId: listRefunds
       description: |-
@@ -5164,10 +4832,6 @@ paths:
           description: The request failed because a downstream service failed to respond.
       tags:
         - Transfers
-      security:
-        - BasicAuth: []
-        - OAuth2Auth:
-            - /accounts/{accountID}/transfers.read
   /accounts/{accountID}/transfers/{transferID}/refunds/{refundID}:
     get:
       operationId: getRefund
@@ -5233,10 +4897,6 @@ paths:
           description: The request failed because a downstream service failed to respond.
       tags:
         - Transfers
-      security:
-        - BasicAuth: []
-        - OAuth2Auth:
-            - /accounts/{accountID}/transfers.read
   /accounts/{accountID}/transfers/{transferID}/reversals:
     post:
       operationId: createReversal
@@ -5342,10 +5002,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/CreateReversal'
-      security:
-        - BasicAuth: []
-        - OAuth2Auth:
-            - /accounts/{accountID}/transfers.write
   /accounts/{accountID}/underwriting:
     get:
       operationId: getUnderwriting
@@ -5385,10 +5041,6 @@ paths:
           description: The request failed because a downstream service failed to respond.
       tags:
         - Underwriting
-      security:
-        - BasicAuth: []
-        - OAuth2Auth:
-            - /accounts/{accountID}/profile.read
       x-speakeasy-name-override: get
     put:
       operationId: updateUnderwriting
@@ -5452,10 +5104,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/UpdateUnderwriting'
-      security:
-        - BasicAuth: []
-        - OAuth2Auth:
-            - /accounts/{accountID}/profile.write
       x-speakeasy-name-override: update
   /accounts/{accountID}/wallets:
     get:
@@ -5502,10 +5150,6 @@ paths:
           description: The request failed because a downstream service failed to respond.
       tags:
         - Wallets
-      security:
-        - BasicAuth: []
-        - OAuth2Auth:
-            - /accounts/{accountID}/wallets.read
       x-speakeasy-name-override: list
   /accounts/{accountID}/wallets/{walletID}:
     get:
@@ -5557,10 +5201,6 @@ paths:
           description: The request failed because a downstream service failed to respond.
       tags:
         - Wallets
-      security:
-        - BasicAuth: []
-        - OAuth2Auth:
-            - /accounts/{accountID}/wallets.read
       x-speakeasy-name-override: get
   /accounts/{accountID}/wallets/{walletID}/sweeps:
     get:
@@ -5626,10 +5266,6 @@ paths:
           description: The request failed because a downstream service failed to respond.
       tags:
         - Sweeps
-      security:
-        - BasicAuth: []
-        - OAuth2Auth:
-            - /accounts/{accountID}/wallets.read
       x-speakeasy-name-override: list
   /accounts/{accountID}/wallets/{walletID}/sweeps/{sweepID}:
     get:
@@ -5684,10 +5320,6 @@ paths:
           description: The request failed because a downstream service failed to respond.
       tags:
         - Sweeps
-      security:
-        - BasicAuth: []
-        - OAuth2Auth:
-            - /accounts/{accountID}/wallets.read
       x-speakeasy-name-override: get
   /accounts/{accountID}/wallets/{walletID}/transactions:
     get:
@@ -5774,10 +5406,6 @@ paths:
           description: The request failed because a downstream service failed to respond.
       tags:
         - Wallet transactions
-      security:
-        - BasicAuth: []
-        - OAuth2Auth:
-            - /accounts/{accountID}/wallets.read
       x-speakeasy-name-override: list
   /accounts/{accountID}/wallets/{walletID}/transactions/{transactionID}:
     get:
@@ -5847,10 +5475,6 @@ paths:
           description: The request failed because a downstream service failed to respond.
       tags:
         - Wallet transactions
-      security:
-        - BasicAuth: []
-        - OAuth2Auth:
-            - /accounts/{accountID}/wallets.read
       x-speakeasy-name-override: get
   /avatars/{uniqueID}:
     get:
@@ -5894,10 +5518,6 @@ paths:
           description: The request failed because a downstream service failed to respond.
       tags:
         - Avatars
-      security:
-        - BasicAuth: []
-        - OAuth2Auth:
-            - /profile-enrichment.read
       x-speakeasy-name-override: get
   /debug/end-to-end-token:
     post:
@@ -5932,10 +5552,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/E2EEToken'
-      security:
-        - BasicAuth: []
-        - OAuth2Auth:
-            - /ping.read
       x-speakeasy-name-override: testEncryptedToken
   /end-to-end-keys:
     post:
@@ -5999,10 +5615,6 @@ paths:
           description: The request failed because a downstream service failed to respond.
       tags:
         - Enriched address
-      security:
-        - BasicAuth: []
-        - OAuth2Auth:
-            - /profile-enrichment.read
       x-speakeasy-name-override: get
   /enrichment/profile:
     get:
@@ -6041,10 +5653,6 @@ paths:
           description: The request failed because a downstream service failed to respond.
       tags:
         - Enriched profile
-      security:
-        - BasicAuth: []
-        - OAuth2Auth:
-            - /profile-enrichment.read
       x-speakeasy-name-override: get
   /industries:
     get:
@@ -6077,10 +5685,6 @@ paths:
           description: The request failed because a downstream service failed to respond.
       tags:
         - Industries
-      security:
-        - BasicAuth: []
-        - OAuth2Auth:
-            - /profile-enrichment.read
       x-speakeasy-name-override: list
   /institutions/ach/search:
     get:
@@ -6123,10 +5727,6 @@ paths:
           description: The request failed because a downstream service failed to respond.
       tags:
         - Institutions
-      security:
-        - BasicAuth: []
-        - OAuth2Auth:
-            - /fed.read
       x-speakeasy-name-override: search
   /issuing/{accountID}/authorizations:
     get:
@@ -6172,10 +5772,6 @@ paths:
           description: The request failed because a downstream service failed to respond.
       tags:
         - Issuing transactions
-      security:
-        - BasicAuth: []
-        - OAuth2Auth:
-            - /accounts/{accountID}/issued-cards.read
       x-speakeasy-name-override: listAuthorizations
   /issuing/{accountID}/authorizations/{authorizationID}:
     get:
@@ -6221,10 +5817,6 @@ paths:
           description: The request failed because a downstream service failed to respond.
       tags:
         - Issuing transactions
-      security:
-        - BasicAuth: []
-        - OAuth2Auth:
-            - /accounts/{accountID}/issued-cards.read
       x-speakeasy-name-override: getAuthorization
   /issuing/{accountID}/authorizations/{authorizationID}/events:
     get:
@@ -6272,10 +5864,6 @@ paths:
           description: The request failed because a downstream service failed to respond.
       tags:
         - Issuing transactions
-      security:
-        - BasicAuth: []
-        - OAuth2Auth:
-            - /accounts/{accountID}/issued-cards.read
       x-speakeasy-name-override: listAuthorizationEvents
   /issuing/{accountID}/card-transactions:
     get:
@@ -6320,10 +5908,6 @@ paths:
           description: The request failed because a downstream service failed to respond.
       tags:
         - Issuing transactions
-      security:
-        - BasicAuth: []
-        - OAuth2Auth:
-            - /accounts/{accountID}/issued-cards.read
       x-speakeasy-name-override: list
   /issuing/{accountID}/card-transactions/{cardTransactionID}:
     get:
@@ -6369,10 +5953,6 @@ paths:
           description: The request failed because a downstream service failed to respond.
       tags:
         - Issuing transactions
-      security:
-        - BasicAuth: []
-        - OAuth2Auth:
-            - /accounts/{accountID}/issued-cards.read
       x-speakeasy-name-override: get
   /issuing/{accountID}/issued-cards:
     post:
@@ -6430,10 +6010,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/RequestCard'
-      security:
-        - BasicAuth: []
-        - OAuth2Auth:
-            - /accounts/{accountID}/issued-cards.write
       x-speakeasy-name-override: request
     get:
       operationId: listIssuedCards
@@ -6483,10 +6059,6 @@ paths:
           description: The request failed because a downstream service failed to respond.
       tags:
         - Card issuing
-      security:
-        - BasicAuth: []
-        - OAuth2Auth:
-            - /accounts/{accountID}/issued-cards.read
       x-speakeasy-name-override: list
   /issuing/{accountID}/issued-cards/{issuedCardID}:
     get:
@@ -6532,10 +6104,6 @@ paths:
           description: The request failed because a downstream service failed to respond.
       tags:
         - Card issuing
-      security:
-        - BasicAuth: []
-        - OAuth2Auth:
-            - /accounts/{accountID}/issued-cards.read
       x-speakeasy-name-override: get
     patch:
       operationId: updateIssuedCard
@@ -6600,10 +6168,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/UpdateIssuedCard'
-      security:
-        - BasicAuth: []
-        - OAuth2Auth:
-            - /accounts/{accountID}/issued-cards.write
       x-speakeasy-name-override: update
   /issuing/{accountID}/issued-cards/{issuedCardID}/details:
     get:
@@ -6651,10 +6215,6 @@ paths:
           description: The request failed because a downstream service failed to respond.
       tags:
         - Card issuing
-      security:
-        - BasicAuth: []
-        - OAuth2Auth:
-            - /accounts/{accountID}/issued-cards.read-secure
       x-speakeasy-name-override: getFull
   /oauth2/revoke:
     post:
@@ -6697,8 +6257,6 @@ paths:
           application/x-www-form-urlencoded:
             schema:
               $ref: '#/components/schemas/RevokeTokenRequest'
-      security:
-        - BasicAuth: []
   /oauth2/token:
     post:
       operationId: createAccessToken
@@ -6741,8 +6299,6 @@ paths:
           application/x-www-form-urlencoded:
             schema:
               $ref: '#/components/schemas/AuthTokenRequest'
-      security:
-        - BasicAuth: []
   /onboarding-invites:
     post:
       operationId: createOnboardingInvite
@@ -6798,10 +6354,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/OnboardingInviteRequest'
-      security:
-        - BasicAuth: []
-        - OAuth2Auth:
-            - /accounts.write
       x-speakeasy-name-override: createInvite
     get:
       operationId: listOnboardingInvites
@@ -6833,10 +6385,6 @@ paths:
           description: The request failed because a downstream service failed to respond.
       tags:
         - Onboarding
-      security:
-        - BasicAuth: []
-        - OAuth2Auth:
-            - /accounts.read
       x-speakeasy-name-override: listInvites
   /onboarding-invites/{code}:
     get:
@@ -6874,10 +6422,6 @@ paths:
           description: The request failed because a downstream service failed to respond.
       tags:
         - Onboarding
-      security:
-        - BasicAuth: []
-        - OAuth2Auth:
-            - /accounts.read
       x-speakeasy-name-override: getInvite
     delete:
       operationId: revokeOnboardingInvite
@@ -6898,10 +6442,6 @@ paths:
           description: The request completed successfully, but there is no content to return.
       tags:
         - Onboarding
-      security:
-        - BasicAuth: []
-        - OAuth2Auth:
-            - /accounts.write
       x-speakeasy-name-override: revokeInvite
   /ping:
     get:
@@ -6928,10 +6468,6 @@ paths:
           description: The request failed due to an unexpected error.
       tags:
         - Ping
-      security:
-        - BasicAuth: []
-        - OAuth2Auth:
-            - /ping.read
   /tos-token:
     get:
       operationId: getTermsOfServiceToken
@@ -7020,14 +6556,9 @@ paths:
           description: The request failed because a downstream service failed to respond.
       tags:
         - Transfers
-      security:
-        - BasicAuth: []
-        - OAuth2Auth:
-            - /accounts/{accountID}/transfers.read
       x-speakeasy-name-override: generateOptions
 security:
   - BasicAuth: []
-  - OAuth2Auth: []
 components:
   parameters:
     AccountsQuery.capability:
@@ -14144,43 +13675,6 @@ components:
     BasicAuth:
       type: http
       scheme: basic
-    OAuth2Auth:
-      type: oauth2
-      flows:
-        clientCredentials:
-          tokenUrl: /oauth2/token
-          refreshUrl: /oauth2/token
-          scopes:
-            /accounts.write: ''
-            /accounts.read: ''
-            /accounts/{accountID}/profile.read: ''
-            /accounts/{accountID}/profile.write: ''
-            /accounts/{accountID}/profile.disconnect: ''
-            /accounts/{accountID}/wallets.read: ''
-            /accounts/{accountID}/apple-pay.write: ''
-            /accounts/{accountID}/apple-pay.read: ''
-            /accounts/{accountID}/cards.write: ''
-            /accounts/{accountID}/bank-accounts.write: ''
-            /accounts/{accountID}/bank-accounts.read: ''
-            /accounts/{accountID}/branding.write: ''
-            /accounts/{accountID}/branding.read: ''
-            /accounts/{accountID}/capabilities.read: ''
-            /accounts/{accountID}/capabilities.write: ''
-            /accounts/{accountID}/cards.read: ''
-            /accounts/{accountID}/transfers.read: ''
-            /accounts/{accountID}/transfers.write: ''
-            /ping.read: ''
-            /profile-enrichment.read: ''
-            /fed.read: ''
-            /accounts/{accountID}/files.write: ''
-            /accounts/{accountID}/files.read: ''
-            /accounts/{accountID}/issued-cards.write: ''
-            /accounts/{accountID}/issued-cards.read: ''
-            /accounts/{accountID}/issued-cards.read-secure: ''
-            /accounts/{accountID}/payment-methods.read: ''
-            /accounts/{accountID}/representatives.write: ''
-            /accounts/{accountID}/representatives.read: ''
-            /accounts/{accountID}/wallets.write: ''
 servers:
   - url: https://api.moov.io
     description: Production API host

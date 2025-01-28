@@ -22,7 +22,8 @@ namespace MoovAPI;
   To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
   you'll need to specify the `/accounts/{accountID}/transfers.write` scope.
   """)
-@useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/transfers.write"]>)
+// @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/transfers.write"]>)
+@useAuth(BasicAuth)
 @opExample(
   #{ returnType: #{ statusCode: 200, body: ExampleCreateSyncRefundSuccess } },
   #{ title: "Successful sync refund" }
@@ -77,7 +78,8 @@ op initiateRefund(
   To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
   you'll need to specify the `/accounts/{accountID}/transfers.read` scope.
   """)
-@useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/transfers.read"]>)
+// @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/transfers.read"]>)
+@useAuth(BasicAuth)
 @opExample(#{
   returnType: #{ statusCode: 200, body: #[ExampleCardAcquiringRefund] },
 })
@@ -103,7 +105,8 @@ op listRefunds(
   To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
   you'll need to specify the `/accounts/{accountID}/transfers.read` scope.
   """)
-@useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/transfers.read"]>)
+// @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/transfers.read"]>)
+@useAuth(BasicAuth)
 @opExample(#{
   returnType: #{ statusCode: 200, body: ExampleCardAcquiringRefund },
 })

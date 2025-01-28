@@ -31,7 +31,8 @@ namespace MoovAPI;
   To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) you'll need 
   to specify the `/accounts.write` scope.
   """)
-@useAuth(BasicAuth | OAuth2<["/accounts.write"]>)
+// @useAuth(BasicAuth | OAuth2<["/accounts.write"]>)
+@useAuth(BasicAuth)
 @extension("x-speakeasy-name-override", "create")
 op createAccount(
   ...CommonHeaders,
@@ -61,7 +62,8 @@ op createAccount(
   To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) you'll need 
   to specify the `/accounts.read` scope.
   """)
-@useAuth(BasicAuth | OAuth2<["/accounts.read"]>)
+// @useAuth(BasicAuth | OAuth2<["/accounts.read"]>)
+@useAuth(BasicAuth)
 @extension("x-speakeasy-name-override", "list")
 op listAccounts(
   ...CommonHeaders,
@@ -79,7 +81,8 @@ op listAccounts(
   To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) you'll need 
   to specify the `/accounts/{accountID}/profile.read` scope.
   """)
-@useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/profile.read"]>)
+// @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/profile.read"]>)
+@useAuth(BasicAuth)
 @extension("x-speakeasy-name-override", "get")
 op getAccount(
   ...CommonHeaders,
@@ -106,7 +109,8 @@ op getAccount(
   To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) you'll need 
   to specify the `/accounts/{accountID}/profile.write` scope.
   """)
-@useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/profile.write"]>)
+// @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/profile.write"]>)
+@useAuth(BasicAuth)
 @extension("x-speakeasy-name-override", "update")
 op updateAccount(
   ...CommonHeaders,
@@ -134,7 +138,8 @@ op updateAccount(
   To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
   you'll need to specify the `/accounts/{accountID}/profile.disconnect` scope.
   """)
-@useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/profile.disconnect"]>)
+// @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/profile.disconnect"]>)
+@useAuth(BasicAuth)
 @extension("x-speakeasy-name-override", "disconnect")
 op disconnectAccount(
   ...CommonHeaders,

@@ -17,7 +17,8 @@ namespace MoovAPI;
   To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
   you'll need to specify the `/accounts/{accountID}/profile.read` scope.
   """)
-@useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/profile.read"]>)
+// @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/profile.read"]>)
+@useAuth(BasicAuth)
 op getMerchantProcessingAgreement(
   ...CommonHeaders,
 

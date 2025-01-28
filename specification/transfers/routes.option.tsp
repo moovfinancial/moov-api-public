@@ -22,7 +22,8 @@ namespace MoovAPI;
   To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
   you'll need to specify the `/accounts/{accountID}/transfers.read` scope.
   """)
-@useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/transfers.read"]>)
+// @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/transfers.read"]>)
+@useAuth(BasicAuth)
 @extension("x-speakeasy-name-override", "generateOptions")
 op createTransferOptions(...CommonHeaders):
   | OkResponse<TransferOptions>

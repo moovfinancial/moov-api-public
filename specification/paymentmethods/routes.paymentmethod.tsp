@@ -25,7 +25,8 @@ namespace MoovAPI;
   To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
   you'll need to specify the `/accounts/{accountID}/payment-methods.read` scope.
   """)
-@useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/payment-methods.read"]>)
+// @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/payment-methods.read"]>)
+@useAuth(BasicAuth)
 @opExample(#{
   parameters: #{ accountID: ExampleID },
   returnType: #{
@@ -69,7 +70,8 @@ op listPaymentMethods(
   To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
   you'll need to specify the `/accounts/{accountID}/payment-methods.read` scope.
   """)
-@useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/payment-methods.read"]>)
+// @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/payment-methods.read"]>)
+@useAuth(BasicAuth)
 @opExample(#{
   parameters: #{ accountID: ExampleID, paymentMethodID: ExampleID },
   returnType: #{

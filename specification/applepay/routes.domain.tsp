@@ -23,7 +23,8 @@ namespace MoovAPI;
   To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
   you'll need to specify the `/accounts/{accountID}/apple-pay.write` scope.
   """)
-@useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/apple-pay.write"]>)
+// @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/apple-pay.write"]>)
+@useAuth(BasicAuth)
 @extension("x-speakeasy-name-override", "registerMerchantDomains")
 op registerApplePayMerchantDomains(
   ...CommonHeaders,
@@ -57,7 +58,8 @@ op registerApplePayMerchantDomains(
   To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
   you'll need to specify the `/accounts/{accountID}/apple-pay.write` scope.
   """)
-@useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/apple-pay.write"]>)
+// @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/apple-pay.write"]>)
+@useAuth(BasicAuth)
 @extension("x-speakeasy-name-override", "updateMerchantDomains")
 op updateApplePayMerchantDomains(
   ...CommonHeaders,
@@ -91,7 +93,8 @@ op updateApplePayMerchantDomains(
   To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
   you'll need to specify the `/accounts/{accountID}/apple-pay.read` scope.
   """)
-@useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/apple-pay.read"]>)
+// @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/apple-pay.read"]>)
+@useAuth(BasicAuth)
 @extension("x-speakeasy-name-override", "getMerchantDomains")
 op getApplePayMerchantDomains(
   ...CommonHeaders,

@@ -17,7 +17,8 @@ namespace MoovAPI;
   To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
   you'll need to specify the `/accounts/{accountID}/wallets.write` scope.
   """)
-@useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/wallets.write"]>)
+// @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/wallets.write"]>)
+@useAuth(BasicAuth)
 @opExample(#{
   parameters: #{
     accountID: ExampleID,
@@ -50,7 +51,8 @@ op createSweepConfig(
   To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
   you'll need to specify the `/accounts/{accountID}/wallets.read` scope.
   """)
-@useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/wallets.read"]>)
+// @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/wallets.read"]>)
+@useAuth(BasicAuth)
 @opExample(#{
   parameters: #{ accountID: ExampleID },
   returnType: #{
@@ -76,7 +78,8 @@ op listSweepConfigs(
   To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
   you'll need to specify the `/accounts/{accountID}/wallets.read` scope.
   """)
-@useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/wallets.read"]>)
+// @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/wallets.read"]>)
+@useAuth(BasicAuth)
 @opExample(#{
   parameters: #{ accountID: ExampleID, sweepConfigID: ExampleID },
   returnType: #{ statusCode: HttpStatusOK, body: ExampleEnabledSweepConfig },
@@ -102,7 +105,8 @@ op getSweepConfig(
   To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
   you'll need to specify the `/accounts/{accountID}/wallets.write` scope.
   """)
-@useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/wallets.write"]>)
+// @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/wallets.write"]>)
+@useAuth(BasicAuth)
 @opExample(#{
   parameters: #{
     accountID: ExampleID,

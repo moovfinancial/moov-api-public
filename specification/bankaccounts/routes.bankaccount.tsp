@@ -24,7 +24,8 @@ namespace MoovAPI;
   To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
   you'll need to specify the `/accounts/{accountID}/bank-accounts.write` scope.
   """)
-@useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/bank-accounts.write"]>)
+// @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/bank-accounts.write"]>)
+@useAuth(BasicAuth)
 @extension("x-speakeasy-name-override", "link")
 op linkBankAccount(
   ...CommonHeaders,
@@ -56,7 +57,8 @@ op linkBankAccount(
   To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
   you'll need to specify the `/accounts/{accountID}/bank-accounts.read` scope.
   """)
-@useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/bank-accounts.read"]>)
+// @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/bank-accounts.read"]>)
+@useAuth(BasicAuth)
 @extension("x-speakeasy-name-override", "list")
 op listBankAccounts(
   ...CommonHeaders,
@@ -77,7 +79,8 @@ op listBankAccounts(
   To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
   you'll need to specify the `/accounts/{accountID}/bank-accounts.read` scope.
   """)
-@useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/bank-accounts.read"]>)
+// @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/bank-accounts.read"]>)
+@useAuth(BasicAuth)
 @extension("x-speakeasy-name-override", "get")
 op getBankAccount(
   ...CommonHeaders,
@@ -100,7 +103,8 @@ op getBankAccount(
   To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
   you'll need to specify the `/accounts/{accountID}/bank-accounts.write` scope.
   """)
-@useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/bank-accounts.write"]>)
+// @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/bank-accounts.write"]>)
+@useAuth(BasicAuth)
 @extension("x-speakeasy-name-override", "disable")
 op disableBankAccount(
   ...CommonHeaders,

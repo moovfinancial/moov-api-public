@@ -19,7 +19,8 @@ namespace MoovAPI;
   To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
   you'll need to specify the `/accounts/{accountID}/wallets.read` scope.
   """)
-@useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/wallets.read"]>)
+// @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/wallets.read"]>)
+@useAuth(BasicAuth)
 @extension("x-speakeasy-name-override", "list")
 op listAdjustments(
   ...CommonHeaders,
@@ -43,7 +44,8 @@ op listAdjustments(
   To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
   you'll need to specify the `/accounts/{accountID}/wallets.read` scope.
   """)
-@useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/wallets.read"]>)
+// @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/wallets.read"]>)
+@useAuth(BasicAuth)
 @extension("x-speakeasy-name-override", "get")
 op getAdjustment(
   ...CommonHeaders,
