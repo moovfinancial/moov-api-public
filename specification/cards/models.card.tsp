@@ -331,10 +331,7 @@ model UpdateCardAddress {
   cardCvv: "123",
   expiration: exampleCardExpiration,
   holderName: "Jules Jackson",
-  billingAddress: exampleCardAddress,
-  cardOnFile: true,
-  merchantAccountID: ExampleID,
-  verifyName: true,
+  billingAddress: #{ postalCode: "80301" },
 })
 model LinkCard {
   e2ee?: E2EEToken;

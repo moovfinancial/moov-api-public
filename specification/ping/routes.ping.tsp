@@ -18,7 +18,6 @@ namespace MoovAPI;
   you'll need to specify the `/ping.read` scope.
   """)
 // @useAuth(BasicAuth | OAuth2<["/ping.read"]>)
-@useAuth(BasicAuth)
 op ping(...CommonHeaders):
   | SuccessfulPingResponse
   | UnauthorizedResponse

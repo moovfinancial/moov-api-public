@@ -20,7 +20,6 @@ namespace MoovAPI;
   you'll need to specify the `/accounts/{accountID}/branding.write` scope.
   """)
 // @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/branding.write"]>)
-@useAuth(BasicAuth)
 @extension("x-speakeasy-name-override", "create")
 op createBrand(
   ...CommonHeaders,
@@ -42,7 +41,6 @@ op createBrand(
   you'll need to specify the `/accounts/{accountID}/branding.read` scope.
   """)
 // @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/branding.read"]>)
-@useAuth(BasicAuth)
 @extension("x-speakeasy-name-override", "get")
 op getBrand(
   ...CommonHeaders,
@@ -62,7 +60,6 @@ op getBrand(
   you'll need to specify the `/accounts/{accountID}/branding.write` scope.
   """)
 // @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/branding.write"]>)
-@useAuth(BasicAuth)
 @extension("x-speakeasy-name-override", "update")
 op updateBrand(
   ...CommonHeaders,

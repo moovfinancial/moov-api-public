@@ -21,7 +21,6 @@ namespace MoovAPI;
   you'll need to specify the `/accounts/{accountID}/issued-cards.write` scope.
   """)
 // @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/issued-cards.write"]>)
-@useAuth(BasicAuth)
 @extension("x-speakeasy-name-override", "request")
 op requestCard(
   ...CommonHeaders,
@@ -53,7 +52,6 @@ op requestCard(
   you'll need to specify the `/accounts/{accountID}/issued-cards.read` scope.
   """)
 // @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/issued-cards.read"]>)
-@useAuth(BasicAuth)
 @extension("x-speakeasy-name-override", "list")
 op listIssuedCards(
   ...CommonHeaders,
@@ -80,7 +78,6 @@ op listIssuedCards(
   you'll need to specify the `/accounts/{accountID}/issued-cards.read` scope.
   """)
 // @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/issued-cards.read"]>)
-@useAuth(BasicAuth)
 @extension("x-speakeasy-name-override", "get")
 op getIssuedCard(
   ...CommonHeaders,
@@ -105,7 +102,6 @@ op getIssuedCard(
   you'll need to specify the `/accounts/{accountID}/issued-cards.write` scope.
   """)
 // @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/issued-cards.write"]>)
-@useAuth(BasicAuth)
 @extension("x-speakeasy-name-override", "update")
 op updateIssuedCard(
   ...CommonHeaders,
@@ -134,7 +130,6 @@ op updateIssuedCard(
   you'll need to specify the `/accounts/{accountID}/issued-cards.read-secure` scope.
   """)
 // @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/issued-cards.read-secure"]>)
-@useAuth(BasicAuth)
 @extension("x-speakeasy-name-override", "getFull")
 op getFullIssuedCard(
   ...CommonHeaders,

@@ -24,7 +24,6 @@ namespace MoovAPI;
   you'll need to specify the `/accounts/{accountID}/cards.write` scope.
   """)
 // @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/cards.write"]>)
-@useAuth(BasicAuth)
 @extension("x-speakeasy-name-override", "linkToken")
 op linkApplePayToken(
   ...CommonHeaders,

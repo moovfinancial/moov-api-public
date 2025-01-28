@@ -21,7 +21,6 @@ namespace MoovAPI;
   you'll need to specify the `/accounts/{accountID}/issued-cards.read` scope.
   """)
 // @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/issued-cards.read"]>)
-@useAuth(BasicAuth)
 @extension("x-speakeasy-name-override", "list")
 op listIssuedCardTransactions(
   ...CommonHeaders,
@@ -44,7 +43,6 @@ op listIssuedCardTransactions(
   you'll need to specify the `/accounts/{accountID}/issued-cards.read` scope.
   """)
 // @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/issued-cards.read"]>)
-@useAuth(BasicAuth)
 @extension("x-speakeasy-name-override", "get")
 op getIssuedCardTransaction(
   ...CommonHeaders,

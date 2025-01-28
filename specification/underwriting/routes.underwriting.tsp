@@ -22,7 +22,6 @@ namespace MoovAPI;
   you'll need to specify the `/accounts/{accountID}/profile.read` scope.
   """)
 // @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/profile.read"]>)
-@useAuth(BasicAuth)
 @extension("x-speakeasy-name-override", "get")
 op getUnderwriting(
   ...CommonHeaders,
@@ -44,7 +43,6 @@ op getUnderwriting(
   you'll need to specify the `/accounts/{accountID}/profile.write` scope.
   """)
 // @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/profile.write"]>)
-@useAuth(BasicAuth)
 @extension("x-speakeasy-name-override", "update")
 op updateUnderwriting(
   ...CommonHeaders,

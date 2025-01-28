@@ -24,7 +24,6 @@ namespace MoovAPI;
   you'll need to specify the `/profile-enrichment.read` scope.
   """)
 // @useAuth(BasicAuth | OAuth2<["/profile-enrichment.read"]>)
-@useAuth(BasicAuth)
 @extension("x-speakeasy-name-override", "get")
 op getEnrichmentAddress(
   ...CommonHeaders,
@@ -41,7 +40,6 @@ op getEnrichmentAddress(
   you'll need to specify the `/profile-enrichment.read` scope.
   """)
 // @useAuth(BasicAuth | OAuth2<["/profile-enrichment.read"]>)
-@useAuth(BasicAuth)
 @extension("x-speakeasy-name-override", "get")
 op getEnrichmentProfile(
   ...CommonHeaders,
@@ -61,7 +59,6 @@ op getEnrichmentProfile(
   you'll need to specify the `/profile-enrichment.read` scope.
   """)
 // @useAuth(BasicAuth | OAuth2<["/profile-enrichment.read"]>)
-@useAuth(BasicAuth)
 @extension("x-speakeasy-name-override", "list")
 op listIndustries(...CommonHeaders): ListResponses<EnrichedIndustry>;
 
@@ -75,7 +72,6 @@ op listIndustries(...CommonHeaders): ListResponses<EnrichedIndustry>;
   you'll need to specify the `/profile-enrichment.read` scope.
   """)
 // @useAuth(BasicAuth | OAuth2<["/profile-enrichment.read"]>)
-@useAuth(BasicAuth)
 @extension("x-speakeasy-name-override", "get")
 op getAvatar(
   ...CommonHeaders,
@@ -102,7 +98,6 @@ op getAvatar(
   you'll need to specify the `/fed.read` scope.
   """)
 // @useAuth(BasicAuth | OAuth2<["/fed.read"]>)
-@useAuth(BasicAuth)
 @extension("x-speakeasy-name-override", "search")
 op listInstitutions(...CommonHeaders, ...InstitutionsFilters):
   | OkResponse<FinancialInstitutions[]>

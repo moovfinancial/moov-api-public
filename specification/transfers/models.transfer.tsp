@@ -18,6 +18,12 @@ using TypeSpec.OpenAPI;
 
 namespace MoovAPI;
 
+@oneOf
+union TransferResponse {
+  Transfer,
+  AsyncTransfer,
+}
+
 @doc("Details of a Transfer.")
 @example(ExamplePendingCardToWalletTransfer)
 model Transfer {

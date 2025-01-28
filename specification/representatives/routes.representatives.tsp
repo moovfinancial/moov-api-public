@@ -22,7 +22,6 @@ namespace MoovAPI;
   you'll need to specify the `/accounts/{accountID}/representatives.write` scope.
   """)
 // @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/representatives.write"]>)
-@useAuth(BasicAuth)
 @extension("x-speakeasy-name-override", "create")
 op createRepresentative(
   ...CommonHeaders,
@@ -48,7 +47,6 @@ op createRepresentative(
   you'll need to specify the `/accounts/{accountID}/representatives.read` scope.
   """)
 // @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/representatives.read"]>)
-@useAuth(BasicAuth)
 @extension("x-speakeasy-name-override", "list")
 op listRepresentatives(
   ...CommonHeaders,
@@ -69,7 +67,6 @@ op listRepresentatives(
   you'll need to specify the `/accounts/{accountID}/representatives.write` scope.
   """)
 // @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/representatives.write"]>)
-@useAuth(BasicAuth)
 @extension("x-speakeasy-name-override", "delete")
 op deleteRepresentative(
   ...CommonHeaders,
@@ -95,7 +92,6 @@ op deleteRepresentative(
   you'll need to specify the `/accounts/{accountID}/representatives.read` scope.
   """)
 // @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/representatives.read"]>)
-@useAuth(BasicAuth)
 @extension("x-speakeasy-name-override", "get")
 op getRepresentative(
   ...CommonHeaders,
@@ -134,7 +130,6 @@ op getRepresentative(
   you'll need to specify the `/accounts/{accountID}/representatives.write` scope.
   """)
 // @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/representatives.write"]>)
-@useAuth(BasicAuth)
 @extension("x-speakeasy-name-override", "update")
 op updateRepresentative(
   ...CommonHeaders,

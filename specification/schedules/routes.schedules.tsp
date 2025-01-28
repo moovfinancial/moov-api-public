@@ -22,7 +22,6 @@ namespace MoovAPI;
   you'll need to specify the `/accounts/{accountID}/transfers.write` scope.
   """)
 // @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/transfers.write"]>)
-@useAuth(BasicAuth)
 @extension("x-speakeasy-name-override", "create")
 op createSchedule(
   ...CommonHeaders,
@@ -44,7 +43,6 @@ op createSchedule(
   you'll need to specify the `/accounts/{accountID}/transfers.write` scope.
   """)
 // @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/transfers.write"]>)
-@useAuth(BasicAuth)
 @extension("x-speakeasy-name-override", "update")
 op updateSchedule(
   ...CommonHeaders,
@@ -70,7 +68,6 @@ op updateSchedule(
   you'll need to specify the `/accounts/{accountID}/transfers.read` scope.
   """)
 // @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/transfers.read"]>)
-@useAuth(BasicAuth)
 @extension("x-speakeasy-name-override", "get")
 op getSchedules(
   ...CommonHeaders,
@@ -94,7 +91,6 @@ op getSchedules(
   you'll need to specify the `/accounts/{accountID}/transfers.read` scope.
   """)
 // @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/transfers.read"]>)
-@useAuth(BasicAuth)
 @extension("x-speakeasy-name-override", "list")
 op listSchedules(
   ...CommonHeaders,
@@ -116,7 +112,6 @@ op listSchedules(
   you'll need to specify the `/accounts/{accountID}/transfers.read` scope.
   """)
 // @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/transfers.read"]>)
-@useAuth(BasicAuth)
 @extension("x-speakeasy-name-override", "getOccurrance")
 op getScheduledOccurrence(
   ...CommonHeaders,
@@ -150,7 +145,6 @@ op getScheduledOccurrence(
   you'll need to specify the `/accounts/{accountID}/transfers.write` scope.
   """)
 // @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/transfers.write"]>)
-@useAuth(BasicAuth)
 @extension("x-speakeasy-name-override", "cancel")
 op cancelSchedule(
   ...CommonHeaders,

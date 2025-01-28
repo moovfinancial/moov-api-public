@@ -29,7 +29,6 @@ namespace MoovAPI;
   you'll need to specify the `/accounts/{accountID}/bank-accounts.write` scope.
   """)
 // @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/bank-accounts.write"]>)
-@useAuth(BasicAuth)
 op initiateMicroDeposits(
   ...CommonHeaders,
 
@@ -61,7 +60,6 @@ op initiateMicroDeposits(
   you'll need to specify the `/accounts/{accountID}/bank-accounts.write` scope.
   """)
 // @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/bank-accounts.write"]>)
-@useAuth(BasicAuth)
 op completeMicroDeposits(
   ...CommonHeaders,
 

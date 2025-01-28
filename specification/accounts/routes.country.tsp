@@ -21,7 +21,6 @@ namespace MoovAPI;
   you'll need to specify the `/accounts/{accountID}/profile.read` scope.
   """)
 // @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/profile.read"]>)
-@useAuth(BasicAuth)
 @extension("x-speakeasy-name-override", "getCountries")
 op getAccountCountries(
   ...CommonHeaders,
@@ -43,7 +42,6 @@ op getAccountCountries(
   you'll need to specify the `/accounts/{accountID}/profile.write` scope.
   """)
 // @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/profile.write"]>)
-@useAuth(BasicAuth)
 @extension("x-speakeasy-name-override", "assignCountries")
 op assignAccountCountries(
   ...CommonHeaders,

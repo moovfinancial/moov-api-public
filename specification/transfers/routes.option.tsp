@@ -23,7 +23,6 @@ namespace MoovAPI;
   you'll need to specify the `/accounts/{accountID}/transfers.read` scope.
   """)
 // @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/transfers.read"]>)
-@useAuth(BasicAuth)
 @extension("x-speakeasy-name-override", "generateOptions")
 op createTransferOptions(...CommonHeaders):
   | OkResponse<TransferOptions>

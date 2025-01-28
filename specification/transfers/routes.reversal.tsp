@@ -21,7 +21,6 @@ namespace MoovAPI;
   to specify the `/accounts/{accountID}/transfers.write` scope.
   """)
 // @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/transfers.write"]>)
-@useAuth(BasicAuth)
 @opExample(ExampleReversalCancellation, #{ title: "Reversed by cancellation" })
 @opExample(ExampleReversalRefund, #{ title: "Reversed by refund" })
 op createReversal(

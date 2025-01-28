@@ -269,7 +269,3 @@ model AccountsQuery {
   @query
   capabilityStatus?: CapabilityStatus;
 }
-
-enum AccountWaitFor {
-  connection,
-}

@@ -24,7 +24,6 @@ namespace MoovAPI;
   you'll need to specify the `/accounts/{accountID}/transfers.read` scope.
   """)
 // @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/transfers.read"]>)
-@useAuth(BasicAuth)
 @extension("x-speakeasy-name-override", "listEvidence")
 op listDisputeEvidence(
   ...CommonHeaders,
@@ -50,7 +49,6 @@ op listDisputeEvidence(
   you'll need to specify the `/accounts/{accountID}/transfers.write` scope.
   """)
 // @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/transfers.write"]>)
-@useAuth(BasicAuth)
 @extension("x-speakeasy-name-override", "uploadEvidenceFile")
 op uploadDisputeEvidenceFile(
   ...CommonHeaders,
@@ -88,7 +86,6 @@ op uploadDisputeEvidenceFile(
   you'll need to specify the `/accounts/{accountID}/transfers.write` scope.
   """)
 // @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/transfers.write"]>)
-@useAuth(BasicAuth)
 @extension("x-speakeasy-name-override", "uploadEvidenceText")
 op uploadDisputeEvidenceText(
   ...CommonHeaders,
@@ -125,7 +122,6 @@ op uploadDisputeEvidenceText(
   you'll need to specify the `/accounts/{accountID}/transfers.read` scope.
   """)
 // @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/transfers.read"]>)
-@useAuth(BasicAuth)
 @extension("x-speakeasy-name-override", "getEvidence")
 op getDisputeEvidence(
   ...CommonHeaders,
@@ -155,7 +151,6 @@ op getDisputeEvidence(
   you'll need to specify the `/accounts/{accountID}/transfers.write` scope.
   """)
 // @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/transfers.write"]>)
-@useAuth(BasicAuth)
 @extension("x-speakeasy-name-override", "updateEvidence")
 op updateDisputeEvidence(
   ...CommonHeaders,
@@ -195,7 +190,6 @@ op updateDisputeEvidence(
   you'll need to specify the `/accounts/{accountID}/transfers.write` scope.
   """)
 // @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/transfers.write"]>)
-@useAuth(BasicAuth)
 @extension("x-speakeasy-name-override", "deleteEvidence")
 op deleteDisputeEvidenceFile(
   ...CommonHeaders,
@@ -233,7 +227,6 @@ op deleteDisputeEvidenceFile(
   you'll need to specify the `/accounts/{accountID}/transfers.read` scope.
   """)
 // @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/transfers.read"]>)
-@useAuth(BasicAuth)
 @extension("x-speakeasy-name-override", "getEvidenceData")
 op getDisputeEvidenceData(
   ...CommonHeaders,
@@ -273,7 +266,6 @@ op getDisputeEvidenceData(
   you'll need to specify the `/accounts/{accountID}/transfers.write` scope.
   """)
 // @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/transfers.write"]>)
-@useAuth(BasicAuth)
 @extension("x-speakeasy-name-override", "submitEvidence")
 op submitDisputeEvidence(
   ...CommonHeaders,

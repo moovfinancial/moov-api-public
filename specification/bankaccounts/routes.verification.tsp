@@ -29,7 +29,6 @@ namespace MoovAPI;
   you'll need to specify the `/accounts/{accountID}/bank-accounts.read` scope.
   """)
 // @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/bank-accounts.read"]>)
-@useAuth(BasicAuth)
 @extension("x-speakeasy-name-override", "getVerification")
 op getBankAccountVerification(
   ...CommonHeaders,
@@ -68,7 +67,6 @@ op getBankAccountVerification(
   you'll need to specify the `/accounts/{accountID}/bank-accounts.write` scope.
   """)
 // @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/bank-accounts.write"]>)
-@useAuth(BasicAuth)
 @extension("x-speakeasy-name-override", "initiateVerification")
 op initiateBankAccountVerification(
   ...CommonHeaders,
@@ -116,7 +114,6 @@ op initiateBankAccountVerification(
   you'll need to specify the `/accounts/{accountID}/bank-accounts.write` scope.
   """)
 // @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/bank-accounts.write"]>)
-@useAuth(BasicAuth)
 @extension("x-speakeasy-name-override", "completeVerification")
 op completeBankAccountVerification(
   ...CommonHeaders,

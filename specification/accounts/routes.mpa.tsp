@@ -18,7 +18,6 @@ namespace MoovAPI;
   you'll need to specify the `/accounts/{accountID}/profile.read` scope.
   """)
 // @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/profile.read"]>)
-@useAuth(BasicAuth)
 op getMerchantProcessingAgreement(
   ...CommonHeaders,
 

@@ -24,7 +24,6 @@ namespace MoovAPI;
   you'll need to specify the `/accounts/{accountID}/transfers.read` scope.
   """)
 // @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/transfers.read"]>)
-@useAuth(BasicAuth)
 @opExample(#{ returnType: #{ statusCode: 200, body: #[ExampleDispute] } })
 @extension("x-speakeasy-name-override", "list")
 op listDisputes(
@@ -49,7 +48,6 @@ op listDisputes(
   you'll need to specify the `/accounts/{accountID}/transfers.read` scope.
   """)
 // @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/transfers.read"]>)
-@useAuth(BasicAuth)
 @opExample(#{ returnType: #{ statusCode: 200, body: ExampleDispute } })
 @extension("x-speakeasy-name-override", "get")
 op getDispute(
@@ -76,7 +74,6 @@ op getDispute(
   you'll need to specify the `/accounts/{accountID}/transfers.read` scope.
   """)
 // @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/transfers.write"]>)
-@useAuth(BasicAuth)
 @opExample(#{ returnType: #{ statusCode: 200, body: ExampleAcceptedDispute } })
 @extension("x-speakeasy-name-override", "accept")
 op acceptDispute(

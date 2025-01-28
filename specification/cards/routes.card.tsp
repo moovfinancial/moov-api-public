@@ -35,7 +35,6 @@ namespace MoovAPI;
   you'll need to specify the `/accounts/{accountID}/cards.write` scope.
   """)
 // @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/cards.write"]>)
-@useAuth(BasicAuth)
 @extension("x-speakeasy-name-override", "link")
 op linkCard(
   ...CommonHeaders,
@@ -69,7 +68,6 @@ op linkCard(
   you'll need to specify the `/accounts/{accountID}/cards.read` scope.
   """)
 // @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/cards.read"]>)
-@useAuth(BasicAuth)
 @extension("x-speakeasy-name-override", "list")
 op listCards(
   ...CommonHeaders,
@@ -91,7 +89,6 @@ op listCards(
   you'll need to specify the `/accounts/{accountID}/cards.read` scope.
   """)
 // @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/cards.read"]>)
-@useAuth(BasicAuth)
 @extension("x-speakeasy-name-override", "get")
 op getCard(
   ...CommonHeaders,
@@ -123,7 +120,6 @@ op getCard(
   you'll need to specify the `/accounts/{accountID}/cards.write` scope.
   """)
 // @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/cards.write"]>)
-@useAuth(BasicAuth)
 @extension("x-speakeasy-name-override", "update")
 op updateCard(
   ...CommonHeaders,
@@ -148,7 +144,6 @@ op updateCard(
   you'll need to specify the `/accounts/{accountID}/cards.write` scope.
   """)
 // @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/cards.write"]>)
-@useAuth(BasicAuth)
 @extension("x-speakeasy-name-override", "disable")
 op disableCard(
   ...CommonHeaders,

@@ -24,7 +24,6 @@ namespace MoovAPI;
   you'll need to specify the `/accounts/{accountID}/files.write` scope.
   """)
 // @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/files.write"]>)
-@useAuth(BasicAuth)
 @extension("x-speakeasy-name-override", "upload")
 op uploadFile(
   ...CommonHeaders,
@@ -47,7 +46,6 @@ op uploadFile(
   you'll need to specify the `/accounts/{accountID}/files.read` scope.
   """)
 // @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/files.read"]>)
-@useAuth(BasicAuth)
 @extension("x-speakeasy-name-override", "list")
 op listFiles(
   ...CommonHeaders,
@@ -67,7 +65,6 @@ op listFiles(
   you'll need to specify the `/accounts/{accountID}/files.read` scope.
   """)
 // @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/files.read"]>)
-@useAuth(BasicAuth)
 @extension("x-speakeasy-name-override", "get")
 op getFileDetails(
   ...CommonHeaders,

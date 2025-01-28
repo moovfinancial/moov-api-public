@@ -25,7 +25,6 @@ namespace MoovAPI;
   you'll need to specify the `/accounts/{accountID}/wallets.read` scope.
   """)
 // @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/wallets.read"]>)
-@useAuth(BasicAuth)
 @opExample(#{
   parameters: #{ accountID: ExampleID },
   returnType: #{ statusCode: HttpStatusOK, body: #[ExampleWallet] },
@@ -51,7 +50,6 @@ op listWallets(
   you'll need to specify the `/accounts/{accountID}/wallets.read` scope.
   """)
 // @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/wallets.read"]>)
-@useAuth(BasicAuth)
 @opExample(#{
   parameters: #{ accountID: ExampleID, walletID: ExampleID },
   returnType: #{ statusCode: HttpStatusOK, body: ExampleWallet },

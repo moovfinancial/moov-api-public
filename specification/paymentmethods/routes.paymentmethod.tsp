@@ -26,7 +26,6 @@ namespace MoovAPI;
   you'll need to specify the `/accounts/{accountID}/payment-methods.read` scope.
   """)
 // @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/payment-methods.read"]>)
-@useAuth(BasicAuth)
 @opExample(#{
   parameters: #{ accountID: ExampleID },
   returnType: #{
@@ -71,7 +70,6 @@ op listPaymentMethods(
   you'll need to specify the `/accounts/{accountID}/payment-methods.read` scope.
   """)
 // @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/payment-methods.read"]>)
-@useAuth(BasicAuth)
 @opExample(#{
   parameters: #{ accountID: ExampleID, paymentMethodID: ExampleID },
   returnType: #{

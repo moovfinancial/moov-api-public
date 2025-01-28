@@ -20,7 +20,6 @@ namespace MoovAPI;
   you'll need to specify the `/accounts/{accountID}/transfers.write` scope.
   """)
 // @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/transfers.write"]>)
-@useAuth(BasicAuth)
 @extension("x-speakeasy-name-override", "create")
 op createPaymentLink(
   ...CommonHeaders,
@@ -42,7 +41,6 @@ op createPaymentLink(
   you'll need to specify the `/accounts/{accountID}/transfers.read` scope.
   """)
 // @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/transfers.read"]>)
-@useAuth(BasicAuth)
 @extension("x-speakeasy-name-override", "list")
 op listPaymentLinks(
   ...CommonHeaders,
@@ -62,7 +60,6 @@ op listPaymentLinks(
   you'll need to specify the `/accounts/{accountID}/transfers.read` scope.
   """)
 // @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/transfers.read"]>)
-@useAuth(BasicAuth)
 @extension("x-speakeasy-name-override", "get")
 op getPaymentLink(
   ...CommonHeaders,
@@ -85,7 +82,6 @@ op getPaymentLink(
   you'll need to specify the `/accounts/{accountID}/transfers.write` scope.
   """)
 // @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/transfers.write"]>)
-@useAuth(BasicAuth)
 @extension("x-speakeasy-name-override", "update")
 op updatePaymentLink(
   ...CommonHeaders,
@@ -110,7 +106,6 @@ op updatePaymentLink(
   you'll need to specify the `/accounts/{accountID}/transfers.write` scope.
   """)
 // @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/transfers.write"]>)
-@useAuth(BasicAuth)
 @extension("x-speakeasy-name-override", "disable")
 op disablePaymentLink(
   ...CommonHeaders,
@@ -135,7 +130,6 @@ op disablePaymentLink(
   you'll need to specify the `/accounts/{accountID}/transfers.write` scope.
   """)
 // @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/transfers.write"]>)
-@useAuth(BasicAuth)
 @extension("x-speakeasy-name-override", "getQRCode")
 op getPaymentLinkQRCode(
   ...CommonHeaders,

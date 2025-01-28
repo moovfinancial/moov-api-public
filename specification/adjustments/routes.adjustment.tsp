@@ -20,7 +20,6 @@ namespace MoovAPI;
   you'll need to specify the `/accounts/{accountID}/wallets.read` scope.
   """)
 // @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/wallets.read"]>)
-@useAuth(BasicAuth)
 @extension("x-speakeasy-name-override", "list")
 op listAdjustments(
   ...CommonHeaders,
@@ -45,7 +44,6 @@ op listAdjustments(
   you'll need to specify the `/accounts/{accountID}/wallets.read` scope.
   """)
 // @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/wallets.read"]>)
-@useAuth(BasicAuth)
 @extension("x-speakeasy-name-override", "get")
 op getAdjustment(
   ...CommonHeaders,

@@ -20,7 +20,6 @@ namespace MoovAPI;
   you'll need to specify the `/accounts.write` scope.
   """)
 // @useAuth(BasicAuth | OAuth2<["/accounts.write"]>)
-@useAuth(BasicAuth)
 @extension("x-speakeasy-name-override", "createInvite")
 op createOnboardingInvite(
   ...CommonHeaders,
@@ -37,7 +36,6 @@ op createOnboardingInvite(
   you'll need to specify the `/accounts.read` scope.
   """)
 // @useAuth(BasicAuth | OAuth2<["/accounts.read"]>)
-@useAuth(BasicAuth)
 @extension("x-speakeasy-name-override", "listInvites")
 op listOnboardingInvites(...CommonHeaders): ListResponses<OnboardingInvite>;
 
@@ -50,7 +48,6 @@ op listOnboardingInvites(...CommonHeaders): ListResponses<OnboardingInvite>;
   you'll need to specify the `/accounts.read` scope.
   """)
 // @useAuth(BasicAuth | OAuth2<["/accounts.read"]>)
-@useAuth(BasicAuth)
 @extension("x-speakeasy-name-override", "getInvite")
 op getOnboardingInvite(
   ...CommonHeaders,
@@ -69,7 +66,6 @@ op getOnboardingInvite(
   you'll need to specify the `/accounts.write` scope.
   """)
 // @useAuth(BasicAuth | OAuth2<["/accounts.write"]>)
-@useAuth(BasicAuth)
 @extension("x-speakeasy-name-override", "revokeInvite")
 op revokeOnboardingInvite(
   ...CommonHeaders,

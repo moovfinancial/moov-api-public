@@ -67,12 +67,6 @@ paths:
         to specify the `/accounts.write` scope.
       parameters:
         - $ref: '#/components/parameters/CommonHeaders'
-        - name: x-wait-for
-          in: header
-          required: false
-          description: Optional header that indicates whether to wait for the connection to be created before returning from the account creation.
-          schema:
-            $ref: '#/components/schemas/AccountWaitFor'
       responses:
         '200':
           description: The request completed successfully.
@@ -4466,9 +4460,7 @@ paths:
           content:
             application/json:
               schema:
-                anyOf:
-                  - $ref: '#/components/schemas/Transfer'
-                  - $ref: '#/components/schemas/AsyncTransfer'
+                $ref: '#/components/schemas/TransferResponse'
         '201':
           description: A transfer was successfully created but an error occurred while generating the synchronous response. The asynchronous response object will be returned.
           content:
@@ -7407,10 +7399,6 @@ components:
         - failed
       description: Possible states an account verification can be in.
       deprecated: true
-    AccountWaitFor:
-      type: string
-      enum:
-        - connection
     AchCreditSameDayPaymentMethod:
       type: object
       required:
@@ -9608,8 +9596,6 @@ components:
       example:
         source:
           paymentMethodID: 9506dbf6-4208-44c3-ad8a-e4431660e1f2
-          cardDetails:
-            dynamicDescriptor: WhlBdy *Yoga 11-12
         destination:
           paymentMethodID: 3f9969cf-a1f3-4d83-8ddc-229a506651cf
         amount:
@@ -11067,15 +11053,7 @@ components:
           year: '21'
         holderName: Jules Jackson
         billingAddress:
-          addressLine1: 123 Main Street
-          addressLine2: Apt 302
-          city: Boulder
-          stateOrProvince: CO
           postalCode: '80301'
-          country: US
-        cardOnFile: true
-        merchantAccountID: 01234567-89ab-cdef-0123-456789abcdef
-        verifyName: true
     LinkCardError:
       type: object
       properties:
@@ -13065,6 +13043,10 @@ components:
           type: string
         destination:
           type: string
+    TransferResponse:
+      oneOf:
+        - $ref: '#/components/schemas/Transfer'
+        - $ref: '#/components/schemas/AsyncTransfer'
     TransferSource:
       type: object
       required:
