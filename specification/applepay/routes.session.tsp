@@ -26,7 +26,7 @@ namespace MoovAPI;
 // @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/apple-pay.write"]>)
 @extension("x-speakeasy-name-override", "createSession")
 op createApplePaySession(
-  ...CommonHeaders,
+  ...CommonRequestHeaders,
 
   @doc("ID of the Moov account representing the merchant.")
   @format("uuid")

@@ -27,11 +27,15 @@ namespace MoovAPI;
 // @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/wallets.read"]>)
 @opExample(#{
   parameters: #{ accountID: ExampleID },
-  returnType: #{ statusCode: HttpStatusOK, body: #[ExampleWallet] },
+  returnType: #{
+    xRequestID: ExampleID,
+    statusCode: HttpStatusOK,
+    body: #[ExampleWallet],
+  },
 })
 @extension("x-speakeasy-name-override", "list")
 op listWallets(
-  ...CommonHeaders,
+  ...CommonRequestHeaders,
 
   @format("uuid")
   @path
@@ -52,11 +56,15 @@ op listWallets(
 // @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/wallets.read"]>)
 @opExample(#{
   parameters: #{ accountID: ExampleID, walletID: ExampleID },
-  returnType: #{ statusCode: HttpStatusOK, body: ExampleWallet },
+  returnType: #{
+    xRequestID: ExampleID,
+    statusCode: HttpStatusOK,
+    body: ExampleWallet,
+  },
 })
 @extension("x-speakeasy-name-override", "get")
 op getWallet(
-  ...CommonHeaders,
+  ...CommonRequestHeaders,
 
   @format("uuid")
   @path

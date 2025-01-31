@@ -26,7 +26,7 @@ namespace MoovAPI;
 // @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/files.write"]>)
 @extension("x-speakeasy-name-override", "upload")
 op uploadFile(
-  ...CommonHeaders,
+  ...CommonRequestHeaders,
   @header contentType: "multipart/form-data",
 
   @format("uuid")
@@ -48,7 +48,7 @@ op uploadFile(
 // @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/files.read"]>)
 @extension("x-speakeasy-name-override", "list")
 op listFiles(
-  ...CommonHeaders,
+  ...CommonRequestHeaders,
 
   @format("uuid")
   @path
@@ -67,7 +67,7 @@ op listFiles(
 // @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/files.read"]>)
 @extension("x-speakeasy-name-override", "get")
 op getFileDetails(
-  ...CommonHeaders,
+  ...CommonRequestHeaders,
 
   @format("uuid")
   @path

@@ -24,7 +24,7 @@ namespace MoovAPI;
 @opExample(ExampleReversalCancellation, #{ title: "Reversed by cancellation" })
 @opExample(ExampleReversalRefund, #{ title: "Reversed by refund" })
 op createReversal(
-  ...CommonHeaders,
+  ...CommonRequestHeaders,
 
   @doc("Prevents duplicate reversals from being created.")
   @format("uuid")

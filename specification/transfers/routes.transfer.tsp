@@ -25,7 +25,7 @@ namespace MoovAPI;
 // @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/transfers.write"]>)
 @extension("x-speakeasy-name-override", "create")
 op createTransfer(
-  ...CommonHeaders,
+  ...CommonRequestHeaders,
 
   @doc("Prevents duplicate transfers from being created.")
   @format("uuid")
@@ -76,7 +76,7 @@ op createTransfer(
 // @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/transfers.read"]>)
 @extension("x-speakeasy-name-override", "list")
 op listTransfers(
-  ...CommonHeaders,
+  ...CommonRequestHeaders,
   ...TransferListFilters,
 
   @format("uuid")
@@ -99,7 +99,7 @@ op listTransfers(
 // @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/transfers.read"]>)
 @extension("x-speakeasy-name-override", "get")
 op getTransfer(
-  ...CommonHeaders,
+  ...CommonRequestHeaders,
 
   @doc("Identifier for the transfer.")
   @format("uuid")
@@ -125,7 +125,7 @@ op getTransfer(
 // @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/transfers.write"]>)
 @extension("x-speakeasy-name-override", "update")
 op updateTransfer(
-  ...CommonHeaders,
+  ...CommonRequestHeaders,
 
   @doc("Identifier for the transfer.")
   @format("uuid")

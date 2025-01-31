@@ -24,7 +24,7 @@ namespace MoovAPI;
 // @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/profile.read"]>)
 @extension("x-speakeasy-name-override", "get")
 op getUnderwriting(
-  ...CommonHeaders,
+  ...CommonRequestHeaders,
 
   @format("uuid")
   @path
@@ -45,7 +45,7 @@ op getUnderwriting(
 // @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/profile.write"]>)
 @extension("x-speakeasy-name-override", "update")
 op updateUnderwriting(
-  ...CommonHeaders,
+  ...CommonRequestHeaders,
 
   @format("uuid")
   @path

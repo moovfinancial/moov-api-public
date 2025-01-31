@@ -26,7 +26,7 @@ namespace MoovAPI;
 // @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/transfers.read"]>)
 @extension("x-speakeasy-name-override", "listEvidence")
 op listDisputeEvidence(
-  ...CommonHeaders,
+  ...CommonRequestHeaders,
 
   @format("uuid")
   @path
@@ -51,7 +51,7 @@ op listDisputeEvidence(
 // @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/transfers.write"]>)
 @extension("x-speakeasy-name-override", "uploadEvidenceFile")
 op uploadDisputeEvidenceFile(
-  ...CommonHeaders,
+  ...CommonRequestHeaders,
   @header contentType: "multipart/form-data",
 
   @format("uuid")
@@ -88,7 +88,7 @@ op uploadDisputeEvidenceFile(
 // @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/transfers.write"]>)
 @extension("x-speakeasy-name-override", "uploadEvidenceText")
 op uploadDisputeEvidenceText(
-  ...CommonHeaders,
+  ...CommonRequestHeaders,
 
   @format("uuid")
   @path
@@ -124,7 +124,7 @@ op uploadDisputeEvidenceText(
 // @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/transfers.read"]>)
 @extension("x-speakeasy-name-override", "getEvidence")
 op getDisputeEvidence(
-  ...CommonHeaders,
+  ...CommonRequestHeaders,
 
   @format("uuid")
   @path
@@ -153,7 +153,7 @@ op getDisputeEvidence(
 // @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/transfers.write"]>)
 @extension("x-speakeasy-name-override", "updateEvidence")
 op updateDisputeEvidence(
-  ...CommonHeaders,
+  ...CommonRequestHeaders,
 
   @format("uuid")
   @path
@@ -192,7 +192,7 @@ op updateDisputeEvidence(
 // @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/transfers.write"]>)
 @extension("x-speakeasy-name-override", "deleteEvidence")
 op deleteDisputeEvidenceFile(
-  ...CommonHeaders,
+  ...CommonRequestHeaders,
 
   @format("uuid")
   @path
@@ -229,7 +229,7 @@ op deleteDisputeEvidenceFile(
 // @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/transfers.read"]>)
 @extension("x-speakeasy-name-override", "getEvidenceData")
 op getDisputeEvidenceData(
-  ...CommonHeaders,
+  ...CommonRequestHeaders,
 
   @format("uuid")
   @path
@@ -268,7 +268,7 @@ op getDisputeEvidenceData(
 // @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/transfers.write"]>)
 @extension("x-speakeasy-name-override", "submitEvidence")
 op submitDisputeEvidence(
-  ...CommonHeaders,
+  ...CommonRequestHeaders,
 
   @format("uuid")
   @path

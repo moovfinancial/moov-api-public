@@ -23,7 +23,7 @@ namespace MoovAPI;
 // @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/profile.read"]>)
 @extension("x-speakeasy-name-override", "getCountries")
 op getAccountCountries(
-  ...CommonHeaders,
+  ...CommonRequestHeaders,
 
   @format("uuid")
   @path
@@ -44,7 +44,7 @@ op getAccountCountries(
 // @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/profile.write"]>)
 @extension("x-speakeasy-name-override", "assignCountries")
 op assignAccountCountries(
-  ...CommonHeaders,
+  ...CommonRequestHeaders,
 
   @format("uuid")
   @path

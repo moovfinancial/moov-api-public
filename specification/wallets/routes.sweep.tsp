@@ -2,6 +2,7 @@ import "@typespec/http";
 import "@typespec/openapi";
 import "./models.sweep.tsp";
 import "./examples.sweep.tsp";
+import "../common/models.header.tsp";
 
 using TypeSpec.Http;
 using TypeSpec.OpenAPI;
@@ -22,11 +23,15 @@ namespace MoovAPI;
 // @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/wallets.read"]>)
 @opExample(#{
   parameters: #{ accountID: ExampleID, walletID: ExampleID },
-  returnType: #{ statusCode: HttpStatusOK, body: #[ExampleSweep] },
+  returnType: #{
+    xRequestID: ExampleID,
+    statusCode: HttpStatusOK,
+    body: #[ExampleSweep],
+  },
 })
 @extension("x-speakeasy-name-override", "list")
 op listSweeps(
-  ...CommonHeaders,
+  ...CommonRequestHeaders,
 
   @format("uuid")
   @path
@@ -68,11 +73,15 @@ op listSweeps(
     walletID: ExampleID,
     sweepID: ExampleID,
   },
-  returnType: #{ statusCode: HttpStatusOK, body: ExampleSweep },
+  returnType: #{
+    xRequestID: ExampleID,
+    statusCode: HttpStatusOK,
+    body: ExampleSweep,
+  },
 })
 @extension("x-speakeasy-name-override", "get")
 op getSweep(
-  ...CommonHeaders,
+  ...CommonRequestHeaders,
 
   @format("uuid")
   @path

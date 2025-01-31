@@ -30,13 +30,14 @@ namespace MoovAPI;
 @opExample(#{
   parameters: #{ accountID: ExampleID },
   returnType: #{
+    xRequestID: ExampleID,
     statusCode: HttpStatusOK,
     body: #[ExampleTransfersCapability, ExampleCollectFundsCapability],
   },
 })
 @extension("x-speakeasy-name-override", "list")
 op listCapabilities(
-  ...CommonHeaders,
+  ...CommonRequestHeaders,
 
   @format("uuid")
   @path
@@ -61,13 +62,14 @@ op listCapabilities(
     body: #{ capabilities: #[CapabilityID.collectFunds] },
   },
   returnType: #{
+    xRequestID: ExampleID,
     statusCode: HttpStatusOK,
     body: #[ExampleTransfersCapability, ExampleCollectFundsCapability],
   },
 })
 @extension("x-speakeasy-name-override", "request")
 op requestCapabilities(
-  ...CommonHeaders,
+  ...CommonRequestHeaders,
 
   @format("uuid")
   @path
@@ -90,11 +92,15 @@ op requestCapabilities(
 // @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/capabilities.read"]>)
 @opExample(#{
   parameters: #{ accountID: ExampleID, capabilityID: CapabilityID.transfers },
-  returnType: #{ statusCode: HttpStatusOK, body: ExampleTransfersCapability },
+  returnType: #{
+    xRequestID: ExampleID,
+    statusCode: HttpStatusOK,
+    body: ExampleTransfersCapability,
+  },
 })
 @extension("x-speakeasy-name-override", "get")
 op getCapability(
-  ...CommonHeaders,
+  ...CommonRequestHeaders,
 
   @format("uuid")
   @path
@@ -121,11 +127,11 @@ op getCapability(
     accountID: ExampleID,
     capabilityID: CapabilityID.collectFunds,
   },
-  returnType: #{ statusCode: HttpStatusNoContent },
+  returnType: #{ xRequestID: ExampleID, statusCode: HttpStatusNoContent },
 })
 @extension("x-speakeasy-name-override", "disable")
 op disableCapability(
-  ...CommonHeaders,
+  ...CommonRequestHeaders,
 
   @format("uuid")
   @path

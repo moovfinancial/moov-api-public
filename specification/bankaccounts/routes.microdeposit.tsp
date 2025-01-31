@@ -30,7 +30,7 @@ namespace MoovAPI;
   """)
 // @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/bank-accounts.write"]>)
 op initiateMicroDeposits(
-  ...CommonHeaders,
+  ...CommonRequestHeaders,
 
   @format("uuid")
   @path
@@ -61,7 +61,7 @@ op initiateMicroDeposits(
   """)
 // @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/bank-accounts.write"]>)
 op completeMicroDeposits(
-  ...CommonHeaders,
+  ...CommonRequestHeaders,
 
   @format("uuid")
   @path

@@ -4,6 +4,7 @@ import "./models.payment.tsp";
 import "./models.payout.tsp";
 import "../accounts/models.mode.tsp";
 import "../money/models.amount.tsp";
+import "../common/models.header.tsp";
 
 using TypeSpec.Http;
 
@@ -166,6 +167,7 @@ model PaymentLinkCustomerOptions {
 }
 
 model QRCodeImage {
+  ...CommonResponseHeaders;
   @statusCode statusCode: HttpStatusOK;
   @header contentType: "image/png";
 
@@ -175,6 +177,7 @@ model QRCodeImage {
 }
 
 model QRCodeJSON {
+  ...CommonResponseHeaders;
   @statusCode statusCode: HttpStatusOK;
   @header contentType: "application/json";
   @body body: QRCode;

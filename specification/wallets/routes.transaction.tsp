@@ -30,13 +30,14 @@ namespace MoovAPI;
 @opExample(#{
   parameters: #{ accountID: ExampleID, walletID: ExampleID },
   returnType: #{
+    xRequestID: ExampleID,
     statusCode: HttpStatusOK,
     body: #[ExampleWalletTransactionCompleted, ExampleWalletTransactionPending],
   },
 })
 @extension("x-speakeasy-name-override", "list")
 op listWalletTransactions(
-  ...CommonHeaders,
+  ...CommonRequestHeaders,
 
   @format("uuid")
   @path
@@ -64,13 +65,14 @@ op listWalletTransactions(
     transactionID: ExampleID,
   },
   returnType: #{
+    xRequestID: ExampleID,
     statusCode: HttpStatusOK,
     body: ExampleWalletTransactionCompleted,
   },
 })
 @extension("x-speakeasy-name-override", "get")
 op getWalletTransaction(
-  ...CommonHeaders,
+  ...CommonRequestHeaders,
 
   @format("uuid")
   @path

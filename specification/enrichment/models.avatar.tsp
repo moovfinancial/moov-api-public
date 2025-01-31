@@ -1,9 +1,12 @@
 import "@typespec/http";
+import "../common/models.header.tsp";
+
 using TypeSpec.Http;
 
 namespace MoovAPI;
 
 model EnrichedAvatar {
+  ...CommonResponseHeaders;
   @statusCode statusCode: HttpStatusOK;
   @header contentType: "image/png" | "image/jpeg";
 

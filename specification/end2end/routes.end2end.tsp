@@ -19,7 +19,7 @@ namespace MoovAPI;
   """)
 @extension("x-speakeasy-name-override", "generateKey")
 op generateEndToEndKey(
-  ...CommonHeaders,
+  ...CommonRequestHeaders,
 ): OkResponse<JSONWebKey> | RateLimitedResponse;
 
 @post
@@ -33,7 +33,7 @@ op generateEndToEndKey(
   """)
 // @useAuth(BasicAuth | OAuth2<["/ping.read"]>)
 @extension("x-speakeasy-name-override", "testEncryptedToken")
-op testEndToEndToken(...CommonHeaders, @body body: E2EEToken):
+op testEndToEndToken(...CommonRequestHeaders, @body body: E2EEToken):
   | NoContentResponse
   | BadRequestResponse
   | RateLimitedResponse

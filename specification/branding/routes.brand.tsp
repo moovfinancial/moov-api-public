@@ -22,7 +22,7 @@ namespace MoovAPI;
 // @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/branding.write"]>)
 @extension("x-speakeasy-name-override", "create")
 op createBrand(
-  ...CommonHeaders,
+  ...CommonRequestHeaders,
 
   @format("uuid")
   @path
@@ -43,7 +43,7 @@ op createBrand(
 // @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/branding.read"]>)
 @extension("x-speakeasy-name-override", "get")
 op getBrand(
-  ...CommonHeaders,
+  ...CommonRequestHeaders,
 
   @format("uuid")
   @path
@@ -62,7 +62,7 @@ op getBrand(
 // @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/branding.write"]>)
 @extension("x-speakeasy-name-override", "update")
 op updateBrand(
-  ...CommonHeaders,
+  ...CommonRequestHeaders,
 
   @format("uuid")
   @path

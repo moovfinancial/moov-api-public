@@ -19,7 +19,7 @@ namespace MoovAPI;
   """)
 // @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/profile.read"]>)
 op getMerchantProcessingAgreement(
-  ...CommonHeaders,
+  ...CommonRequestHeaders,
 
   @format("uuid")
   @path

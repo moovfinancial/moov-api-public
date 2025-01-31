@@ -22,7 +22,7 @@ namespace MoovAPI;
 // @useAuth(BasicAuth | OAuth2<["/accounts.write"]>)
 @extension("x-speakeasy-name-override", "createInvite")
 op createOnboardingInvite(
-  ...CommonHeaders,
+  ...CommonRequestHeaders,
   @body body: OnboardingInviteRequest,
 ): PostResponses<OnboardingInvite, OnboardingInviteError>;
 
@@ -37,7 +37,9 @@ op createOnboardingInvite(
   """)
 // @useAuth(BasicAuth | OAuth2<["/accounts.read"]>)
 @extension("x-speakeasy-name-override", "listInvites")
-op listOnboardingInvites(...CommonHeaders): ListResponses<OnboardingInvite>;
+op listOnboardingInvites(
+  ...CommonRequestHeaders,
+): ListResponses<OnboardingInvite>;
 
 @route("/onboarding-invites/{code}")
 @tag("Onboarding")
@@ -50,7 +52,7 @@ op listOnboardingInvites(...CommonHeaders): ListResponses<OnboardingInvite>;
 // @useAuth(BasicAuth | OAuth2<["/accounts.read"]>)
 @extension("x-speakeasy-name-override", "getInvite")
 op getOnboardingInvite(
-  ...CommonHeaders,
+  ...CommonRequestHeaders,
 
   @path
   code: OnboardingInviteCode,
@@ -68,7 +70,7 @@ op getOnboardingInvite(
 // @useAuth(BasicAuth | OAuth2<["/accounts.write"]>)
 @extension("x-speakeasy-name-override", "revokeInvite")
 op revokeOnboardingInvite(
-  ...CommonHeaders,
+  ...CommonRequestHeaders,
 
   @path
   code: OnboardingInviteCode,

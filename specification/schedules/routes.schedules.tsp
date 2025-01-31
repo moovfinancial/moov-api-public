@@ -24,7 +24,7 @@ namespace MoovAPI;
 // @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/transfers.write"]>)
 @extension("x-speakeasy-name-override", "create")
 op createSchedule(
-  ...CommonHeaders,
+  ...CommonRequestHeaders,
 
   @format("uuid")
   @path
@@ -45,7 +45,7 @@ op createSchedule(
 // @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/transfers.write"]>)
 @extension("x-speakeasy-name-override", "update")
 op updateSchedule(
-  ...CommonHeaders,
+  ...CommonRequestHeaders,
 
   @format("uuid")
   @path
@@ -70,7 +70,7 @@ op updateSchedule(
 // @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/transfers.read"]>)
 @extension("x-speakeasy-name-override", "get")
 op getSchedules(
-  ...CommonHeaders,
+  ...CommonRequestHeaders,
 
   @format("uuid")
   @path
@@ -93,7 +93,7 @@ op getSchedules(
 // @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/transfers.read"]>)
 @extension("x-speakeasy-name-override", "list")
 op listSchedules(
-  ...CommonHeaders,
+  ...CommonRequestHeaders,
   @query skip?: Skip,
   @query count?: Count,
 
@@ -114,7 +114,7 @@ op listSchedules(
 // @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/transfers.read"]>)
 @extension("x-speakeasy-name-override", "getOccurrance")
 op getScheduledOccurrence(
-  ...CommonHeaders,
+  ...CommonRequestHeaders,
 
   @format("uuid")
   @path
@@ -147,7 +147,7 @@ op getScheduledOccurrence(
 // @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/transfers.write"]>)
 @extension("x-speakeasy-name-override", "cancel")
 op cancelSchedule(
-  ...CommonHeaders,
+  ...CommonRequestHeaders,
 
   @format("uuid")
   @path

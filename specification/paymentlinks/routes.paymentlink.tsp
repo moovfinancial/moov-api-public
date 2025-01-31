@@ -22,7 +22,7 @@ namespace MoovAPI;
 // @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/transfers.write"]>)
 @extension("x-speakeasy-name-override", "create")
 op createPaymentLink(
-  ...CommonHeaders,
+  ...CommonRequestHeaders,
 
   @format("uuid")
   @path
@@ -43,7 +43,7 @@ op createPaymentLink(
 // @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/transfers.read"]>)
 @extension("x-speakeasy-name-override", "list")
 op listPaymentLinks(
-  ...CommonHeaders,
+  ...CommonRequestHeaders,
 
   @format("uuid")
   @path
@@ -62,7 +62,7 @@ op listPaymentLinks(
 // @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/transfers.read"]>)
 @extension("x-speakeasy-name-override", "get")
 op getPaymentLink(
-  ...CommonHeaders,
+  ...CommonRequestHeaders,
 
   @format("uuid")
   @path
@@ -84,7 +84,7 @@ op getPaymentLink(
 // @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/transfers.write"]>)
 @extension("x-speakeasy-name-override", "update")
 op updatePaymentLink(
-  ...CommonHeaders,
+  ...CommonRequestHeaders,
 
   @format("uuid")
   @path
@@ -108,7 +108,7 @@ op updatePaymentLink(
 // @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/transfers.write"]>)
 @extension("x-speakeasy-name-override", "disable")
 op disablePaymentLink(
-  ...CommonHeaders,
+  ...CommonRequestHeaders,
 
   @format("uuid")
   @path
@@ -132,7 +132,7 @@ op disablePaymentLink(
 // @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/transfers.write"]>)
 @extension("x-speakeasy-name-override", "getQRCode")
 op getPaymentLinkQRCode(
-  ...CommonHeaders,
+  ...CommonRequestHeaders,
 
   @format("uuid")
   @path

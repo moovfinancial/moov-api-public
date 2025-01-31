@@ -22,7 +22,7 @@ namespace MoovAPI;
 // @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/wallets.read"]>)
 @extension("x-speakeasy-name-override", "list")
 op listAdjustments(
-  ...CommonHeaders,
+  ...CommonRequestHeaders,
 
   @format("uuid")
   @path
@@ -46,7 +46,7 @@ op listAdjustments(
 // @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/wallets.read"]>)
 @extension("x-speakeasy-name-override", "get")
 op getAdjustment(
-  ...CommonHeaders,
+  ...CommonRequestHeaders,
 
   @format("uuid")
   @path

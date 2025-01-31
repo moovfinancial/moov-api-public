@@ -1,10 +1,12 @@
 import "./models.refund.tsp";
 import "./models.reversal.tsp";
+import "../common/models.header.tsp";
 
 namespace MoovAPI;
 
 const ExampleReversalCancellation: OperationExample = #{
   returnType: #{
+    xRequestID: ExampleID,
     statusCode: HttpStatusOK,
     body: #{
       cancellation: #{
@@ -17,6 +19,7 @@ const ExampleReversalCancellation: OperationExample = #{
 
 const ExampleReversalRefund: OperationExample = #{
   returnType: #{
+    xRequestID: ExampleID,
     statusCode: HttpStatusOK,
     body: #{
       refund: #{

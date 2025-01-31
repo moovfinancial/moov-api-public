@@ -31,7 +31,7 @@ namespace MoovAPI;
 // @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/bank-accounts.read"]>)
 @extension("x-speakeasy-name-override", "getVerification")
 op getBankAccountVerification(
-  ...CommonHeaders,
+  ...CommonRequestHeaders,
 
   @format("uuid")
   @path
@@ -69,7 +69,7 @@ op getBankAccountVerification(
 // @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/bank-accounts.write"]>)
 @extension("x-speakeasy-name-override", "initiateVerification")
 op initiateBankAccountVerification(
-  ...CommonHeaders,
+  ...CommonRequestHeaders,
 
   @doc("""
     Optional header to wait for certain events, such as the rail response, to occur before returning a response.
@@ -116,7 +116,7 @@ op initiateBankAccountVerification(
 // @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/bank-accounts.write"]>)
 @extension("x-speakeasy-name-override", "completeVerification")
 op completeBankAccountVerification(
-  ...CommonHeaders,
+  ...CommonRequestHeaders,
 
   @format("uuid")
   @path

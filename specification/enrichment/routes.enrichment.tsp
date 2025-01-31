@@ -26,7 +26,7 @@ namespace MoovAPI;
 // @useAuth(BasicAuth | OAuth2<["/profile-enrichment.read"]>)
 @extension("x-speakeasy-name-override", "get")
 op getEnrichmentAddress(
-  ...CommonHeaders,
+  ...CommonRequestHeaders,
   ...EnrichedAddressFilters,
 ): GetResponses<EnrichedAddressResponse>;
 
@@ -42,7 +42,7 @@ op getEnrichmentAddress(
 // @useAuth(BasicAuth | OAuth2<["/profile-enrichment.read"]>)
 @extension("x-speakeasy-name-override", "get")
 op getEnrichmentProfile(
-  ...CommonHeaders,
+  ...CommonRequestHeaders,
 
   @example("employee@business.com")
   @query
@@ -60,7 +60,7 @@ op getEnrichmentProfile(
   """)
 // @useAuth(BasicAuth | OAuth2<["/profile-enrichment.read"]>)
 @extension("x-speakeasy-name-override", "list")
-op listIndustries(...CommonHeaders): ListResponses<EnrichedIndustry>;
+op listIndustries(...CommonRequestHeaders): ListResponses<EnrichedIndustry>;
 
 @get
 @route("/avatars/{uniqueID}")
@@ -74,7 +74,7 @@ op listIndustries(...CommonHeaders): ListResponses<EnrichedIndustry>;
 // @useAuth(BasicAuth | OAuth2<["/profile-enrichment.read"]>)
 @extension("x-speakeasy-name-override", "get")
 op getAvatar(
-  ...CommonHeaders,
+  ...CommonRequestHeaders,
 
   @doc("Any unique ID associated with an account such as accountID, representativeID, routing number, or userID.")
   @path
@@ -99,7 +99,7 @@ op getAvatar(
   """)
 // @useAuth(BasicAuth | OAuth2<["/fed.read"]>)
 @extension("x-speakeasy-name-override", "search")
-op listInstitutions(...CommonHeaders, ...InstitutionsFilters):
+op listInstitutions(...CommonRequestHeaders, ...InstitutionsFilters):
   | OkResponse<FinancialInstitutions[]>
   | BadRequestResponse
   | UnauthorizedResponse

@@ -8,6 +8,7 @@ import "./models.dispute.tsp";
 import "./models.refund.tsp";
 import "./models.rtp.tsp";
 import "../bankaccounts/models.bankaccount.tsp";
+import "../common/models.header.tsp";
 import "../common/models.parameter.tsp";
 import "../common/models.response.tsp";
 import "../common/models.metadata.tsp";
@@ -118,12 +119,14 @@ model CreateTransfer {
 
 @doc("A transfer was successfully created but an error occurred while generating the synchronous response. The asynchronous response object will be returned.")
 model CreatedTransferSyncErrorResponse {
+  ...CommonResponseHeaders;
   @statusCode statusCode: HttpStatusCreated;
   @body body: AsyncTransfer;
 }
 
 @doc("A transfer was successfully created but a timeout occurred while waiting for a synchronous response. Rail-specific details may be missing from the response object.")
 model CreateTransferTimeoutResponse {
+  ...CommonResponseHeaders;
   @statusCode statusCode: HttpStatusAccepted;
   @body body: Transfer;
 }
@@ -131,6 +134,7 @@ model CreateTransferTimeoutResponse {
 @doc("Attempted to create a transfer using a duplicate X-Idempotency-Key header.")
 @error
 model DuplicateTransferResponse {
+  ...CommonResponseHeaders;
   @statusCode statusCode: HttpStatusConflict;
   @body body: Transfer;
 }

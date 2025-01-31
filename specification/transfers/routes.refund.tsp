@@ -24,15 +24,27 @@ namespace MoovAPI;
   """)
 // @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/transfers.write"]>)
 @opExample(
-  #{ returnType: #{ statusCode: 200, body: ExampleCreateSyncRefundSuccess } },
+  #{
+    returnType: #{
+      xRequestID: ExampleID,
+      statusCode: 200,
+      body: ExampleCreateSyncRefundSuccess,
+    },
+  },
   #{ title: "Successful sync refund" }
 )
 @opExample(
-  #{ returnType: #{ statusCode: 200, body: ExampleAsyncRefund } },
+  #{
+    returnType: #{
+      xRequestID: ExampleID,
+      statusCode: 200,
+      body: ExampleAsyncRefund,
+    },
+  },
   #{ title: "Successful async refund" }
 )
 op initiateRefund(
-  ...CommonHeaders,
+  ...CommonRequestHeaders,
 
   @doc("Prevents duplicate refunds from being created.")
   @format("uuid")
@@ -79,10 +91,14 @@ op initiateRefund(
   """)
 // @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/transfers.read"]>)
 @opExample(#{
-  returnType: #{ statusCode: 200, body: #[ExampleCardAcquiringRefund] },
+  returnType: #{
+    xRequestID: ExampleID,
+    statusCode: 200,
+    body: #[ExampleCardAcquiringRefund],
+  },
 })
 op listRefunds(
-  ...CommonHeaders,
+  ...CommonRequestHeaders,
 
   @format("uuid")
   @path
@@ -105,10 +121,14 @@ op listRefunds(
   """)
 // @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/transfers.read"]>)
 @opExample(#{
-  returnType: #{ statusCode: 200, body: ExampleCardAcquiringRefund },
+  returnType: #{
+    xRequestID: ExampleID,
+    statusCode: 200,
+    body: ExampleCardAcquiringRefund,
+  },
 })
 op getRefund(
-  ...CommonHeaders,
+  ...CommonRequestHeaders,
 
   @doc("Identifier for the transfer.")
   @format("uuid")

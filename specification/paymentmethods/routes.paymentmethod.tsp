@@ -29,13 +29,14 @@ namespace MoovAPI;
 @opExample(#{
   parameters: #{ accountID: ExampleID },
   returnType: #{
+    xRequestID: ExampleID,
     statusCode: HttpStatusOK,
     body: #[ExampleMoovWalletPaymentMethod, ExampleApplePayPaymentMethod],
   },
 })
 @extension("x-speakeasy-name-override", "list")
 op listPaymentMethods(
-  ...CommonHeaders,
+  ...CommonRequestHeaders,
 
   @format("uuid")
   @path
@@ -73,13 +74,14 @@ op listPaymentMethods(
 @opExample(#{
   parameters: #{ accountID: ExampleID, paymentMethodID: ExampleID },
   returnType: #{
+    xRequestID: ExampleID,
     statusCode: HttpStatusOK,
     body: ExampleMoovWalletPaymentMethod,
   },
 })
 @extension("x-speakeasy-name-override", "get")
 op getPaymentMethod(
-  ...CommonHeaders,
+  ...CommonRequestHeaders,
 
   @format("uuid")
   @path

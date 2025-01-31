@@ -113,7 +113,7 @@ model Card {
   regulated?: boolean;
 
   @doc("Indicates cardholder has authorized card to be stored for future payments.")
-  cardOnFile: boolean;
+  cardOnFile?: boolean;
 
   @format("uuid")
   merchantAccountID?: string;

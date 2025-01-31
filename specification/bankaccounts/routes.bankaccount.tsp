@@ -27,7 +27,7 @@ namespace MoovAPI;
 // @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/bank-accounts.write"]>)
 @extension("x-speakeasy-name-override", "link")
 op linkBankAccount(
-  ...CommonHeaders,
+  ...CommonRequestHeaders,
 
   @doc("""
     Optional header to wait for certain events, such as the creation of a payment method, to occur before returning a response.
@@ -59,7 +59,7 @@ op linkBankAccount(
 // @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/bank-accounts.read"]>)
 @extension("x-speakeasy-name-override", "list")
 op listBankAccounts(
-  ...CommonHeaders,
+  ...CommonRequestHeaders,
 
   @format("uuid")
   @path
@@ -80,7 +80,7 @@ op listBankAccounts(
 // @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/bank-accounts.read"]>)
 @extension("x-speakeasy-name-override", "get")
 op getBankAccount(
-  ...CommonHeaders,
+  ...CommonRequestHeaders,
 
   @format("uuid")
   @path
@@ -103,7 +103,7 @@ op getBankAccount(
 // @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/bank-accounts.write"]>)
 @extension("x-speakeasy-name-override", "disable")
 op disableBankAccount(
-  ...CommonHeaders,
+  ...CommonRequestHeaders,
 
   @format("uuid")
   @path

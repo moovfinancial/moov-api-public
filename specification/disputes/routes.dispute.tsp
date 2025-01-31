@@ -3,6 +3,7 @@ import "@typespec/openapi";
 import "./examples.dispute.tsp";
 import "./models.dispute.tsp";
 import "../auth/models.auth.tsp";
+import "../common/examples.id.tsp";
 import "../common/models.header.tsp";
 import "../common/models.parameter.tsp";
 import "../common/models.response.tsp";
@@ -24,10 +25,16 @@ namespace MoovAPI;
   you'll need to specify the `/accounts/{accountID}/transfers.read` scope.
   """)
 // @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/transfers.read"]>)
-@opExample(#{ returnType: #{ statusCode: 200, body: #[ExampleDispute] } })
+@opExample(#{
+  returnType: #{
+    xRequestID: ExampleID,
+    statusCode: 200,
+    body: #[ExampleDispute],
+  },
+})
 @extension("x-speakeasy-name-override", "list")
 op listDisputes(
-  ...CommonHeaders,
+  ...CommonRequestHeaders,
 
   @format("uuid")
   @path
@@ -48,10 +55,12 @@ op listDisputes(
   you'll need to specify the `/accounts/{accountID}/transfers.read` scope.
   """)
 // @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/transfers.read"]>)
-@opExample(#{ returnType: #{ statusCode: 200, body: ExampleDispute } })
+@opExample(#{
+  returnType: #{ xRequestID: ExampleID, statusCode: 200, body: ExampleDispute },
+})
 @extension("x-speakeasy-name-override", "get")
 op getDispute(
-  ...CommonHeaders,
+  ...CommonRequestHeaders,
 
   @format("uuid")
   @path
@@ -74,10 +83,16 @@ op getDispute(
   you'll need to specify the `/accounts/{accountID}/transfers.read` scope.
   """)
 // @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/transfers.write"]>)
-@opExample(#{ returnType: #{ statusCode: 200, body: ExampleAcceptedDispute } })
+@opExample(#{
+  returnType: #{
+    xRequestID: ExampleID,
+    statusCode: 200,
+    body: ExampleAcceptedDispute,
+  },
+})
 @extension("x-speakeasy-name-override", "accept")
 op acceptDispute(
-  ...CommonHeaders,
+  ...CommonRequestHeaders,
 
   @format("uuid")
   @path

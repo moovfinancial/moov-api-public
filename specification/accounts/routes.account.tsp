@@ -33,7 +33,10 @@ namespace MoovAPI;
   """)
 // @useAuth(BasicAuth | OAuth2<["/accounts.write"]>)
 @extension("x-speakeasy-name-override", "create")
-op createAccount(...CommonHeaders, @body body: CreateAccount): PostResponses<
+op createAccount(
+  ...CommonRequestHeaders,
+  @body body: CreateAccount,
+): PostResponses<
   Account,
   {
     error: CreateAccountError;
@@ -56,7 +59,7 @@ op createAccount(...CommonHeaders, @body body: CreateAccount): PostResponses<
 // @useAuth(BasicAuth | OAuth2<["/accounts.read"]>)
 @extension("x-speakeasy-name-override", "list")
 op listAccounts(
-  ...CommonHeaders,
+  ...CommonRequestHeaders,
   ...AccountsQuery,
   @query skip?: Skip,
   @query count?: Count,
@@ -74,7 +77,7 @@ op listAccounts(
 // @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/profile.read"]>)
 @extension("x-speakeasy-name-override", "get")
 op getAccount(
-  ...CommonHeaders,
+  ...CommonRequestHeaders,
 
   @format("uuid")
   @path
@@ -101,7 +104,7 @@ op getAccount(
 // @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/profile.write"]>)
 @extension("x-speakeasy-name-override", "update")
 op updateAccount(
-  ...CommonHeaders,
+  ...CommonRequestHeaders,
 
   @format("uuid")
   @path
@@ -129,7 +132,7 @@ op updateAccount(
 // @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/profile.disconnect"]>)
 @extension("x-speakeasy-name-override", "disconnect")
 op disconnectAccount(
-  ...CommonHeaders,
+  ...CommonRequestHeaders,
 
   @format("uuid")
   @path
@@ -147,7 +150,7 @@ op disconnectAccount(
   token patched to the account. Read more in our [documentation](https://docs.moov.io/guides/accounts/requirements/platform-agreement/).
   """)
 op getTermsOfServiceToken(
-  ...CommonHeaders,
+  ...CommonRequestHeaders,
 
   @doc("Indicates the domain from which the request originated. Required if referer header is not present.")
   @header

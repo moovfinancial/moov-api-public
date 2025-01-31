@@ -21,6 +21,7 @@ model CreateRefund {
 
 @doc("A refund was successfully created but an error occurred while waiting for a synchronous response.")
 model CreateRefundTimeoutResponse {
+  ...CommonResponseHeaders;
   @statusCode statusCode: HttpStatusAccepted;
   @body body: CardAcquiringRefund;
 }
@@ -56,6 +57,7 @@ model CardAcquiringRefund {
 @doc("Attempted to create a refund using a duplicate X-Idempotency-Key header.")
 @error
 model DuplicateRefundResponse {
+  ...CommonResponseHeaders;
   @statusCode statusCode: HttpStatusConflict;
   @body body: CardAcquiringRefund;
 }

@@ -1,4 +1,5 @@
 import "@typespec/http";
+import "../common/models.header.tsp";
 
 using TypeSpec.Http;
 
@@ -40,10 +41,12 @@ scalar DomainDisplayName extends string;
 
 @doc("The requested domains were not verified.")
 model DomainNotVerifiedResponse {
+  ...CommonResponseHeaders;
   @statusCode statusCode: HttpsStatusExpectationFailed;
 }
 
 @doc("Apple Pay domains are already registered for this account.")
 model DomainsAlreadyRegisteredResponse {
+  ...CommonResponseHeaders;
   @statusCode statusCode: HttpStatusConflict;
 }

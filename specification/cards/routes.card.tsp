@@ -37,7 +37,7 @@ namespace MoovAPI;
 // @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/cards.write"]>)
 @extension("x-speakeasy-name-override", "link")
 op linkCard(
-  ...CommonHeaders,
+  ...CommonRequestHeaders,
 
   @doc("""
     Optional header to wait for certain events, such as the creation of a payment method, to occur before returning a response.
@@ -70,7 +70,7 @@ op linkCard(
 // @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/cards.read"]>)
 @extension("x-speakeasy-name-override", "list")
 op listCards(
-  ...CommonHeaders,
+  ...CommonRequestHeaders,
 
   @format("uuid")
   @path
@@ -91,7 +91,7 @@ op listCards(
 // @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/cards.read"]>)
 @extension("x-speakeasy-name-override", "get")
 op getCard(
-  ...CommonHeaders,
+  ...CommonRequestHeaders,
 
   @format("uuid")
   @path
@@ -122,7 +122,7 @@ op getCard(
 // @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/cards.write"]>)
 @extension("x-speakeasy-name-override", "update")
 op updateCard(
-  ...CommonHeaders,
+  ...CommonRequestHeaders,
 
   @format("uuid")
   @path
@@ -146,7 +146,7 @@ op updateCard(
 // @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/cards.write"]>)
 @extension("x-speakeasy-name-override", "disable")
 op disableCard(
-  ...CommonHeaders,
+  ...CommonRequestHeaders,
 
   @format("uuid")
   @path

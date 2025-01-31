@@ -26,7 +26,7 @@ namespace MoovAPI;
 // @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/cards.write"]>)
 @extension("x-speakeasy-name-override", "linkToken")
 op linkApplePayToken(
-  ...CommonHeaders,
+  ...CommonRequestHeaders,
 
   @doc("ID of the Moov account representing the cardholder.")
   @format("uuid")

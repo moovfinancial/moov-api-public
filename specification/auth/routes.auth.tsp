@@ -14,7 +14,7 @@ namespace MoovAPI;
   Create or refresh an access token.
   """)
 op createAccessToken(
-  ...CommonHeaders,
+  ...CommonRequestHeaders,
   @header contentType: "application/json" | "application/x-www-form-urlencoded",
   @body request: AuthTokenRequest,
 ):
@@ -34,7 +34,7 @@ op createAccessToken(
   Allows clients to notify the authorization server that a previously obtained refresh or access token is no longer needed.
   """)
 op revokeAccessToken(
-  ...CommonHeaders,
+  ...CommonRequestHeaders,
   @header contentType: "application/json" | "application/x-www-form-urlencoded",
   @body request: RevokeTokenRequest,
 ):

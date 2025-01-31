@@ -24,7 +24,7 @@ namespace MoovAPI;
 // @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/representatives.write"]>)
 @extension("x-speakeasy-name-override", "create")
 op createRepresentative(
-  ...CommonHeaders,
+  ...CommonRequestHeaders,
 
   @doc("ID of the account.")
   @format("uuid")
@@ -49,7 +49,7 @@ op createRepresentative(
 // @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/representatives.read"]>)
 @extension("x-speakeasy-name-override", "list")
 op listRepresentatives(
-  ...CommonHeaders,
+  ...CommonRequestHeaders,
 
   @doc("ID of the account.")
   @format("uuid")
@@ -69,7 +69,7 @@ op listRepresentatives(
 // @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/representatives.write"]>)
 @extension("x-speakeasy-name-override", "delete")
 op deleteRepresentative(
-  ...CommonHeaders,
+  ...CommonRequestHeaders,
 
   @doc("ID of the account.")
   @format("uuid")
@@ -94,7 +94,7 @@ op deleteRepresentative(
 // @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/representatives.read"]>)
 @extension("x-speakeasy-name-override", "get")
 op getRepresentative(
-  ...CommonHeaders,
+  ...CommonRequestHeaders,
 
   @doc("ID of the account.")
   @format("uuid")
@@ -132,7 +132,7 @@ op getRepresentative(
 // @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/representatives.write"]>)
 @extension("x-speakeasy-name-override", "update")
 op updateRepresentative(
-  ...CommonHeaders,
+  ...CommonRequestHeaders,
 
   @doc("ID of the account.")
   @format("uuid")

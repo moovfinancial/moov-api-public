@@ -1,4 +1,5 @@
 import "@typespec/http";
+import "../common/models.header.tsp";
 
 using TypeSpec.Http;
 
@@ -75,6 +76,7 @@ enum EvidenceType {
 // The disputes API is the only one I know of that uses it.
 
 model EvidenceDataResponse {
+  ...CommonResponseHeaders;
   @statusCode statusCode: HttpStatusOK;
   @header contentType: "application/pdf" | "image/jpeg" | "image/tiff";
 

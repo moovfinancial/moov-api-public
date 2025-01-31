@@ -21,7 +21,7 @@ namespace MoovAPI;
   """)
 // @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/profile.read"]>)
 op listFeePlans(
-  ...CommonHeaders,
+  ...CommonRequestHeaders,
 
   @format("uuid")
   @path
@@ -43,7 +43,7 @@ op listFeePlans(
   """)
 // @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/profile.read"]>)
 op listFeePlanAgreements(
-  ...CommonHeaders,
+  ...CommonRequestHeaders,
 
   @format("uuid")
   @path
@@ -69,7 +69,7 @@ op listFeePlanAgreements(
   """)
 // @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/profile.write"]>)
 op createFeePlanAgreements(
-  ...CommonHeaders,
+  ...CommonRequestHeaders,
 
   @format("uuid")
   @path
@@ -89,7 +89,7 @@ op createFeePlanAgreements(
   """)
 // @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/profile.read"]>)
 op listPartnerPricing(
-  ...CommonHeaders,
+  ...CommonRequestHeaders,
 
   @format("uuid")
   @path
@@ -111,7 +111,7 @@ op listPartnerPricing(
   """)
 // @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/profile.read"]>)
 op listPartnerPricingAgreements(
-  ...CommonHeaders,
+  ...CommonRequestHeaders,
 
   @format("uuid")
   @path

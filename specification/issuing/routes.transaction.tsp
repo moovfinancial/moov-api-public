@@ -23,7 +23,7 @@ namespace MoovAPI;
 // @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/issued-cards.read"]>)
 @extension("x-speakeasy-name-override", "list")
 op listIssuedCardTransactions(
-  ...CommonHeaders,
+  ...CommonRequestHeaders,
 
   @doc("The Moov business account for which cards have been issued.")
   @format("uuid")
@@ -45,7 +45,7 @@ op listIssuedCardTransactions(
 // @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/issued-cards.read"]>)
 @extension("x-speakeasy-name-override", "get")
 op getIssuedCardTransaction(
-  ...CommonHeaders,
+  ...CommonRequestHeaders,
 
   @doc("The Moov business account for which cards have been issued.")
   @format("uuid")

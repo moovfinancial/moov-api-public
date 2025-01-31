@@ -26,7 +26,7 @@ namespace MoovAPI;
 // @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/apple-pay.write"]>)
 @extension("x-speakeasy-name-override", "registerMerchantDomains")
 op registerApplePayMerchantDomains(
-  ...CommonHeaders,
+  ...CommonRequestHeaders,
 
   @doc("ID of the Moov account representing the merchant.")
   @format("uuid")
@@ -60,7 +60,7 @@ op registerApplePayMerchantDomains(
 // @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/apple-pay.write"]>)
 @extension("x-speakeasy-name-override", "updateMerchantDomains")
 op updateApplePayMerchantDomains(
-  ...CommonHeaders,
+  ...CommonRequestHeaders,
 
   @doc("ID of the Moov account representing the merchant.")
   @format("uuid")
@@ -94,7 +94,7 @@ op updateApplePayMerchantDomains(
 // @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/apple-pay.read"]>)
 @extension("x-speakeasy-name-override", "getMerchantDomains")
 op getApplePayMerchantDomains(
-  ...CommonHeaders,
+  ...CommonRequestHeaders,
 
   @doc("ID of the Moov account representing the merchant.")
   @format("uuid")

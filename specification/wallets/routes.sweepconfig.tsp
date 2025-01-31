@@ -2,6 +2,7 @@ import "@typespec/http";
 import "@typespec/openapi";
 import "./models.sweepconfig.tsp";
 import "./examples.sweepconfig.tsp";
+import "../common/examples.id.tsp";
 
 using TypeSpec.Http;
 using TypeSpec.OpenAPI;
@@ -28,11 +29,15 @@ namespace MoovAPI;
       pullPaymentMethodID: ExampleID,
     },
   },
-  returnType: #{ statusCode: HttpStatusOK, body: ExampleEnabledSweepConfig },
+  returnType: #{
+    xRequestID: ExampleID,
+    statusCode: HttpStatusOK,
+    body: ExampleEnabledSweepConfig,
+  },
 })
 @extension("x-speakeasy-name-override", "createConfig")
 op createSweepConfig(
-  ...CommonHeaders,
+  ...CommonRequestHeaders,
 
   @format("uuid")
   @path
@@ -54,13 +59,14 @@ op createSweepConfig(
 @opExample(#{
   parameters: #{ accountID: ExampleID },
   returnType: #{
+    xRequestID: ExampleID,
     statusCode: HttpStatusOK,
     body: #[ExampleEnabledSweepConfig, ExampleDisabledSweepConfig],
   },
 })
 @extension("x-speakeasy-name-override", "listConfigs")
 op listSweepConfigs(
-  ...CommonHeaders,
+  ...CommonRequestHeaders,
 
   @format("uuid")
   @path
@@ -79,11 +85,15 @@ op listSweepConfigs(
 // @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/wallets.read"]>)
 @opExample(#{
   parameters: #{ accountID: ExampleID, sweepConfigID: ExampleID },
-  returnType: #{ statusCode: HttpStatusOK, body: ExampleEnabledSweepConfig },
+  returnType: #{
+    xRequestID: ExampleID,
+    statusCode: HttpStatusOK,
+    body: ExampleEnabledSweepConfig,
+  },
 })
 @extension("x-speakeasy-name-override", "getConfig")
 op getSweepConfig(
-  ...CommonHeaders,
+  ...CommonRequestHeaders,
 
   @format("uuid")
   @path
@@ -109,11 +119,15 @@ op getSweepConfig(
     sweepConfigID: ExampleID,
     body: #{ status: SweepConfigStatus.disabled },
   },
-  returnType: #{ statusCode: HttpStatusOK, body: ExampleDisabledSweepConfig },
+  returnType: #{
+    xRequestID: ExampleID,
+    statusCode: HttpStatusOK,
+    body: ExampleDisabledSweepConfig,
+  },
 })
 @extension("x-speakeasy-name-override", "updateConfig")
 op updateSweepConfig(
-  ...CommonHeaders,
+  ...CommonRequestHeaders,
 
   @format("uuid")
   @path

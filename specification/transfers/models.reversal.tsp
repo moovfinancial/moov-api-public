@@ -1,6 +1,7 @@
 import "@typespec/http";
 import "@typespec/openapi3";
 import "./models.refund.tsp";
+import "../common/models.header.tsp";
 import "../common/models.response.tsp";
 
 using TypeSpec.Http;
@@ -40,12 +41,14 @@ model Cancellation {
 
 @doc("Successfully initiated a reversal.")
 model CreatedReversalResponse {
+  ...CommonResponseHeaders;
   @statusCode statusCode: HttpStatusOK;
   @body body: Reversal;
 }
 
 @doc("Successfully initiated a reversal but an error occurred while waiting for a synchronous response.")
 model CreatedReversalAsyncResponse {
+  ...CommonResponseHeaders;
   @statusCode statusCode: HttpStatusAccepted;
   @body body: Reversal;
 }
