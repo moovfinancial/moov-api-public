@@ -14,8 +14,7 @@ Specifications for Moov's public API endpoints.
 ## Versioning
 
 Versions are defined in `./specification/models.version.tsp`. New versions should be added to the enum in chronological order
-to ensure the resulting OpenAPI files are correct. Each API version will get a new output directory in `./openapi`, while the
-top level `openapi.yaml` file represents the "pre-versioned" API.
+to ensure the resulting OpenAPI files are correct. Each API version will get a new output directory in `./openapi`.
 
 Once a version has been defined in the `Versions` enum, decorators like `@added`, `@removed`, and `@madeOptional` can be used
 with the appropriate version on models and operations.
@@ -36,7 +35,7 @@ model Thing {
   //
   // NOTE: VSCode may underline this decorator as though it contained an error, but it is valid
   // and will compile correctly. The IDE isn't great at resolving version enums across namespaces.
-  @added(MoovAPI.Versions.v20240710)
+  @added(MoovAPI.Versions.v2025q1)
   newField: string;
 
   // This will be flagged with `deprecated: true`
@@ -44,7 +43,7 @@ model Thing {
   gonnaBeRemovedSomeday: string;
 
   // This field will appear in OpenAPI files up to the version preceeding v20241007.
-  @removed(MoovAPI.Versions.v20241007)
+  @removed(MoovAPI.Versions.v2025q2)
   oldField: string;
 }
 ```
@@ -64,16 +63,15 @@ At a glance, the process to add new APIs to this project looks like:
 1. Create a subdirectory for the relavent domain under `specification/`, if one doesn't already exist (e.g. `specification/cards`)
 1. Define models in `models.{name}.tsp`
 1. Define routes in `routes.{name}.tsp`, and import the models file
-   * Operations should be defined as an interface, to be used in the top level `main.tsp`
-1. Create the subdirectory's `main.tsp` if needed, and import the routes file
-1. Make sure the subdirectory is imported in `specification/main.tsp`
+2. Create the subdirectory's `main.tsp` if needed, and import the routes file
+3. Make sure the subdirectory is imported in `specification/main.tsp`
    * If this step is missed, the compiler won't find anything in the new subdirectory
 
 The following sections describe each component in more detail.
 
 ### Namespacing
 
-All files in this project should use `namespace MoovAPI`.
+All files in this project should use a file-level `MoovAPI` namespace (e.g. `namespace MoovAPI;`).
 
 ### Main
 
@@ -99,32 +97,6 @@ ensure the generated OpenAPI specifications accurately reflect the backend imple
 
 Routes should be defined in a `routes.{name}.tsp` file and import the necessary model files.
 
-#### Authentication
-
-The Moov OAuth2 flow is defined in `./auth/models.auth.tsp`, and should be applied to each route with the
-`@useAuth` decorator. Inside the decorator, each available auth method must be unioned (`|`) together to
-indicate an OR relationship instead of AND. The OAuth2 flow is defined as a template, allowing scope(s)
-to be passed as the template parameter.
-
-For example:
-
-```typespec
-import "@typespec/http";
-import "./models.account.tsp";
-
-using TypeSpec.Http;
-
-namespace MoovAPI {
-  @doc("Endpoint description here")
-  @tag("Accounts")
-  @route("/accounts")
-  @get
-  // Can use either OAuth2 OR API key
-  @useAuth(BasicAuth | OAuth2<["/accounts.read"]>)
-  op listAccounts(): ListResponses<Accounts.Account>;
-}
-```
-
 All routes are then aggregated into the top level `main.tsp` by importing the subdirectory's `main.tsp`:
 
 ```typespec
@@ -137,9 +109,16 @@ import "./accounts";
 import "./capabilities";
 ```
 
+#### Authentication
+
+This project uses a global `BasicAuth` scheme defined at the namespace level in `main.tsp`. All Moov endpoints
+also support OAuth2, but OpenAPI and code generators don't support parameterized OAuth2 scopes. Instead of 
+defining our OAauth2 flow as an OpenAPI `securityScheme`, we document the required scope in each operation's 
+description. This allows us to maintain complete documentation while avoiding problems with code generation.
+
 ## Project conventions
 
-This project aims to follow TypeSpec's official [style guide](https://typespec.io/docs/handbook/style-guide/).
+This project follows TypeSpec's official [style guide](https://typespec.io/docs/handbook/style-guide/).
 
 Additional conventions for this project are detailed below.
 

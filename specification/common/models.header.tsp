@@ -1,11 +1,13 @@
 import "@typespec/http";
+import "@typespec/openapi";
 import "../models.version.tsp";
 
 using TypeSpec.Http;
+using TypeSpec.OpenAPI;
 
 namespace MoovAPI;
 
-model CommonRequestHeaders {
+model VersionHeader {
   @doc("""
     Specify an API version.
     
@@ -19,14 +21,21 @@ model CommonRequestHeaders {
     """)
   @header
   @example("v2025.01")
-  xMoovVersion?: string;
+  @extension("x-speakeasy-globals-hidden", true)
+  xMoovVersion?: string = "v2024.01"; // default to Versions.preVersioned;
 }
 
-@doc("A unique identifier used to trace requests.")
-@format("uuid")
-scalar XRequestID extends string;
+model CommonRequestHeaders {
+  ...VersionHeader;
+}
+
+model RequestIDHeader {
+  @doc("A unique identifier used to trace requests.")
+  @format("uuid")
+  @header
+  xRequestID: string;
+}
 
 model CommonResponseHeaders {
-  @header
-  xRequestID: XRequestID;
+  ...RequestIDHeader;
 }

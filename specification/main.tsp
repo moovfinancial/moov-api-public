@@ -63,12 +63,7 @@ using TypeSpec.Versioning;
   {
     parameters: [
       {
-        name: "x-moov-version",
-        in: "header",
-        schema: {
-          type: "string",
-        },
-        `x-speakeasy-globals-hidden`: true,
+        $ref: "#/components/parameters/VersionHeader",
       }
     ],
   }

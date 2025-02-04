@@ -13,11 +13,11 @@
   },
   "devDependencies": {
     "@moovfinancial/tsp-lib": "./tsp-lib",
-    "@typespec/compiler": "0.62.0",
-    "@typespec/http": "0.62.0",
-    "@typespec/openapi3": "0.62.0",
-    "@typespec/rest": "0.62.0",
-    "@typespec/versioning": "0.62.0",
+    "@typespec/compiler": "0.64.0",
+    "@typespec/http": "0.64.0",
+    "@typespec/openapi3": "0.64.0",
+    "@typespec/rest": "0.64.0",
+    "@typespec/versioning": "0.64.0",
     "husky": "9.1.6"
   },
   "private": true
