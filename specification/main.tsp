@@ -66,7 +66,7 @@ using TypeSpec.Versioning;
         name: "x-moov-version",
         in: "header",
         schema: {
-          $ref: "#/components/schemas/Versions",
+          type: "string",
         },
         `x-speakeasy-globals-hidden`: true,
       }
