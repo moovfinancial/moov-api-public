@@ -28,8 +28,29 @@ op createBrand(
   @path
   accountID: string,
 
-  @body body: Brand,
-): PostResponses<Brand, BrandValidationError>;
+  @body body: BrandProperties,
+): PostResponses<BrandProperties, BrandValidationError>;
+
+@put
+@route("/accounts/{accountID}/branding")
+@tag("Branding")
+@doc("""
+  Create or replace brand properties for the specified account.
+  
+  To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
+  you'll need to specify the `/accounts/{accountID}/branding.write` scope.
+  """)
+// @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/branding.write"]>)
+@extension("x-speakeasy-name-override", "upsert")
+op upsertBrand(
+  ...CommonRequestHeaders,
+
+  @format("uuid")
+  @path
+  accountID: string,
+
+  @body body: BrandProperties,
+): UpdateResponses<BrandProperties, BrandValidationError>;
 
 @get
 @route("/accounts/{accountID}/branding")
@@ -48,7 +69,7 @@ op getBrand(
   @format("uuid")
   @path
   accountID: string,
-): GetResponses<Brand>;
+): GetResponses<BrandProperties>;
 
 @patch
 @route("/accounts/{accountID}/branding")
@@ -69,4 +90,4 @@ op updateBrand(
   accountID: string,
 
   @body body: UpdateBrand,
-): UpdateResponses<Brand, BrandValidationError>;
+): UpdateResponses<BrandProperties, BrandValidationError>;

@@ -1,11 +1,11 @@
 namespace MoovAPI;
 
-model Brand {
-  @doc("Set brand accent colors for light and dark modes.")
-  colors: Colors;
+model BrandProperties {
+  colors: BrandColors;
 }
 
-model Colors {
+@doc("Brand colors for light and dark modes.")
+model BrandColors {
   dark: BrandColor;
   light: BrandColor;
 }

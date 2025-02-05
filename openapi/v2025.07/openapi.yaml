@@ -2524,7 +2524,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Brand'
+                $ref: '#/components/schemas/BrandProperties'
         '400':
           description: The server could not understand the request due to invalid syntax.
           headers:
@@ -2625,8 +2625,139 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Brand'
+              $ref: '#/components/schemas/BrandProperties'
       x-speakeasy-name-override: create
+    put:
+      operationId: upsertBrand
+      description: |-
+        Create or replace brand properties for the specified account.
+
+        To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
+        you'll need to specify the `/accounts/{accountID}/branding.write` scope.
+      parameters:
+        - $ref: '#/components/parameters/VersionHeader'
+        - name: accountID
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: The request completed successfully.
+          headers:
+            x-request-id:
+              required: true
+              description: A unique identifier used to trace requests.
+              schema:
+                type: string
+                format: uuid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BrandProperties'
+        '400':
+          description: The server could not understand the request due to invalid syntax.
+          headers:
+            x-request-id:
+              required: true
+              description: A unique identifier used to trace requests.
+              schema:
+                type: string
+                format: uuid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+        '401':
+          description: The request contained missing or expired authentication.
+          headers:
+            x-request-id:
+              required: true
+              description: A unique identifier used to trace requests.
+              schema:
+                type: string
+                format: uuid
+        '403':
+          description: The user is not authorized to make the request.
+          headers:
+            x-request-id:
+              required: true
+              description: A unique identifier used to trace requests.
+              schema:
+                type: string
+                format: uuid
+        '404':
+          description: The requested resource was not found.
+          headers:
+            x-request-id:
+              required: true
+              description: A unique identifier used to trace requests.
+              schema:
+                type: string
+                format: uuid
+        '409':
+          description: The request conflicted with the current state of the target resource.
+          headers:
+            x-request-id:
+              required: true
+              description: A unique identifier used to trace requests.
+              schema:
+                type: string
+                format: uuid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+        '422':
+          description: The request was well-formed, but the contents failed validation. Check the request for missing or invalid fields.
+          headers:
+            x-request-id:
+              required: true
+              description: A unique identifier used to trace requests.
+              schema:
+                type: string
+                format: uuid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BrandValidationError'
+        '429':
+          description: Request was refused due to rate limiting.
+          headers:
+            x-request-id:
+              required: true
+              description: A unique identifier used to trace requests.
+              schema:
+                type: string
+                format: uuid
+        '500':
+          description: The request failed due to an unexpected error.
+          headers:
+            x-request-id:
+              required: true
+              description: A unique identifier used to trace requests.
+              schema:
+                type: string
+                format: uuid
+        '504':
+          description: The request failed because a downstream service failed to respond.
+          headers:
+            x-request-id:
+              required: true
+              description: A unique identifier used to trace requests.
+              schema:
+                type: string
+                format: uuid
+      tags:
+        - Branding
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BrandProperties'
+      x-speakeasy-name-override: upsert
     get:
       operationId: getBrand
       description: |-
@@ -2655,7 +2786,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Brand'
+                $ref: '#/components/schemas/BrandProperties'
         '401':
           description: The request contained missing or expired authentication.
           headers:
@@ -2741,7 +2872,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Brand'
+                $ref: '#/components/schemas/BrandProperties'
         '400':
           description: The server could not understand the request due to invalid syntax.
           headers:
@@ -14653,15 +14784,6 @@ components:
           type: string
         year:
           type: string
-    Brand:
-      type: object
-      required:
-        - colors
-      properties:
-        colors:
-          allOf:
-            - $ref: '#/components/schemas/Colors'
-          description: Set brand accent colors for light and dark modes.
     BrandColor:
       type: object
       required:
@@ -14674,6 +14796,24 @@ components:
       properties:
         accent:
           type: string
+    BrandColors:
+      type: object
+      required:
+        - dark
+        - light
+      properties:
+        dark:
+          $ref: '#/components/schemas/BrandColor'
+        light:
+          $ref: '#/components/schemas/BrandColor'
+      description: Brand colors for light and dark modes.
+    BrandProperties:
+      type: object
+      required:
+        - colors
+      properties:
+        colors:
+          $ref: '#/components/schemas/BrandColors'
     BrandValidationError:
       type: object
       properties:
@@ -15356,16 +15496,6 @@ components:
         - card-payment
         - ach-debit-collect
       description: Payment methods allowed for collecting a payment.
-    Colors:
-      type: object
-      required:
-        - dark
-        - light
-      properties:
-        dark:
-          $ref: '#/components/schemas/BrandColor'
-        light:
-          $ref: '#/components/schemas/BrandColor'
     ColorsValidationError:
       type: object
       properties:
