@@ -4300,6 +4300,19 @@ paths:
                   respondBy: '2024-12-23T18:55:00Z'
                   status: response-needed
                   phase: chargeback
+        '400':
+          description: The server could not understand the request due to invalid syntax.
+          headers:
+            x-request-id:
+              required: true
+              description: A unique identifier used to trace requests.
+              schema:
+                type: string
+                format: uuid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
         '401':
           description: The request contained missing or expired authentication.
           headers:
@@ -4318,6 +4331,19 @@ paths:
               schema:
                 type: string
                 format: uuid
+        '409':
+          description: The request conflicted with the current state of the target resource.
+          headers:
+            x-request-id:
+              required: true
+              description: A unique identifier used to trace requests.
+              schema:
+                type: string
+                format: uuid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
         '429':
           description: Request was refused due to rate limiting.
           headers:
