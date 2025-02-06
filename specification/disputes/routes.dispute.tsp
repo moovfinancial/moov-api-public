@@ -41,7 +41,14 @@ op listDisputes(
   accountID: string,
 
   ...DisputeListFilters,
-): ListResponses<Dispute>;
+): OkResponse<Array<Dispute>>
+   | BadRequestResponse
+   | UnauthorizedResponse
+   | ForbiddenResponse
+   | StateConflictResponse
+   | RateLimitedResponse
+   | InternalServerErrorResponse
+   | GatewayTimeoutResponse;
 
 @get
 @tag("Disputes")
