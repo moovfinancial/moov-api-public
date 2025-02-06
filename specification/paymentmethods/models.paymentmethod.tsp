@@ -102,22 +102,35 @@ model RtpCreditPaymentMethod {
 
 // Cards
 
+@doc("A card as contained within a payment method.")
+model PaymentMethodsCard
+  is OmitProperties<
+    Card,
+
+      | "cardCategory"
+      | "issuerURL"
+      | "issuerPhone"
+      | "commercial"
+      | "regulated"
+      | "paymentMethods"
+  >;
+
 model CardPaymentPaymentMethod {
   paymentMethodID: PaymentMethodID;
   paymentMethodType: PaymentMethodType.cardPayment;
-  card: Card;
+  card: PaymentMethodsCard;
 }
 
 model PushToCardPaymentMethod {
   paymentMethodID: PaymentMethodID;
   paymentMethodType: PaymentMethodType.pushToCard;
-  card: Card;
+  card: PaymentMethodsCard;
 }
 
 model PullFromCardPaymentMethod {
   paymentMethodID: PaymentMethodID;
   paymentMethodType: PaymentMethodType.pullFromCard;
-  card: Card;
+  card: PaymentMethodsCard;
 }
 
 // Apple Pay

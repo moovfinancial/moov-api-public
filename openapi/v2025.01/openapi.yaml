@@ -15323,7 +15323,7 @@ components:
           enum:
             - card-payment
         card:
-          $ref: '#/components/schemas/Card'
+          $ref: '#/components/schemas/PaymentMethodsCard'
     CardPaymentSettings:
       type: object
       properties:
@@ -18472,6 +18472,70 @@ components:
           type: string
           format: date-time
       description: A bank account as contained within a payment method.
+    PaymentMethodsCard:
+      type: object
+      required:
+        - cardID
+        - fingerprint
+        - brand
+        - cardType
+        - lastFourCardNumber
+        - bin
+        - expiration
+        - holderName
+        - billingAddress
+        - cardVerification
+        - issuer
+        - issuerCountry
+        - domesticPushToCard
+        - domesticPullFromCard
+      properties:
+        cardID:
+          $ref: '#/components/schemas/CardID'
+        fingerprint:
+          $ref: '#/components/schemas/CardFingerprint'
+        brand:
+          $ref: '#/components/schemas/CardBrand'
+        cardType:
+          $ref: '#/components/schemas/CardType'
+        lastFourCardNumber:
+          type: string
+          minLength: 4
+          maxLength: 4
+          description: Last four digits of the card number
+        bin:
+          type: string
+          minLength: 6
+          maxLength: 8
+          description: The first six to eight digits of the card number, which identifies the financial institution that issued the card.
+        expiration:
+          $ref: '#/components/schemas/CardExpiration'
+        holderName:
+          type: string
+          description: The name of the cardholder as it appears on the card.
+        billingAddress:
+          $ref: '#/components/schemas/CardAddress'
+        cardVerification:
+          $ref: '#/components/schemas/CardVerification'
+        issuer:
+          type: string
+          description: Financial institution that issued the card.
+        issuerCountry:
+          type: string
+          description: Country where the card was issued.
+        cardOnFile:
+          type: boolean
+          description: Indicates cardholder has authorized card to be stored for future payments.
+        merchantAccountID:
+          type: string
+          format: uuid
+        cardAccountUpdater:
+          $ref: '#/components/schemas/CardAccountUpdater'
+        domesticPushToCard:
+          $ref: '#/components/schemas/DomesticPushToCard'
+        domesticPullFromCard:
+          $ref: '#/components/schemas/DomesticPullFromCard'
+      description: A card as contained within a payment method.
     PaymentMethodsWallet:
       type: object
       required:
@@ -18614,7 +18678,7 @@ components:
           enum:
             - pull-from-card
         card:
-          $ref: '#/components/schemas/Card'
+          $ref: '#/components/schemas/PaymentMethodsCard'
     PushToCardPaymentMethod:
       type: object
       required:
@@ -18629,7 +18693,7 @@ components:
           enum:
             - push-to-card
         card:
-          $ref: '#/components/schemas/Card'
+          $ref: '#/components/schemas/PaymentMethodsCard'
     QRCode:
       type: object
       required:
