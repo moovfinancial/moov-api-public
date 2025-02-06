@@ -57,6 +57,7 @@ alias RepresentativePropsNotInCreate =
   | "birthDateProvided";
 
 // Omit the properties of Representative are not present in the create operation to get the create model. Omit responsibilities as it is optional for create.
+@doc("Describes a business representative to create.")
 model CreateRepresentative
   extends OmitProperties<
     Representative,
