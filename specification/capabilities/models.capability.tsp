@@ -9,7 +9,7 @@ model Capability {
   accountID: string;
 
   status: CapabilityStatus;
-  requirements?: CapabilityRequirement[];
+  requirements?: CapabilityRequirement;
   disabledReason?: string;
   createdOn: utcDateTime;
   updatedOn: utcDateTime;
