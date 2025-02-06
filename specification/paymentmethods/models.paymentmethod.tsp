@@ -1,7 +1,9 @@
 import "@typespec/openapi3";
 
+import "../applepay/models.token.tsp";
 import "../bankaccounts/models.bankaccount.tsp";
 import "../cards/models.card.tsp";
+import "../wallets/models.wallet.tsp";
 import "../common/examples.id.tsp";
 
 using TypeSpec.OpenAPI;
@@ -49,64 +51,73 @@ union PaymentMethod {
 
 // Wallet
 
+model PaymentMethodsWallet {
+  walletID: WalletID;
+}
+
 model MoovWalletPaymentMethod {
   paymentMethodID: PaymentMethodID;
   paymentMethodType: PaymentMethodType.moovWallet;
-  wallet: unknown; // @TODO: Update when wallets is done
+  wallet: PaymentMethodsWallet;
 }
 
-// Bank Account
+// Bank Accounts
 
-alias BankAccountPaymentMethod = {
-  paymentMethodID: PaymentMethodID;
-  bankAccount: BankAccount;
-};
+@doc("A bank account as contained within a payment method.")
+model PaymentMethodsBankAccount
+  is OmitProperties<
+    BankAccount,
+    "statusReason" | "exceptionDetails" | "paymentMethods"
+  >;
 
 model AchDebitFundPaymentMethod {
-  ...BankAccountPaymentMethod;
+  paymentMethodID: PaymentMethodID;
   paymentMethodType: PaymentMethodType.achDebitFund;
+  bankAccount: PaymentMethodsBankAccount;
 }
 
 model AchDebitCollectPaymentMethod {
-  ...BankAccountPaymentMethod;
+  paymentMethodID: PaymentMethodID;
   paymentMethodType: PaymentMethodType.achDebitCollect;
+  bankAccount: PaymentMethodsBankAccount;
 }
 
 model AchCreditStandardPaymentMethod {
-  ...BankAccountPaymentMethod;
+  paymentMethodID: PaymentMethodID;
   paymentMethodType: PaymentMethodType.achCreditStandard;
+  bankAccount: PaymentMethodsBankAccount;
 }
 
 model AchCreditSameDayPaymentMethod {
-  ...BankAccountPaymentMethod;
+  paymentMethodID: PaymentMethodID;
   paymentMethodType: PaymentMethodType.achCreditSameDay;
+  bankAccount: PaymentMethodsBankAccount;
 }
 
 model RtpCreditPaymentMethod {
-  ...BankAccountPaymentMethod;
+  paymentMethodID: PaymentMethodID;
   paymentMethodType: PaymentMethodType.rtpCredit;
+  bankAccount: PaymentMethodsBankAccount;
 }
 
-// Card
-
-alias CardPaymentMethod = {
-  paymentMethodID: PaymentMethodID;
-  card: Card;
-};
+// Cards
 
 model CardPaymentPaymentMethod {
-  ...CardPaymentMethod;
+  paymentMethodID: PaymentMethodID;
   paymentMethodType: PaymentMethodType.cardPayment;
+  card: Card;
 }
 
 model PushToCardPaymentMethod {
-  ...CardPaymentMethod;
+  paymentMethodID: PaymentMethodID;
   paymentMethodType: PaymentMethodType.pushToCard;
+  card: Card;
 }
 
 model PullFromCardPaymentMethod {
-  ...CardPaymentMethod;
+  paymentMethodID: PaymentMethodID;
   paymentMethodType: PaymentMethodType.pullFromCard;
+  card: Card;
 }
 
 // Apple Pay
@@ -114,5 +125,5 @@ model PullFromCardPaymentMethod {
 model ApplePayPaymentMethod {
   paymentMethodID: PaymentMethodID;
   paymentMethodType: PaymentMethodType.applePay;
-  applePay: unknown; // @TODO: Update when apple pay is done
+  applePay: ApplePayResponse;
 }

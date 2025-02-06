@@ -7011,10 +7011,20 @@ paths:
               example:
                 - paymentMethodID: 01234567-89ab-cdef-0123-456789abcdef
                   paymentMethodType: moov-wallet
-                  wallet: {}
+                  wallet:
+                    walletID: 01234567-89ab-cdef-0123-456789abcdef
                 - paymentMethodID: 01234567-89ab-cdef-0123-456789abcdef
                   paymentMethodType: apple-pay
-                  applePay: {}
+                  applePay:
+                    brand: Visa
+                    cardType: credit
+                    cardDisplayName: Visa 1256
+                    fingerprint: 9948962d92a1ce40c9f918cd9ece3a22bde62fb325a2f1fe2e833969de672ba3
+                    expiration:
+                      month: '01'
+                      year: '21'
+                    dynamicLastFour: '1256'
+                    issuerCountry: US
         '401':
           description: The request contained missing or expired authentication.
           headers:
@@ -7101,7 +7111,8 @@ paths:
               example:
                 paymentMethodID: 01234567-89ab-cdef-0123-456789abcdef
                 paymentMethodType: moov-wallet
-                wallet: {}
+                wallet:
+                  walletID: 01234567-89ab-cdef-0123-456789abcdef
         '401':
           description: The request contained missing or expired authentication.
           headers:
@@ -13916,62 +13927,62 @@ components:
       type: object
       required:
         - paymentMethodID
-        - bankAccount
         - paymentMethodType
+        - bankAccount
       properties:
         paymentMethodID:
           $ref: '#/components/schemas/PaymentMethodID'
-        bankAccount:
-          $ref: '#/components/schemas/BankAccount'
         paymentMethodType:
           type: string
           enum:
             - ach-credit-same-day
+        bankAccount:
+          $ref: '#/components/schemas/PaymentMethodsBankAccount'
     AchCreditStandardPaymentMethod:
       type: object
       required:
         - paymentMethodID
-        - bankAccount
         - paymentMethodType
+        - bankAccount
       properties:
         paymentMethodID:
           $ref: '#/components/schemas/PaymentMethodID'
-        bankAccount:
-          $ref: '#/components/schemas/BankAccount'
         paymentMethodType:
           type: string
           enum:
             - ach-credit-standard
+        bankAccount:
+          $ref: '#/components/schemas/PaymentMethodsBankAccount'
     AchDebitCollectPaymentMethod:
       type: object
       required:
         - paymentMethodID
-        - bankAccount
         - paymentMethodType
+        - bankAccount
       properties:
         paymentMethodID:
           $ref: '#/components/schemas/PaymentMethodID'
-        bankAccount:
-          $ref: '#/components/schemas/BankAccount'
         paymentMethodType:
           type: string
           enum:
             - ach-debit-collect
+        bankAccount:
+          $ref: '#/components/schemas/PaymentMethodsBankAccount'
     AchDebitFundPaymentMethod:
       type: object
       required:
         - paymentMethodID
-        - bankAccount
         - paymentMethodType
+        - bankAccount
       properties:
         paymentMethodID:
           $ref: '#/components/schemas/PaymentMethodID'
-        bankAccount:
-          $ref: '#/components/schemas/BankAccount'
         paymentMethodType:
           type: string
           enum:
             - ach-debit-fund
+        bankAccount:
+          $ref: '#/components/schemas/PaymentMethodsBankAccount'
     AchLocation:
       type: object
       required:
@@ -14315,7 +14326,8 @@ components:
           type: string
           enum:
             - apple-pay
-        applePay: {}
+        applePay:
+          $ref: '#/components/schemas/ApplePayResponse'
     ApplePayResponse:
       type: object
       required:
@@ -15301,17 +15313,17 @@ components:
       type: object
       required:
         - paymentMethodID
-        - card
         - paymentMethodType
+        - card
       properties:
         paymentMethodID:
           $ref: '#/components/schemas/PaymentMethodID'
-        card:
-          $ref: '#/components/schemas/Card'
         paymentMethodType:
           type: string
           enum:
             - card-payment
+        card:
+          $ref: '#/components/schemas/Card'
     CardPaymentSettings:
       type: object
       properties:
@@ -16040,6 +16052,7 @@ components:
             address:
               $ref: '#/components/schemas/Address'
           description: The template for omitting properties.
+      description: Describes a business representative to create.
     CreateReversal:
       type: object
       required:
@@ -17736,7 +17749,8 @@ components:
           type: string
           enum:
             - moov-wallet
-        wallet: {}
+        wallet:
+          $ref: '#/components/schemas/PaymentMethodsWallet'
     MxPayload:
       type: object
       required:
@@ -18416,6 +18430,55 @@ components:
         - pull-from-card
         - apple-pay
       description: The payment method type that represents a payment rail and directionality
+    PaymentMethodsBankAccount:
+      type: object
+      required:
+        - bankAccountID
+        - fingerprint
+        - status
+        - holderName
+        - holderType
+        - bankName
+        - bankAccountType
+        - routingNumber
+        - lastFourAccountNumber
+        - updatedOn
+      properties:
+        bankAccountID:
+          type: string
+          format: uuid
+        fingerprint:
+          type: string
+          maxLength: 100
+          description: |-
+            Once the bank account is linked, we don't reveal the full bank account number. 
+
+            The fingerprint acts as a way to identify whether two linked bank accounts are the same.
+        status:
+          $ref: '#/components/schemas/BankAccountStatus'
+        holderName:
+          type: string
+        holderType:
+          $ref: '#/components/schemas/BankAccountHolderType'
+        bankName:
+          type: string
+        bankAccountType:
+          $ref: '#/components/schemas/BankAccountType'
+        routingNumber:
+          type: string
+        lastFourAccountNumber:
+          type: string
+        updatedOn:
+          type: string
+          format: date-time
+      description: A bank account as contained within a payment method.
+    PaymentMethodsWallet:
+      type: object
+      required:
+        - walletID
+      properties:
+        walletID:
+          $ref: '#/components/schemas/WalletID'
     PayoutDetailsError:
       type: object
       properties:
@@ -18541,32 +18604,32 @@ components:
       type: object
       required:
         - paymentMethodID
-        - card
         - paymentMethodType
+        - card
       properties:
         paymentMethodID:
           $ref: '#/components/schemas/PaymentMethodID'
-        card:
-          $ref: '#/components/schemas/Card'
         paymentMethodType:
           type: string
           enum:
             - pull-from-card
+        card:
+          $ref: '#/components/schemas/Card'
     PushToCardPaymentMethod:
       type: object
       required:
         - paymentMethodID
-        - card
         - paymentMethodType
+        - card
       properties:
         paymentMethodID:
           $ref: '#/components/schemas/PaymentMethodID'
-        card:
-          $ref: '#/components/schemas/Card'
         paymentMethodType:
           type: string
           enum:
             - push-to-card
+        card:
+          $ref: '#/components/schemas/Card'
     QRCode:
       type: object
       required:
@@ -19009,17 +19072,17 @@ components:
       type: object
       required:
         - paymentMethodID
-        - bankAccount
         - paymentMethodType
+        - bankAccount
       properties:
         paymentMethodID:
           $ref: '#/components/schemas/PaymentMethodID'
-        bankAccount:
-          $ref: '#/components/schemas/BankAccount'
         paymentMethodType:
           type: string
           enum:
             - rtp-credit
+        bankAccount:
+          $ref: '#/components/schemas/PaymentMethodsBankAccount'
     RunTransfer:
       type: object
       required:
