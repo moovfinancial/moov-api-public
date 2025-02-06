@@ -16,7 +16,7 @@ const ExampleCollectFundsCapability: Capability = #{
   capability: CapabilityID.collectFunds,
   accountID: ExampleID,
   status: CapabilityStatus.inReview,
-  requirements: #[#{ currentlyDue: #[RequirementID.businessOwners] }],
+  requirements: #{ currentlyDue: #[RequirementID.businessOwners] },
   createdOn: ExampleUtcDateTime,
   updatedOn: ExampleUtcDateTime,
 };

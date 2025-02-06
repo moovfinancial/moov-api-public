@@ -3019,8 +3019,8 @@ paths:
                   accountID: 01234567-89ab-cdef-0123-456789abcdef
                   status: in-review
                   requirements:
-                    - currentlyDue:
-                        - business.owners
+                    currentlyDue:
+                      - business.owners
                   createdOn: '2024-05-06T12:20:38.184Z'
                   updatedOn: '2024-05-06T12:20:38.184Z'
         '401':
@@ -3112,8 +3112,8 @@ paths:
                   accountID: 01234567-89ab-cdef-0123-456789abcdef
                   status: in-review
                   requirements:
-                    - currentlyDue:
-                        - business.owners
+                    currentlyDue:
+                      - business.owners
                   createdOn: '2024-05-06T12:20:38.184Z'
                   updatedOn: '2024-05-06T12:20:38.184Z'
         '400':
@@ -14972,9 +14972,7 @@ components:
         status:
           $ref: '#/components/schemas/CapabilityStatus'
         requirements:
-          type: array
-          items:
-            $ref: '#/components/schemas/CapabilityRequirement'
+          $ref: '#/components/schemas/CapabilityRequirement'
         disabledReason:
           type: string
         createdOn:
