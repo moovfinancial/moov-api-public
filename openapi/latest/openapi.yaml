@@ -4729,8 +4729,8 @@ paths:
             type: string
             format: uuid
       responses:
-        '204':
-          description: The request completed successfully, but there is no content to return.
+        '201':
+          description: The resource was successfully created.
           headers:
             x-request-id:
               required: true
@@ -4738,6 +4738,10 @@ paths:
               schema:
                 type: string
                 format: uuid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EvidenceUploadResponse'
         '400':
           description: The server could not understand the request due to invalid syntax.
           headers:
@@ -4791,6 +4795,19 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/GenericError'
+        '422':
+          description: The request was well-formed, but the contents failed validation. Check the request for missing or invalid fields.
+          headers:
+            x-request-id:
+              required: true
+              description: A unique identifier used to trace requests.
+              schema:
+                type: string
+                format: uuid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FileUploadValidationError'
         '429':
           description: Request was refused due to rate limiting.
           headers:
@@ -16623,6 +16640,42 @@ components:
         - generic-evidence
         - cover-letter
         - other
+    EvidenceUploadResponse:
+      type: object
+      required:
+        - evidenceID
+        - disputeID
+        - filename
+        - mimeType
+        - size
+        - evidenceType
+        - createdOn
+      properties:
+        evidenceID:
+          type: string
+          format: uuid
+          description: The ID of the evidence.
+        disputeID:
+          type: string
+          format: uuid
+          description: The ID of the dispute the evidence is associated with.
+        filename:
+          type: string
+          description: The name of the evidence file.
+        mimeType:
+          type: string
+          description: The MIME type of the evidence file.
+        size:
+          type: integer
+          format: int64
+          description: The size of the evidence file.
+        evidenceType:
+          $ref: '#/components/schemas/EvidenceType'
+        createdOn:
+          type: string
+          format: date-time
+          description: The date and time the evidence was uploaded.
+      description: Details of a successfully uploaded evidence file.
     FacilitatorFee:
       type: object
       properties:
@@ -16867,6 +16920,18 @@ components:
             Valid keys are `representative_id`, `comment`, `requirement_id`, `error_code`.
           example: '{"requirement_id": "document.individual.verification"}'
       description: Request to upload a file for an account.
+    FileUploadValidationError:
+      type: object
+      properties:
+        evidenceType:
+          type: string
+        file:
+          type: object
+          properties:
+            filename:
+              type: string
+            mimeType:
+              type: string
     FileValidationError:
       type: object
       properties:
@@ -20107,11 +20172,9 @@ components:
     Versions:
       type: string
       enum:
-        - v2024.01
-        - v2025.01
-        - v2025.04
-        - v2025.07
-        - v2025.10
+        - v2024.01.00
+        - v2025.01.00
+        - v2025.04.00
         - latest
       description: |-
         Moov API versions. 
@@ -20119,8 +20182,8 @@ components:
         API versioning follows the format `vYYYY.QQ.BB`, where 
           - `YYYY` is the year
           - `QQ` is the two-digit month for the first month of the quarter (e.g., 01, 04, 07, 10)
-          - `BB` is an optional build number starting at `.01` for subsequent builds in the same quarter. 
-            - If no build number is specified, the version refers to the initial release of the quarter.
+          - `BB` is the build number, starting at `.01`, for subsequent builds in the same quarter. 
+            - For example, `v2024.01.00` is the initial release of the first quarter of 2024.
 
         The `latest` version represents the most recent development state. It may include breaking changes and should be treated as a beta release.
     VolumeByCustomerType:

@@ -39,6 +39,39 @@ model CreateEvidenceFile {
   evidenceType: EvidenceType;
 }
 
+@doc("Details of a successfully uploaded evidence file.")
+model EvidenceUploadResponse {
+  @doc("The ID of the evidence.")
+  @format("uuid")
+  evidenceID: string;
+
+  @doc("The ID of the dispute the evidence is associated with.")
+  @format("uuid")
+  disputeID: string;
+
+  @doc("The name of the evidence file.")
+  filename: string;
+
+  @doc("The MIME type of the evidence file.")
+  mimeType: string;
+
+  @doc("The size of the evidence file.")
+  size: int64;
+
+  evidenceType: EvidenceType;
+
+  @doc("The date and time the evidence was uploaded.")
+  createdOn: utcDateTime;
+}
+
+model FileUploadValidationError {
+  evidenceType?: string;
+  file?: {
+    filename?: string;
+    mimeType?: string;
+  };
+}
+
 model CreateEvidenceText {
   @doc("The text to associate with the dispute as evidence.")
   @maxLength(750)

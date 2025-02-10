@@ -64,12 +64,13 @@ op uploadDisputeEvidenceFile(
 
   @body body: CreateEvidenceFile,
 ):
-  | NoContentResponse
+  | CreatedResponse<EvidenceUploadResponse>
   | BadRequestResponse
   | UnauthorizedResponse
   | ForbiddenResponse
   | NotFoundResponse
   | StateConflictResponse
+  | UnprocessableEntityResponse<FileUploadValidationError>
   | RateLimitedResponse
   | InternalServerErrorResponse
   | GatewayTimeoutResponse;
