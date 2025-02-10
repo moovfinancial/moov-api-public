@@ -20,7 +20,7 @@ model FileDetails {
   metadata: string;
 
   @example("not correct file")
-  decisionReason: string;
+  decisionReason?: string;
 
   fileSizeBytes: integer;
   createdOn: utcDateTime;

@@ -2235,7 +2235,7 @@ paths:
         - $ref: '#/components/parameters/VersionHeader'
         - name: x-wait-for
           in: header
-          required: true
+          required: false
           description: |-
             Optional header to wait for certain events, such as the rail response, to occur before returning a response.
 
@@ -10047,9 +10047,9 @@ paths:
         - Underwriting
       x-speakeasy-name-override: get
     put:
-      operationId: updateUnderwriting
+      operationId: upsertUnderwriting
       description: |-
-        Update the account's underwriting by passing new values for one or more of the fields. 
+        Create or update the account's underwriting.
 
         Read our [underwriting guide](https://docs.moov.io/guides/accounts/requirements/underwriting/) to learn more.
 
@@ -10178,7 +10178,7 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/UpdateUnderwriting'
-      x-speakeasy-name-override: update
+      x-speakeasy-name-override: upsert
   /accounts/{accountID}/wallets:
     get:
       operationId: listWallets
@@ -14992,7 +14992,11 @@ components:
         - collect-funds
         - wallet
         - card-issuing
-      description: Moov account capabilities.
+        - production-app
+      description: |-
+        Moov account capabilities.
+
+        The `production-app` capability might appear in your list. This is a read-only capability that Moov requests and uses for account verification purposes. The capability remains active with your account and requires no additional action.
     CapabilityRequirement:
       type: object
       required:
@@ -15833,7 +15837,7 @@ components:
         taxID:
           $ref: '#/components/schemas/TaxIDUpdate'
         industryCodes:
-          $ref: '#/components/schemas/IndustryCodesUpdate'
+          $ref: '#/components/schemas/IndustryCodes'
         primaryRegulator:
           $ref: '#/components/schemas/PrimaryRegulator'
     CreateEvidenceFileMultiPart:
@@ -16789,7 +16793,6 @@ components:
         - filePurpose
         - fileStatus
         - metadata
-        - decisionReason
         - fileSizeBytes
         - createdOn
         - updatedOn
@@ -17094,28 +17097,6 @@ components:
           description: Indicates whether a government ID (SSN, ITIN, etc.) has been provided for this individual.
       description: Describes an individual.
     IndustryCodes:
-      type: object
-      required:
-        - naics
-        - sic
-        - mcc
-      properties:
-        naics:
-          type: string
-          minLength: 2
-          maxLength: 6
-          example: '713940'
-        sic:
-          type: string
-          minLength: 4
-          maxLength: 4
-          example: '7991'
-        mcc:
-          type: string
-          minLength: 4
-          maxLength: 4
-          example: '7997'
-    IndustryCodesUpdate:
       type: object
       properties:
         naics:

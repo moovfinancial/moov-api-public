@@ -35,7 +35,7 @@ op getUnderwriting(
 @route("/accounts/{accountID}/underwriting")
 @tag("Underwriting")
 @doc("""
-  Update the account's underwriting by passing new values for one or more of the fields. 
+  Create or update the account's underwriting.
   
   Read our [underwriting guide](https://docs.moov.io/guides/accounts/requirements/underwriting/) to learn more.
   
@@ -43,8 +43,8 @@ op getUnderwriting(
   you'll need to specify the `/accounts/{accountID}/profile.write` scope.
   """)
 // @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/profile.write"]>)
-@extension("x-speakeasy-name-override", "update")
-op updateUnderwriting(
+@extension("x-speakeasy-name-override", "upsert")
+op upsertUnderwriting(
   ...CommonRequestHeaders,
 
   @format("uuid")

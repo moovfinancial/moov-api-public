@@ -252,17 +252,17 @@ model IndustryCodes {
   @example("713940")
   @minLength(2)
   @maxLength(6)
-  naics: string;
+  naics?: string;
 
   @example("7991")
   @minLength(4)
   @maxLength(4)
-  sic: string;
+  sic?: string;
 
   @example("7997")
   @minLength(4)
   @maxLength(4)
-  mcc: string;
+  mcc?: string;
 }
 
 @doc("If the business is a financial institution, this field describes its primary regulator.")

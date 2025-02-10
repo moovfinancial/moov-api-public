@@ -77,7 +77,7 @@ op initiateBankAccountVerification(
     When this header is set to `rail-response`, the endpoint will wait for a sent-credit or failed status from the payment rail.
     """)
   @header
-  xWaitFor: BankAccountWaitFor,
+  xWaitFor?: BankAccountWaitFor,
 
   @format("uuid")
   @path
