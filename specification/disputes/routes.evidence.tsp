@@ -35,7 +35,7 @@ op listDisputeEvidence(
   @format("uuid")
   @path
   disputeID: string,
-): ListResponses<DisputeEvidenceMetadata>;
+): ListResponses<DisputeEvidenceResponse>;
 
 @post
 @route("/accounts/{accountID}/disputes/{disputeID}/evidence-file")
@@ -101,7 +101,7 @@ op uploadDisputeEvidenceText(
 
   @body body: CreateEvidenceText,
 ):
-  | CreatedResponse<EvidenceText>
+  | CreatedResponse<EvidenceTextResponse>
   | BadRequestResponse
   | UnauthorizedResponse
   | ForbiddenResponse
@@ -138,7 +138,7 @@ op getDisputeEvidence(
   @format("uuid")
   @path
   evidenceID: string,
-): GetResponses<DisputeEvidenceMetadata>;
+): GetResponses<DisputeEvidenceResponse>;
 
 @patch
 @route("/accounts/{accountID}/disputes/{disputeID}/evidence/{evidenceID}")
@@ -170,7 +170,7 @@ op updateDisputeEvidence(
 
   @body body: UpdateEvidence,
 ):
-  | OkResponse<DisputeEvidenceMetadata>
+  | OkResponse<DisputeEvidenceResponse>
   | BadRequestResponse
   | UnauthorizedResponse
   | ForbiddenResponse

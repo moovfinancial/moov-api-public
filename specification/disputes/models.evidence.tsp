@@ -1,24 +1,32 @@
 import "@typespec/http";
+import "@typespec/openapi3";
 import "../common/models.header.tsp";
 
 using TypeSpec.Http;
+using TypeSpec.OpenAPI;
 
 namespace MoovAPI;
 
-model DisputeEvidenceMetadata {
+model DisputeEvidenceResponse {
   @format("uuid")
   evidenceID: string;
 
   @format("uuid")
   disputeID: string;
 
-  mimeType: string;
-  filename: string;
-  size: int64;
   evidenceType: EvidenceType;
 
-  @doc("The text submited as evidence.")
-  text: string;
+  @doc("For text evidence, the text submitted as evidence.")
+  text?: string;
+
+  @doc("For file evidence, the MIME type of the file.")
+  mimeType?: string;
+
+  @doc("For file evidence, the name of the file.")
+  filename?: string;
+
+  @doc("For file evidence, the size of the file.")
+  size?: int64;
 
   createdOn: utcDateTime;
   updatedOn: utcDateTime;
@@ -80,9 +88,7 @@ model CreateEvidenceText {
   evidenceType: EvidenceType;
 }
 
-model UpdateEvidence is OptionalProperties<CreateEvidenceText>;
-
-model EvidenceText {
+model EvidenceTextResponse {
   @format("uuid")
   evidenceID: string;
 
@@ -92,6 +98,13 @@ model EvidenceText {
   evidenceType: EvidenceType;
   text: string;
   createdOn: utcDateTime;
+}
+
+model UpdateEvidence {
+  evidenceType?: EvidenceType;
+
+  @doc("If updating text evidence, the new text to associate with the dispute.")
+  text?: string;
 }
 
 enum EvidenceType {

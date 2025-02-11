@@ -4655,7 +4655,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/DisputeEvidenceMetadata'
+                  $ref: '#/components/schemas/DisputeEvidenceResponse'
         '401':
           description: The request contained missing or expired authentication.
           headers:
@@ -4881,7 +4881,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/EvidenceText'
+                $ref: '#/components/schemas/EvidenceTextResponse'
         '400':
           description: The server could not understand the request due to invalid syntax.
           headers:
@@ -5138,7 +5138,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/DisputeEvidenceMetadata'
+                $ref: '#/components/schemas/DisputeEvidenceResponse'
         '401':
           description: The request contained missing or expired authentication.
           headers:
@@ -5238,7 +5238,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/DisputeEvidenceMetadata'
+                $ref: '#/components/schemas/DisputeEvidenceResponse'
         '400':
           description: The server could not understand the request due to invalid syntax.
           headers:
@@ -16376,16 +16376,12 @@ components:
         respondBy: '2024-12-23T18:55:00Z'
         status: response-needed
         phase: chargeback
-    DisputeEvidenceMetadata:
+    DisputeEvidenceResponse:
       type: object
       required:
         - evidenceID
         - disputeID
-        - mimeType
-        - filename
-        - size
         - evidenceType
-        - text
         - createdOn
         - updatedOn
       properties:
@@ -16395,18 +16391,21 @@ components:
         disputeID:
           type: string
           format: uuid
-        mimeType:
-          type: string
-        filename:
-          type: string
-        size:
-          type: integer
-          format: int64
         evidenceType:
           $ref: '#/components/schemas/EvidenceType'
         text:
           type: string
-          description: The text submited as evidence.
+          description: For text evidence, the text submitted as evidence.
+        mimeType:
+          type: string
+          description: For file evidence, the MIME type of the file.
+        filename:
+          type: string
+          description: For file evidence, the name of the file.
+        size:
+          type: integer
+          format: int64
+          description: For file evidence, the size of the file.
         createdOn:
           type: string
           format: date-time
@@ -16607,7 +16606,7 @@ components:
           minLength: 4
           maxLength: 4
           example: '7991'
-    EvidenceText:
+    EvidenceTextResponse:
       type: object
       required:
         - evidenceID
@@ -19975,13 +19974,11 @@ components:
     UpdateEvidence:
       type: object
       properties:
-        text:
-          type: string
-          maxLength: 750
-          description: The text to associate with the dispute as evidence.
         evidenceType:
           $ref: '#/components/schemas/EvidenceType'
-      description: The template for adding optional properties.
+        text:
+          type: string
+          description: If updating text evidence, the new text to associate with the dispute.
     UpdateIssuedCard:
       type: object
       properties:
