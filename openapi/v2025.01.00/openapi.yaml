@@ -9403,6 +9403,12 @@ paths:
                 format: uuid
       tags:
         - Transfers
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchTransfer'
       x-speakeasy-name-override: update
   /accounts/{accountID}/transfers/{transferID}/refunds:
     post:

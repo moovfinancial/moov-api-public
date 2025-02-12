@@ -135,6 +135,8 @@ op updateTransfer(
   @format("uuid")
   @path
   accountID: string,
+
+  @body body: PatchTransfer,
 ):
   | OkResponse<Transfer>
   | UnauthorizedResponse
