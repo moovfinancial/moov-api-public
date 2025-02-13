@@ -62,7 +62,7 @@ model ScheduleResponse {
 }
 
 model ScheduleValidationError {
-  occurrences?: string;
+  occurrences?: Record<string>;
   recur?: string;
   description?: string;
 }

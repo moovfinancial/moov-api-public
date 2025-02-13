@@ -106,7 +106,7 @@ op listSchedules(
 @route("/accounts/{accountID}/schedules/{scheduleID}/occurrences/{occurrenceFilter}")
 @tag("Scheduling")
 @doc("""
-  Defines an occurrence for when to run a transfer.
+  Gets a specific occurrence.
   
   To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
   you'll need to specify the `/accounts/{accountID}/transfers.read` scope.
@@ -133,7 +133,7 @@ op getScheduledOccurrence(
     """)
   @path
   occurrenceFilter: string,
-): GetResponses<ScheduleResponse>;
+): GetResponses<OccurrencesResponse>;
 
 @delete
 @route("/accounts/{accountID}/schedules/{scheduleID}")
