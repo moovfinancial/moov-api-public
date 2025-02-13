@@ -82,7 +82,7 @@ model Card {
   expiration: CardExpiration;
 
   @doc("The name of the cardholder as it appears on the card.")
-  holderName: string;
+  holderName?: string;
 
   billingAddress: CardAddress;
   cardVerification: CardVerification;
