@@ -54,6 +54,10 @@ model RequestCard {
   controls?: IssuingControls;
 }
 
+model CardExpirationError {
+  month?: string;
+  year?: string;
+}
 model RequestCardError {
   fundingWalletID?: string;
   formFactor?: string;

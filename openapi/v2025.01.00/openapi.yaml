@@ -15273,21 +15273,6 @@ components:
         stateOrProvince: CO
         postalCode: '80301'
         country: US
-    CardAddressError:
-      type: object
-      properties:
-        addressLine1:
-          type: string
-        addressLine2:
-          type: string
-        city:
-          type: string
-        stateOrProvince:
-          type: string
-        postalCode:
-          type: string
-        country:
-          type: string
     CardBrand:
       type: string
       enum:
@@ -17669,11 +17654,11 @@ components:
         cardCvv:
           type: string
         expiration:
-          $ref: '#/components/schemas/CardExpirationError'
+          type: string
         holderName:
           type: string
         billingAddress:
-          $ref: '#/components/schemas/CardAddressError'
+          type: string
         cardOnFile:
           type: string
         merchantAccountID:
@@ -19942,9 +19927,9 @@ components:
         e2ee:
           $ref: '#/components/schemas/End2EndEncryptionError'
         billingAddress:
-          $ref: '#/components/schemas/CardAddressError'
+          type: string
         expiration:
-          $ref: '#/components/schemas/CardExpirationError'
+          type: string
         cardCvv:
           type: string
         cardOnFile:

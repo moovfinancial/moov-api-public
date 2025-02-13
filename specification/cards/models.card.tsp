@@ -358,29 +358,14 @@ model UpdateCard {
 }
 
 // Errors
-
-model CardExpirationError {
-  month?: string;
-  year?: string;
-}
-
-model CardAddressError {
-  addressLine1?: string;
-  addressLine2?: string;
-  city?: string;
-  stateOrProvince?: string;
-  postalCode?: string;
-  country?: string;
-}
-
 model LinkCardError {
   error?: string;
   e2ee?: End2EndEncryptionError;
   cardNumber?: string;
   cardCvv?: string;
-  expiration?: CardExpirationError;
+  expiration?: string;
   holderName?: string;
-  billingAddress?: CardAddressError;
+  billingAddress?: string;
   cardOnFile?: string;
   merchantAccountID?: string;
   verifyName?: string;
@@ -388,8 +373,8 @@ model LinkCardError {
 
 model UpdateCardError {
   e2ee?: End2EndEncryptionError;
-  billingAddress?: CardAddressError;
-  expiration?: CardExpirationError;
+  billingAddress?: string;
+  expiration?: string;
   cardCvv?: string;
   cardOnFile?: string;
   merchantAccountID?: string;
