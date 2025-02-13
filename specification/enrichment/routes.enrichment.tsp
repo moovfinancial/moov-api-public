@@ -47,7 +47,7 @@ op getEnrichmentProfile(
   @example("employee@business.com")
   @query
   email: string,
-): GetResponses<EnrichedBusinessProfile>;
+): GetResponses<EnrichedBusinessResponse>;
 
 @get
 @route("/industries")
@@ -60,7 +60,13 @@ op getEnrichmentProfile(
   """)
 // @useAuth(BasicAuth | OAuth2<["/profile-enrichment.read"]>)
 @extension("x-speakeasy-name-override", "list")
-op listIndustries(...CommonRequestHeaders): ListResponses<EnrichedIndustry>;
+op listIndustries(...CommonRequestHeaders):
+  | OkResponse<EnrichedIndustries>
+  | UnauthorizedResponse
+  | ForbiddenResponse
+  | RateLimitedResponse
+  | InternalServerErrorResponse
+  | GatewayTimeoutResponse;
 
 @get
 @route("/avatars/{uniqueID}")
@@ -100,7 +106,7 @@ op getAvatar(
 // @useAuth(BasicAuth | OAuth2<["/fed.read"]>)
 @extension("x-speakeasy-name-override", "search")
 op listInstitutions(...CommonRequestHeaders, ...InstitutionsFilters):
-  | OkResponse<FinancialInstitutions[]>
+  | OkResponse<FinancialInstitutions>
   | BadRequestResponse
   | UnauthorizedResponse
   | ForbiddenResponse

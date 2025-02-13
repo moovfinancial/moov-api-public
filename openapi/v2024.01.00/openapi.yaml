@@ -10873,11 +10873,7 @@ paths:
                 type: string
                 format: uuid
           content:
-            image/png:
-              schema:
-                type: string
-                format: binary
-            image/jpeg:
+            image/*:
               schema:
                 type: string
                 format: binary
@@ -11162,7 +11158,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/EnrichedBusinessProfile'
+                $ref: '#/components/schemas/EnrichedBusinessResponse'
         '401':
           description: The request contained missing or expired authentication.
           headers:
@@ -11243,9 +11239,7 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/EnrichedIndustry'
+                $ref: '#/components/schemas/EnrichedIndustries'
         '401':
           description: The request contained missing or expired authentication.
           headers:
@@ -11321,9 +11315,7 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/FinancialInstitutions'
+                $ref: '#/components/schemas/FinancialInstitutions'
         '400':
           description: The server could not understand the request due to invalid syntax.
           headers:
@@ -16565,6 +16557,20 @@ components:
           $ref: '#/components/schemas/PhoneNumber'
         website:
           type: string
+    EnrichedBusinessResponse:
+      type: object
+      properties:
+        business:
+          $ref: '#/components/schemas/EnrichedBusinessProfile'
+    EnrichedIndustries:
+      type: object
+      required:
+        - industries
+      properties:
+        industries:
+          type: array
+          items:
+            $ref: '#/components/schemas/EnrichedIndustry'
     EnrichedIndustry:
       type: object
       required:

@@ -4,6 +4,10 @@ import "../common/models.phone.tsp";
 
 namespace MoovAPI;
 
+model EnrichedBusinessResponse {
+  business?: EnrichedBusinessProfile;
+}
+
 model EnrichedBusinessProfile {
   address?: Address;
   email?: Email;

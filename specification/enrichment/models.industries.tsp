@@ -1,5 +1,9 @@
 namespace MoovAPI;
 
+model EnrichedIndustries {
+  industries: EnrichedIndustry[];
+}
+
 @doc("An industry's MCC/SIC/NAICS codes, along with descriptive title.")
 model EnrichedIndustry {
   @example("AC, Refrigeration Repair")

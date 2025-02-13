@@ -8,7 +8,7 @@ namespace MoovAPI;
 model EnrichedAvatar {
   ...CommonResponseHeaders;
   @statusCode statusCode: HttpStatusOK;
-  @header contentType: "image/png" | "image/jpeg";
+  @header contentType: "image/*";
 
   @doc("A png or jpg image associated with an account.")
   @body
