@@ -180,22 +180,22 @@ const exampleCardAddress = #{
 @example(exampleCardAddress)
 model CardAddress {
   @maxLength(60)
-  addressLine1?: string;
+  addressLine1: string;
 
   @maxLength(32)
   addressLine2?: string;
 
   @maxLength(32)
-  city?: string;
+  city: string;
 
   @maxLength(2)
-  stateOrProvince?: string;
+  stateOrProvince: string;
 
   @maxLength(10)
   postalCode: string;
 
   @maxLength(2)
-  country?: string;
+  country: string;
 }
 
 const exampleCardVerification = #{
@@ -331,7 +331,13 @@ model UpdateCardAddress {
   cardCvv: "123",
   expiration: exampleCardExpiration,
   holderName: "Jules Jackson",
-  billingAddress: #{ postalCode: "80301" },
+  billingAddress: #{
+    addressLine1: "123 Main Street",
+    city: "San Diego",
+    postalCode: "80301",
+    stateOrProvince: "CA",
+    country: "US",
+  },
 })
 model LinkCard {
   e2ee?: E2EEToken;
@@ -358,29 +364,14 @@ model UpdateCard {
 }
 
 // Errors
-
-model CardExpirationError {
-  month?: string;
-  year?: string;
-}
-
-model CardAddressError {
-  addressLine1?: string;
-  addressLine2?: string;
-  city?: string;
-  stateOrProvince?: string;
-  postalCode?: string;
-  country?: string;
-}
-
 model LinkCardError {
   error?: string;
   e2ee?: End2EndEncryptionError;
   cardNumber?: string;
   cardCvv?: string;
-  expiration?: CardExpirationError;
+  expiration?: string;
   holderName?: string;
-  billingAddress?: CardAddressError;
+  billingAddress?: string;
   cardOnFile?: string;
   merchantAccountID?: string;
   verifyName?: string;
@@ -388,8 +379,8 @@ model LinkCardError {
 
 model UpdateCardError {
   e2ee?: End2EndEncryptionError;
-  billingAddress?: CardAddressError;
-  expiration?: CardExpirationError;
+  billingAddress?: string;
+  expiration?: string;
   cardCvv?: string;
   cardOnFile?: string;
   merchantAccountID?: string;
