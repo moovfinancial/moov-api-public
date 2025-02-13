@@ -15069,7 +15069,6 @@ components:
         - lastFourCardNumber
         - bin
         - expiration
-        - holderName
         - billingAddress
         - cardVerification
         - issuer
@@ -18551,7 +18550,6 @@ components:
         - lastFourCardNumber
         - bin
         - expiration
-        - holderName
         - billingAddress
         - cardVerification
         - issuer
