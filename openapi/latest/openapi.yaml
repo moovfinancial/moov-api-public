@@ -14183,6 +14183,22 @@ components:
           type: string
         country:
           type: string
+    AddressSuggestion:
+      type: object
+      properties:
+        addressLine1:
+          type: string
+        addressLine2:
+          type: string
+        city:
+          type: string
+        entries:
+          type: integer
+          description: The number of units at an address. For example the number of apartments or businesses in a building.
+        postalCode:
+          type: string
+        stateOrProvince:
+          type: string
     AddressUpdate:
       type: object
       properties:
@@ -16528,20 +16544,13 @@ components:
           type: string
     EnrichedAddressResponse:
       type: object
+      required:
+        - suggestions
       properties:
-        addressLine1:
-          type: string
-        addressLine2:
-          type: string
-        city:
-          type: string
-        entries:
-          type: integer
-          description: The number of units at an address. For example the number of apartments or businesses in a building.
-        postalCode:
-          type: string
-        stateOrProvince:
-          type: string
+        suggestions:
+          type: array
+          items:
+            $ref: '#/components/schemas/AddressSuggestion'
     EnrichedBusinessProfile:
       type: object
       properties:

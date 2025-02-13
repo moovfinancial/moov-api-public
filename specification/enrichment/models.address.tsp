@@ -75,6 +75,10 @@ model EnrichedAddressFilters {
 }
 
 model EnrichedAddressResponse {
+  suggestions: AddressSuggestion[];
+}
+
+model AddressSuggestion {
   addressLine1?: string;
   addressLine2?: string;
   city?: string;
