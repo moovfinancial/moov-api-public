@@ -15246,11 +15246,7 @@ components:
     CardAddress:
       type: object
       required:
-        - addressLine1
-        - city
-        - stateOrProvince
         - postalCode
-        - country
       properties:
         addressLine1:
           type: string
@@ -17645,11 +17641,7 @@ components:
           year: '21'
         holderName: Jules Jackson
         billingAddress:
-          addressLine1: 123 Main Street
-          city: San Diego
           postalCode: '80301'
-          stateOrProvince: CA
-          country: US
     LinkCardError:
       type: object
       properties:

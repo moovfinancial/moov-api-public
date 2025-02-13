@@ -180,22 +180,22 @@ const exampleCardAddress = #{
 @example(exampleCardAddress)
 model CardAddress {
   @maxLength(60)
-  addressLine1: string;
+  addressLine1?: string;
 
   @maxLength(32)
   addressLine2?: string;
 
   @maxLength(32)
-  city: string;
+  city?: string;
 
   @maxLength(2)
-  stateOrProvince: string;
+  stateOrProvince?: string;
 
   @maxLength(10)
   postalCode: string;
 
   @maxLength(2)
-  country: string;
+  country?: string;
 }
 
 const exampleCardVerification = #{
@@ -331,13 +331,7 @@ model UpdateCardAddress {
   cardCvv: "123",
   expiration: exampleCardExpiration,
   holderName: "Jules Jackson",
-  billingAddress: #{
-    addressLine1: "123 Main Street",
-    city: "San Diego",
-    postalCode: "80301",
-    stateOrProvince: "CA",
-    country: "US",
-  },
+  billingAddress: #{ postalCode: "80301" },
 })
 model LinkCard {
   e2ee?: E2EEToken;
