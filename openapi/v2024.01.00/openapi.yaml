@@ -513,7 +513,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/CreateAccountUpdate'
+              $ref: '#/components/schemas/PatchAccount'
       x-speakeasy-name-override: update
     delete:
       operationId: disconnectAccount
@@ -13713,16 +13713,6 @@ components:
           pattern: '[a-zA-Z0-9.!*-+_\- ]+'
           description: The description that shows up on ACH transactions. This will default to the account's display name on account creation.
           example: WholeBodyFitness
-    ACHPaymentSettingsUpdate:
-      type: object
-      properties:
-        companyName:
-          type: string
-          minLength: 1
-          maxLength: 16
-          pattern: '[a-zA-Z0-9.!*-+_\- ]+'
-          description: The description that shows up on ACH transactions. This will default to the account's display name on account creation.
-          example: WholeBodyFitness
     ACHReturnCode:
       type: string
       enum:
@@ -15669,36 +15659,6 @@ components:
           properties:
             companyName:
               type: string
-    CreateAccountUpdate:
-      type: object
-      properties:
-        accountType:
-          $ref: '#/components/schemas/AccountType'
-        profile:
-          $ref: '#/components/schemas/CreateProfileUpdate'
-        metadata:
-          $ref: '#/components/schemas/Metadata'
-        termsOfService:
-          oneOf:
-            - $ref: '#/components/schemas/TermsOfServiceTokenUpdate'
-            - $ref: '#/components/schemas/ManualTermsOfServiceUpdate'
-        foreignID:
-          type: string
-          maxLength: 64
-          description: Optional alias from a foreign/external system which can be used to reference this resource.
-        customerSupport:
-          $ref: '#/components/schemas/CustomerSupportUpdate'
-        settings:
-          $ref: '#/components/schemas/SettingsUpdate'
-        capabilities:
-          type: array
-          items:
-            $ref: '#/components/schemas/CapabilityID'
-      example:
-        accountType: business
-        profile:
-          business:
-            legalBusinessName: Whole Body Fitness LLC
     CreateApplePaySession:
       type: object
       required:
@@ -15818,41 +15778,6 @@ components:
           $ref: '#/components/schemas/IndustryCodes'
         primaryRegulator:
           $ref: '#/components/schemas/PrimaryRegulator'
-    CreateBusinessProfileUpdate:
-      type: object
-      properties:
-        legalBusinessName:
-          type: string
-          maxLength: 64
-          description: The legal name under which the entity is registered.
-          example: Classbooker, LLC
-        doingBusinessAs:
-          type: string
-          maxLength: 64
-          description: A registered trade name under which the business operates, if different from its legal name.
-        businessType:
-          $ref: '#/components/schemas/BusinessType'
-        address:
-          $ref: '#/components/schemas/AddressUpdate'
-        phone:
-          $ref: '#/components/schemas/PhoneNumber'
-        email:
-          $ref: '#/components/schemas/Email'
-        website:
-          type: string
-          format: uri
-          maxLength: 100
-        description:
-          type: string
-          minLength: 10
-          maxLength: 100
-          example: Local fitness gym paying out instructors
-        taxID:
-          $ref: '#/components/schemas/TaxIDUpdate'
-        industryCodes:
-          $ref: '#/components/schemas/IndustryCodes'
-        primaryRegulator:
-          $ref: '#/components/schemas/PrimaryRegulator'
     CreateEvidenceFileMultiPart:
       type: object
       required:
@@ -15936,21 +15861,6 @@ components:
           $ref: '#/components/schemas/Address'
         birthDate:
           $ref: '#/components/schemas/BirthDate'
-        governmentID:
-          $ref: '#/components/schemas/GovernmentID'
-    CreateIndividualProfileUpdate:
-      type: object
-      properties:
-        name:
-          $ref: '#/components/schemas/IndividualNameUpdate'
-        phone:
-          $ref: '#/components/schemas/PhoneNumber'
-        email:
-          $ref: '#/components/schemas/Email'
-        address:
-          $ref: '#/components/schemas/AddressUpdate'
-        birthDate:
-          $ref: '#/components/schemas/BirthDateUpdate'
         governmentID:
           $ref: '#/components/schemas/GovernmentID'
     CreatePaymentLink:
@@ -16047,13 +15957,6 @@ components:
           $ref: '#/components/schemas/CreateIndividualError'
         business:
           $ref: '#/components/schemas/CreateBusinessError'
-    CreateProfileUpdate:
-      type: object
-      properties:
-        individual:
-          $ref: '#/components/schemas/CreateIndividualProfileUpdate'
-        business:
-          $ref: '#/components/schemas/CreateBusinessProfileUpdate'
     CreateRefund:
       type: object
       properties:
@@ -18120,14 +18023,14 @@ components:
           nullable: true
         termsOfService:
           oneOf:
-            - $ref: '#/components/schemas/TermsOfServiceToken'
-            - $ref: '#/components/schemas/ManualTermsOfService'
+            - $ref: '#/components/schemas/TermsOfServiceTokenUpdate'
+            - $ref: '#/components/schemas/ManualTermsOfServiceUpdate'
         foreignID:
           type: string
         customerSupport:
           type: object
           allOf:
-            - $ref: '#/components/schemas/CustomerSupport'
+            - $ref: '#/components/schemas/CustomerSupportUpdate'
           nullable: true
         settings:
           $ref: '#/components/schemas/CreateAccountSettings'
@@ -18159,7 +18062,7 @@ components:
         businessType:
           $ref: '#/components/schemas/BusinessType'
         address:
-          $ref: '#/components/schemas/Address'
+          $ref: '#/components/schemas/AddressUpdate'
         phone:
           $ref: '#/components/schemas/PhoneNumber'
         email:
@@ -18172,7 +18075,7 @@ components:
           minLength: 10
           maxLength: 100
         taxID:
-          $ref: '#/components/schemas/TaxID'
+          $ref: '#/components/schemas/TaxIDUpdate'
         ownersProvided:
           type: boolean
         industryCodes:
@@ -18183,15 +18086,15 @@ components:
       type: object
       properties:
         name:
-          $ref: '#/components/schemas/IndividualName'
+          $ref: '#/components/schemas/IndividualNameUpdate'
         phone:
           $ref: '#/components/schemas/PhoneNumber'
         email:
           $ref: '#/components/schemas/Email'
         address:
-          $ref: '#/components/schemas/Address'
+          $ref: '#/components/schemas/AddressUpdate'
         birthDate:
-          $ref: '#/components/schemas/BirthDate'
+          $ref: '#/components/schemas/BirthDateUpdate'
         governmentID:
           $ref: '#/components/schemas/GovernmentID'
       description: Describes the fields available when patching an individual.
@@ -19338,14 +19241,6 @@ components:
           $ref: '#/components/schemas/CardPaymentSettings'
         achPayment:
           $ref: '#/components/schemas/ACHPaymentSettings'
-      description: User provided settings to manage an account.
-    SettingsUpdate:
-      type: object
-      properties:
-        cardPayment:
-          $ref: '#/components/schemas/CardPaymentSettings'
-        achPayment:
-          $ref: '#/components/schemas/ACHPaymentSettingsUpdate'
       description: User provided settings to manage an account.
     SignedDecimalString:
       type: string

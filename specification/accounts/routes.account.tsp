@@ -110,7 +110,7 @@ op updateAccount(
   @path
   accountID: string,
 
-  @body body: CreateAccount,
+  @body body: PatchAccount,
 ): PostResponses<
   Account,
   {
