@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "type": "module",
   "engines": {
-    "node": "22.10.0"
+    "node": "22.14.0"
   },
   "scripts": {
     "preinstall": "./scripts/checkNodeVersion.sh",
@@ -18,7 +18,7 @@
     "@typespec/openapi3": "0.64.0",
     "@typespec/rest": "0.64.0",
     "@typespec/versioning": "0.64.0",
-    "husky": "9.1.6"
+    "husky": "9.1.7"
   },
   "private": true
 }

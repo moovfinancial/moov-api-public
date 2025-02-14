@@ -25,7 +25,7 @@ jobs:
       - name: Install npm
         uses: actions/setup-node@v4
         with:
-          node-version: "22.10.0"
+          node-version: "22.14.0"
 
       - name: Install make (Windows)
         if: runner.os == 'Windows'
