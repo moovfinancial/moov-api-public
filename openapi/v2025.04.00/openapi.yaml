@@ -19514,8 +19514,7 @@ components:
           format: int64
           description: Fees charged to your platform account for transfers.
         moovFeeDecimal:
-          type: integer
-          format: int64
+          type: string
           description: Same as `moovFee`, but a decimal-formatted numerical string that represents up to 9 decimal place precision.
         moovFeeDetails:
           $ref: '#/components/schemas/MoovFeeDetails'

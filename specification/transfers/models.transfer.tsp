@@ -51,7 +51,7 @@ model Transfer {
   moovFee?: int64;
 
   @doc("Same as `moovFee`, but a decimal-formatted numerical string that represents up to 9 decimal place precision.")
-  moovFeeDecimal?: int64;
+  moovFeeDecimal?: string;
 
   moovFeeDetails?: MoovFeeDetails;
   groupID?: string;
