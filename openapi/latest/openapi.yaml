@@ -20,7 +20,7 @@ tags:
   - name: Apple pay
   - name: Authentication
   - name: Bank accounts
-  - name: Billing
+  - name: Fee plans
   - name: Branding
   - name: Capabilities
   - name: Cards
@@ -5630,7 +5630,7 @@ paths:
                 type: string
                 format: uuid
       tags:
-        - Billing
+        - Fee plans
     post:
       operationId: createFeePlanAgreements
       description: |-
@@ -5754,7 +5754,7 @@ paths:
                 type: string
                 format: uuid
       tags:
-        - Billing
+        - Fee plans
       requestBody:
         required: true
         content:
@@ -5785,7 +5785,7 @@ paths:
           schema:
             type: array
             items:
-              type: string
+              $ref: '#/components/schemas/uuid'
           explode: false
       responses:
         '200':
@@ -5849,7 +5849,205 @@ paths:
                 type: string
                 format: uuid
       tags:
-        - Billing
+        - Fee plans
+  /accounts/{accountID}/fees:
+    get:
+      operationId: retrieveFees
+      description: |-
+        Retrieve fees associated with an account.
+
+        To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
+        you'll need to specify the `/accounts/{accountID}/transfers.read` scope.
+      parameters:
+        - $ref: '#/components/parameters/VersionHeader'
+        - name: accountID
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: transferID
+          in: query
+          required: false
+          description: Optional transfer ID to filter the results by.
+          schema:
+            type: string
+            format: uuid
+          explode: false
+        - name: disputeID
+          in: query
+          required: false
+          description: Optional dispute ID to filter the results by.
+          schema:
+            type: string
+            format: uuid
+          explode: false
+        - name: startDateTime
+          in: query
+          required: false
+          description: Optional date-time to inclusively filter all fees created after this date-time.
+          schema:
+            type: string
+            format: RFC-3339
+          explode: false
+        - name: endDateTime
+          in: query
+          required: false
+          description: Optional date-time to exclusively filter all fees created before this date-time.
+          schema:
+            type: string
+            format: RFC-3339
+          explode: false
+        - $ref: '#/components/parameters/Pagination.skip'
+        - $ref: '#/components/parameters/Pagination.count'
+      responses:
+        '200':
+          description: The request completed successfully.
+          headers:
+            x-request-id:
+              required: true
+              description: A unique identifier used to trace requests.
+              schema:
+                type: string
+                format: uuid
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/IncurredFee'
+        '401':
+          description: The request contained missing or expired authentication.
+          headers:
+            x-request-id:
+              required: true
+              description: A unique identifier used to trace requests.
+              schema:
+                type: string
+                format: uuid
+        '403':
+          description: The user is not authorized to make the request.
+          headers:
+            x-request-id:
+              required: true
+              description: A unique identifier used to trace requests.
+              schema:
+                type: string
+                format: uuid
+        '429':
+          description: Request was refused due to rate limiting.
+          headers:
+            x-request-id:
+              required: true
+              description: A unique identifier used to trace requests.
+              schema:
+                type: string
+                format: uuid
+        '500':
+          description: The request failed due to an unexpected error.
+          headers:
+            x-request-id:
+              required: true
+              description: A unique identifier used to trace requests.
+              schema:
+                type: string
+                format: uuid
+        '504':
+          description: The request failed because a downstream service failed to respond.
+          headers:
+            x-request-id:
+              required: true
+              description: A unique identifier used to trace requests.
+              schema:
+                type: string
+                format: uuid
+      tags:
+        - Fee plans
+  /accounts/{accountID}/fees/.fetch:
+    post:
+      operationId: listFeesFetch
+      description: |-
+        List fees associated with an account.
+
+        To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
+        you'll need to specify the `/accounts/{accountID}/transfers.read` scope.
+      parameters:
+        - $ref: '#/components/parameters/VersionHeader'
+        - name: accountID
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: The request completed successfully.
+          headers:
+            x-request-id:
+              required: true
+              description: A unique identifier used to trace requests.
+              schema:
+                type: string
+                format: uuid
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/IncurredFee'
+        '401':
+          description: The request contained missing or expired authentication.
+          headers:
+            x-request-id:
+              required: true
+              description: A unique identifier used to trace requests.
+              schema:
+                type: string
+                format: uuid
+        '403':
+          description: The user is not authorized to make the request.
+          headers:
+            x-request-id:
+              required: true
+              description: A unique identifier used to trace requests.
+              schema:
+                type: string
+                format: uuid
+        '429':
+          description: Request was refused due to rate limiting.
+          headers:
+            x-request-id:
+              required: true
+              description: A unique identifier used to trace requests.
+              schema:
+                type: string
+                format: uuid
+        '500':
+          description: The request failed due to an unexpected error.
+          headers:
+            x-request-id:
+              required: true
+              description: A unique identifier used to trace requests.
+              schema:
+                type: string
+                format: uuid
+        '504':
+          description: The request failed because a downstream service failed to respond.
+          headers:
+            x-request-id:
+              required: true
+              description: A unique identifier used to trace requests.
+              schema:
+                type: string
+                format: uuid
+      tags:
+        - Fee plans
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ListFeesFetchRequest'
   /accounts/{accountID}/files:
     post:
       operationId: uploadFile
@@ -6331,7 +6529,7 @@ paths:
                 type: string
                 format: uuid
       tags:
-        - Billing
+        - Fee plans
   /accounts/{accountID}/partner-pricing-agreements:
     get:
       operationId: listPartnerPricingAgreements
@@ -6428,7 +6626,7 @@ paths:
                 type: string
                 format: uuid
       tags:
-        - Billing
+        - Fee plans
   /accounts/{accountID}/payment-links:
     post:
       operationId: createPaymentLink
@@ -13562,6 +13760,7 @@ components:
       required: false
       schema:
         $ref: '#/components/schemas/Count'
+        default: 200
       explode: false
     Pagination.skip:
       name: skip
@@ -16631,6 +16830,7 @@ components:
       enum:
         - fixed
         - blended
+        - variable
       description: Specifies the pricing model used for the calculation of the final fee.
     FeePlan:
       type: object
@@ -16933,6 +17133,44 @@ components:
           maxLength: 4
           description: The issued card's 3- or 4-digit Card Verification Value (CVV).
       description: The full details of an issued card, including PAN and CVV.
+    GeneratedBy:
+      oneOf:
+        - $ref: '#/components/schemas/GeneratedByTransferID'
+        - $ref: '#/components/schemas/GeneratedByCardID'
+        - $ref: '#/components/schemas/GeneratedByDisputeID'
+        - $ref: '#/components/schemas/GeneratedByAccountID'
+        - $ref: '#/components/schemas/GeneratedByBankAccountID'
+      description: The entity that generated the fee.
+    GeneratedByAccountID:
+      type: object
+      properties:
+        AccountID:
+          type: string
+          format: uuid
+    GeneratedByBankAccountID:
+      type: object
+      properties:
+        BankAccountID:
+          type: string
+          format: uuid
+    GeneratedByCardID:
+      type: object
+      properties:
+        CardID:
+          type: string
+          format: uuid
+    GeneratedByDisputeID:
+      type: object
+      properties:
+        DisputeID:
+          type: string
+          format: uuid
+    GeneratedByTransferID:
+      type: object
+      properties:
+        transferID:
+          type: string
+          format: uuid
     GenericError:
       type: object
       required:
@@ -16986,6 +17224,28 @@ components:
 
           - `client_credentials`: A grant type used by clients to obtain an access token
           - `refresh_token`: A grant type used by clients to obtain a new access token using a refresh token
+    IncurredFee:
+      type: object
+      properties:
+        feeID:
+          type: string
+          format: uuid
+        accountID:
+          type: string
+          format: uuid
+        walletID:
+          type: string
+          format: uuid
+        createdOn:
+          type: string
+          format: date-time
+        feeName:
+          type: string
+        amount:
+          $ref: '#/components/schemas/AmountDecimal'
+        generatedBy:
+          $ref: '#/components/schemas/GeneratedBy'
+      description: A fee incurred by a user.
     IndividualName:
       type: object
       required:
@@ -17600,6 +17860,14 @@ components:
           $ref: '#/components/schemas/PaymentMethodType'
         applePay:
           $ref: '#/components/schemas/ApplePayResponse'
+    ListFeesFetchRequest:
+      type: object
+      properties:
+        feeIDs:
+          type: array
+          items:
+            $ref: '#/components/schemas/uuid'
+      description: Array of fee IDs to fetch.
     MXAuthorizationCode:
       type: object
       required:
@@ -20260,6 +20528,9 @@ components:
         - top-up
         - wallet-transfer
         - adjustment
+    uuid:
+      type: string
+      format: uuid
   securitySchemes:
     BasicAuth:
       type: http

@@ -1,9 +1,15 @@
+import "@typespec/openapi3";
 import "./examples.billing.tsp";
 import "../money/models.amount.tsp";
+
+using TypeSpec.OpenAPI;
 
 namespace MoovAPI;
 
 const BillingRateStringPattern = "^[0-9]+.?[0-9]*$";
+
+@format("uuid")
+scalar uuid extends string;
 
 model FeePlan {
   @format("uuid")
@@ -109,4 +115,62 @@ enum FeeCategory {
 enum FeeModel {
   fixed,
   blended,
+  variable,
+}
+
+@doc("A fee incurred by a user.")
+model IncurredFee {
+  @format("uuid")
+  feeID?: string;
+
+  @format("uuid")
+  accountID?: string;
+
+  @format("uuid")
+  walletID?: string;
+
+  createdOn?: utcDateTime;
+  feeName?: string;
+  amount?: AmountDecimal;
+  generatedBy?: GeneratedBy;
+}
+
+@doc("The entity that generated the fee.")
+@oneOf
+union GeneratedBy {
+  GeneratedByTransferID,
+  GeneratedByCardID,
+  GeneratedByDisputeID,
+  GeneratedByAccountID,
+  GeneratedByBankAccountID,
+}
+
+model GeneratedByTransferID {
+  @format("uuid")
+  transferID?: string;
+}
+
+model GeneratedByCardID {
+  @format("uuid")
+  CardID?: string;
+}
+
+model GeneratedByDisputeID {
+  @format("uuid")
+  DisputeID?: string;
+}
+
+model GeneratedByAccountID {
+  @format("uuid")
+  AccountID?: string;
+}
+
+model GeneratedByBankAccountID {
+  @format("uuid")
+  BankAccountID?: string;
+}
+
+@doc("Array of fee IDs to fetch.")
+model ListFeesFetchRequest {
+  feeIDs?: uuid[];
 }

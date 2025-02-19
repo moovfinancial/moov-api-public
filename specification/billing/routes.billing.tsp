@@ -4,6 +4,7 @@ import "./models.billing.tsp";
 import "../auth/models.auth.tsp";
 import "../common/models.header.tsp";
 import "../common/models.response.tsp";
+import "../common/models.parameter.tsp";
 
 using TypeSpec.Http;
 
@@ -11,7 +12,7 @@ namespace MoovAPI;
 
 @get
 @route("/accounts/{accountID}/fee-plans")
-@tag("Billing")
+@tag("Fee plans")
 @doc("""
   List all fee plans available for use by an account. This is intended to be used by an account when 
   selecting a fee plan to apply to a connected account.
@@ -29,12 +30,12 @@ op listFeePlans(
 
   @doc("A comma-separated list of plan IDs to filter the results by.")
   @query
-  planIDs?: string[],
+  planIDs?: uuid[],
 ): ListResponses<FeePlan>;
 
 @get
 @route("/accounts/{accountID}/fee-plan-agreements")
-@tag("Billing")
+@tag("Fee plans")
 @doc("""
   List all fee plan agreements associated with an account.
   
@@ -60,7 +61,7 @@ op listFeePlanAgreements(
 
 @post
 @route("/accounts/{accountID}/fee-plan-agreements")
-@tag("Billing")
+@tag("Fee plans")
 @doc("""
   Creates the subscription of a fee plan to a merchant account. Merchants are required to accept the fee plan terms prior to activation.
   
@@ -80,7 +81,7 @@ op createFeePlanAgreements(
 
 @get
 @route("/accounts/{accountID}/partner-pricing")
-@tag("Billing")
+@tag("Fee plans")
 @doc("""
   List all partner pricing plans available for use by an account.
   
@@ -102,7 +103,7 @@ op listPartnerPricing(
 
 @get
 @route("/accounts/{accountID}/partner-pricing-agreements")
-@tag("Billing")
+@tag("Fee plans")
 @doc("""
   List all partner pricing agreements associated with an account.
   
@@ -125,3 +126,63 @@ op listPartnerPricingAgreements(
   @query
   status?: FeePlanAgreementStatus[],
 ): ListResponses<PartnerPricingAgreement>;
+
+@get
+@route("/accounts/{accountID}/fees")
+@tag("Fee plans")
+@doc("""
+  Retrieve fees associated with an account.
+  
+  To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
+  you'll need to specify the `/accounts/{accountID}/transfers.read` scope.
+  """)
+// @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/transfers.read"]>)
+op retrieveFees(
+  ...CommonRequestHeaders,
+
+  @format("uuid")
+  @path
+  accountID: string,
+
+  @doc("Optional transfer ID to filter the results by.")
+  @format("uuid")
+  @query
+  transferID?: string,
+
+  @doc("Optional dispute ID to filter the results by.")
+  @format("uuid")
+  @query
+  disputeID?: string,
+
+  @doc("Optional date-time to inclusively filter all fees created after this date-time.")
+  @format("RFC-3339")
+  @query
+  startDateTime?: string,
+
+  @doc("Optional date-time to exclusively filter all fees created before this date-time.")
+  @format("RFC-3339")
+  @query
+  endDateTime?: string,
+
+  ...Pagination,
+): ListResponses<IncurredFee>;
+
+@post
+@route("/accounts/{accountID}/fees/.fetch")
+@tag("Fee plans")
+@doc("""
+  List fees associated with an account.
+  
+  To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
+  you'll need to specify the `/accounts/{accountID}/transfers.read` scope.
+  """)
+// @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/transfers.read"]>)
+op listFeesFetch(
+  ...CommonRequestHeaders,
+
+  @format("uuid")
+  @path
+  accountID: string,
+
+  @body body?: ListFeesFetchRequest,
+): ListResponses<IncurredFee>;

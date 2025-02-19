@@ -21,5 +21,5 @@ model Pagination {
   skip?: Skip;
 
   @query
-  count?: Count;
+  count?: Count = 200;
 }
