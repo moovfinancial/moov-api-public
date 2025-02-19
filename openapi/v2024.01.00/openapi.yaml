@@ -13299,6 +13299,12 @@ paths:
                 format: uuid
       tags:
         - Transfers
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateTransferOptions'
       x-speakeasy-name-override: generateOptions
 security:
   - BasicAuth: []

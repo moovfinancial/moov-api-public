@@ -24,7 +24,10 @@ namespace MoovAPI;
   """)
 // @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/transfers.read"]>)
 @extension("x-speakeasy-name-override", "generateOptions")
-op createTransferOptions(...CommonRequestHeaders):
+op createTransferOptions(
+  ...CommonRequestHeaders,
+  @body body: CreateTransferOptions,
+):
   | OkResponse<TransferOptions>
   | BadRequestResponse
   | UnauthorizedResponse
