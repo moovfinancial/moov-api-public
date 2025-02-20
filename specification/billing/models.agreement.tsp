@@ -11,10 +11,10 @@ model FeePlanAgreement {
 
   @format("uuid")
   accountID?: string;
-  
+
   @doc("The name of the agreement.")
   name: string;
-  
+
   @doc("The description of the agreement.")
   description?: string;
 
