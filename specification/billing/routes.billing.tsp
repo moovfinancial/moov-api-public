@@ -34,7 +34,7 @@ op listFeePlans(
 ): ListResponses<FeePlan>;
 
 @get
-@route("/accounts/{accountID}/fee-plan-agreements")
+@route("/accounts/{partnerAccountID}/fee-plan-agreements/{merchantAccountID}")
 @tag("Fee plans")
 @doc("""
   List all fee plan agreements associated with an account.
