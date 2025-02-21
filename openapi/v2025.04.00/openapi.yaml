@@ -17242,6 +17242,7 @@ components:
         - card-other
         - network-passthrough
         - other
+      example: ach
     FeeConditions:
       type: object
       additionalProperties: {}

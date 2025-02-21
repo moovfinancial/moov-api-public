@@ -100,6 +100,7 @@ enum CardAcquringModel {
   flatRate: "flat-rate",
 }
 
+@example(FeeCategory.ach)
 enum FeeCategory {
   cardAcquiring: "card-acquiring",
   cardPush: "card-push",
