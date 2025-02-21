@@ -34,21 +34,25 @@ op listFeePlans(
 ): ListResponses<FeePlan>;
 
 @get
-@route("/accounts/{accountID}/fee-plan-agreements")
+@route("/accounts/{partnerAccountID}/fee-plan-agreements/{merchantAccountID}")
 @tag("Fee plans")
 @doc("""
   List all fee plan agreements associated with an account.
   
   To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
-  you'll need to specify the `/accounts/{accountID}/profile.read` scope.
+  you'll need to specify the `/accounts/{merchantAccountID}/profile.read` scope.
   """)
-// @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/profile.read"]>)
+// @useAuth(BasicAuth | OAuth2<["/accounts/{merchantAccountID}/profile.read"]>)
 op listFeePlanAgreements(
   ...CommonRequestHeaders,
 
   @format("uuid")
   @path
-  accountID: string,
+  partnerAccountID: string,
+
+  @format("uuid")
+  @path
+  merchantAccountID: string,
 
   @doc("A comma-separated list of agreement IDs to filter the results by.")
   @query

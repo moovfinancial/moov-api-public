@@ -5535,102 +5535,6 @@ paths:
         - Disputes
       x-speakeasy-name-override: getEvidenceData
   /accounts/{accountID}/fee-plan-agreements:
-    get:
-      operationId: listFeePlanAgreements
-      description: |-
-        List all fee plan agreements associated with an account.
-
-        To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
-        you'll need to specify the `/accounts/{accountID}/profile.read` scope.
-      parameters:
-        - $ref: '#/components/parameters/VersionHeader'
-        - name: accountID
-          in: path
-          required: true
-          schema:
-            type: string
-            format: uuid
-        - name: agreementID
-          in: query
-          required: false
-          description: A comma-separated list of agreement IDs to filter the results by.
-          schema:
-            type: array
-            items:
-              type: string
-          explode: false
-        - name: status
-          in: query
-          required: false
-          description: A comma-separated list of statuses to filter the results by.
-          schema:
-            type: array
-            items:
-              $ref: '#/components/schemas/FeePlanAgreementStatus'
-          explode: false
-      responses:
-        '200':
-          description: The request completed successfully.
-          headers:
-            x-request-id:
-              required: true
-              description: A unique identifier used to trace requests.
-              schema:
-                type: string
-                format: uuid
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/FeePlanAgreement'
-        '401':
-          description: The request contained missing or expired authentication.
-          headers:
-            x-request-id:
-              required: true
-              description: A unique identifier used to trace requests.
-              schema:
-                type: string
-                format: uuid
-        '403':
-          description: The user is not authorized to make the request.
-          headers:
-            x-request-id:
-              required: true
-              description: A unique identifier used to trace requests.
-              schema:
-                type: string
-                format: uuid
-        '429':
-          description: Request was refused due to rate limiting.
-          headers:
-            x-request-id:
-              required: true
-              description: A unique identifier used to trace requests.
-              schema:
-                type: string
-                format: uuid
-        '500':
-          description: The request failed due to an unexpected error.
-          headers:
-            x-request-id:
-              required: true
-              description: A unique identifier used to trace requests.
-              schema:
-                type: string
-                format: uuid
-        '504':
-          description: The request failed because a downstream service failed to respond.
-          headers:
-            x-request-id:
-              required: true
-              description: A unique identifier used to trace requests.
-              schema:
-                type: string
-                format: uuid
-      tags:
-        - Fee plans
     post:
       operationId: createFeePlanAgreements
       description: |-
@@ -11044,6 +10948,109 @@ paths:
       tags:
         - Wallet transactions
       x-speakeasy-name-override: get
+  /accounts/{partnerAccountID}/fee-plan-agreements/{merchantAccountID}:
+    get:
+      operationId: listFeePlanAgreements
+      description: |-
+        List all fee plan agreements associated with an account.
+
+        To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
+        you'll need to specify the `/accounts/{merchantAccountID}/profile.read` scope.
+      parameters:
+        - $ref: '#/components/parameters/VersionHeader'
+        - name: partnerAccountID
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: merchantAccountID
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: agreementID
+          in: query
+          required: false
+          description: A comma-separated list of agreement IDs to filter the results by.
+          schema:
+            type: array
+            items:
+              type: string
+          explode: false
+        - name: status
+          in: query
+          required: false
+          description: A comma-separated list of statuses to filter the results by.
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/FeePlanAgreementStatus'
+          explode: false
+      responses:
+        '200':
+          description: The request completed successfully.
+          headers:
+            x-request-id:
+              required: true
+              description: A unique identifier used to trace requests.
+              schema:
+                type: string
+                format: uuid
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/FeePlanAgreement'
+        '401':
+          description: The request contained missing or expired authentication.
+          headers:
+            x-request-id:
+              required: true
+              description: A unique identifier used to trace requests.
+              schema:
+                type: string
+                format: uuid
+        '403':
+          description: The user is not authorized to make the request.
+          headers:
+            x-request-id:
+              required: true
+              description: A unique identifier used to trace requests.
+              schema:
+                type: string
+                format: uuid
+        '429':
+          description: Request was refused due to rate limiting.
+          headers:
+            x-request-id:
+              required: true
+              description: A unique identifier used to trace requests.
+              schema:
+                type: string
+                format: uuid
+        '500':
+          description: The request failed due to an unexpected error.
+          headers:
+            x-request-id:
+              required: true
+              description: A unique identifier used to trace requests.
+              schema:
+                type: string
+                format: uuid
+        '504':
+          description: The request failed because a downstream service failed to respond.
+          headers:
+            x-request-id:
+              required: true
+              description: A unique identifier used to trace requests.
+              schema:
+                type: string
+                format: uuid
+      tags:
+        - Fee plans
   /avatars/{uniqueID}:
     get:
       operationId: getAvatar
@@ -16871,6 +16878,7 @@ components:
       required:
         - aggreementID
         - planID
+        - name
         - acceptedOn
         - status
         - cardAcquringModel
@@ -16885,6 +16893,12 @@ components:
         accountID:
           type: string
           format: uuid
+        name:
+          type: string
+          description: The name of the agreement.
+        description:
+          type: string
+          description: The description of the agreement.
         acceptedOn:
           type: string
           format: date-time
