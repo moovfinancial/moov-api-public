@@ -40,6 +40,7 @@ tags:
   - name: Ping
   - name: Representatives
   - name: Scheduling
+  - name: Terminal Applications
   - name: Transfers
   - name: Underwriting
   - name: Sweeps
@@ -13106,6 +13107,398 @@ paths:
                 format: uuid
       tags:
         - Ping
+  /terminal-applications:
+    post:
+      operationId: createTerminalApplication
+      description: |-
+        Create a new terminal application.
+
+        To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
+        you'll need to specify the `/terminalApplications.write` scope.
+      parameters:
+        - $ref: '#/components/parameters/VersionHeader'
+      responses:
+        '200':
+          description: The request completed successfully.
+          headers:
+            x-request-id:
+              required: true
+              description: A unique identifier used to trace requests.
+              schema:
+                type: string
+                format: uuid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TerminalApplication'
+        '400':
+          description: The server could not understand the request due to invalid syntax.
+          headers:
+            x-request-id:
+              required: true
+              description: A unique identifier used to trace requests.
+              schema:
+                type: string
+                format: uuid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+        '401':
+          description: The request contained missing or expired authentication.
+          headers:
+            x-request-id:
+              required: true
+              description: A unique identifier used to trace requests.
+              schema:
+                type: string
+                format: uuid
+        '403':
+          description: The user is not authorized to make the request.
+          headers:
+            x-request-id:
+              required: true
+              description: A unique identifier used to trace requests.
+              schema:
+                type: string
+                format: uuid
+        '404':
+          description: The requested resource was not found.
+          headers:
+            x-request-id:
+              required: true
+              description: A unique identifier used to trace requests.
+              schema:
+                type: string
+                format: uuid
+        '409':
+          description: The request conflicted with the current state of the target resource.
+          headers:
+            x-request-id:
+              required: true
+              description: A unique identifier used to trace requests.
+              schema:
+                type: string
+                format: uuid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+        '422':
+          description: The request was well-formed, but the contents failed validation. Check the request for missing or invalid fields.
+          headers:
+            x-request-id:
+              required: true
+              description: A unique identifier used to trace requests.
+              schema:
+                type: string
+                format: uuid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TerminalApplicationError'
+        '429':
+          description: Request was refused due to rate limiting.
+          headers:
+            x-request-id:
+              required: true
+              description: A unique identifier used to trace requests.
+              schema:
+                type: string
+                format: uuid
+        '500':
+          description: The request failed due to an unexpected error.
+          headers:
+            x-request-id:
+              required: true
+              description: A unique identifier used to trace requests.
+              schema:
+                type: string
+                format: uuid
+        '504':
+          description: The request failed because a downstream service failed to respond.
+          headers:
+            x-request-id:
+              required: true
+              description: A unique identifier used to trace requests.
+              schema:
+                type: string
+                format: uuid
+      tags:
+        - Terminal Applications
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateTerminalApplication'
+      x-speakeasy-name-override: create
+    get:
+      operationId: listTerminalApplications
+      description: |-
+        List all the terminal applications for a Moov Account.
+
+        To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
+        you'll need to specify the `/terminalApplications.read` scope.
+      parameters:
+        - $ref: '#/components/parameters/VersionHeader'
+      responses:
+        '200':
+          description: The request completed successfully.
+          headers:
+            x-request-id:
+              required: true
+              description: A unique identifier used to trace requests.
+              schema:
+                type: string
+                format: uuid
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TerminalApplication'
+        '401':
+          description: The request contained missing or expired authentication.
+          headers:
+            x-request-id:
+              required: true
+              description: A unique identifier used to trace requests.
+              schema:
+                type: string
+                format: uuid
+        '403':
+          description: The user is not authorized to make the request.
+          headers:
+            x-request-id:
+              required: true
+              description: A unique identifier used to trace requests.
+              schema:
+                type: string
+                format: uuid
+        '429':
+          description: Request was refused due to rate limiting.
+          headers:
+            x-request-id:
+              required: true
+              description: A unique identifier used to trace requests.
+              schema:
+                type: string
+                format: uuid
+        '500':
+          description: The request failed due to an unexpected error.
+          headers:
+            x-request-id:
+              required: true
+              description: A unique identifier used to trace requests.
+              schema:
+                type: string
+                format: uuid
+        '504':
+          description: The request failed because a downstream service failed to respond.
+          headers:
+            x-request-id:
+              required: true
+              description: A unique identifier used to trace requests.
+              schema:
+                type: string
+                format: uuid
+      tags:
+        - Terminal Applications
+      x-speakeasy-name-override: list
+  /terminal-applications/{terminalApplicationID}:
+    get:
+      operationId: getTerminalApplication
+      description: |-
+        Fetch a specific terminal application.
+
+        To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
+        you'll need to specify the `/terminalApplications.read` scope.
+      parameters:
+        - $ref: '#/components/parameters/VersionHeader'
+        - name: terminalApplicationID
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/TerminalApplicationID'
+      responses:
+        '200':
+          description: The request completed successfully.
+          headers:
+            x-request-id:
+              required: true
+              description: A unique identifier used to trace requests.
+              schema:
+                type: string
+                format: uuid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TerminalApplication'
+        '401':
+          description: The request contained missing or expired authentication.
+          headers:
+            x-request-id:
+              required: true
+              description: A unique identifier used to trace requests.
+              schema:
+                type: string
+                format: uuid
+        '403':
+          description: The user is not authorized to make the request.
+          headers:
+            x-request-id:
+              required: true
+              description: A unique identifier used to trace requests.
+              schema:
+                type: string
+                format: uuid
+        '404':
+          description: The requested resource was not found.
+          headers:
+            x-request-id:
+              required: true
+              description: A unique identifier used to trace requests.
+              schema:
+                type: string
+                format: uuid
+        '429':
+          description: Request was refused due to rate limiting.
+          headers:
+            x-request-id:
+              required: true
+              description: A unique identifier used to trace requests.
+              schema:
+                type: string
+                format: uuid
+        '500':
+          description: The request failed due to an unexpected error.
+          headers:
+            x-request-id:
+              required: true
+              description: A unique identifier used to trace requests.
+              schema:
+                type: string
+                format: uuid
+        '504':
+          description: The request failed because a downstream service failed to respond.
+          headers:
+            x-request-id:
+              required: true
+              description: A unique identifier used to trace requests.
+              schema:
+                type: string
+                format: uuid
+      tags:
+        - Terminal Applications
+      x-speakeasy-name-override: get
+    delete:
+      operationId: deleteTerminalApplication
+      description: |-
+        Delete a specific terminal application.
+
+        To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
+        you'll need to specify the `/terminalApplications.write` scope.
+      parameters:
+        - $ref: '#/components/parameters/VersionHeader'
+        - name: terminalApplicationID
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/TerminalApplicationID'
+      responses:
+        '204':
+          description: The request completed successfully, but there is no content to return.
+          headers:
+            x-request-id:
+              required: true
+              description: A unique identifier used to trace requests.
+              schema:
+                type: string
+                format: uuid
+        '400':
+          description: The server could not understand the request due to invalid syntax.
+          headers:
+            x-request-id:
+              required: true
+              description: A unique identifier used to trace requests.
+              schema:
+                type: string
+                format: uuid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+        '401':
+          description: The request contained missing or expired authentication.
+          headers:
+            x-request-id:
+              required: true
+              description: A unique identifier used to trace requests.
+              schema:
+                type: string
+                format: uuid
+        '403':
+          description: The user is not authorized to make the request.
+          headers:
+            x-request-id:
+              required: true
+              description: A unique identifier used to trace requests.
+              schema:
+                type: string
+                format: uuid
+        '404':
+          description: The requested resource was not found.
+          headers:
+            x-request-id:
+              required: true
+              description: A unique identifier used to trace requests.
+              schema:
+                type: string
+                format: uuid
+        '409':
+          description: The request conflicted with the current state of the target resource.
+          headers:
+            x-request-id:
+              required: true
+              description: A unique identifier used to trace requests.
+              schema:
+                type: string
+                format: uuid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+        '429':
+          description: Request was refused due to rate limiting.
+          headers:
+            x-request-id:
+              required: true
+              description: A unique identifier used to trace requests.
+              schema:
+                type: string
+                format: uuid
+        '500':
+          description: The request failed due to an unexpected error.
+          headers:
+            x-request-id:
+              required: true
+              description: A unique identifier used to trace requests.
+              schema:
+                type: string
+                format: uuid
+        '504':
+          description: The request failed because a downstream service failed to respond.
+          headers:
+            x-request-id:
+              required: true
+              description: A unique identifier used to trace requests.
+              schema:
+                type: string
+                format: uuid
+      tags:
+        - Terminal Applications
+      x-speakeasy-name-override: delete
   /tos-token:
     get:
       operationId: getTermsOfServiceToken
@@ -16247,6 +16640,32 @@ components:
           type: string
         minimumBalance:
           type: string
+    CreateTerminalApplication:
+      type: object
+      required:
+        - platform
+      properties:
+        platform:
+          $ref: '#/components/schemas/TerminalApplicationPlatform'
+        appBundleID:
+          type: string
+          description: The app bundle identifier of the terminal application. Required if platform is ios.
+        packageName:
+          type: string
+          description: The app package name of the terminal application. Required if platform is android.
+        sha256Digest:
+          type: string
+          description: The app version of the terminal application. Required if paltform is android.
+        versionCode:
+          type: string
+          description: The app version of the terminal application. Required if platform is android.
+      description: Describes a create terminal application request.
+      example:
+        platform: ios
+        appBundleID: com.example.app
+        packageName: com.example.app
+        sha256Digest: '1234567890'
+        versionCode: 1.0.0
     CreateTransfer:
       type: object
       required:
@@ -19688,6 +20107,75 @@ components:
               type: string
               example: 12-3456789
       description: An EIN (employer identification number) for the business. For sole proprietors, an SSN can be used as the EIN.
+    TerminalApplication:
+      type: object
+      required:
+        - terminalApplicationID
+        - status
+        - platform
+      properties:
+        terminalApplicationID:
+          $ref: '#/components/schemas/TerminalApplicationID'
+        status:
+          $ref: '#/components/schemas/TerminalApplicationStatus'
+        platform:
+          $ref: '#/components/schemas/TerminalApplicationPlatform'
+        appBundleID:
+          type: string
+          description: The app bundle identifier of the terminal application. Will be returned if platform is ios.
+        packageName:
+          type: string
+          description: The app package name of the terminal application. Will be returned if platform is android.
+        sha256Digest:
+          type: string
+          description: The app version of the terminal application Will be returned if platform is android.
+        versionCode:
+          type: string
+          description: The app version of the terminal application Will be returned if platform is android.
+      description: Describes a terminal application.
+      example:
+        terminalApplicationID: 01234567-89ab-cdef-0123-456789abcdef
+        status: enabled
+        platform: ios
+        appBundleID: com.example.app
+        packageName: com.example.app
+        sha256Digest: '1234567890'
+        versionCode: 1.0.0
+    TerminalApplicationError:
+      type: object
+      properties:
+        platform:
+          type: string
+        appBundleID:
+          type: string
+        packageName:
+          type: string
+        sha256Digest:
+          type: string
+        versionCode:
+          type: string
+    TerminalApplicationID:
+      type: string
+      format: uuid
+      description: ID of the terminal application.
+      example: 01234567-89ab-cdef-0123-456789abcdef
+    TerminalApplicationPlatform:
+      type: string
+      enum:
+        - undefined
+        - ios
+        - android
+      description: Platform of the terminal application.
+      example: ios
+    TerminalApplicationStatus:
+      type: string
+      enum:
+        - undefined
+        - pending
+        - enabled
+        - disabled
+      description: Status of the terminal application.
+      example: enabled
     TermsOfService:
       type: object
       required:

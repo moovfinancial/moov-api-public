@@ -26,6 +26,7 @@ import "./paymentmethods";
 import "./ping";
 import "./representatives";
 import "./schedules";
+import "./terminalapplications";
 import "./transfers";
 import "./underwriting";
 import "./wallets";
