@@ -15389,7 +15389,9 @@ components:
         feeModel:
           $ref: '#/components/schemas/FeeModel'
         feeCategory:
-          $ref: '#/components/schemas/FeeCategory'
+          allOf:
+            - $ref: '#/components/schemas/FeeCategory'
+          example: ach
         feeProperties:
           $ref: '#/components/schemas/FeeProperties'
         feeConditions:
@@ -17242,7 +17244,6 @@ components:
         - card-other
         - network-passthrough
         - other
-      example: ach
     FeeConditions:
       type: object
       additionalProperties: {}

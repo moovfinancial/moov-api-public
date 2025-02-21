@@ -63,7 +63,10 @@ model BillableFee {
   feeName?: string;
 
   feeModel: FeeModel;
+
+  @example(FeeCategory.ach)
   feeCategory: FeeCategory;
+
   feeProperties?: FeeProperties;
   feeConditions?: FeeConditions;
 }
@@ -100,7 +103,6 @@ enum CardAcquringModel {
   flatRate: "flat-rate",
 }
 
-@example(FeeCategory.ach)
 enum FeeCategory {
   cardAcquiring: "card-acquiring",
   cardPush: "card-push",
