@@ -20,7 +20,7 @@ model FeePlanAgreement {
 
   acceptedOn: utcDateTime;
   status: FeePlanAgreementStatus;
-  cardAcquringModel: CardAcquringModel;
+  CardAcquiringModel: CardAcquiringModel;
   billableFees: BillableFee[];
 }
 

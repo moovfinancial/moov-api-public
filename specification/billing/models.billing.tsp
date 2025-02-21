@@ -22,7 +22,7 @@ model FeePlan {
   @doc("A description of the fee plan.")
   description?: string;
 
-  cardAcquringModel: CardAcquringModel;
+  cardAcquiringModel: CardAcquiringModel;
 
   @doc("Additional usage-based fees for this plan.")
   billableFees: BillableFee[];
@@ -45,7 +45,7 @@ model PartnerPricing {
   @example(10)
   revenueShare: integer;
 
-  cardAcquringModel: CardAcquringModel;
+  CardAcquiringModel: CardAcquiringModel;
   billableFees: BillableFee[];
   createdAt: utcDateTime;
 }
@@ -95,7 +95,7 @@ model FeeProperties {
 model FeeConditions is Record<unknown>;
 
 @doc("Specifies the card processing pricing model")
-enum CardAcquringModel {
+enum CardAcquiringModel {
   costPlus: "cost-plus",
   flatRate: "flat-rate",
 }
