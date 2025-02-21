@@ -70,7 +70,7 @@ model BankAccount {
   routingNumber: string;
   lastFourAccountNumber: string;
   updatedOn: utcDateTime;
-  statusReason: BankAccountStatusReason;
+  statusReason?: BankAccountStatusReason;
   exceptionDetails?: BankAccountException;
 
   @doc("""

@@ -14577,7 +14577,6 @@ components:
         - routingNumber
         - lastFourAccountNumber
         - updatedOn
-        - statusReason
       properties:
         bankAccountID:
           type: string
