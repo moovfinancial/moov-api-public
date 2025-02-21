@@ -82,6 +82,9 @@ model WalletTransaction {
   @doc("Total fees paid for the transaction. The value is in the smallest unit of the specified currency. In USD this is cents, for example, $12.04 is 1204 and $0.99 is 99.")
   fee: int64;
 
+  @doc("The IDs of the fees paid for the transaction.")
+  feeIDs?: string[];
+
   @doc("Total fees paid for the transaction. Same as `fee`, but a decimal-formatted numerical string that represents up to 9 decimal place precision. In USD for example, 12.987654321 is $12.987654321 and 0.9987634521 is $0.9987634521.")
   @pattern(Decimal9StringPattern)
   feeDecimal: string;
