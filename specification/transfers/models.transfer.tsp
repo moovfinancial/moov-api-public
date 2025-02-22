@@ -76,9 +76,9 @@ model TransferSource {
   paymentMethodType: string;
   account: TransferAccount;
   bankAccount?: BankAccount;
-  wallet?: unknown; // paymentmethods.WalletResponse
-  card?: unknown; // cards.Card
-  applePay?: unknown; // paymentmethods.ApplePayResponse
+  wallet?: PaymentMethodsWallet;
+  card?: Card;
+  applePay?: ApplePayResponse;
   cardDetails?: CardTransactionDetails;
   achDetails?: ACHTransactionDetails;
 }
@@ -94,10 +94,10 @@ model TransferDestination {
   paymentMethodType: string;
   account: TransferAccount;
   bankAccount?: BankAccount;
-  wallet?: unknown; // paymentmethods.WalletResponse
-  card?: unknown; // cards.Card
+  wallet?: PaymentMethodsWallet;
+  card?: Card;
   achDetails?: ACHTransactionDetails;
-  applePay?: unknown; // paymentmethods.ApplePayResponse
+  applePay?: ApplePayResponse;
   cardDetails?: CardTransactionDetails;
   rtpDetails?: RTPTransactionDetails;
 }
