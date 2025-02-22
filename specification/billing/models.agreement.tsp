@@ -4,7 +4,7 @@ namespace MoovAPI;
 
 model FeePlanAgreement {
   @format("uuid")
-  aggreementID: string;
+  agreementID: string;
 
   @format("uuid")
   planID: string;
