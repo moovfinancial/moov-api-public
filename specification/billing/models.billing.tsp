@@ -72,7 +72,7 @@ model BillableFee {
 @example(ExampleFeeProperties)
 model FeeProperties {
   @doc("A fixed fee that is applied to the amount of each transaction in the `fixed` and `blended` fee models.")
-  fixedAmount?: AmountDecimal | null;
+  fixedAmount?: AmountDecimal;
 
   @doc("""
     A percentage fee that is applied to the amount of each transaction in the `blended` fee model, expressed as a decimal. 
@@ -84,10 +84,10 @@ model FeeProperties {
   variableRate?: string;
 
   @doc("Specifies the minimum allowable spending for a single transaction, working as a transaction floor.")
-  minPerTransaction?: AmountDecimal | null;
+  minPerTransaction?: AmountDecimal;
 
   @doc("Specifies the maximum allowable spending for a single transaction, working as a transaction ceiling.")
-  maxPerTransaction?: AmountDecimal | null;
+  maxPerTransaction?: AmountDecimal;
 }
 
 @doc("Defines the specific conditions that must be met for the fee to be applied.")
