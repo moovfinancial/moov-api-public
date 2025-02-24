@@ -15378,6 +15378,7 @@ components:
         billableFeeID:
           type: string
           format: uuid
+          example: c520f1b9-0ba7-42f5-b977-248cdbe41c69
         billableEvent:
           type: string
           description: A unique code identifying a charge.
@@ -15387,7 +15388,9 @@ components:
           description: Specifies the name of the fee that will be billed.
           example: ACH Direct Debit
         feeModel:
-          $ref: '#/components/schemas/FeeModel'
+          allOf:
+            - $ref: '#/components/schemas/FeeModel'
+          example: blended
         feeCategory:
           allOf:
             - $ref: '#/components/schemas/FeeCategory'
@@ -17248,9 +17251,7 @@ components:
       type: object
       additionalProperties: {}
       description: Defines the specific conditions that must be met for the fee to be applied.
-      example:
-        cardBrand:
-          - visa
+      example: {}
     FeeModel:
       type: string
       enum:

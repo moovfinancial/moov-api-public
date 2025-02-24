@@ -52,6 +52,7 @@ model PartnerPricing {
 
 model BillableFee {
   @format("uuid")
+  @example("c520f1b9-0ba7-42f5-b977-248cdbe41c69")
   billableFeeID?: string;
 
   @doc("A unique code identifying a charge.")
@@ -62,6 +63,7 @@ model BillableFee {
   @example("ACH Direct Debit")
   feeName?: string;
 
+  @example(FeeModel.blended)
   feeModel: FeeModel;
 
   @example(FeeCategory.ach)
@@ -94,7 +96,7 @@ model FeeProperties {
 }
 
 @doc("Defines the specific conditions that must be met for the fee to be applied.")
-@example(#{ cardBrand: #["visa"] })
+@example(#{})
 model FeeConditions is Record<unknown>;
 
 @doc("Specifies the card processing pricing model")
