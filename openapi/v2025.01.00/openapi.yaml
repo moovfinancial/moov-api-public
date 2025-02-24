@@ -10063,6 +10063,7 @@ paths:
                   summary: Reversed by cancellation
                   value:
                     cancellation:
+                      cancellationID: 89ca7f54-13ba-4714-b9af-17163eae2057
                       status: completed
                       createdOn: '2025-01-19T03:02:43.255309588Z'
         '202':
@@ -15553,9 +15554,12 @@ components:
     Cancellation:
       type: object
       required:
+        - cancellationID
         - status
         - createdOn
       properties:
+        cancellationID:
+          type: string
         status:
           $ref: '#/components/schemas/CancellationStatus'
         createdOn:
@@ -15803,6 +15807,12 @@ components:
         amount:
           $ref: '#/components/schemas/Amount'
       description: Details of a card dispute.
+    CardAcquiringModel:
+      type: string
+      enum:
+        - cost-plus
+        - flat-rate
+      description: Specifies the card processing pricing model
     CardAcquiringRefund:
       type: object
       required:
@@ -15829,12 +15839,6 @@ components:
         cardDetails:
           $ref: '#/components/schemas/RefundCardDetails'
       description: Details of a card refund.
-    CardAcquringModel:
-      type: string
-      enum:
-        - cost-plus
-        - flat-rate
-      description: Specifies the card processing pricing model
     CardAddress:
       type: object
       required:
@@ -17261,7 +17265,7 @@ components:
       required:
         - planID
         - name
-        - cardAcquringModel
+        - cardAcquiringModel
         - billableFees
         - createdAt
       properties:
@@ -17275,8 +17279,8 @@ components:
         description:
           type: string
           description: A description of the fee plan.
-        cardAcquringModel:
-          $ref: '#/components/schemas/CardAcquringModel'
+        cardAcquiringModel:
+          $ref: '#/components/schemas/CardAcquiringModel'
         billableFees:
           type: array
           items:
@@ -17288,15 +17292,15 @@ components:
     FeePlanAgreement:
       type: object
       required:
-        - aggreementID
+        - agreementID
         - planID
         - name
         - acceptedOn
         - status
-        - cardAcquringModel
+        - CardAcquiringModel
         - billableFees
       properties:
-        aggreementID:
+        agreementID:
           type: string
           format: uuid
         planID:
@@ -17316,8 +17320,8 @@ components:
           format: date-time
         status:
           $ref: '#/components/schemas/FeePlanAgreementStatus'
-        cardAcquringModel:
-          $ref: '#/components/schemas/CardAcquringModel'
+        CardAcquiringModel:
+          $ref: '#/components/schemas/CardAcquiringModel'
         billableFees:
           type: array
           items:
@@ -17336,10 +17340,8 @@ components:
       type: object
       properties:
         fixedAmount:
-          type: object
           allOf:
             - $ref: '#/components/schemas/AmountDecimal'
-          nullable: true
           description: A fixed fee that is applied to the amount of each transaction in the `fixed` and `blended` fee models.
         variableRate:
           type: string
@@ -17350,16 +17352,12 @@ components:
             For example, 0.05% is '0.05'.
           example: '0.05'
         minPerTransaction:
-          type: object
           allOf:
             - $ref: '#/components/schemas/AmountDecimal'
-          nullable: true
           description: Specifies the minimum allowable spending for a single transaction, working as a transaction floor.
         maxPerTransaction:
-          type: object
           allOf:
             - $ref: '#/components/schemas/AmountDecimal'
-          nullable: true
           description: Specifies the maximum allowable spending for a single transaction, working as a transaction ceiling.
       description: Defines the specific parameters used for fee calculation.
       example:
@@ -18672,7 +18670,7 @@ components:
         - planID
         - name
         - revenueShare
-        - cardAcquringModel
+        - CardAcquiringModel
         - billableFees
         - createdAt
       properties:
@@ -18690,8 +18688,8 @@ components:
           type: integer
           description: The integer percentage value of the revenue split for partner.
           example: 10
-        cardAcquringModel:
-          $ref: '#/components/schemas/CardAcquringModel'
+        CardAcquiringModel:
+          $ref: '#/components/schemas/CardAcquiringModel'
         billableFees:
           type: array
           items:
@@ -20329,11 +20327,20 @@ components:
             holderName: Jules Jackson
             billingAddress:
               postalCode: '80301'
+            cardCategory: credit
+            issuerURL: https://www.visa.com
+            issuerPhone: '+18001234567'
+            domesticPushToCard: standard
+            domesticPullFromCard: supported
             cardVerification:
               cvv: unavailable
               addressLine1: unavailable
               postalCode: unavailable
-              accountName: {}
+              accountName:
+                firstName: unavailable
+                lastName: unavailable
+                middleName: unavailable
+                fullName: unavailable
             issuer: Moov Visa Sandbox
             issuerCountry: US
             cardAccountUpdater: {}
@@ -20384,11 +20391,14 @@ components:
           $ref: '#/components/schemas/TransferAccount'
         bankAccount:
           $ref: '#/components/schemas/BankAccount'
-        wallet: {}
-        card: {}
+        wallet:
+          $ref: '#/components/schemas/PaymentMethodsWallet'
+        card:
+          $ref: '#/components/schemas/Card'
         achDetails:
           $ref: '#/components/schemas/ACHTransactionDetails'
-        applePay: {}
+        applePay:
+          $ref: '#/components/schemas/ApplePayResponse'
         cardDetails:
           $ref: '#/components/schemas/CardTransactionDetails'
         rtpDetails:
@@ -20441,9 +20451,12 @@ components:
           $ref: '#/components/schemas/TransferAccount'
         bankAccount:
           $ref: '#/components/schemas/BankAccount'
-        wallet: {}
-        card: {}
-        applePay: {}
+        wallet:
+          $ref: '#/components/schemas/PaymentMethodsWallet'
+        card:
+          $ref: '#/components/schemas/Card'
+        applePay:
+          $ref: '#/components/schemas/ApplePayResponse'
         cardDetails:
           $ref: '#/components/schemas/CardTransactionDetails'
         achDetails:
@@ -20958,6 +20971,11 @@ components:
           type: integer
           format: int64
           description: Total fees paid for the transaction. The value is in the smallest unit of the specified currency. In USD this is cents, for example, $12.04 is 1204 and $0.99 is 99.
+        feeIDs:
+          type: array
+          items:
+            type: string
+          description: The IDs of the fees paid for the transaction.
         feeDecimal:
           type: string
           pattern: ^\d+\.\d{1,9}$
