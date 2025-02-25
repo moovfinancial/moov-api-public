@@ -45,7 +45,7 @@ model PartnerPricing {
   @example(10)
   revenueShare: integer;
 
-  CardAcquiringModel: CardAcquiringModel;
+  cardAcquiringModel: CardAcquiringModel;
   billableFees: BillableFee[];
   createdAt: utcDateTime;
 }

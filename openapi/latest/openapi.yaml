@@ -15646,7 +15646,6 @@ components:
         - fingerprint
         - brand
         - cardType
-        - cardCategory
         - lastFourCardNumber
         - bin
         - expiration
@@ -17297,7 +17296,7 @@ components:
         - name
         - acceptedOn
         - status
-        - CardAcquiringModel
+        - cardAcquiringModel
         - billableFees
       properties:
         agreementID:
@@ -17320,7 +17319,7 @@ components:
           format: date-time
         status:
           $ref: '#/components/schemas/FeePlanAgreementStatus'
-        CardAcquiringModel:
+        cardAcquiringModel:
           $ref: '#/components/schemas/CardAcquiringModel'
         billableFees:
           type: array
@@ -18670,7 +18669,7 @@ components:
         - planID
         - name
         - revenueShare
-        - CardAcquiringModel
+        - cardAcquiringModel
         - billableFees
         - createdAt
       properties:
@@ -18688,7 +18687,7 @@ components:
           type: integer
           description: The integer percentage value of the revenue split for partner.
           example: 10
-        CardAcquiringModel:
+        cardAcquiringModel:
           $ref: '#/components/schemas/CardAcquiringModel'
         billableFees:
           type: array
@@ -20327,9 +20326,6 @@ components:
             holderName: Jules Jackson
             billingAddress:
               postalCode: '80301'
-            cardCategory: credit
-            issuerURL: https://www.visa.com
-            issuerPhone: '+18001234567'
             domesticPushToCard: standard
             domesticPullFromCard: supported
             cardVerification:
@@ -20390,11 +20386,11 @@ components:
         account:
           $ref: '#/components/schemas/TransferAccount'
         bankAccount:
-          $ref: '#/components/schemas/BankAccount'
+          $ref: '#/components/schemas/PaymentMethodsBankAccount'
         wallet:
           $ref: '#/components/schemas/PaymentMethodsWallet'
         card:
-          $ref: '#/components/schemas/Card'
+          $ref: '#/components/schemas/PaymentMethodsCard'
         achDetails:
           $ref: '#/components/schemas/ACHTransactionDetails'
         applePay:
@@ -20450,11 +20446,11 @@ components:
         account:
           $ref: '#/components/schemas/TransferAccount'
         bankAccount:
-          $ref: '#/components/schemas/BankAccount'
+          $ref: '#/components/schemas/PaymentMethodsBankAccount'
         wallet:
           $ref: '#/components/schemas/PaymentMethodsWallet'
         card:
-          $ref: '#/components/schemas/Card'
+          $ref: '#/components/schemas/PaymentMethodsCard'
         applePay:
           $ref: '#/components/schemas/ApplePayResponse'
         cardDetails:

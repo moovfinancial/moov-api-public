@@ -75,9 +75,9 @@ model TransferSource {
   paymentMethodID: string;
   paymentMethodType: string;
   account: TransferAccount;
-  bankAccount?: BankAccount;
+  bankAccount?: PaymentMethodsBankAccount;
   wallet?: PaymentMethodsWallet;
-  card?: Card;
+  card?: PaymentMethodsCard;
   applePay?: ApplePayResponse;
   cardDetails?: CardTransactionDetails;
   achDetails?: ACHTransactionDetails;
@@ -93,9 +93,9 @@ model TransferDestination {
   paymentMethodID: string;
   paymentMethodType: string;
   account: TransferAccount;
-  bankAccount?: BankAccount;
+  bankAccount?: PaymentMethodsBankAccount;
   wallet?: PaymentMethodsWallet;
-  card?: Card;
+  card?: PaymentMethodsCard;
   achDetails?: ACHTransactionDetails;
   applePay?: ApplePayResponse;
   cardDetails?: CardTransactionDetails;

@@ -30,9 +30,6 @@ const ExamplePendingCardToWalletTransfer: Transfer = #{
       expiration: #{ month: "01", year: "28" },
       holderName: "Jules Jackson",
       billingAddress: #{ postalCode: "80301" },
-      cardCategory: "credit",
-      issuerURL: "https://www.visa.com",
-      issuerPhone: "+18001234567",
       domesticPushToCard: DomesticPushToCard.standard,
       domesticPullFromCard: DomesticPullFromCard.supported,
       cardVerification: #{
