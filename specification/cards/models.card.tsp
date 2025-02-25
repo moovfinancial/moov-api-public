@@ -67,7 +67,7 @@ model Card {
     The category or level of the card defined by the issuer.
     Examples include, but not limited to, "REWARDS", "TRADITIONAL REWARDS", "CLASSIC", and "CORPORATE PURCHASING".
     """)
-  cardCategory: string;
+  cardCategory?: string;
 
   @doc("Last four digits of the card number")
   @minLength(4)

@@ -22,7 +22,7 @@ model FeePlan {
   @doc("A description of the fee plan.")
   description?: string;
 
-  cardAcquringModel: CardAcquringModel;
+  cardAcquiringModel: CardAcquiringModel;
 
   @doc("Additional usage-based fees for this plan.")
   billableFees: BillableFee[];
@@ -45,7 +45,7 @@ model PartnerPricing {
   @example(10)
   revenueShare: integer;
 
-  cardAcquringModel: CardAcquringModel;
+  cardAcquiringModel: CardAcquiringModel;
   billableFees: BillableFee[];
   createdAt: utcDateTime;
 }
@@ -72,7 +72,7 @@ model BillableFee {
 @example(ExampleFeeProperties)
 model FeeProperties {
   @doc("A fixed fee that is applied to the amount of each transaction in the `fixed` and `blended` fee models.")
-  fixedAmount?: AmountDecimal | null;
+  fixedAmount?: AmountDecimal;
 
   @doc("""
     A percentage fee that is applied to the amount of each transaction in the `blended` fee model, expressed as a decimal. 
@@ -84,10 +84,10 @@ model FeeProperties {
   variableRate?: string;
 
   @doc("Specifies the minimum allowable spending for a single transaction, working as a transaction floor.")
-  minPerTransaction?: AmountDecimal | null;
+  minPerTransaction?: AmountDecimal;
 
   @doc("Specifies the maximum allowable spending for a single transaction, working as a transaction ceiling.")
-  maxPerTransaction?: AmountDecimal | null;
+  maxPerTransaction?: AmountDecimal;
 }
 
 @doc("Defines the specific conditions that must be met for the fee to be applied.")
@@ -95,7 +95,7 @@ model FeeProperties {
 model FeeConditions is Record<unknown>;
 
 @doc("Specifies the card processing pricing model")
-enum CardAcquringModel {
+enum CardAcquiringModel {
   costPlus: "cost-plus",
   flatRate: "flat-rate",
 }

@@ -4,7 +4,7 @@ namespace MoovAPI;
 
 model FeePlanAgreement {
   @format("uuid")
-  aggreementID: string;
+  agreementID: string;
 
   @format("uuid")
   planID: string;
@@ -20,7 +20,7 @@ model FeePlanAgreement {
 
   acceptedOn: utcDateTime;
   status: FeePlanAgreementStatus;
-  cardAcquringModel: CardAcquringModel;
+  cardAcquiringModel: CardAcquiringModel;
   billableFees: BillableFee[];
 }
 

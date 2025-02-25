@@ -35,6 +35,7 @@ model ReversedWithRefund {
 }
 
 model Cancellation {
+  cancellationID: string;
   status: CancellationStatus;
   createdOn: utcDateTime;
 }
