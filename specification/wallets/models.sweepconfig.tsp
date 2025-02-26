@@ -33,7 +33,7 @@ model PatchSweepConfig {
   statementDescriptor?: SweepStatementDescriptor | null;
 
   @pattern(Decimal2StringPattern)
-  minimumBalance?: string;
+  minimumBalance?: string | null;
 }
 
 model PatchSweepConfigError {
