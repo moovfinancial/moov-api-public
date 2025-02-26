@@ -15570,6 +15570,7 @@ components:
       enum:
         - pending
         - completed
+        - failed
     CapabilitiesError:
       type: object
       properties:
@@ -18808,13 +18809,24 @@ components:
       type: object
       properties:
         status:
-          $ref: '#/components/schemas/SweepConfigStatus'
+          allOf:
+            - $ref: '#/components/schemas/SweepConfigStatus'
+          nullable: true
         pushPaymentMethodID:
-          $ref: '#/components/schemas/PaymentMethodID'
+          type: object
+          allOf:
+            - $ref: '#/components/schemas/PaymentMethodID'
+          nullable: true
         pullPaymentMethodID:
-          $ref: '#/components/schemas/PaymentMethodID'
+          type: object
+          allOf:
+            - $ref: '#/components/schemas/PaymentMethodID'
+          nullable: true
         statementDescriptor:
-          $ref: '#/components/schemas/SweepStatementDescriptor'
+          type: object
+          allOf:
+            - $ref: '#/components/schemas/SweepStatementDescriptor'
+          nullable: true
         minimumBalance:
           type: string
           pattern: ^\d+\.\d{1,2}$
