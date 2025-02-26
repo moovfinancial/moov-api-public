@@ -50,16 +50,16 @@ model PartnerPricing {
   createdAt: utcDateTime;
 }
 
+@example(ExampleBillableFeeACH, #{ title: "ACH Fee" })
+@example(ExampleBillableFeeCard, #{ title: "Card Fee" })
 model BillableFee {
   @format("uuid")
   billableFeeID?: string;
 
   @doc("A unique code identifying a charge.")
-  @example("ach-volume")
   billableEvent?: string;
 
   @doc("Specifies the name of the fee that will be billed.")
-  @example("ACH Direct Debit")
   feeName?: string;
 
   feeModel: FeeModel;

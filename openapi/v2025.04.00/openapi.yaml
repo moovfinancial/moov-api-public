@@ -15382,11 +15382,9 @@ components:
         billableEvent:
           type: string
           description: A unique code identifying a charge.
-          example: ach-volume
         feeName:
           type: string
           description: Specifies the name of the fee that will be billed.
-          example: ACH Direct Debit
         feeModel:
           $ref: '#/components/schemas/FeeModel'
         feeCategory:
@@ -15395,6 +15393,19 @@ components:
           $ref: '#/components/schemas/FeeProperties'
         feeConditions:
           $ref: '#/components/schemas/FeeConditions'
+      example:
+        billableFeeID: 9d957d33-1a9a-47aa-9460-fe1a90f003dd
+        billableEvent: card-auth-volume
+        feeName: Card decline fee
+        feeModel: fixed
+        feeCategory: card-acquiring
+        feeProperties:
+          fixedAmount:
+            currency: USD
+            valueDecimal: '0.1'
+        feeConditions:
+          transactionType:
+            - decline
     BirthDate:
       type: object
       required:
