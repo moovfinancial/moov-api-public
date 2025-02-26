@@ -15378,27 +15378,40 @@ components:
         billableFeeID:
           type: string
           format: uuid
-          example: c520f1b9-0ba7-42f5-b977-248cdbe41c69
         billableEvent:
           type: string
           description: A unique code identifying a charge.
-          example: ach-volume
         feeName:
           type: string
           description: Specifies the name of the fee that will be billed.
-          example: ACH Direct Debit
         feeModel:
-          allOf:
-            - $ref: '#/components/schemas/FeeModel'
-          example: blended
+          $ref: '#/components/schemas/FeeModel'
         feeCategory:
-          allOf:
-            - $ref: '#/components/schemas/FeeCategory'
-          example: ach
+          $ref: '#/components/schemas/FeeCategory'
         feeProperties:
           $ref: '#/components/schemas/FeeProperties'
         feeConditions:
           $ref: '#/components/schemas/FeeConditions'
+      example:
+        billableFeeID: c520f1b9-0ba7-42f5-b977-248cdbe41c69
+        billableEvent: ach-volume
+        feeName: ACH Same Day Credit Fee
+        feeModel: blended
+        feeCategory: ach
+        feeProperties:
+          fixedAmount:
+            currency: USD
+            valueDecimal: '0.0195'
+          variableRate: '0.15'
+          minPerTransaction:
+            currency: USD
+            valueDecimal: '0.0195'
+          maxPerTransaction:
+            currency: USD
+            valueDecimal: '0.035'
+        feeConditions:
+          paymentMethodType:
+            - ach-credit-same-day
     BirthDate:
       type: object
       required:
@@ -17251,7 +17264,9 @@ components:
       type: object
       additionalProperties: {}
       description: Defines the specific conditions that must be met for the fee to be applied.
-      example: {}
+      example:
+        cardBrand:
+          - visa
     FeeModel:
       type: string
       enum:
