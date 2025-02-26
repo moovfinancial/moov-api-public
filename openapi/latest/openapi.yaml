@@ -15394,10 +15394,10 @@ components:
           $ref: '#/components/schemas/FeeConditions'
       example:
         billableFeeID: c520f1b9-0ba7-42f5-b977-248cdbe41c69
-        billableEvent: ach-volume
-        feeName: ACH Same Day Credit Fee
+        billableEvent: card-auth-volume
+        feeName: Card decline fee
         feeModel: blended
-        feeCategory: ach
+        feeCategory: card-acquiring
         feeProperties:
           fixedAmount:
             currency: USD
@@ -15410,8 +15410,8 @@ components:
             currency: USD
             valueDecimal: '0.035'
         feeConditions:
-          paymentMethodType:
-            - ach-credit-same-day
+          transactionType:
+            - decline
     BirthDate:
       type: object
       required:

@@ -50,7 +50,8 @@ model PartnerPricing {
   createdAt: utcDateTime;
 }
 
-@example(ExampleBillableFeeACH)
+@example(ExampleBillableFeeACH, #{ title: "ACH Fee" })
+@example(ExampleBillableFeeCard, #{ title: "Card Fee" })
 model BillableFee {
   @format("uuid")
   billableFeeID?: string;
