@@ -57,4 +57,5 @@ model CreatedReversalAsyncResponse {
 enum CancellationStatus {
   pending,
   completed,
+  failed,
 }

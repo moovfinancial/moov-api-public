@@ -27,10 +27,10 @@ model CreateSweepConfigError {
 }
 
 model PatchSweepConfig {
-  status?: SweepConfigStatus;
-  pushPaymentMethodID?: PaymentMethodID;
-  pullPaymentMethodID?: PaymentMethodID;
-  statementDescriptor?: SweepStatementDescriptor;
+  status?: SweepConfigStatus | null;
+  pushPaymentMethodID?: PaymentMethodID | null;
+  pullPaymentMethodID?: PaymentMethodID | null;
+  statementDescriptor?: SweepStatementDescriptor | null;
 
   @pattern(Decimal2StringPattern)
   minimumBalance?: string;
