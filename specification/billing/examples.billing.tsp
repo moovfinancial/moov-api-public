@@ -15,17 +15,8 @@ const ExampleBillableFeeACH: BillableFee = #{
   feeName: "ACH Same Day Credit Fee",
   feeModel: FeeModel.fixed,
   feeCategory: FeeCategory.ach,
-  feeProperties: #{
-    fixedAmount: #{
-      currency: "USD",
-      valueDecimal: "0.5"
-    }
-  },
-  feeConditions: #{
-    paymentMethodType: #[
-      PaymentMethodType.achCreditSameDay,
-    ]
-  }
+  feeProperties: #{ fixedAmount: #{ currency: "USD", valueDecimal: "0.5" } },
+  feeConditions: #{ paymentMethodType: #[PaymentMethodType.achCreditSameDay] },
 };
 
 const ExampleBillableFeeCard: BillableFee = #{
@@ -34,15 +25,6 @@ const ExampleBillableFeeCard: BillableFee = #{
   feeName: "Card decline fee",
   feeModel: FeeModel.fixed,
   feeCategory: FeeCategory.cardAcquiring,
-  feeProperties: #{
-    fixedAmount: #{
-      currency: "USD",
-      valueDecimal: "0.1"
-    }
-  },
-  feeConditions: #{
-    transactionType: #[
-      "decline"
-    ]
-  }
+  feeProperties: #{ fixedAmount: #{ currency: "USD", valueDecimal: "0.1" } },
+  feeConditions: #{ transactionType: #["decline"] },
 };

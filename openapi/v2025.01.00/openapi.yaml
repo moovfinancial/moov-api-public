@@ -15393,22 +15393,15 @@ components:
         feeConditions:
           $ref: '#/components/schemas/FeeConditions'
       example:
-        billableFeeID: c520f1b9-0ba7-42f5-b977-248cdbe41c69
+        billableFeeID: 9d957d33-1a9a-47aa-9460-fe1a90f003dd
         billableEvent: card-auth-volume
         feeName: Card decline fee
-        feeModel: blended
+        feeModel: fixed
         feeCategory: card-acquiring
         feeProperties:
           fixedAmount:
             currency: USD
-            valueDecimal: '0.0195'
-          variableRate: '0.15'
-          minPerTransaction:
-            currency: USD
-            valueDecimal: '0.0195'
-          maxPerTransaction:
-            currency: USD
-            valueDecimal: '0.035'
+            valueDecimal: '0.1'
         feeConditions:
           transactionType:
             - decline
