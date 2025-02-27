@@ -18840,6 +18840,7 @@ components:
           nullable: true
         minimumBalance:
           type: string
+          nullable: true
           pattern: ^\d+\.\d{1,2}$
     PatchSweepConfigError:
       type: object
@@ -20330,6 +20331,7 @@ components:
       example:
         transferID: d835gf30-4b19-4850-a9b2-c0624c41ecb3
         source:
+          transferID: d835gf30-4b19-4850-a9b2-c0624c41ecb3
           paymentMethodID: 9506dbf6-4208-44c3-ad8a-e4431660e1f2
           paymentMethodType: card-payment
           account:
@@ -20405,7 +20407,7 @@ components:
         paymentMethodID:
           type: string
         paymentMethodType:
-          type: string
+          $ref: '#/components/schemas/PaymentMethodType'
         account:
           $ref: '#/components/schemas/TransferAccount'
         bankAccount:
@@ -20458,14 +20460,18 @@ components:
     TransferSource:
       type: object
       required:
+        - transferID
         - paymentMethodID
         - paymentMethodType
         - account
       properties:
+        transferID:
+          type: string
+          format: uuid
         paymentMethodID:
           type: string
         paymentMethodType:
-          type: string
+          $ref: '#/components/schemas/PaymentMethodType'
         account:
           $ref: '#/components/schemas/TransferAccount'
         bankAccount:
