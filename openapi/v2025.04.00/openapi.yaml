@@ -10822,6 +10822,7 @@ paths:
         - $ref: '#/components/parameters/Pagination.count'
         - $ref: '#/components/parameters/ListTransactionsQuery.walletID'
         - $ref: '#/components/parameters/ListTransactionsQuery.transactionType'
+        - $ref: '#/components/parameters/ListTransactionsQuery.transactionTypes'
         - $ref: '#/components/parameters/ListTransactionsQuery.sourceType'
         - $ref: '#/components/parameters/ListTransactionsQuery.sourceID'
         - $ref: '#/components/parameters/ListTransactionsQuery.status'
@@ -14102,7 +14103,7 @@ components:
       name: createdStartDateTime
       in: query
       required: false
-      description: 'Optional date-time which inclusively filters all transactions created after this date-time.  '
+      description: Optional date-time which inclusively filters all transactions created after this date-time.
       schema:
         type: string
         format: date-time
@@ -14147,6 +14148,16 @@ components:
       description: Optional parameter to filter by transaction type.
       schema:
         $ref: '#/components/schemas/WalletTransactionType'
+      explode: false
+    ListTransactionsQuery.transactionTypes:
+      name: transactionTypes
+      in: query
+      required: false
+      description: Optional, comma-separated parameter to filter by transaction types.
+      schema:
+        type: array
+        items:
+          $ref: '#/components/schemas/WalletTransactionType'
       explode: false
     ListTransactionsQuery.walletID:
       name: walletID

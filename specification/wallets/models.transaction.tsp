@@ -119,6 +119,17 @@ model ListTransactionsQuery {
   transactionType?: WalletTransactionType;
 
   @doc("""
+    Optional, comma-separated parameter to filter by transaction types.
+    """)
+  @example(#[
+    WalletTransactionType.cardPayment,
+    WalletTransactionType.refund,
+    WalletTransactionType.topUp
+  ])
+  @query
+  transactionTypes?: WalletTransactionType[];
+
+  @doc("""
     Optional parameter to filter by source type (i.e. transfer, dispute, issuing-transaction).
     """)
   @query
@@ -138,7 +149,7 @@ model ListTransactionsQuery {
   status?: WalletTransactionStatus;
 
   @doc("""
-    Optional date-time which inclusively filters all transactions created after this date-time.  
+    Optional date-time which inclusively filters all transactions created after this date-time.
     """)
   @query
   createdStartDateTime?: utcDateTime;
