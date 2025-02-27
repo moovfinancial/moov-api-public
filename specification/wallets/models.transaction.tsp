@@ -43,6 +43,7 @@ enum WalletTransactionSourceType {
   issuingAuthorization: "issuing-authorization",
   sweep: "sweep",
   adjustment: "adjustment",
+  fee: "fee",
 }
 
 enum WalletTransactionStatus {

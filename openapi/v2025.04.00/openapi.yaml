@@ -21035,6 +21035,7 @@ components:
         - issuing-authorization
         - sweep
         - adjustment
+        - fee
     WalletTransactionStatus:
       type: string
       enum:
