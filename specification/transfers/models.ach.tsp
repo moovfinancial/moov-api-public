@@ -17,6 +17,7 @@ model ACHTransactionDetails {
   originatedOn?: utcDateTime;
   correctedOn?: utcDateTime;
   returnedOn?: utcDateTime;
+  failedOn?: utcDateTime;
   completedOn?: utcDateTime;
   debitHoldPeriod?: DebitHoldPeriod;
 }

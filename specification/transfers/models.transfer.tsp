@@ -32,8 +32,8 @@ model Transfer {
   transferID: string;
 
   createdOn: utcDateTime;
-  source?: TransferSource;
-  destination?: TransferDestination;
+  source: TransferSource;
+  destination: TransferDestination;
   completedOn?: utcDateTime;
   status: TransferStatus;
   failureReason?: TransferFailureReason;
