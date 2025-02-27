@@ -13,7 +13,6 @@ const ExampleCreateCardToWalletTransfer: CreateTransfer = #{
 const ExamplePendingCardToWalletTransfer: Transfer = #{
   transferID: "d835gf30-4b19-4850-a9b2-c0624c41ecb3",
   source: #{
-    transferID: "d835gf30-4b19-4850-a9b2-c0624c41ecb3",
     paymentMethodID: "9506dbf6-4208-44c3-ad8a-e4431660e1f2",
     paymentMethodType: PaymentMethodType.cardPayment,
     account: #{

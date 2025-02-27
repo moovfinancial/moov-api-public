@@ -73,7 +73,8 @@ model AsyncTransfer {
 
 model TransferSource {
   @format("uuid")
-  transferID: string;
+  @doc("UUID present only if the transfer is part of a transfer group.")
+  transferID?: string;
 
   paymentMethodID: string;
   paymentMethodType: PaymentMethodType;
