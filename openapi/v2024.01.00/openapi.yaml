@@ -14735,7 +14735,7 @@ components:
           example: Apt 302
         city:
           type: string
-          maxLength: 24
+          maxLength: 32
           example: Boulder
         stateOrProvince:
           type: string
@@ -14793,7 +14793,7 @@ components:
           example: Apt 302
         city:
           type: string
-          maxLength: 24
+          maxLength: 32
           example: Boulder
         stateOrProvince:
           type: string
