@@ -10,7 +10,7 @@ model Address {
   addressLine2?: string;
 
   @example("Boulder")
-  @maxLength(24)
+  @maxLength(32)
   city: string;
 
   @example("CO")
