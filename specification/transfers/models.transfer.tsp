@@ -72,8 +72,11 @@ model AsyncTransfer {
 }
 
 model TransferSource {
+  @format("uuid")
+  transferID: string;
+
   paymentMethodID: string;
-  paymentMethodType: string;
+  paymentMethodType: PaymentMethodType;
   account: TransferAccount;
   bankAccount?: PaymentMethodsBankAccount;
   wallet?: PaymentMethodsWallet;
@@ -91,7 +94,7 @@ model TransferAccount {
 
 model TransferDestination {
   paymentMethodID: string;
-  paymentMethodType: string;
+  paymentMethodType: PaymentMethodType;
   account: TransferAccount;
   bankAccount?: PaymentMethodsBankAccount;
   wallet?: PaymentMethodsWallet;
