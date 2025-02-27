@@ -14403,6 +14403,9 @@ components:
         returnedOn:
           type: string
           format: date-time
+        failedOn:
+          type: string
+          format: date-time
         completedOn:
           type: string
           format: date-time
@@ -20278,6 +20281,8 @@ components:
       required:
         - transferID
         - createdOn
+        - source
+        - destination
         - status
         - amount
       properties:
