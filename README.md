@@ -1,7 +1,14 @@
 # moov-api
 Specifications for Moov's public API endpoints.
 
+If you're new to Moov API, please familiarize yourself with the [Project conventions](#project-conventions) before contributing.
+For more information on the TypeSpec language, see the [TypeSpec documentation](https://typespec.io/docs).
+
 ## Setup
+
+TypeSpec development is best done in Visual Studio Code, as it's currently the only editor with a plugin that supports the language.
+
+To set up your development environment:
 
 1. Install the [EditorConfig](https://marketplace.visualstudio.com/items?itemName=EditorConfig.EditorConfig) extension
 2. Install the [TSP extension for VSCode](https://marketplace.visualstudio.com/items?itemName=typespec.typespec-vscode)
@@ -11,46 +18,9 @@ Specifications for Moov's public API endpoints.
   - This node project also has scripts that run automatically after you pull from main that will check your `node` version, try to update it with the version at `.nvmrc` automatically through `nvm` and `mise`, so ideally you wouldn't need to worry at all about maintaining your `node` up to date once youset it up through `nvm` or `mise`
 4. Run `npm i`
 
-## Versioning
+### Alternative setup
 
-Versions are defined in `./specification/models.version.tsp`. New versions should be added to the enum in chronological order
-to ensure the resulting OpenAPI files are correct. Each API version will get a new output directory in `./openapi`.
-
-Once a version has been defined in the `Versions` enum, decorators like `@added`, `@removed`, and `@madeOptional` can be used
-with the appropriate version on models and operations.
-
-```typespec
-import "@typespec/versioning";
-import "../models.version.tsp"
-
-using TypeSpec.Versioning;
-
-namespace MoovAPI;
-
-model Thing {
-  thingID: string;
-
-  // This field will not show up in ./openapi/openapi.yaml, but will appear in ./openapi/v20241007/openapi.yaml and
-  // anything newer, including "latest".
-  //
-  // NOTE: VSCode may underline this decorator as though it contained an error, but it is valid
-  // and will compile correctly. The IDE isn't great at resolving version enums across namespaces.
-  @added(MoovAPI.Versions.v2025q1)
-  newField: string;
-
-  // This will be flagged with `deprecated: true`
-  #deprecated "Deprecation message..."
-  gonnaBeRemovedSomeday: string;
-
-  // This field will appear in OpenAPI files up to the version preceeding v20241007.
-  @removed(MoovAPI.Versions.v2025q2)
-  oldField: string;
-}
-```
-
-Refer to TypeSpec's documentation for more information:
-* [Versioning Guide](https://typespec.io/docs/libraries/versioning/guide)
-* [Decorators](https://typespec.io/docs/libraries/versioning/reference/decorators)
+If you prefer not to install Node on your machine, you can still format and compile your TypeSpec changes with `make docker`, instead of `make`.
 
 ## Development
 
@@ -58,14 +28,19 @@ APIs are defined using [TypeSpec](https://typespec.io/docs), which is then compi
 Capabilities, Cards, etc.) should have its own subdirectory. The subdirectory should have main, models, and routes files.
 Each subdirectory must be imported in the top-level `specification/main.tsp` file.
 
-At a glance, the process to add new APIs to this project looks like:
+The workflow for modifying existing TypeSpec files is fairly straightforward:
+
+1. Make changes to the relevant `*.tsp` file(s)
+2. Run `make` (or `make docker`) to format the project and compile the changes
+
+If you're adding a new domain, follow these steps:
 
 1. Create a subdirectory for the relavent domain under `specification/`, if one doesn't already exist (e.g. `specification/cards`)
-1. Define models in `models.{name}.tsp`
-1. Define routes in `routes.{name}.tsp`, and import the models file
-2. Create the subdirectory's `main.tsp` if needed, and import the routes file
-3. Make sure the subdirectory is imported in `specification/main.tsp`
-   * If this step is missed, the compiler won't find anything in the new subdirectory
+2. Define models in `models.{name}.tsp`
+3. Define routes in `routes.{name}.tsp`, and import the models file
+4. Create the subdirectory's `main.tsp`, if needed, and import the routes file
+5. Make sure the subdirectory is imported in the top-level `specification/main.tsp` file
+   * If this step is missed, the compiler won't include the new domain in the generated OpenAPI file
 
 The following sections describe each component in more detail.
 
@@ -115,6 +90,47 @@ This project uses a global `BasicAuth` scheme defined at the namespace level in 
 also support OAuth2, but OpenAPI and code generators don't support parameterized OAuth2 scopes. Instead of 
 defining our OAauth2 flow as an OpenAPI `securityScheme`, we document the required scope in each operation's 
 description. This allows us to maintain complete documentation while avoiding problems with code generation.
+
+## Versioning
+
+Versions are defined in `./specification/models.version.tsp`. New versions should be added to the enum in chronological order
+to ensure the resulting OpenAPI files are correct. Each API version will get a new output directory in `./openapi`.
+
+Once a version has been defined in the `Versions` enum, decorators like `@added`, `@removed`, and `@madeOptional` can be used
+with the appropriate version on models and operations.
+
+```typespec
+import "@typespec/versioning";
+import "../models.version.tsp"
+
+using TypeSpec.Versioning;
+
+namespace MoovAPI;
+
+model Thing {
+  thingID: string;
+
+  // This field will not show up in ./openapi/openapi.yaml, but will appear in ./openapi/v20241007/openapi.yaml and
+  // anything newer, including "latest".
+  //
+  // NOTE: VSCode may underline this decorator as though it contained an error, but it is valid
+  // and will compile correctly. The IDE isn't great at resolving version enums across namespaces.
+  @added(MoovAPI.Versions.v2025q1)
+  newField: string;
+
+  // This will be flagged with `deprecated: true`
+  #deprecated "Deprecation message..."
+  gonnaBeRemovedSomeday: string;
+
+  // This field will appear in OpenAPI files up to the version preceeding v20241007.
+  @removed(MoovAPI.Versions.v2025q2)
+  oldField: string;
+}
+```
+
+Refer to TypeSpec's documentation for more information:
+* [Versioning Guide](https://typespec.io/docs/libraries/versioning/guide)
+* [Decorators](https://typespec.io/docs/libraries/versioning/reference/decorators)
 
 ## Project conventions
 
