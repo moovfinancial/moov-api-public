@@ -65,7 +65,7 @@ model OnboardingInvite {
   returnURL?: string;
 
   @doc("The terms of service URL set by the inviter.")
-  TermsOfServiceURL?: string;
+  termsOfServiceURL?: string;
 
   @doc("""
     List of [scopes](https://docs.moov.io/api/authentication/scopes/) you request to use on this
@@ -87,6 +87,10 @@ model OnboardingInvite {
   @minItems(1)
   @example(#["merchant-direct"])
   feePlanCodes: string[];
+
+  @doc("The account ID of the account that redeemed the invite.")
+  @format("uuid")
+  redeemedAccountID?: string;
 
   prefill?: CreateAccount;
   partner?: OnboardingPartnerAccount;

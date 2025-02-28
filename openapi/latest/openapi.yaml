@@ -18561,7 +18561,7 @@ components:
         returnURL:
           type: string
           description: The scopes requested by the inviter.
-        TermsOfServiceURL:
+        termsOfServiceURL:
           type: string
           description: The terms of service URL set by the inviter.
         scopes:
@@ -18592,6 +18592,10 @@ components:
           description: List of fee plan codes to assign the account created by the invitee.
           example:
             - merchant-direct
+        redeemedAccountID:
+          type: string
+          format: uuid
+          description: The account ID of the account that redeemed the invite.
         prefill:
           $ref: '#/components/schemas/CreateAccount'
         partner:
