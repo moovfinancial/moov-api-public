@@ -101,14 +101,15 @@ enum CardAcquiringModel {
 }
 
 enum FeeCategory {
-  cardAcquiring: "card-acquiring",
-  cardPush: "card-push",
-  cardPull: "card-pull",
   ach: "ach",
-  rtp: "rtp",
+  cardAcquiring: "card-acquiring",
   cardOther: "card-other",
+  cardPull: "card-pull",
+  cardPush: "card-push",
+  monthlyPlatform: "monthly-platform",
   networkPassthrough: "network-passthrough",
   other: "other",
+  rtp: "rtp",
 }
 
 @doc("Specifies the pricing model used for the calculation of the final fee.")

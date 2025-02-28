@@ -5545,6 +5545,8 @@ paths:
         you'll need to specify the `/accounts/{accountID}/profile.read` scope.
       parameters:
         - $ref: '#/components/parameters/VersionHeader'
+        - $ref: '#/components/parameters/Pagination.skip'
+        - $ref: '#/components/parameters/Pagination.count'
         - name: accountID
           in: path
           required: true
@@ -6541,6 +6543,8 @@ paths:
         you'll need to specify the `/accounts/{accountID}/profile.read` scope.
       parameters:
         - $ref: '#/components/parameters/VersionHeader'
+        - $ref: '#/components/parameters/Pagination.skip'
+        - $ref: '#/components/parameters/Pagination.count'
         - name: accountID
           in: path
           required: true
@@ -17263,14 +17267,15 @@ components:
     FeeCategory:
       type: string
       enum:
-        - card-acquiring
-        - card-push
-        - card-pull
         - ach
-        - rtp
+        - card-acquiring
         - card-other
+        - card-pull
+        - card-push
+        - monthly-platform
         - network-passthrough
         - other
+        - rtp
     FeeConditions:
       type: object
       additionalProperties: {}

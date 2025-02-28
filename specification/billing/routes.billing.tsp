@@ -45,6 +45,7 @@ op listFeePlans(
 // @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/profile.read"]>)
 op listFeePlanAgreements(
   ...CommonRequestHeaders,
+  ...Pagination,
 
   @format("uuid")
   @path
@@ -113,6 +114,7 @@ op listPartnerPricing(
 // @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/profile.read"]>)
 op listPartnerPricingAgreements(
   ...CommonRequestHeaders,
+  ...Pagination,
 
   @format("uuid")
   @path
