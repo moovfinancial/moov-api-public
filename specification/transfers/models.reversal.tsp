@@ -1,6 +1,7 @@
 import "@typespec/http";
 import "@typespec/openapi3";
 import "./models.refund.tsp";
+import "./models.cancellation.tsp";
 import "../common/models.header.tsp";
 import "../common/models.response.tsp";
 
@@ -34,12 +35,6 @@ model ReversedWithRefund {
   refund: CardAcquiringRefund;
 }
 
-model Cancellation {
-  cancellationID: string;
-  status: CancellationStatus;
-  createdOn: utcDateTime;
-}
-
 @doc("Successfully initiated a reversal.")
 model CreatedReversalResponse {
   ...CommonResponseHeaders;
@@ -52,10 +47,4 @@ model CreatedReversalAsyncResponse {
   ...CommonResponseHeaders;
   @statusCode statusCode: HttpStatusAccepted;
   @body body: Reversal;
-}
-
-enum CancellationStatus {
-  pending,
-  completed,
-  failed,
 }
