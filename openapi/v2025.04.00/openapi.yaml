@@ -9777,7 +9777,7 @@ paths:
         - name: cancellationID
           in: path
           required: true
-          description: Identifier for the refund.
+          description: Identifier for the cancellation.
           schema:
             type: string
             format: uuid

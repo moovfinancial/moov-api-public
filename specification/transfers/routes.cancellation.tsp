@@ -65,7 +65,7 @@ op getCancellation(
   @path
   transferID: string,
 
-  @doc("Identifier for the refund.")
+  @doc("Identifier for the cancellation.")
   @format("uuid")
   @path
   cancellationID: string,
