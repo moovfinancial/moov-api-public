@@ -10648,11 +10648,11 @@ paths:
                 items:
                   $ref: '#/components/schemas/Sweep'
               example:
-                - sweepID: 01234567-89ab-cdef-0123-456789abcdef
-                  status: accruing
-                  accruedAmount: '100.00'
-                  currency: USD
+                - accruedAmount: '100.00'
                   accrualStartedOn: '2024-05-06T12:20:38.184Z'
+                  currency: USD
+                  status: accruing
+                  sweepID: 01234567-89ab-cdef-0123-456789abcdef
         '401':
           description: The request contained missing or expired authentication.
           headers:
@@ -10741,12 +10741,29 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Sweep'
-              example:
-                sweepID: 01234567-89ab-cdef-0123-456789abcdef
-                status: accruing
-                accruedAmount: '100.00'
-                currency: USD
-                accrualStartedOn: '2024-05-06T12:20:38.184Z'
+              examples:
+                Paid sweep:
+                  summary: Paid sweep
+                  value:
+                    accruedAmount: '100.00'
+                    accrualStartedOn: '2024-05-06T12:20:38.184Z'
+                    accrualEndedOn: '2024-05-06T12:20:38.184Z'
+                    currency: USD
+                    pushPaymentMethodID: 01234567-89ab-cdef-0123-456789abcdef
+                    residualBalance: '0.00'
+                    statementDescriptor: swp_012345
+                    status: paid
+                    sweepID: 01234567-89ab-cdef-0123-456789abcdef
+                    transferAmount: '12.98'
+                    transferID: 01234567-89ab-cdef-0123-456789abcdef
+                Accrued sweep:
+                  summary: Accrued sweep
+                  value:
+                    accruedAmount: '100.00'
+                    accrualStartedOn: '2024-05-06T12:20:38.184Z'
+                    currency: USD
+                    status: accruing
+                    sweepID: 01234567-89ab-cdef-0123-456789abcdef
         '401':
           description: The request contained missing or expired authentication.
           headers:

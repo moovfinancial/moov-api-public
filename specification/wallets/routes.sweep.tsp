@@ -26,7 +26,7 @@ namespace MoovAPI;
   returnType: #{
     xRequestID: ExampleID,
     statusCode: HttpStatusOK,
-    body: #[ExampleSweep],
+    body: #[ExampleAccruedSweep],
   },
 })
 @extension("x-speakeasy-name-override", "list")
@@ -67,18 +67,36 @@ op listSweeps(
   you'll need to specify the `/accounts/{accountID}/wallets.read` scope.
   """)
 // @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/wallets.read"]>)
-@opExample(#{
-  parameters: #{
-    accountID: ExampleID,
-    walletID: ExampleID,
-    sweepID: ExampleID,
+@opExample(
+  #{
+    parameters: #{
+      accountID: ExampleID,
+      walletID: ExampleID,
+      sweepID: ExampleID,
+    },
+    returnType: #{
+      xRequestID: ExampleID,
+      statusCode: HttpStatusOK,
+      body: ExampleAccruedSweep,
+    },
   },
-  returnType: #{
-    xRequestID: ExampleID,
-    statusCode: HttpStatusOK,
-    body: ExampleSweep,
+  #{ title: "Accrued sweep" }
+)
+@opExample(
+  #{
+    parameters: #{
+      accountID: ExampleID,
+      walletID: ExampleID,
+      sweepID: ExampleID,
+    },
+    returnType: #{
+      xRequestID: ExampleID,
+      statusCode: HttpStatusOK,
+      body: ExamplePaidSweep,
+    },
   },
-})
+  #{ title: "Paid sweep" }
+)
 @extension("x-speakeasy-name-override", "get")
 op getSweep(
   ...CommonRequestHeaders,
