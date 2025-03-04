@@ -26,12 +26,7 @@ op createReceipts(
 
   @body
   body: ReceiptRequest[],
-):
-  | CreatedResponse<ReceiptResponse[]>
-  | BadRequestResponse
-  | UnprocessableEntityResponse<string>
-  | RateLimitedResponse
-  | InternalServerErrorResponse;
+): PostResponses<ReceiptResponse, ReceiptValidationError>;
 
 @get
 @route("/receipts")
@@ -50,10 +45,5 @@ op listReceipts(
   @doc("The unique identifier to filter receipts by.")
   @format("uuid")
   @query
-  id: string,
-):
-  | OkResponse<ReceiptResponse[]>
-  | BadRequestResponse
-  | NotFoundResponse
-  | RateLimitedResponse
-  | InternalServerErrorResponse;
+  id?: string,
+): ListResponses<ReceiptResponse>;

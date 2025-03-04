@@ -13142,8 +13142,8 @@ paths:
       parameters:
         - $ref: '#/components/parameters/VersionHeader'
       responses:
-        '201':
-          description: The resource was successfully created.
+        '200':
+          description: The request completed successfully.
           headers:
             x-request-id:
               required: true
@@ -13154,11 +13154,49 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/ReceiptResponse'
+                $ref: '#/components/schemas/ReceiptResponse'
         '400':
           description: The server could not understand the request due to invalid syntax.
+          headers:
+            x-request-id:
+              required: true
+              description: A unique identifier used to trace requests.
+              schema:
+                type: string
+                format: uuid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+        '401':
+          description: The request contained missing or expired authentication.
+          headers:
+            x-request-id:
+              required: true
+              description: A unique identifier used to trace requests.
+              schema:
+                type: string
+                format: uuid
+        '403':
+          description: The user is not authorized to make the request.
+          headers:
+            x-request-id:
+              required: true
+              description: A unique identifier used to trace requests.
+              schema:
+                type: string
+                format: uuid
+        '404':
+          description: The requested resource was not found.
+          headers:
+            x-request-id:
+              required: true
+              description: A unique identifier used to trace requests.
+              schema:
+                type: string
+                format: uuid
+        '409':
+          description: The request conflicted with the current state of the target resource.
           headers:
             x-request-id:
               required: true
@@ -13182,7 +13220,7 @@ paths:
           content:
             application/json:
               schema:
-                type: string
+                $ref: '#/components/schemas/ReceiptValidationError'
         '429':
           description: Request was refused due to rate limiting.
           headers:
@@ -13194,6 +13232,15 @@ paths:
                 format: uuid
         '500':
           description: The request failed due to an unexpected error.
+          headers:
+            x-request-id:
+              required: true
+              description: A unique identifier used to trace requests.
+              schema:
+                type: string
+                format: uuid
+        '504':
+          description: The request failed because a downstream service failed to respond.
           headers:
             x-request-id:
               required: true
@@ -13223,7 +13270,7 @@ paths:
         - $ref: '#/components/parameters/VersionHeader'
         - name: id
           in: query
-          required: true
+          required: false
           description: The unique identifier to filter receipts by.
           schema:
             type: string
@@ -13245,8 +13292,8 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/ReceiptResponse'
-        '400':
-          description: The server could not understand the request due to invalid syntax.
+        '401':
+          description: The request contained missing or expired authentication.
           headers:
             x-request-id:
               required: true
@@ -13254,12 +13301,8 @@ paths:
               schema:
                 type: string
                 format: uuid
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericError'
-        '404':
-          description: The requested resource was not found.
+        '403':
+          description: The user is not authorized to make the request.
           headers:
             x-request-id:
               required: true
@@ -13278,6 +13321,15 @@ paths:
                 format: uuid
         '500':
           description: The request failed due to an unexpected error.
+          headers:
+            x-request-id:
+              required: true
+              description: A unique identifier used to trace requests.
+              schema:
+                type: string
+                format: uuid
+        '504':
+          description: The request failed because a downstream service failed to respond.
           headers:
             x-request-id:
               required: true
@@ -19767,6 +19819,21 @@ components:
           items:
             $ref: '#/components/schemas/SentReceipt'
           description: The list of receipts that have been sent.
+    ReceiptValidationError:
+      type: object
+      properties:
+        kind:
+          type: string
+        email:
+          type: string
+        emailAccountID:
+          type: string
+        forTransferID:
+          type: string
+        forScheduleID:
+          type: string
+        forOccurrenceID:
+          type: string
     Recur:
       type: object
       required:

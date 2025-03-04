@@ -123,3 +123,13 @@ model ReceiptResponse {
   @doc("The list of receipts that have been sent.")
   sentFor: SentReceipt[];
 }
+
+@error
+model ReceiptValidationError {
+  kind?: string;
+  email?: string;
+  emailAccountID?: string;
+  forTransferID?: string;
+  forScheduleID?: string;
+  forOccurrenceID?: string;
+}
