@@ -3,6 +3,7 @@ import "@typespec/openapi3";
 import "@typespec/versioning";
 import "./examples.transfer.tsp";
 import "./models.ach.tsp";
+import "./models.cancellation.tsp";
 import "./models.card.tsp";
 import "./models.dispute.tsp";
 import "./models.refund.tsp";
@@ -55,6 +56,7 @@ model Transfer {
 
   moovFeeDetails?: MoovFeeDetails;
   groupID?: string;
+  cancellations?: Cancellation[];
   refundedAmount?: Amount;
   refunds?: CardAcquiringRefund[];
   disputedAmount?: Amount;
