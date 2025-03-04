@@ -24,6 +24,7 @@ import "./onboarding";
 import "./paymentlinks";
 import "./paymentmethods";
 import "./ping";
+import "./receipts";
 import "./representatives";
 import "./schedules";
 import "./terminalapplications";
