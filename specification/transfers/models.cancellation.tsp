@@ -20,13 +20,6 @@ enum CancellationStatus {
   failed,
 }
 
-@doc("Successfully initiated a cancellation.")
-model CreatedCancellationResponse {
-  ...CommonResponseHeaders;
-  @statusCode statusCode: HttpStatusOK;
-  @body body: Cancellation;
-}
-
 @doc("Successfully initiated a cancellation but an error occurred while waiting for a synchronous response.")
 model CreatedCancellationAsyncResponse {
   ...CommonResponseHeaders;

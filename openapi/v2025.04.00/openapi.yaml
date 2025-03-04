@@ -9616,10 +9616,11 @@ paths:
   /accounts/{accountID}/transfers/{transferID}/cancellations:
     post:
       operationId: createCancellation
-      description: |-
-        Initiate a cancellation for a card, ACH, or queued transfer.
-
-        To use this endpoint from the browser, you'll need to specify the `/accounts/{accountID}/transfers.write` scope when generating a [token](https://docs.moov.io/api/authentication/access-tokens/).
+      description: |2-
+          Initiate a cancellation for a card, ACH, or queued transfer.
+          
+          To access this endpoint using a [token](https://docs.moov.io/api/authentication/access-tokens/) you'll need 
+          to specify the `/accounts/{accountID}/transfers.write` scope.
       parameters:
         - $ref: '#/components/parameters/VersionHeader'
         - name: accountID
@@ -9638,7 +9639,7 @@ paths:
             format: uuid
       responses:
         '200':
-          description: Successfully initiated a cancellation.
+          description: The request completed successfully.
           headers:
             x-request-id:
               required: true
@@ -9710,19 +9711,6 @@ paths:
               schema:
                 type: string
                 format: uuid
-        '422':
-          description: The request was well-formed, but the contents failed validation. Check the request for missing or invalid fields.
-          headers:
-            x-request-id:
-              required: true
-              description: A unique identifier used to trace requests.
-              schema:
-                type: string
-                format: uuid
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ReversalValidationError'
         '429':
           description: Request was refused due to rate limiting.
           headers:
@@ -9755,15 +9743,17 @@ paths:
   /accounts/{accountID}/transfers/{transferID}/cancellations/{cancellationID}:
     get:
       operationId: getCancellation
-      description: |-
-        Get details of a cancellation for a transfer.
-
-        To use this endpoint from the browser, you'll need to specify the `/accounts/{accountID}/transfers.read` scope when generating a [token](https://docs.moov.io/api/authentication/access-tokens/).
+      description: |2-
+          Get details of a cancellation for a transfer.
+          
+          To access this endpoint using a [token](https://docs.moov.io/api/authentication/access-tokens/) you'll need 
+          to specify the `/accounts/{accountID}/transfers.read` scope.
       parameters:
         - $ref: '#/components/parameters/VersionHeader'
         - name: accountID
           in: path
           required: true
+          description: Moov account ID of the partner or transfer's source or destination.
           schema:
             type: string
             format: uuid

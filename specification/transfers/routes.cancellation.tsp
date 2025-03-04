@@ -15,8 +15,9 @@ namespace MoovAPI;
 @doc("""
   Initiate a cancellation for a card, ACH, or queued transfer.
   
-  To use this endpoint from the browser, you'll need to specify the `/accounts/{accountID}/transfers.write` scope when generating a [token](https://docs.moov.io/api/authentication/access-tokens/).
-  """)
+  To access this endpoint using a [token](https://docs.moov.io/api/authentication/access-tokens/) you'll need 
+  to specify the `/accounts/{accountID}/transfers.write` scope.
+""")
 // @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/transfers.write"]>)
 @opExample(ExampleCreateCancellation, #{ title: "Created cancellation" })
 op createCancellation(
@@ -32,13 +33,12 @@ op createCancellation(
   @path
   transferID: string,
 ):
-  | CreatedCancellationResponse
+  | OkResponse<Cancellation>
   | CreatedCancellationAsyncResponse
   | BadRequestResponse
   | UnauthorizedResponse
   | ForbiddenResponse
   | NotFoundResponse
-  | UnprocessableEntityResponse<ReversalValidationError>
   | RateLimitedResponse
   | InternalServerErrorResponse
   | GatewayTimeoutResponse;
@@ -49,13 +49,15 @@ op createCancellation(
 @doc("""
   Get details of a cancellation for a transfer.
   
-  To use this endpoint from the browser, you'll need to specify the `/accounts/{accountID}/transfers.read` scope when generating a [token](https://docs.moov.io/api/authentication/access-tokens/).
-  """)
+  To access this endpoint using a [token](https://docs.moov.io/api/authentication/access-tokens/) you'll need 
+  to specify the `/accounts/{accountID}/transfers.read` scope.
+""")
 // @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/transfers.read"]>)
 @opExample(ExampleCreateCancellation, #{ title: "Got cancellation" })
 op getCancellation(
   ...CommonRequestHeaders,
 
+  @doc("Moov account ID of the partner or transfer's source or destination.")
   @format("uuid")
   @path
   accountID: string,
