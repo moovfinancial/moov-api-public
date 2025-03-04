@@ -19764,7 +19764,13 @@ components:
       required:
         - receiptID
         - createdBy
+        - disabledOn
         - kind
+        - email
+        - emailAccountID
+        - forTransferID
+        - forScheduleID
+        - forOccurrenceID
         - sentFor
       properties:
         receiptID:
@@ -19778,6 +19784,7 @@ components:
         disabledOn:
           type: string
           format: date-time
+          nullable: true
           description: The date and time the receipt was disabled.
           example: '2009-11-10T23:00:00Z'
         kind:
@@ -19785,39 +19792,48 @@ components:
             - $ref: '#/components/schemas/ReceiptKind'
           description: The type of receipt.
         email:
+          type: object
           allOf:
             - $ref: '#/components/schemas/Email'
+          nullable: true
           description: |-
             The email address the receipt is sent to.
             Either email or emailAccountID will be in the response, but not both.
         emailAccountID:
           type: string
+          nullable: true
           format: uuid
           description: |-
             The accountID the receipt is sent to.
             Either email or emailAccountID will be in the response, but not both.
         forTransferID:
           type: string
+          nullable: true
           format: uuid
           description: |-
             The ID of the transfer associated with this receipt.
             Exactly one of forTransferID, forScheduleID, or forOccurrenceID must be provided.
         forScheduleID:
           type: string
+          nullable: true
           format: uuid
           description: |-
             The ID of the schedule associated with this receipt.
             Exactly one of forTransferID, forScheduleID, or forOccurrenceID must be provided.
         forOccurrenceID:
           type: string
+          nullable: true
           format: uuid
           description: |-
             The ID of the schedule occurrence associated with this receipt.
             Exactly one of forTransferID, forScheduleID, or forOccurrenceID must be provided.
         sentFor:
-          type: array
-          items:
-            $ref: '#/components/schemas/SentReceipt'
+          anyOf:
+            - type: array
+              items:
+                $ref: '#/components/schemas/SentReceipt'
+            - type: array
+              items: {}
           description: The list of receipts that have been sent.
     ReceiptValidationError:
       type: object
