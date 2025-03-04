@@ -81,7 +81,7 @@ model ReceiptResponse {
 
   @doc("The date and time the receipt was disabled.")
   @example(utcDateTime.fromISO("2009-11-10T23:00:00Z"))
-  disabledOn: utcDateTime | null;
+  disabledOn?: utcDateTime;
 
   @doc("The type of receipt.")
   kind: ReceiptKind;
@@ -90,38 +90,38 @@ model ReceiptResponse {
     The email address the receipt is sent to.
     Either email or emailAccountID will be in the response, but not both.
     """)
-  email: Email | null;
+  email?: Email;
 
   @doc("""
     The accountID the receipt is sent to.
     Either email or emailAccountID will be in the response, but not both.
     """)
   @format("uuid")
-  emailAccountID: string | null;
+  emailAccountID?: string;
 
   @doc("""
     The ID of the transfer associated with this receipt.
     Exactly one of forTransferID, forScheduleID, or forOccurrenceID must be provided.
     """)
   @format("uuid")
-  forTransferID: string | null;
+  forTransferID?: string;
 
   @doc("""
     The ID of the schedule associated with this receipt.
     Exactly one of forTransferID, forScheduleID, or forOccurrenceID must be provided.
     """)
   @format("uuid")
-  forScheduleID: string | null;
+  forScheduleID?: string;
 
   @doc("""
     The ID of the schedule occurrence associated with this receipt.
     Exactly one of forTransferID, forScheduleID, or forOccurrenceID must be provided.
     """)
   @format("uuid")
-  forOccurrenceID: string | null;
+  forOccurrenceID?: string;
 
   @doc("The list of receipts that have been sent.")
-  sentFor: SentReceipt[] | [];
+  sentFor: SentReceipt[];
 }
 
 @error
