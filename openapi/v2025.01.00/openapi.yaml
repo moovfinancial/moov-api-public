@@ -38,6 +38,7 @@ tags:
   - name: Payment links
   - name: Payment methods
   - name: Ping
+  - name: Receipts
   - name: Representatives
   - name: Scheduling
   - name: Terminal Applications
@@ -13365,6 +13366,215 @@ paths:
                 format: uuid
       tags:
         - Ping
+  /receipts:
+    post:
+      operationId: createReceipts
+      description: |2-
+         Create receipts for transfers and scheduled transfers.
+
+         To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
+         you'll need to specify the `/accounts/{accountID}/transfers.write` scope.
+      parameters:
+        - $ref: '#/components/parameters/VersionHeader'
+      responses:
+        '200':
+          description: The request completed successfully.
+          headers:
+            x-request-id:
+              required: true
+              description: A unique identifier used to trace requests.
+              schema:
+                type: string
+                format: uuid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReceiptResponse'
+        '400':
+          description: The server could not understand the request due to invalid syntax.
+          headers:
+            x-request-id:
+              required: true
+              description: A unique identifier used to trace requests.
+              schema:
+                type: string
+                format: uuid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+        '401':
+          description: The request contained missing or expired authentication.
+          headers:
+            x-request-id:
+              required: true
+              description: A unique identifier used to trace requests.
+              schema:
+                type: string
+                format: uuid
+        '403':
+          description: The user is not authorized to make the request.
+          headers:
+            x-request-id:
+              required: true
+              description: A unique identifier used to trace requests.
+              schema:
+                type: string
+                format: uuid
+        '404':
+          description: The requested resource was not found.
+          headers:
+            x-request-id:
+              required: true
+              description: A unique identifier used to trace requests.
+              schema:
+                type: string
+                format: uuid
+        '409':
+          description: The request conflicted with the current state of the target resource.
+          headers:
+            x-request-id:
+              required: true
+              description: A unique identifier used to trace requests.
+              schema:
+                type: string
+                format: uuid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+        '422':
+          description: The request was well-formed, but the contents failed validation. Check the request for missing or invalid fields.
+          headers:
+            x-request-id:
+              required: true
+              description: A unique identifier used to trace requests.
+              schema:
+                type: string
+                format: uuid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReceiptValidationError'
+        '429':
+          description: Request was refused due to rate limiting.
+          headers:
+            x-request-id:
+              required: true
+              description: A unique identifier used to trace requests.
+              schema:
+                type: string
+                format: uuid
+        '500':
+          description: The request failed due to an unexpected error.
+          headers:
+            x-request-id:
+              required: true
+              description: A unique identifier used to trace requests.
+              schema:
+                type: string
+                format: uuid
+        '504':
+          description: The request failed because a downstream service failed to respond.
+          headers:
+            x-request-id:
+              required: true
+              description: A unique identifier used to trace requests.
+              schema:
+                type: string
+                format: uuid
+      tags:
+        - Receipts
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/ReceiptRequest'
+      x-speakeasy-name-override: create
+    get:
+      operationId: listReceipts
+      description: |-
+        List receipts by trasnferID, scheduleID, or occurrenceID.
+
+        To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
+        you'll need to specify the `/accounts/{accountID}/transfers.read` scope.
+      parameters:
+        - $ref: '#/components/parameters/VersionHeader'
+        - name: id
+          in: query
+          required: false
+          description: The unique identifier to filter receipts by.
+          schema:
+            type: string
+            format: uuid
+          explode: false
+      responses:
+        '200':
+          description: The request completed successfully.
+          headers:
+            x-request-id:
+              required: true
+              description: A unique identifier used to trace requests.
+              schema:
+                type: string
+                format: uuid
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ReceiptResponse'
+        '401':
+          description: The request contained missing or expired authentication.
+          headers:
+            x-request-id:
+              required: true
+              description: A unique identifier used to trace requests.
+              schema:
+                type: string
+                format: uuid
+        '403':
+          description: The user is not authorized to make the request.
+          headers:
+            x-request-id:
+              required: true
+              description: A unique identifier used to trace requests.
+              schema:
+                type: string
+                format: uuid
+        '429':
+          description: Request was refused due to rate limiting.
+          headers:
+            x-request-id:
+              required: true
+              description: A unique identifier used to trace requests.
+              schema:
+                type: string
+                format: uuid
+        '500':
+          description: The request failed due to an unexpected error.
+          headers:
+            x-request-id:
+              required: true
+              description: A unique identifier used to trace requests.
+              schema:
+                type: string
+                format: uuid
+        '504':
+          description: The request failed because a downstream service failed to respond.
+          headers:
+            x-request-id:
+              required: true
+              description: A unique identifier used to trace requests.
+              schema:
+                type: string
+                format: uuid
+      tags:
+        - Receipts
+      x-speakeasy-name-override: list
   /terminal-applications:
     post:
       operationId: createTerminalApplication
@@ -19739,6 +19949,126 @@ components:
         - failed
         - accepted-without-posting
       description: Status of a transaction within the RTP lifecycle.
+    ReceiptKind:
+      type: string
+      enum:
+        - sale.customer.v1
+      description: The type of receipt being requested.
+    ReceiptRequest:
+      type: object
+      required:
+        - kind
+      properties:
+        kind:
+          allOf:
+            - $ref: '#/components/schemas/ReceiptKind'
+          description: The type of receipt being requested.
+        email:
+          allOf:
+            - $ref: '#/components/schemas/Email'
+          description: |-
+            The email address to send the receipt to.
+            Either email or emailAccountID must be provided, but not both.
+        emailAccountID:
+          type: string
+          format: uuid
+          description: |-
+            The accountID to send the receipt to.
+            Either email or emailAccountID must be provided, but not both.
+        forTransferID:
+          type: string
+          format: uuid
+          description: |-
+            The ID of the transfer associated with this receipt.
+            Exactly one of forTransferID, forScheduleID, or forOccurrenceID must be provided.
+        forScheduleID:
+          type: string
+          format: uuid
+          description: |-
+            The ID of the schedule associated with this receipt.
+            Exactly one of forTransferID, forScheduleID, or forOccurrenceID must be provided.
+        forOccurrenceID:
+          type: string
+          format: uuid
+          description: |-
+            The ID of the schedule occurrence associated with this receipt.
+            Exactly one of forTransferID, forScheduleID, or forOccurrenceID must be provided.
+      description: A receipt request for a specific transfer, schedule, or schedule occurrence.
+    ReceiptResponse:
+      type: object
+      required:
+        - receiptID
+        - createdBy
+        - kind
+        - sentFor
+      properties:
+        receiptID:
+          type: string
+          format: uuid
+          description: Unique identifier for the receipt request.
+        createdBy:
+          type: string
+          format: uuid
+          description: AccountID for which the receipt request was created.
+        disabledOn:
+          type: string
+          format: date-time
+          description: The date and time the receipt was disabled.
+          example: '2009-11-10T23:00:00Z'
+        kind:
+          allOf:
+            - $ref: '#/components/schemas/ReceiptKind'
+          description: The type of receipt.
+        email:
+          allOf:
+            - $ref: '#/components/schemas/Email'
+          description: |-
+            The email address the receipt is sent to.
+            Either email or emailAccountID will be in the response, but not both.
+        emailAccountID:
+          type: string
+          format: uuid
+          description: |-
+            The accountID the receipt is sent to.
+            Either email or emailAccountID will be in the response, but not both.
+        forTransferID:
+          type: string
+          format: uuid
+          description: |-
+            The ID of the transfer associated with this receipt.
+            Exactly one of forTransferID, forScheduleID, or forOccurrenceID must be provided.
+        forScheduleID:
+          type: string
+          format: uuid
+          description: |-
+            The ID of the schedule associated with this receipt.
+            Exactly one of forTransferID, forScheduleID, or forOccurrenceID must be provided.
+        forOccurrenceID:
+          type: string
+          format: uuid
+          description: |-
+            The ID of the schedule occurrence associated with this receipt.
+            Exactly one of forTransferID, forScheduleID, or forOccurrenceID must be provided.
+        sentFor:
+          type: array
+          items:
+            $ref: '#/components/schemas/SentReceipt'
+          description: The list of receipts that have been sent.
+    ReceiptValidationError:
+      type: object
+      properties:
+        kind:
+          type: string
+        email:
+          type: string
+        emailAccountID:
+          type: string
+        forTransferID:
+          type: string
+        forScheduleID:
+          type: string
+        forOccurrenceID:
+          type: string
     Recur:
       type: object
       required:
@@ -20229,6 +20559,26 @@ components:
           type: string
         description:
           type: string
+    SentReceipt:
+      type: object
+      required:
+        - receiptID
+        - idempotencyKey
+        - sentOn
+      properties:
+        receiptID:
+          type: string
+          format: uuid
+          description: Unique identifier for the receipt.
+        idempotencyKey:
+          type: string
+          format: uuid
+          description: The idempotency key used when creating the receipt.
+        sentOn:
+          type: string
+          format: date-time
+          description: When the receipt was sent.
+          example: '2009-11-10T23:00:00Z'
     Settings:
       type: object
       properties:
