@@ -13,6 +13,7 @@ model ACHTransactionDetails {
   companyEntryDescription?: ACHCompanyEntryDescription;
   originatingCompanyName?: ACHOriginatingCompanyName;
   secCode?: SECCode;
+  canceledOn?: utcDateTime;
   initiatedOn?: utcDateTime;
   originatedOn?: utcDateTime;
   correctedOn?: utcDateTime;
@@ -63,6 +64,7 @@ enum ACHTransactionStatus {
   corrected,
   returned,
   completed,
+  canceled,
 }
 
 @doc("An optional override of the default NACHA company entry description for a transfer.")

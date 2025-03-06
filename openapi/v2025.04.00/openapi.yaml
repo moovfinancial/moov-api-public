@@ -14857,6 +14857,9 @@ components:
           $ref: '#/components/schemas/ACHOriginatingCompanyName'
         secCode:
           $ref: '#/components/schemas/SECCode'
+        canceledOn:
+          type: string
+          format: date-time
         initiatedOn:
           type: string
           format: date-time
@@ -14886,6 +14889,7 @@ components:
         - corrected
         - returned
         - completed
+        - canceled
       description: Status of a transaction within the ACH lifecycle.
     AccentColor:
       type: string
@@ -16714,6 +16718,8 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/CapabilityID'
+        mode:
+          $ref: '#/components/schemas/Mode'
       example:
         accountType: business
         profile:
