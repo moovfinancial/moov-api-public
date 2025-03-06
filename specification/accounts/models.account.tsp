@@ -39,6 +39,7 @@ model CreateAccount {
   customerSupport?: CustomerSupport;
   settings?: Settings;
   capabilities?: CapabilityID[];
+  mode?: Mode;
 }
 
 model CreateAccountError {
