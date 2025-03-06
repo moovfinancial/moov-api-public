@@ -17150,16 +17150,16 @@ components:
           $ref: '#/components/schemas/TerminalApplicationPlatform'
         appBundleID:
           type: string
-          description: The app bundle identifier of the terminal application. Required if platform is ios.
+          description: The app bundle identifier of the terminal application. Required if platform is `ios`.
         packageName:
           type: string
-          description: The app package name of the terminal application. Required if platform is android.
+          description: The app package name of the terminal application. Required if platform is `android`.
         sha256Digest:
           type: string
-          description: The app version of the terminal application. Required if paltform is android.
+          description: The app version of the terminal application. Required if paltform is `android`.
         versionCode:
           type: string
-          description: The app version of the terminal application. Required if platform is android.
+          description: The app version of the terminal application. Required if platform is `android`.
       description: Describes a create terminal application request.
       example:
         platform: ios
@@ -20774,16 +20774,16 @@ components:
           $ref: '#/components/schemas/TerminalApplicationPlatform'
         appBundleID:
           type: string
-          description: The app bundle identifier of the terminal application. Will be returned if platform is ios.
+          description: The app bundle identifier of the terminal application. Will be returned if platform is `ios`.
         packageName:
           type: string
-          description: The app package name of the terminal application. Will be returned if platform is android.
+          description: The app package name of the terminal application. Will be returned if platform is `android`.
         sha256Digest:
           type: string
-          description: The app version of the terminal application Will be returned if platform is android.
+          description: The app version of the terminal application Will be returned if platform is `android`.
         versionCode:
           type: string
-          description: The app version of the terminal application Will be returned if platform is android.
+          description: The app version of the terminal application Will be returned if platform is `android`.
       description: Describes a terminal application.
       example:
         terminalApplicationID: 01234567-89ab-cdef-0123-456789abcdef

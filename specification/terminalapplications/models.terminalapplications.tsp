@@ -48,16 +48,16 @@ model TerminalApplication {
   status: TerminalApplicationStatus;
   platform: TerminalApplicationPlatform;
 
-  @doc("The app bundle identifier of the terminal application. Will be returned if platform is ios.")
+  @doc("The app bundle identifier of the terminal application. Will be returned if platform is `ios`.")
   appBundleID?: string;
 
-  @doc("The app package name of the terminal application. Will be returned if platform is android.")
+  @doc("The app package name of the terminal application. Will be returned if platform is `android`.")
   packageName?: string;
 
-  @doc("The app version of the terminal application Will be returned if platform is android.")
+  @doc("The app version of the terminal application Will be returned if platform is `android`.")
   sha256Digest?: string;
 
-  @doc("The app version of the terminal application Will be returned if platform is android.")
+  @doc("The app version of the terminal application Will be returned if platform is `android`.")
   versionCode?: string;
 }
 
@@ -74,16 +74,16 @@ const exampleCreateTerminalApplication = #{
 model CreateTerminalApplication {
   platform: TerminalApplicationPlatform;
 
-  @doc("The app bundle identifier of the terminal application. Required if platform is ios.")
+  @doc("The app bundle identifier of the terminal application. Required if platform is `ios`.")
   appBundleID?: string;
 
-  @doc("The app package name of the terminal application. Required if platform is android.")
+  @doc("The app package name of the terminal application. Required if platform is `android`.")
   packageName?: string;
 
-  @doc("The app version of the terminal application. Required if paltform is android.")
+  @doc("The app version of the terminal application. Required if paltform is `android`.")
   sha256Digest?: string;
 
-  @doc("The app version of the terminal application. Required if platform is android.")
+  @doc("The app version of the terminal application. Required if platform is `android`.")
   versionCode?: string;
 }
 
