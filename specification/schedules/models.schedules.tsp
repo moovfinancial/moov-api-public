@@ -36,7 +36,7 @@ model ScheduleResponse {
   destinationAccountID: string;
 
   mode: Mode;
-  occurrences?: OccurrencesResponse;
+  occurrences?: OccurrencesResponse[];
 
   @format("uuid")
   @example("c520f1b9-0ba7-42f5-b977-248cdbe41c69")
