@@ -20526,7 +20526,9 @@ components:
         mode:
           $ref: '#/components/schemas/Mode'
         occurrences:
-          $ref: '#/components/schemas/OccurrencesResponse'
+          type: array
+          items:
+            $ref: '#/components/schemas/OccurrencesResponse'
         ownerAccountID:
           type: string
           format: uuid
