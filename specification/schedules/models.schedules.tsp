@@ -61,6 +61,18 @@ model ScheduleResponse {
   disabledOn?: utcDateTime;
 }
 
+model PartialScheduleAccount {
+  accountID: string;
+  displayName: string;
+  email?: string;
+}
+
+model ScheduleListResponse extends ScheduleResponse {
+  sourceAccount?: PartialScheduleAccount;
+  destinationAccount?: PartialScheduleAccount;
+  partnerAccount?: PartialScheduleAccount;
+}
+
 model ScheduleValidationError {
   occurrences?: Record<string>;
   recur?: string;

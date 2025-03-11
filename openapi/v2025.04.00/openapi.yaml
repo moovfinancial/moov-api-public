@@ -8120,7 +8120,7 @@ paths:
     get:
       operationId: listSchedules
       description: |-
-        Describes a list of schedules associated with an account. Requires at least 1 occurrence or recurTransfer to be specified.
+        Describes a list of schedules associated with an account. Append the `hydrate=accounts` query parameter to include partial account details in the response.
 
         To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
         you'll need to specify the `/accounts/{accountID}/transfers.read` scope.
@@ -8137,6 +8137,14 @@ paths:
           required: false
           schema:
             $ref: '#/components/schemas/Count'
+          explode: false
+        - name: hydrate
+          in: query
+          required: false
+          schema:
+            type: string
+            enum:
+              - accounts
           explode: false
         - name: accountID
           in: path
@@ -8159,7 +8167,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/ScheduleResponse'
+                  $ref: '#/components/schemas/ScheduleListResponse'
         '401':
           description: The request contained missing or expired authentication.
           headers:
@@ -19166,6 +19174,18 @@ components:
       type: string
       description: Optional parameter to order the results in the query.
       example: created-at:desc
+    PartialScheduleAccount:
+      type: object
+      required:
+        - accountID
+        - displayName
+      properties:
+        accountID:
+          type: string
+        displayName:
+          type: string
+        email:
+          type: string
     PartnerPricing:
       type: object
       required:
@@ -20483,6 +20503,17 @@ components:
         - CCD
         - TEL
       description: Code used to identify the ACH authorization method.
+    ScheduleListResponse:
+      type: object
+      properties:
+        sourceAccount:
+          $ref: '#/components/schemas/PartialScheduleAccount'
+        destinationAccount:
+          $ref: '#/components/schemas/PartialScheduleAccount'
+        partnerAccount:
+          $ref: '#/components/schemas/PartialScheduleAccount'
+      allOf:
+        - $ref: '#/components/schemas/ScheduleResponse'
     SchedulePaymentMethod:
       type: object
       required:
