@@ -14,6 +14,8 @@
   "prConcurrentLimit": 12,
   "prHourlyLimit": 0,
   "reviewers": ["atonks2","gamell"],
+  "lockFileMaintenance": { "enabled": true },
+  "rangeStrategy": "update-lockfile",
   "packageRules": [
     {
       "description": "Automerge devDependencies if the tests pass",
@@ -22,7 +24,7 @@
     },
     {
       "groupName": "Typespec Packages",
-      "matchPackagePatterns": ["^typespec-"]
+      "matchPackagePatterns": ["^@typespec/"]
     },
     {
       "groupName": "Typescript Eslint Packages",
