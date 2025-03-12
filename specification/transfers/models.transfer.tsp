@@ -1,6 +1,8 @@
 import "@typespec/http";
 import "@typespec/openapi3";
 import "@typespec/versioning";
+import "@typespec/versioning";
+
 import "./examples.transfer.tsp";
 import "./models.ach.tsp";
 import "./models.cancellation.tsp";
@@ -8,6 +10,8 @@ import "./models.card.tsp";
 import "./models.dispute.tsp";
 import "./models.refund.tsp";
 import "./models.rtp.tsp";
+import "../models.version.tsp";
+
 import "../bankaccounts/models.bankaccount.tsp";
 import "../common/models.header.tsp";
 import "../common/models.parameter.tsp";
@@ -17,6 +21,7 @@ import "../money/models.amount.tsp";
 
 using TypeSpec.Http;
 using TypeSpec.OpenAPI;
+using TypeSpec.Versioning;
 
 namespace MoovAPI;
 
@@ -87,6 +92,10 @@ model TransferSource {
   wallet?: PaymentMethodsWallet;
   card?: PaymentMethodsCard;
   applePay?: ApplePayResponse;
+
+  @added(MoovAPI.Versions.v2025q2)
+  terminalCard?: TerminalCard;
+
   cardDetails?: CardTransactionDetails;
   achDetails?: ACHTransactionDetails;
 }
@@ -176,6 +185,7 @@ model CreateTransferSource {
   @format("uuid")
   paymentMethodID?: string;
 
+  paymentToken?: string;
   cardDetails?: CreateTransferSourceCard;
   achDetails?: CreateTransferSourceACH;
 }
