@@ -1,12 +1,15 @@
 import "@typespec/openapi3";
+import "@typespec/versioning";
 
 import "../applepay/models.token.tsp";
 import "../bankaccounts/models.bankaccount.tsp";
 import "../cards/models.card.tsp";
+import "../models.version.tsp";
 import "../wallets/models.wallet.tsp";
 import "../common/examples.id.tsp";
 
 using TypeSpec.OpenAPI;
+using TypeSpec.Versioning;
 
 namespace MoovAPI;
 
@@ -31,6 +34,9 @@ enum PaymentMethodType {
   pushToCard: "push-to-card",
   pullFromCard: "pull-from-card",
   applePay: "apple-pay",
+
+  @added(MoovAPI.Versions.v2025q2)
+  cardPresentPayment: "card-present-payment",
 }
 
 @doc("A method of moving money")
@@ -47,6 +53,9 @@ union PaymentMethod {
   PushToCardPaymentMethod,
   PullFromCardPaymentMethod,
   ApplePayPaymentMethod,
+
+  @added(MoovAPI.Versions.v2025q2)
+  CardPresentPaymentPaymentMethod,
 }
 
 // Wallet
@@ -149,4 +158,62 @@ model ApplePayPaymentMethod {
   paymentMethodID: PaymentMethodID;
   paymentMethodType: PaymentMethodType.applePay;
   applePay: ApplePayResponse;
+}
+
+// Card Present
+
+@added(MoovAPI.Versions.v2025q2)
+@doc("Describes payment card details captured with tap or in-person payment.")
+@example(#{
+  entryMode: EntryMode.contactless,
+  brand: CardBrand.visa,
+  bin: "123456",
+  cardType: CardType.credit,
+  expiration: exampleCardExpiration,
+  fingerprint: exampleCardFingerprint,
+  holderName: "Jules Jackson",
+  issuer: "GRINGOTTS BANK",
+  issuerCountry: "US",
+  lastFourCardNumber: "1234",
+})
+model TerminalCard {
+  entryMode?: EntryMode;
+  brand?: CardBrand;
+
+  @minLength(6)
+  @maxLength(8)
+  bin?: string;
+
+  cardType?: CardType;
+  expiration?: CardExpiration;
+  fingerprint?: CardFingerprint;
+
+  @doc("The name of the cardholder as it appears on the card.")
+  holderName?: string;
+
+  @doc("Financial institution that issued the card.")
+  issuer?: string;
+
+  @doc("Country where the card was issued.")
+  issuerCountry?: string;
+
+  @doc("Last four digits of the card number")
+  @minLength(4)
+  @maxLength(4)
+  lastFourCardNumber?: string;
+}
+
+@added(MoovAPI.Versions.v2025q2)
+@doc("How the card information was entered into the point of sale terminal.")
+@example(EntryMode.contactless)
+enum EntryMode {
+  contactless,
+}
+
+@added(MoovAPI.Versions.v2025q2)
+@doc("A card used at point of sale terminal for a card present transaction as contained within a payment method.")
+model CardPresentPaymentPaymentMethod {
+  paymentMethodID: PaymentMethodID;
+  paymentMethodType: PaymentMethodType.cardPresentPayment;
+  terminalCard?: TerminalCard;
 }
