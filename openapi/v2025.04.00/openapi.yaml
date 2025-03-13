@@ -15060,6 +15060,7 @@ components:
             - ach-credit-same-day
         bankAccount:
           $ref: '#/components/schemas/PaymentMethodsBankAccount'
+      title: ACH credit same day
     AchCreditStandardPaymentMethod:
       type: object
       required:
@@ -15075,6 +15076,7 @@ components:
             - ach-credit-standard
         bankAccount:
           $ref: '#/components/schemas/PaymentMethodsBankAccount'
+      title: ACH credit standard
     AchDebitCollectPaymentMethod:
       type: object
       required:
@@ -15090,6 +15092,7 @@ components:
             - ach-debit-collect
         bankAccount:
           $ref: '#/components/schemas/PaymentMethodsBankAccount'
+      title: ACH debit collect
     AchDebitFundPaymentMethod:
       type: object
       required:
@@ -15105,6 +15108,7 @@ components:
             - ach-debit-fund
         bankAccount:
           $ref: '#/components/schemas/PaymentMethodsBankAccount'
+      title: ACH debit fund
     AchLocation:
       type: object
       required:
@@ -15466,6 +15470,7 @@ components:
             - apple-pay
         applePay:
           $ref: '#/components/schemas/ApplePayResponse'
+      title: Apple Pay
     ApplePayResponse:
       type: object
       required:
@@ -15572,6 +15577,7 @@ components:
         amount:
           $ref: '#/components/schemas/Amount'
       description: Asynchronous refund response
+      title: Async
     AsyncTransfer:
       type: object
       required:
@@ -15584,6 +15590,7 @@ components:
         createdOn:
           type: string
           format: date-time
+      title: Async
     AuthToken:
       type: object
       required:
@@ -15764,6 +15771,7 @@ components:
         account:
           $ref: '#/components/schemas/BankAccountIntegration'
       description: Describes the bank account to link to the Moov account.
+      title: Bank account
     BankAccountStatus:
       type: string
       enum:
@@ -16342,6 +16350,7 @@ components:
         cardDetails:
           $ref: '#/components/schemas/RefundCardDetails'
       description: Details of a card refund.
+      title: Sync
     CardAddress:
       type: object
       required:
@@ -16459,6 +16468,7 @@ components:
             - card-payment
         card:
           $ref: '#/components/schemas/PaymentMethodsCard'
+      title: Card payment
     CardPaymentSettings:
       type: object
       properties:
@@ -18082,30 +18092,35 @@ components:
         AccountID:
           type: string
           format: uuid
+      title: Account ID
     GeneratedByBankAccountID:
       type: object
       properties:
         BankAccountID:
           type: string
           format: uuid
+      title: Bank account ID
     GeneratedByCardID:
       type: object
       properties:
         CardID:
           type: string
           format: uuid
+      title: Card ID
     GeneratedByDisputeID:
       type: object
       properties:
         DisputeID:
           type: string
           format: uuid
+      title: Dispute ID
     GeneratedByTransferID:
       type: object
       properties:
         transferID:
           type: string
           format: uuid
+      title: Transfer ID
     GenericError:
       type: object
       required:
@@ -18929,6 +18944,7 @@ components:
             - moov-wallet
         wallet:
           $ref: '#/components/schemas/PaymentMethodsWallet'
+      title: Moov wallet
     MxPayload:
       type: object
       required:
@@ -18946,6 +18962,7 @@ components:
           RoutingNumber: "123456780",
           BankName: "Gringotts Bank"
         ```
+      title: MX
     Occurrence:
       type: object
       properties:
@@ -19845,6 +19862,7 @@ components:
         This is used by Moov.js with a Plaid reseller relationship. 
 
         Describes the account to link to the Moov account using a Plaid using a Plaid public token.
+      title: Plaid Link
     PlaidPayload:
       type: object
       required:
@@ -19853,6 +19871,7 @@ components:
         plaid:
           $ref: '#/components/schemas/PlaidIntegration'
       description: Describes the account to link to the Moov account using a Plaid processor token.
+      title: Plaid
     PrimaryRegulator:
       type: string
       enum:
@@ -19884,6 +19903,7 @@ components:
             - pull-from-card
         card:
           $ref: '#/components/schemas/PaymentMethodsCard'
+      title: Pull from card
     PushToCardPaymentMethod:
       type: object
       required:
@@ -19899,6 +19919,7 @@ components:
             - push-to-card
         card:
           $ref: '#/components/schemas/PaymentMethodsCard'
+      title: Push to card
     QRCode:
       type: object
       required:
@@ -20421,6 +20442,7 @@ components:
       properties:
         cancellation:
           $ref: '#/components/schemas/Cancellation'
+      title: Canceled
     ReversedWithRefund:
       type: object
       required:
@@ -20428,6 +20450,7 @@ components:
       properties:
         refund:
           $ref: '#/components/schemas/CardAcquiringRefund'
+      title: Refunded
     RevokeTokenRequest:
       type: object
       required:
@@ -20472,6 +20495,7 @@ components:
             - rtp-credit
         bankAccount:
           $ref: '#/components/schemas/PaymentMethodsBankAccount'
+      title: RTP credit
     RunTransfer:
       type: object
       required:
@@ -20998,6 +21022,7 @@ components:
         occurrenceID:
           type: string
       description: Details of a Transfer.
+      title: Sync
       example:
         transferID: d835gf30-4b19-4850-a9b2-c0624c41ecb3
         source:

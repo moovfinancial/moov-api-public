@@ -1,5 +1,6 @@
 namespace MoovAPI;
 
+@summary("Plaid")
 @doc("""
   Describes the account to link to the Moov account using a Plaid processor token.
   """)
@@ -24,6 +25,7 @@ model PlaidIntegration {
   token: string;
 }
 
+@summary("Plaid Link")
 @doc("""
   This is used by Moov.js with a Plaid reseller relationship. 
   

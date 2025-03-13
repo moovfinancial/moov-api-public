@@ -26,6 +26,7 @@ union TransferResponse {
   AsyncTransfer,
 }
 
+@summary("Sync")
 @doc("Details of a Transfer.")
 @example(ExamplePendingCardToWalletTransfer)
 model Transfer {
@@ -66,6 +67,7 @@ model Transfer {
   occurrenceID?: string;
 }
 
+@summary("Async")
 model AsyncTransfer {
   @format("uuid")
   transferID: string;

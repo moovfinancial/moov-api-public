@@ -1,5 +1,6 @@
 namespace MoovAPI;
 
+@summary("MX")
 @doc("""
   Describes the account to link to the Moov account using a MX processor token. 
   

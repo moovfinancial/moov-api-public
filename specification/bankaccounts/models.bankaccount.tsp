@@ -15,6 +15,7 @@ union LinkBankAccount {
   MxPayload,
 }
 
+@summary("Bank account")
 @doc("Describes the bank account to link to the Moov account.")
 model BankAccountPayload {
   account: BankAccountIntegration;

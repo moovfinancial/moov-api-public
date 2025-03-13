@@ -146,26 +146,31 @@ union GeneratedBy {
   GeneratedByBankAccountID,
 }
 
+@summary("Transfer ID")
 model GeneratedByTransferID {
   @format("uuid")
   transferID?: string;
 }
 
+@summary("Card ID")
 model GeneratedByCardID {
   @format("uuid")
   CardID?: string;
 }
 
+@summary("Dispute ID")
 model GeneratedByDisputeID {
   @format("uuid")
   DisputeID?: string;
 }
 
+@summary("Account ID")
 model GeneratedByAccountID {
   @format("uuid")
   AccountID?: string;
 }
 
+@summary("Bank account ID")
 model GeneratedByBankAccountID {
   @format("uuid")
   BankAccountID?: string;
