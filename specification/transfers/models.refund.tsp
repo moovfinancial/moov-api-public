@@ -32,6 +32,7 @@ union CreateRefundResponse {
   AsyncCreatedRefund,
 }
 
+@summary("Async")
 @doc("Asynchronous refund response")
 model AsyncCreatedRefund {
   @format("uuid")
@@ -41,6 +42,7 @@ model AsyncCreatedRefund {
   amount: Amount;
 }
 
+@summary("Sync")
 @doc("Details of a card refund.")
 model CardAcquiringRefund {
   @doc("Identifier for the refund.")

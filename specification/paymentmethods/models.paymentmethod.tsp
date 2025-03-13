@@ -37,7 +37,7 @@ enum PaymentMethodType {
 @discriminator("paymentMethodType")
 @oneOf
 union PaymentMethod {
-  MoovWalletPaymentMethod,
+  moovWallet: MoovWalletPaymentMethod,
   AchDebitFundPaymentMethod,
   AchDebitCollectPaymentMethod,
   AchCreditStandardPaymentMethod,
@@ -55,6 +55,7 @@ model PaymentMethodsWallet {
   walletID: WalletID;
 }
 
+@summary("Moov wallet")
 model MoovWalletPaymentMethod {
   paymentMethodID: PaymentMethodID;
   paymentMethodType: PaymentMethodType.moovWallet;
@@ -70,30 +71,35 @@ model PaymentMethodsBankAccount
     "statusReason" | "exceptionDetails" | "paymentMethods"
   >;
 
+@summary("ACH debit fund")
 model AchDebitFundPaymentMethod {
   paymentMethodID: PaymentMethodID;
   paymentMethodType: PaymentMethodType.achDebitFund;
   bankAccount: PaymentMethodsBankAccount;
 }
 
+@summary("ACH debit collect")
 model AchDebitCollectPaymentMethod {
   paymentMethodID: PaymentMethodID;
   paymentMethodType: PaymentMethodType.achDebitCollect;
   bankAccount: PaymentMethodsBankAccount;
 }
 
+@summary("ACH credit standard")
 model AchCreditStandardPaymentMethod {
   paymentMethodID: PaymentMethodID;
   paymentMethodType: PaymentMethodType.achCreditStandard;
   bankAccount: PaymentMethodsBankAccount;
 }
 
+@summary("ACH credit same day")
 model AchCreditSameDayPaymentMethod {
   paymentMethodID: PaymentMethodID;
   paymentMethodType: PaymentMethodType.achCreditSameDay;
   bankAccount: PaymentMethodsBankAccount;
 }
 
+@summary("RTP credit")
 model RtpCreditPaymentMethod {
   paymentMethodID: PaymentMethodID;
   paymentMethodType: PaymentMethodType.rtpCredit;
@@ -115,18 +121,21 @@ model PaymentMethodsCard
       | "paymentMethods"
   >;
 
+@summary("Card payment")
 model CardPaymentPaymentMethod {
   paymentMethodID: PaymentMethodID;
   paymentMethodType: PaymentMethodType.cardPayment;
   card: PaymentMethodsCard;
 }
 
+@summary("Push to card")
 model PushToCardPaymentMethod {
   paymentMethodID: PaymentMethodID;
   paymentMethodType: PaymentMethodType.pushToCard;
   card: PaymentMethodsCard;
 }
 
+@summary("Pull from card")
 model PullFromCardPaymentMethod {
   paymentMethodID: PaymentMethodID;
   paymentMethodType: PaymentMethodType.pullFromCard;
@@ -135,6 +144,7 @@ model PullFromCardPaymentMethod {
 
 // Apple Pay
 
+@summary("Apple Pay")
 model ApplePayPaymentMethod {
   paymentMethodID: PaymentMethodID;
   paymentMethodType: PaymentMethodType.applePay;

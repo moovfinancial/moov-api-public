@@ -27,10 +27,12 @@ union Reversal {
   ReversedWithRefund,
 }
 
+@summary("Canceled")
 model ReversedWithCancellation {
   cancellation: Cancellation;
 }
 
+@summary("Refunded")
 model ReversedWithRefund {
   refund: CardAcquiringRefund;
 }
