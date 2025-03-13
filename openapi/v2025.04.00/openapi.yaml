@@ -18962,6 +18962,7 @@ components:
           RoutingNumber: "123456780",
           BankName: "Gringotts Bank"
         ```
+      title: MX
     Occurrence:
       type: object
       properties:
@@ -19861,6 +19862,7 @@ components:
         This is used by Moov.js with a Plaid reseller relationship. 
 
         Describes the account to link to the Moov account using a Plaid using a Plaid public token.
+      title: Plaid Link
     PlaidPayload:
       type: object
       required:
@@ -19869,6 +19871,7 @@ components:
         plaid:
           $ref: '#/components/schemas/PlaidIntegration'
       description: Describes the account to link to the Moov account using a Plaid processor token.
+      title: Plaid
     PrimaryRegulator:
       type: string
       enum:
