@@ -22,6 +22,7 @@ model FeePlanAgreement {
   status: FeePlanAgreementStatus;
   cardAcquiringModel: CardAcquiringModel;
   billableFees: BillableFee[];
+  minimumCommitment: MinimumCommitment;
 }
 
 model PartnerPricingAgreement extends FeePlanAgreement {

@@ -17783,6 +17783,7 @@ components:
         - name
         - cardAcquiringModel
         - billableFees
+        - minimumCommitment
         - createdAt
       properties:
         planID:
@@ -17802,6 +17803,8 @@ components:
           items:
             $ref: '#/components/schemas/BillableFee'
           description: Additional usage-based fees for this plan.
+        minimumCommitment:
+          $ref: '#/components/schemas/MinimumCommitment'
         createdAt:
           type: string
           format: date-time
@@ -17815,6 +17818,7 @@ components:
         - status
         - cardAcquiringModel
         - billableFees
+        - minimumCommitment
       properties:
         agreementID:
           type: string
@@ -17842,6 +17846,8 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/BillableFee'
+        minimumCommitment:
+          $ref: '#/components/schemas/MinimumCommitment'
     FeePlanAgreementError:
       type: object
       properties:
@@ -18904,6 +18910,11 @@ components:
       properties:
         amounts:
           type: string
+    MinimumCommitment:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/AmountDecimal'
+      description: The minimum spending amount that must be met in the billing period. If actual usage is below the minimum amount, account is charged the difference.
     Mode:
       type: string
       enum:
@@ -19211,6 +19222,7 @@ components:
         - revenueShare
         - cardAcquiringModel
         - billableFees
+        - minimumCommitment
         - createdAt
       properties:
         planID:
@@ -19233,6 +19245,8 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/BillableFee'
+        minimumCommitment:
+          $ref: '#/components/schemas/MinimumCommitment'
         createdAt:
           type: string
           format: date-time

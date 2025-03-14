@@ -27,6 +27,7 @@ model FeePlan {
   @doc("Additional usage-based fees for this plan.")
   billableFees: BillableFee[];
 
+  minimumCommitment: MinimumCommitment;
   createdAt: utcDateTime;
 }
 
@@ -47,6 +48,7 @@ model PartnerPricing {
 
   cardAcquiringModel: CardAcquiringModel;
   billableFees: BillableFee[];
+  minimumCommitment: MinimumCommitment;
   createdAt: utcDateTime;
 }
 
@@ -180,3 +182,6 @@ model GeneratedByBankAccountID {
 model ListFeesFetchRequest {
   feeIDs?: uuid[];
 }
+
+@doc("The minimum spending amount that must be met in the billing period. If actual usage is below the minimum amount, account is charged the difference.")
+model MinimumCommitment extends AmountDecimal {}
