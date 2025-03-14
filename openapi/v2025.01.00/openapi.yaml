@@ -13385,8 +13385,8 @@ paths:
       parameters:
         - $ref: '#/components/parameters/VersionHeader'
       responses:
-        '200':
-          description: The request completed successfully.
+        '201':
+          description: The resource was successfully created.
           headers:
             x-request-id:
               required: true
