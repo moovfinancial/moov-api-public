@@ -26,7 +26,7 @@ op createReceipts(
 
   @body
   body: ReceiptRequest[],
-): PostResponses<ReceiptResponse, ReceiptValidationError>;
+): PostResponsesCreated<ReceiptResponse, ReceiptValidationError>;
 
 @get
 @route("/receipts")
