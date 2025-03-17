@@ -17282,6 +17282,8 @@ components:
         paymentMethodID:
           type: string
           format: uuid
+        paymentToken:
+          type: string
         cardDetails:
           $ref: '#/components/schemas/CreateTransferSourceCard'
         achDetails:
@@ -21259,6 +21261,8 @@ components:
           $ref: '#/components/schemas/PaymentMethodsCard'
         applePay:
           $ref: '#/components/schemas/ApplePayResponse'
+        terminalCard:
+          $ref: '#/components/schemas/TerminalCard'
         cardDetails:
           $ref: '#/components/schemas/CardTransactionDetails'
         achDetails:

@@ -17267,6 +17267,8 @@ components:
         paymentMethodID:
           type: string
           format: uuid
+        paymentToken:
+          type: string
         cardDetails:
           $ref: '#/components/schemas/CreateTransferSourceCard'
         achDetails:
