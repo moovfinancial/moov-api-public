@@ -18940,6 +18940,31 @@ components:
           type: string
           description: Moov processing fee. String type represents dollars with up to 9 decimal place precision.
       description: Processing and pass-through costs that add up to the moovFee.
+    MoovFeeSummary:
+      type: object
+      required:
+        - accountID
+        - transferParty
+        - totalAmount
+        - feeIDs
+      properties:
+        accountID:
+          type: string
+          description: The account that the fees were charged to.
+        transferParty:
+          allOf:
+            - $ref: '#/components/schemas/TransferParty'
+          description: Indicates whether the account is the source, destination, or partner account.
+        totalAmount:
+          allOf:
+            - $ref: '#/components/schemas/AmountDecimal'
+          description: The total amount of fees charged to the account.
+        feeIDs:
+          type: array
+          items:
+            type: string
+          description: List of individual fee IDs charged to the account.
+      description: Summary of Moov fees charged to an account involved in the transfer.
     MoovWalletPaymentMethod:
       type: object
       required:
@@ -21011,6 +21036,11 @@ components:
           description: Same as `moovFee`, but a decimal-formatted numerical string that represents up to 9 decimal place precision.
         moovFeeDetails:
           $ref: '#/components/schemas/MoovFeeDetails'
+        moovFees:
+          type: array
+          items:
+            $ref: '#/components/schemas/MoovFeeSummary'
+          description: Fees charged to accounts involved in the transfer.
         groupID:
           type: string
         cancellations:
@@ -21161,6 +21191,13 @@ components:
           type: string
         destination:
           type: string
+    TransferParty:
+      type: string
+      enum:
+        - source
+        - destination
+        - partner
+      description: Indicates whether an account was the source or destination of a transfer.
     TransferResponse:
       oneOf:
         - $ref: '#/components/schemas/Transfer'
