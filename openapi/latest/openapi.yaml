@@ -17807,6 +17807,7 @@ components:
         - cardAcquiringModel
         - billableFees
         - minimumCommitment
+        - monthlyPlatformFee
         - createdAt
       properties:
         planID:
@@ -17828,6 +17829,8 @@ components:
           description: Additional usage-based fees for this plan.
         minimumCommitment:
           $ref: '#/components/schemas/MinimumCommitment'
+        monthlyPlatformFee:
+          $ref: '#/components/schemas/MonthlyPlatformFee'
         createdAt:
           type: string
           format: date-time
@@ -17842,6 +17845,7 @@ components:
         - cardAcquiringModel
         - billableFees
         - minimumCommitment
+        - monthlyPlatformFee
       properties:
         agreementID:
           type: string
@@ -17871,6 +17875,8 @@ components:
             $ref: '#/components/schemas/BillableFee'
         minimumCommitment:
           $ref: '#/components/schemas/MinimumCommitment'
+        monthlyPlatformFee:
+          $ref: '#/components/schemas/MonthlyPlatformFee'
     FeePlanAgreementError:
       type: object
       properties:
@@ -18945,6 +18951,11 @@ components:
         - production
       description: The operating mode for an account.
       example: production
+    MonthlyPlatformFee:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/AmountDecimal'
+      description: Fixed recurring amount paid in the billing period regardless of usage.
     MoovFeeDetails:
       type: object
       required:
@@ -19246,6 +19257,7 @@ components:
         - cardAcquiringModel
         - billableFees
         - minimumCommitment
+        - monthlyPlatformFee
         - createdAt
       properties:
         planID:
@@ -19270,6 +19282,8 @@ components:
             $ref: '#/components/schemas/BillableFee'
         minimumCommitment:
           $ref: '#/components/schemas/MinimumCommitment'
+        monthlyPlatformFee:
+          $ref: '#/components/schemas/MonthlyPlatformFee'
         createdAt:
           type: string
           format: date-time

@@ -28,6 +28,7 @@ model FeePlan {
   billableFees: BillableFee[];
 
   minimumCommitment: MinimumCommitment;
+  monthlyPlatformFee: MonthlyPlatformFee;
   createdAt: utcDateTime;
 }
 
@@ -49,6 +50,7 @@ model PartnerPricing {
   cardAcquiringModel: CardAcquiringModel;
   billableFees: BillableFee[];
   minimumCommitment: MinimumCommitment;
+  monthlyPlatformFee: MonthlyPlatformFee;
   createdAt: utcDateTime;
 }
 
@@ -185,3 +187,6 @@ model ListFeesFetchRequest {
 
 @doc("The minimum spending amount that must be met in the billing period. If actual usage is below the minimum amount, account is charged the difference.")
 model MinimumCommitment extends AmountDecimal {}
+
+@doc("Fixed recurring amount paid in the billing period regardless of usage.")
+model MonthlyPlatformFee extends AmountDecimal {}
