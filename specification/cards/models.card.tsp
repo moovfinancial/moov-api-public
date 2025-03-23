@@ -211,7 +211,7 @@ model CardVerification {
   cvv: CardVerificationResult;
   addressLine1: CardVerificationResult;
   postalCode: CardVerificationResult;
-  accountName: AccountNameVerification;
+  accountName?: AccountNameVerification;
 }
 
 const exampleAccountNameVerification = #{
@@ -224,10 +224,10 @@ const exampleAccountNameVerification = #{
 @doc("The results of submitting cardholder name to a card network for verification.")
 @example(exampleAccountNameVerification)
 model AccountNameVerification {
-  firstName: CardVerificationResult;
-  lastName: CardVerificationResult;
-  middleName: CardVerificationResult;
-  fullName: CardVerificationResult;
+  firstName?: CardVerificationResult;
+  lastName?: CardVerificationResult;
+  middleName?: CardVerificationResult;
+  fullName?: CardVerificationResult;
 }
 
 @example(CardVerificationResult.match)
