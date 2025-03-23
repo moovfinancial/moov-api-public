@@ -15100,11 +15100,6 @@ components:
       description: The countries in which an account operates.
     AccountNameVerification:
       type: object
-      required:
-        - firstName
-        - lastName
-        - middleName
-        - fullName
       properties:
         firstName:
           $ref: '#/components/schemas/CardVerificationResult'
@@ -16679,7 +16674,6 @@ components:
         - cvv
         - addressLine1
         - postalCode
-        - accountName
       properties:
         cvv:
           $ref: '#/components/schemas/CardVerificationResult'
