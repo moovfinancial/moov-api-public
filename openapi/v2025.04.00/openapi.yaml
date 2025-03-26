@@ -16251,12 +16251,6 @@ components:
         - expiration
         - billingAddress
         - cardVerification
-        - issuer
-        - issuerCountry
-        - issuerURL
-        - issuerPhone
-        - domesticPushToCard
-        - domesticPullFromCard
       properties:
         cardID:
           $ref: '#/components/schemas/CardID'
@@ -19848,10 +19842,6 @@ components:
         - expiration
         - billingAddress
         - cardVerification
-        - issuer
-        - issuerCountry
-        - domesticPushToCard
-        - domesticPullFromCard
       properties:
         cardID:
           $ref: '#/components/schemas/CardID'
