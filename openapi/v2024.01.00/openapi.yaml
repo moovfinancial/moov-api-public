@@ -17294,6 +17294,10 @@ components:
           example: Pay Instructor for May 15 Class
         metadata:
           $ref: '#/components/schemas/Metadata'
+        salesTaxAmount:
+          allOf:
+            - $ref: '#/components/schemas/Amount'
+          description: Optional sales tax amount. `transfer.amount.value` should be inclusive of any sales tax and represents the total amount charged.
       example:
         source:
           paymentMethodID: 9506dbf6-4208-44c3-ad8a-e4431660e1f2
@@ -21148,6 +21152,10 @@ components:
           type: string
         occurrenceID:
           type: string
+        salesTaxAmount:
+          allOf:
+            - $ref: '#/components/schemas/Amount'
+          description: Optional sales tax amount. `transfer.amount.value` should be inclusive of any sales tax and represents the total amount charged.
       description: Details of a Transfer.
       title: Sync
       example:
