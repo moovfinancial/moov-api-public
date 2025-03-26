@@ -6,9 +6,19 @@ sources:
             - location: ./openapi/latest/openapi.yaml
         registry:
             location: registry.speakeasyapi.dev/moov/moov/api-latest
-    v2024.01:
+    v2024.01.00: # pre-versioned
         inputs:
             - location: ./openapi/v2024.01.00/openapi.yaml
         registry:
-            location: registry.speakeasyapi.dev/moov/moov/api-v2024.01
+            location: registry.speakeasyapi.dev/moov/moov/api-v2024.01.00
+    # v2025.01.00: # 2025 q1, build 0
+    #     inputs:
+    #         - location: ./openapi/v2025.01.00/openapi.yaml
+    #     registry:
+    #         location: registry.speakeasyapi.dev/moov/moov/api-v2025.01.00
+    # v2025.04.00: # 2025 q2, build 0
+    #     inputs:
+    #         - location: ./openapi/v2025.04.00/openapi.yaml
+    #     registry:
+    #         location: registry.speakeasyapi.dev/moov/moov/api-v2025.04.00
 targets: {}
