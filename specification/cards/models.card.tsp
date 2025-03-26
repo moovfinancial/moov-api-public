@@ -88,17 +88,17 @@ model Card {
   cardVerification: CardVerification;
 
   @doc("Financial institution that issued the card.")
-  issuer: string;
+  issuer?: string;
 
   @doc("Country where the card was issued.")
-  issuerCountry: string;
+  issuerCountry?: string;
 
   @doc("URL of the issuer.")
   @format("uri")
-  issuerURL: string;
+  issuerURL?: string;
 
   @doc("Phone number of the issuer.")
-  issuerPhone: string;
+  issuerPhone?: string;
 
   @doc("""
     If true, the card is for commercial use, or associated with a business.
@@ -119,8 +119,8 @@ model Card {
   merchantAccountID?: string;
 
   cardAccountUpdater?: CardAccountUpdater;
-  domesticPushToCard: DomesticPushToCard;
-  domesticPullFromCard: DomesticPullFromCard;
+  domesticPushToCard?: DomesticPushToCard;
+  domesticPullFromCard?: DomesticPullFromCard;
   paymentMethods?: BasicPaymentMethod[];
 }
 
