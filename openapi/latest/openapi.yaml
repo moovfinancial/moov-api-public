@@ -15285,7 +15285,9 @@ components:
           allOf:
             - $ref: '#/components/schemas/InstitutionLogo'
           nullable: true
-          example: null
+          example:
+            name: Main Street Bank
+            url: https://www.mainstreetbank.com/logo.png
     AddCapabilities:
       type: object
       required:

@@ -11,6 +11,7 @@ import "../common/examples.id.tsp";
 using TypeSpec.OpenAPI;
 using TypeSpec.Versioning;
 
+@versioned(MoovAPI.Versions)
 namespace MoovAPI;
 
 @doc("ID of the payment method.")

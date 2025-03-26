@@ -105,6 +105,7 @@ import "../models.version.tsp"
 
 using TypeSpec.Versioning;
 
+@versioned(MoovAPI.Versions) // Not strictly required, but helps with IDE intellisense
 namespace MoovAPI;
 
 model Thing {
