@@ -67,7 +67,10 @@ model AchParticipant {
   @example("Main Street Bank")
   cleanName: string;
 
-  @example(null)
+  @example(#{
+    name: "Main Street Bank",
+    url: "https://www.mainstreetbank.com/logo.png",
+  })
   logo: InstitutionLogo | null;
 }
 
