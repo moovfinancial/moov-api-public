@@ -18943,25 +18943,7 @@ components:
         - production
       description: The operating mode for an account.
       example: production
-    MoovFeeDetails:
-      type: object
-      required:
-        - moovProcessing
-      properties:
-        cardScheme:
-          type: string
-          description: Card scheme fees accrued during authorization and settlement. String type represents dollars with up to 9 decimal place precision.
-        interchange:
-          type: string
-          description: Network interchange fee for Visa, Mastercard, or Discover. String type represents dollars with up to 9 decimal place precision.
-        discount:
-          type: string
-          description: Network discount fee for American Express. String type represents dollars with up to 9 decimal place precision.
-        moovProcessing:
-          type: string
-          description: Moov processing fee. String type represents dollars with up to 9 decimal place precision.
-      description: Processing and pass-through costs that add up to the moovFee.
-    MoovFeeSummary:
+    MoovFee:
       type: object
       required:
         - accountID
@@ -18985,7 +18967,25 @@ components:
           items:
             type: string
           description: List of individual fee IDs charged to the account.
-      description: Summary of Moov fees charged to an account involved in the transfer.
+      description: Moov fees charged to an account involved in a transfer.
+    MoovFeeDetails:
+      type: object
+      required:
+        - moovProcessing
+      properties:
+        cardScheme:
+          type: string
+          description: Card scheme fees accrued during authorization and settlement. String type represents dollars with up to 9 decimal place precision.
+        interchange:
+          type: string
+          description: Network interchange fee for Visa, Mastercard, or Discover. String type represents dollars with up to 9 decimal place precision.
+        discount:
+          type: string
+          description: Network discount fee for American Express. String type represents dollars with up to 9 decimal place precision.
+        moovProcessing:
+          type: string
+          description: Moov processing fee. String type represents dollars with up to 9 decimal place precision.
+      description: Processing and pass-through costs that add up to the moovFee.
     MoovWalletPaymentMethod:
       type: object
       required:
@@ -21108,7 +21108,7 @@ components:
         moovFees:
           type: array
           items:
-            $ref: '#/components/schemas/MoovFeeSummary'
+            $ref: '#/components/schemas/MoovFee'
           description: Fees charged to accounts involved in the transfer.
         groupID:
           type: string

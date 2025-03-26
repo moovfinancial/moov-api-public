@@ -58,7 +58,7 @@ model Transfer {
   moovFeeDetails?: MoovFeeDetails;
 
   @doc("Fees charged to accounts involved in the transfer.")
-  moovFees?: MoovFeeSummary[];
+  moovFees?: MoovFee[];
 
   groupID?: string;
   cancellations?: Cancellation[];
@@ -236,8 +236,8 @@ model MoovFeeDetails {
   moovProcessing: string;
 }
 
-@doc("Summary of Moov fees charged to an account involved in the transfer.")
-model MoovFeeSummary {
+@doc("Moov fees charged to an account involved in a transfer.")
+model MoovFee {
   @doc("The account that the fees were charged to.")
   accountID: string;
 
