@@ -70,6 +70,9 @@ model Transfer {
   sweepID?: string;
   scheduleID?: string;
   occurrenceID?: string;
+
+  @doc("Optional sales tax amount. `transfer.amount.value` should be inclusive of any sales tax and represents the total amount charged.")
+  salesTaxAmount?: Amount;
 }
 
 @summary("Async")
@@ -132,6 +135,9 @@ model CreateTransfer {
   description?: string;
 
   metadata?: Metadata;
+
+  @doc("Optional sales tax amount. `transfer.amount.value` should be inclusive of any sales tax and represents the total amount charged.")
+  salesTaxAmount?: Amount;
 }
 
 @doc("A transfer was successfully created but an error occurred while generating the synchronous response. The asynchronous response object will be returned.")
