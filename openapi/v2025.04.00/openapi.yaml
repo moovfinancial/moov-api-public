@@ -18943,31 +18943,6 @@ components:
         - production
       description: The operating mode for an account.
       example: production
-    MoovFee:
-      type: object
-      required:
-        - accountID
-        - transferParty
-        - totalAmount
-        - feeIDs
-      properties:
-        accountID:
-          type: string
-          description: The account that the fees were charged to.
-        transferParty:
-          allOf:
-            - $ref: '#/components/schemas/TransferParty'
-          description: Indicates whether the account is the source, destination, or partner account.
-        totalAmount:
-          allOf:
-            - $ref: '#/components/schemas/AmountDecimal'
-          description: The total amount of fees charged to the account.
-        feeIDs:
-          type: array
-          items:
-            type: string
-          description: List of individual fee IDs charged to the account.
-      description: Moov fees charged to an account involved in a transfer.
     MoovFeeDetails:
       type: object
       required:
@@ -18986,6 +18961,31 @@ components:
           type: string
           description: Moov processing fee. String type represents dollars with up to 9 decimal place precision.
       description: Processing and pass-through costs that add up to the moovFee.
+    MoovFees:
+      type: object
+      required:
+        - accountID
+        - transferParty
+        - totalAmount
+        - feeIDs
+      properties:
+        accountID:
+          type: string
+          description: ID of the account that fees were charged to.
+        transferParty:
+          allOf:
+            - $ref: '#/components/schemas/TransferParty'
+          description: Indicates whether the account charged is the source, destination, or partner account.
+        totalAmount:
+          allOf:
+            - $ref: '#/components/schemas/AmountDecimal'
+          description: The total amount of fees charged to the account.
+        feeIDs:
+          type: array
+          items:
+            type: string
+          description: List of fee IDs that sum to the totalAmount.
+      description: Moov fees charged to an account involved in a transfer.
     MoovWalletPaymentMethod:
       type: object
       required:
@@ -21106,10 +21106,7 @@ components:
         moovFeeDetails:
           $ref: '#/components/schemas/MoovFeeDetails'
         moovFees:
-          type: array
-          items:
-            $ref: '#/components/schemas/MoovFee'
-          description: Fees charged to accounts involved in the transfer.
+          $ref: '#/components/schemas/MoovFees'
         groupID:
           type: string
         cancellations:
