@@ -42,6 +42,7 @@ tags:
   - name: Representatives
   - name: Scheduling
   - name: Terminal Applications
+  - name: Terminal Configurations
   - name: Transfers
   - name: Underwriting
   - name: Sweeps
@@ -9171,6 +9172,98 @@ paths:
             example:
               status: disabled
       x-speakeasy-name-override: updateConfig
+  /accounts/{accountID}/terminal-applications/{terminalApplicationID}/configuration:
+    get:
+      operationId: getTerminalConfiguration
+      description: |-
+        Fetch the configuration for a given Terminal Application
+
+        To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
+        you'll need to specify the `/accounts/{accountID}/terminal-configuration.read` scope.
+      parameters:
+        - $ref: '#/components/parameters/VersionHeader'
+        - name: accountID
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: terminalApplicationID
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/TerminalApplicationID'
+      responses:
+        '200':
+          description: The request completed successfully.
+          headers:
+            x-request-id:
+              required: true
+              description: A unique identifier used to trace requests.
+              schema:
+                type: string
+                format: uuid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TerminalConfiguration'
+        '401':
+          description: The request contained missing or expired authentication.
+          headers:
+            x-request-id:
+              required: true
+              description: A unique identifier used to trace requests.
+              schema:
+                type: string
+                format: uuid
+        '403':
+          description: The user is not authorized to make the request.
+          headers:
+            x-request-id:
+              required: true
+              description: A unique identifier used to trace requests.
+              schema:
+                type: string
+                format: uuid
+        '404':
+          description: The requested resource was not found.
+          headers:
+            x-request-id:
+              required: true
+              description: A unique identifier used to trace requests.
+              schema:
+                type: string
+                format: uuid
+        '429':
+          description: Request was refused due to rate limiting.
+          headers:
+            x-request-id:
+              required: true
+              description: A unique identifier used to trace requests.
+              schema:
+                type: string
+                format: uuid
+        '500':
+          description: The request failed due to an unexpected error.
+          headers:
+            x-request-id:
+              required: true
+              description: A unique identifier used to trace requests.
+              schema:
+                type: string
+                format: uuid
+        '504':
+          description: The request failed because a downstream service failed to respond.
+          headers:
+            x-request-id:
+              required: true
+              description: A unique identifier used to trace requests.
+              schema:
+                type: string
+                format: uuid
+      tags:
+        - Terminal Configurations
+      x-speakeasy-name-override: get
   /accounts/{accountID}/transfers:
     post:
       operationId: createTransfer
@@ -15007,11 +15100,6 @@ components:
       description: The countries in which an account operates.
     AccountNameVerification:
       type: object
-      required:
-        - firstName
-        - lastName
-        - middleName
-        - fullName
       properties:
         firstName:
           $ref: '#/components/schemas/CardVerificationResult'
@@ -15197,7 +15285,9 @@ components:
           allOf:
             - $ref: '#/components/schemas/InstitutionLogo'
           nullable: true
-          example: null
+          example:
+            name: Main Street Bank
+            url: https://www.mainstreetbank.com/logo.png
     AddCapabilities:
       type: object
       required:
@@ -16163,12 +16253,6 @@ components:
         - expiration
         - billingAddress
         - cardVerification
-        - issuer
-        - issuerCountry
-        - issuerURL
-        - issuerPhone
-        - domesticPushToCard
-        - domesticPullFromCard
       properties:
         cardID:
           $ref: '#/components/schemas/CardID'
@@ -16601,7 +16685,6 @@ components:
         - cvv
         - addressLine1
         - postalCode
-        - accountName
       properties:
         cvv:
           $ref: '#/components/schemas/CardVerificationResult'
@@ -17222,6 +17305,10 @@ components:
           example: Pay Instructor for May 15 Class
         metadata:
           $ref: '#/components/schemas/Metadata'
+        salesTaxAmount:
+          allOf:
+            - $ref: '#/components/schemas/Amount'
+          description: Optional sales tax amount. `transfer.amount.value` should be inclusive of any sales tax and represents the total amount charged.
       example:
         source:
           paymentMethodID: 9506dbf6-4208-44c3-ad8a-e4431660e1f2
@@ -17282,6 +17369,8 @@ components:
         paymentMethodID:
           type: string
           format: uuid
+        paymentToken:
+          type: string
         cardDetails:
           $ref: '#/components/schemas/CreateTransferSourceCard'
         achDetails:
@@ -17805,6 +17894,7 @@ components:
         - cardAcquiringModel
         - billableFees
         - minimumCommitment
+        - monthlyPlatformFee
         - createdAt
       properties:
         planID:
@@ -17826,6 +17916,8 @@ components:
           description: Additional usage-based fees for this plan.
         minimumCommitment:
           $ref: '#/components/schemas/MinimumCommitment'
+        monthlyPlatformFee:
+          $ref: '#/components/schemas/MonthlyPlatformFee'
         createdAt:
           type: string
           format: date-time
@@ -17840,6 +17932,7 @@ components:
         - cardAcquiringModel
         - billableFees
         - minimumCommitment
+        - monthlyPlatformFee
       properties:
         agreementID:
           type: string
@@ -17869,6 +17962,8 @@ components:
             $ref: '#/components/schemas/BillableFee'
         minimumCommitment:
           $ref: '#/components/schemas/MinimumCommitment'
+        monthlyPlatformFee:
+          $ref: '#/components/schemas/MonthlyPlatformFee'
     FeePlanAgreementError:
       type: object
       properties:
@@ -18943,6 +19038,11 @@ components:
         - production
       description: The operating mode for an account.
       example: production
+    MonthlyPlatformFee:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/AmountDecimal'
+      description: Fixed recurring amount paid in the billing period regardless of usage.
     MoovFeeDetails:
       type: object
       required:
@@ -19269,6 +19369,7 @@ components:
         - cardAcquiringModel
         - billableFees
         - minimumCommitment
+        - monthlyPlatformFee
         - createdAt
       properties:
         planID:
@@ -19293,6 +19394,8 @@ components:
             $ref: '#/components/schemas/BillableFee'
         minimumCommitment:
           $ref: '#/components/schemas/MinimumCommitment'
+        monthlyPlatformFee:
+          $ref: '#/components/schemas/MonthlyPlatformFee'
         createdAt:
           type: string
           format: date-time
@@ -19770,10 +19873,6 @@ components:
         - expiration
         - billingAddress
         - cardVerification
-        - issuer
-        - issuerCountry
-        - domesticPushToCard
-        - domesticPullFromCard
       properties:
         cardID:
           $ref: '#/components/schemas/CardID'
@@ -20993,6 +21092,16 @@ components:
         issuer: GRINGOTTS BANK
         issuerCountry: US
         lastFourCardNumber: '1234'
+    TerminalConfiguration:
+      type: object
+      required:
+        - configuration
+      properties:
+        configuration:
+          type: string
+      description: Describes a terminal configuration.
+      example:
+        configuration: Zm9vYmFyCg==
     TermsOfService:
       type: object
       required:
@@ -21131,6 +21240,10 @@ components:
           type: string
         occurrenceID:
           type: string
+        salesTaxAmount:
+          allOf:
+            - $ref: '#/components/schemas/Amount'
+          description: Optional sales tax amount. `transfer.amount.value` should be inclusive of any sales tax and represents the total amount charged.
       description: Details of a Transfer.
       title: Sync
       example:
@@ -21293,6 +21406,8 @@ components:
           $ref: '#/components/schemas/PaymentMethodsCard'
         applePay:
           $ref: '#/components/schemas/ApplePayResponse'
+        terminalCard:
+          $ref: '#/components/schemas/TerminalCard'
         cardDetails:
           $ref: '#/components/schemas/CardTransactionDetails'
         achDetails:

@@ -23,6 +23,7 @@ model FeePlanAgreement {
   cardAcquiringModel: CardAcquiringModel;
   billableFees: BillableFee[];
   minimumCommitment: MinimumCommitment;
+  monthlyPlatformFee: MonthlyPlatformFee;
 }
 
 model PartnerPricingAgreement extends FeePlanAgreement {
