@@ -1,6 +1,7 @@
 import "@typespec/http";
 import "@typespec/openapi3";
 import "@typespec/versioning";
+import "./examples.receipt.tsp";
 import "../common/models.header.tsp";
 import "../common/models.parameter.tsp";
 import "../common/models.response.tsp";
@@ -66,10 +67,11 @@ model SentReceipt {
   idempotencyKey: string;
 
   @doc("When the receipt was sent.")
-  @example(utcDateTime.fromISO("2009-11-10T23:00:00Z"))
+  @example(utcDateTime.fromISO("2025-11-10T23:00:000Z"))
   sentOn: utcDateTime;
 }
 
+@example(ExampleReceiptTransfer)
 model ReceiptResponse {
   @doc("Unique identifier for the receipt request.")
   @format("uuid")
@@ -80,7 +82,7 @@ model ReceiptResponse {
   createdBy: string;
 
   @doc("The date and time the receipt was disabled.")
-  @example(utcDateTime.fromISO("2009-11-10T23:00:00Z"))
+  @example(utcDateTime.fromISO("2025-11-10T23:00:000Z"))
   disabledOn?: utcDateTime;
 
   @doc("The type of receipt.")
