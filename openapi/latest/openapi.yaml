@@ -17301,7 +17301,7 @@ components:
         description:
           type: string
           maxLength: 256
-          description: An optional description of the transfer for your own internal use.
+          description: An optional description of the transfer that is used on receipts and for your own internal use.
           example: Pay Instructor for May 15 Class
         metadata:
           $ref: '#/components/schemas/Metadata'
@@ -21174,7 +21174,7 @@ components:
         description:
           type: string
           maxLength: 128
-          description: An optional description of the transfer for your own internal use.
+          description: An optional description of the transfer that is used on receipts and for your own internal use.
           example: Pay Instructor for May 15 Class
         metadata:
           $ref: '#/components/schemas/Metadata'

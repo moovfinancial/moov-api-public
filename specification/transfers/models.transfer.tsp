@@ -46,7 +46,7 @@ model Transfer {
   failureReason?: TransferFailureReason;
   amount: Amount;
 
-  @doc("An optional description of the transfer for your own internal use.")
+  @doc("An optional description of the transfer that is used on receipts and for your own internal use.")
   @example("Pay Instructor for May 15 Class")
   @maxLength(128)
   description?: string;
@@ -129,7 +129,7 @@ model CreateTransfer {
   amount: Amount;
   facilitatorFee?: FacilitatorFee;
 
-  @doc("An optional description of the transfer for your own internal use.")
+  @doc("An optional description of the transfer that is used on receipts and for your own internal use.")
   @example("Pay Instructor for May 15 Class")
   @maxLength(256)
   description?: string;
