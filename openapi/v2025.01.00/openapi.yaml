@@ -9443,6 +9443,7 @@ paths:
         - $ref: '#/components/parameters/TransferListFilters.startDateTime'
         - $ref: '#/components/parameters/TransferListFilters.endDateTime'
         - $ref: '#/components/parameters/TransferListFilters.groupID'
+        - $ref: '#/components/parameters/TransferListFilters.scheduleID'
         - $ref: '#/components/parameters/TransferListFilters.refunded'
         - $ref: '#/components/parameters/TransferListFilters.disputed'
         - $ref: '#/components/parameters/TransferListFilters.skip'
@@ -14798,6 +14799,15 @@ components:
       schema:
         type: boolean
       explode: false
+    TransferListFilters.scheduleID:
+      name: scheduleID
+      in: query
+      required: false
+      description: Optional ID to filter for transfer occurrences belonging to the same schedule.
+      schema:
+        type: string
+        format: uuid
+      explode: false
     TransferListFilters.skip:
       name: skip
       in: query
@@ -17349,7 +17359,7 @@ components:
           type: string
           format: uuid
           description: |-
-            A `transferID` is used to create a [transfer group](https://docs.moov.io/guides/money-movement/transfer-groups/), 
+            A `transferID` is used to create a [transfer group](https://docs.moov.io/guides/money-movement/transfer-groups/),
             associating the new transfer with a parent transfer.
         paymentMethodID:
           type: string
@@ -17823,7 +17833,7 @@ components:
           type: string
           pattern: ^\d+\.\d{1,9}$
           description: |-
-            Same as `total`, but a decimal-formatted numerical string that represents up to 9 decimal place precision. 
+            Same as `total`, but a decimal-formatted numerical string that represents up to 9 decimal place precision.
 
             Only either `total` or `totalDecimal` can be set. Set this field if you expect the fee to be in fractions of a cent.
           example: '12.987654321'
@@ -17835,7 +17845,7 @@ components:
           type: string
           pattern: ^\d+\.\d{1,9}$
           description: |-
-            Same as `markup`, but a decimal-formatted numerical string that represents up to 9 decimal place precision. 
+            Same as `markup`, but a decimal-formatted numerical string that represents up to 9 decimal place precision.
             Only either `markup` or `markupDecimal` can be set. Set this field if you expect the fee to be in fractions of a cent.
           example: '0.987654321'
       description: Total or markup fee.
