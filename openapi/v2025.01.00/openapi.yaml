@@ -6059,7 +6059,7 @@ paths:
       description: |-
         Upload a file and link it to the specified Moov account. 
 
-        The maximum file size is 10MB. Each account is allowed a maximum of 50 files. Acceptable file types include csv, jpg, pdf, 
+        The maximum file size is 20MB. Each account is allowed a maximum of 50 files. Acceptable file types include csv, jpg, pdf, 
         and png. 
 
         To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
@@ -16987,7 +16987,7 @@ components:
           type: string
           format: binary
           description: |-
-            The file to upload as evidence. Valid types are [jpeg, tiff, pdf].
+            The file to upload as evidence. Valid types are [jpeg, tiff, pdf] with a limit of 4MB per file.
 
             The `Content-Type` header for this form part must be one of the following:
               - `image/jpeg`
