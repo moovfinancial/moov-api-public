@@ -17301,7 +17301,7 @@ components:
         description:
           type: string
           maxLength: 256
-          description: An optional description of the transfer for your own internal use.
+          description: An optional description of the transfer that is used on receipts and for your own internal use.
           example: Pay Instructor for May 15 Class
         metadata:
           $ref: '#/components/schemas/Metadata'
@@ -20198,7 +20198,7 @@ components:
           type: string
           format: date-time
           description: The date and time the receipt was disabled.
-          example: '2009-11-10T23:00:00Z'
+          example: 2025-11-10T23:00:000Z
         kind:
           allOf:
             - $ref: '#/components/schemas/ReceiptKind'
@@ -20238,6 +20238,16 @@ components:
           items:
             $ref: '#/components/schemas/SentReceipt'
           description: The list of receipts that have been sent.
+      example:
+        createdBy: 25a02396-1048-48f9-bf93-102d2fb7895e
+        receiptID: 4925c8a5-3b9a-4488-a514-9fd992546aca
+        forTransferID: 193ceb53-94c7-41c4-9272-c90c2832cb4c
+        kind: sale.customer.v1
+        email: jordan.lee@classbooker.dev
+        sentFor:
+          - idempotencyKey: 0c14c6a6-6f50-4d1e-b0c4-b46ff43ba6a1
+            receiptID: 4925c8a5-3b9a-4488-a514-9fd992546aca
+            sentOn: '2025-01-16T17:52:14.219311143Z'
     ReceiptValidationError:
       type: object
       properties:
@@ -20778,7 +20788,7 @@ components:
           type: string
           format: date-time
           description: When the receipt was sent.
-          example: '2009-11-10T23:00:00Z'
+          example: 2025-11-10T23:00:000Z
     Settings:
       type: object
       properties:
@@ -21174,7 +21184,7 @@ components:
         description:
           type: string
           maxLength: 128
-          description: An optional description of the transfer for your own internal use.
+          description: An optional description of the transfer that is used on receipts and for your own internal use.
           example: Pay Instructor for May 15 Class
         metadata:
           $ref: '#/components/schemas/Metadata'
