@@ -34,7 +34,7 @@ model DisputeEvidenceResponse {
 
 model CreateEvidenceFile {
   @doc("""
-    The file to upload as evidence. Valid types are [jpeg, tiff, pdf].
+    The file to upload as evidence. Valid types are [jpeg, tiff, pdf] with a limit of 4MB per file.
     
     The `Content-Type` header for this form part must be one of the following:
       - `image/jpeg`
