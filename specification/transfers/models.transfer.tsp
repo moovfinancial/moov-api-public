@@ -182,7 +182,7 @@ model TransferValidationError {
 @doc("Where funds for a transfer originate. For the source, you must include either a `paymentMethodID` or a `transferID`.")
 model CreateTransferSource {
   @doc("""
-    A `transferID` is used to create a [transfer group](https://docs.moov.io/guides/money-movement/transfer-groups/), 
+    A `transferID` is used to create a [transfer group](https://docs.moov.io/guides/money-movement/transfer-groups/),
     associating the new transfer with a parent transfer.
     """)
   @format("uuid")
@@ -213,7 +213,7 @@ model FacilitatorFee {
   total?: int64;
 
   @doc("""
-    Same as `total`, but a decimal-formatted numerical string that represents up to 9 decimal place precision. 
+    Same as `total`, but a decimal-formatted numerical string that represents up to 9 decimal place precision.
     
     Only either `total` or `totalDecimal` can be set. Set this field if you expect the fee to be in fractions of a cent.
     """)
@@ -225,7 +225,7 @@ model FacilitatorFee {
   markup?: int64;
 
   @doc("""
-    Same as `markup`, but a decimal-formatted numerical string that represents up to 9 decimal place precision. 
+    Same as `markup`, but a decimal-formatted numerical string that represents up to 9 decimal place precision.
     Only either `markup` or `markupDecimal` can be set. Set this field if you expect the fee to be in fractions of a cent.
     """)
   @example("0.987654321")
@@ -277,6 +277,12 @@ model TransferListFilters {
   @example("683660e3-218c-4f5a-b193-930bd6d2f98e")
   @query
   groupID?: string;
+
+  @doc("Optional ID to filter for transfer occurrences belonging to the same schedule.")
+  @format("uuid")
+  @example("b7aa2ee2-8783-4fc9-9fa6-a4720b30b20d")
+  @query
+  scheduleID?: string;
 
   @doc("Optional parameter to only return refunded transfers.")
   @query
