@@ -127,6 +127,10 @@ model ReceiptResponse {
 }
 
 @error
+@example(#{ `0`: #{ kind: "cannot be blank" } })
+model ReceiptValidationErrorResponse is Record<ReceiptValidationError>;
+
+@error
 model ReceiptValidationError {
   kind?: string;
   email?: string;

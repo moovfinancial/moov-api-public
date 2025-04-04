@@ -26,13 +26,13 @@ op createReceipts(
 
   @body
   body: ReceiptRequest[],
-): PostResponsesCreated<ReceiptResponse, ReceiptValidationError>;
+): PostResponsesCreated<ReceiptResponse[], ReceiptValidationErrorResponse>;
 
 @get
 @route("/receipts")
 @tag("Receipts")
 @doc("""
-  List receipts by trasnferID, scheduleID, or occurrenceID.
+  List receipts by transferID, scheduleID, or occurrenceID.
   
   To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
   you'll need to specify the `/accounts/{accountID}/transfers.read` scope.
@@ -42,8 +42,8 @@ op createReceipts(
 op listReceipts(
   ...CommonRequestHeaders,
 
-  @doc("The unique identifier to filter receipts by.")
+  @doc("The transfer, schedule, or transfer occurrence ID to filter receipts by.")
   @format("uuid")
   @query
-  id?: string,
+  id: string,
 ): ListResponses<ReceiptResponse>;

@@ -13491,7 +13491,9 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ReceiptResponse'
+                type: array
+                items:
+                  $ref: '#/components/schemas/ReceiptResponse'
         '400':
           description: The server could not understand the request due to invalid syntax.
           headers:
@@ -13557,7 +13559,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ReceiptValidationError'
+                $ref: '#/components/schemas/ReceiptValidationErrorResponse'
         '429':
           description: Request was refused due to rate limiting.
           headers:
@@ -13599,7 +13601,7 @@ paths:
     get:
       operationId: listReceipts
       description: |-
-        List receipts by trasnferID, scheduleID, or occurrenceID.
+        List receipts by transferID, scheduleID, or occurrenceID.
 
         To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
         you'll need to specify the `/accounts/{accountID}/transfers.read` scope.
@@ -13607,8 +13609,8 @@ paths:
         - $ref: '#/components/parameters/VersionHeader'
         - name: id
           in: query
-          required: false
-          description: The unique identifier to filter receipts by.
+          required: true
+          description: The transfer, schedule, or transfer occurrence ID to filter receipts by.
           schema:
             type: string
             format: uuid
@@ -20250,6 +20252,13 @@ components:
           type: string
         forOccurrenceID:
           type: string
+    ReceiptValidationErrorResponse:
+      type: object
+      additionalProperties:
+        $ref: '#/components/schemas/ReceiptValidationError'
+      example:
+        '0':
+          kind: cannot be blank
     Recur:
       type: object
       required:
