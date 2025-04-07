@@ -25,10 +25,45 @@ using TypeSpec.Versioning;
 
 namespace MoovAPI;
 
-@oneOf
-union TransferResponse {
-  Transfer,
-  AsyncTransfer,
+model CreatedTransfer {
+  @format("uuid")
+  transferID: string;
+
+  createdOn: utcDateTime;
+  source?: TransferSource;
+  destination?: TransferDestination;
+  completedOn?: utcDateTime;
+  status?: TransferStatus;
+  failureReason?: TransferFailureReason;
+  amount?: Amount;
+
+  @doc("An optional description of the transfer that is used on receipts and for your own internal use.")
+  @example("Pay Instructor for May 15 Class")
+  @maxLength(128)
+  description?: string;
+
+  metadata?: Metadata;
+  facilitatorFee?: FacilitatorFee;
+
+  @doc("Fees charged to your platform account for transfers.")
+  moovFee?: int64;
+
+  @doc("Same as `moovFee`, but a decimal-formatted numerical string that represents up to 9 decimal place precision.")
+  moovFeeDecimal?: string;
+
+  moovFeeDetails?: MoovFeeDetails;
+  groupID?: string;
+  cancellations?: Cancellation[];
+  refundedAmount?: Amount;
+  refunds?: CardAcquiringRefund[];
+  disputedAmount?: Amount;
+  disputes?: CardAcquiringDispute[];
+  sweepID?: string;
+  scheduleID?: string;
+  occurrenceID?: string;
+
+  @doc("Optional sales tax amount. `transfer.amount.value` should be inclusive of any sales tax and represents the total amount charged.")
+  salesTaxAmount?: Amount;
 }
 
 @summary("Sync")

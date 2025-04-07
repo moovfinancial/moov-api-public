@@ -9311,7 +9311,70 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/TransferResponse'
+                $ref: '#/components/schemas/CreatedTransfer'
+              examples:
+                Created synchronous transfer:
+                  summary: Created synchronous transfer
+                  value:
+                    transferID: d835gf30-4b19-4850-a9b2-c0624c41ecb3
+                    source:
+                      paymentMethodID: 9506dbf6-4208-44c3-ad8a-e4431660e1f2
+                      paymentMethodType: card-payment
+                      account:
+                        accountID: 7e4b26c2-b399-49ef-8390-50e1ea44d550
+                        email: jules@julesjackson.com
+                        displayName: Jules Jackson
+                      card:
+                        cardID: aefd5563-93c6-413c-875e-1bd0ebfc116d
+                        fingerprint: 2f5d782ceef1c3bd31ed5...
+                        brand: Visa
+                        cardType: credit
+                        lastFourCardNumber: '2000'
+                        bin: '400020'
+                        expiration:
+                          month: '01'
+                          year: '28'
+                        holderName: Jules Jackson
+                        billingAddress:
+                          postalCode: '80301'
+                        domesticPushToCard: standard
+                        domesticPullFromCard: supported
+                        cardVerification:
+                          cvv: unavailable
+                          addressLine1: unavailable
+                          postalCode: unavailable
+                          accountName:
+                            firstName: unavailable
+                            lastName: unavailable
+                            middleName: unavailable
+                            fullName: unavailable
+                        issuer: Moov Visa Sandbox
+                        issuerCountry: US
+                        cardAccountUpdater: {}
+                      cardDetails:
+                        status: confirmed
+                        dynamicDescriptor: WhlBdy *Yoga 11-12
+                        confirmedOn: '2025-01-21T21:32:16.799681237Z'
+                    destination:
+                      paymentMethodID: 3f9969cf-a1f3-4d83-8ddc-229a506651cf
+                      paymentMethodType: moov-wallet
+                      account:
+                        accountID: 34233b72-780c-4a0d-8b08-cbbe23k878f8
+                        email: john@wholebodyfitness.io
+                        displayName: Whole Body Fitness
+                      wallet:
+                        walletID: 744b2e78-8cc8-4a6a-af42-611e3b844503
+                    status: pending
+                    amount:
+                      currency: USD
+                      value: 32945
+                    description: Transfer from card to wallet
+                    createdOn: '2025-01-21T21:32:16Z'
+                Created async transfer:
+                  summary: Created async transfer
+                  value:
+                    transferID: d835gf30-4b19-4850-a9b2-c0624c41ecb3
+                    createdOn: '2025-01-21T21:32:16Z'
         '201':
           description: A transfer was successfully created but an error occurred while generating the synchronous response. The asynchronous response object will be returned.
           headers:
@@ -17392,6 +17455,77 @@ components:
           $ref: '#/components/schemas/CardDynamicDescriptor'
         transactionSource:
           $ref: '#/components/schemas/TransactionSource'
+    CreatedTransfer:
+      type: object
+      required:
+        - transferID
+        - createdOn
+      properties:
+        transferID:
+          type: string
+          format: uuid
+        createdOn:
+          type: string
+          format: date-time
+        source:
+          $ref: '#/components/schemas/TransferSource'
+        destination:
+          $ref: '#/components/schemas/TransferDestination'
+        completedOn:
+          type: string
+          format: date-time
+        status:
+          $ref: '#/components/schemas/TransferStatus'
+        failureReason:
+          $ref: '#/components/schemas/TransferFailureReason'
+        amount:
+          $ref: '#/components/schemas/Amount'
+        description:
+          type: string
+          maxLength: 128
+          description: An optional description of the transfer that is used on receipts and for your own internal use.
+          example: Pay Instructor for May 15 Class
+        metadata:
+          $ref: '#/components/schemas/Metadata'
+        facilitatorFee:
+          $ref: '#/components/schemas/FacilitatorFee'
+        moovFee:
+          type: integer
+          format: int64
+          description: Fees charged to your platform account for transfers.
+        moovFeeDecimal:
+          type: string
+          description: Same as `moovFee`, but a decimal-formatted numerical string that represents up to 9 decimal place precision.
+        moovFeeDetails:
+          $ref: '#/components/schemas/MoovFeeDetails'
+        groupID:
+          type: string
+        cancellations:
+          type: array
+          items:
+            $ref: '#/components/schemas/Cancellation'
+        refundedAmount:
+          $ref: '#/components/schemas/Amount'
+        refunds:
+          type: array
+          items:
+            $ref: '#/components/schemas/CardAcquiringRefund'
+        disputedAmount:
+          $ref: '#/components/schemas/Amount'
+        disputes:
+          type: array
+          items:
+            $ref: '#/components/schemas/CardAcquiringDispute'
+        sweepID:
+          type: string
+        scheduleID:
+          type: string
+        occurrenceID:
+          type: string
+        salesTaxAmount:
+          allOf:
+            - $ref: '#/components/schemas/Amount'
+          description: Optional sales tax amount. `transfer.amount.value` should be inclusive of any sales tax and represents the total amount charged.
     Currency:
       type: string
       pattern: ^[A-Za-z]{3}$
@@ -21304,10 +21438,6 @@ components:
           type: string
         destination:
           type: string
-    TransferResponse:
-      oneOf:
-        - $ref: '#/components/schemas/Transfer'
-        - $ref: '#/components/schemas/AsyncTransfer'
     TransferSource:
       type: object
       required:
