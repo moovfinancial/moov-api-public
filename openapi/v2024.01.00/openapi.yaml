@@ -6059,7 +6059,7 @@ paths:
       description: |-
         Upload a file and link it to the specified Moov account. 
 
-        The maximum file size is 10MB. Each account is allowed a maximum of 50 files. Acceptable file types include csv, jpg, pdf, 
+        The maximum file size is 20MB. Each account is allowed a maximum of 50 files. Acceptable file types include csv, jpg, pdf, 
         and png. 
 
         To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
@@ -9311,7 +9311,70 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/TransferResponse'
+                $ref: '#/components/schemas/CreatedTransfer'
+              examples:
+                Created synchronous transfer:
+                  summary: Created synchronous transfer
+                  value:
+                    transferID: d835gf30-4b19-4850-a9b2-c0624c41ecb3
+                    source:
+                      paymentMethodID: 9506dbf6-4208-44c3-ad8a-e4431660e1f2
+                      paymentMethodType: card-payment
+                      account:
+                        accountID: 7e4b26c2-b399-49ef-8390-50e1ea44d550
+                        email: jules@julesjackson.com
+                        displayName: Jules Jackson
+                      card:
+                        cardID: aefd5563-93c6-413c-875e-1bd0ebfc116d
+                        fingerprint: 2f5d782ceef1c3bd31ed5...
+                        brand: Visa
+                        cardType: credit
+                        lastFourCardNumber: '2000'
+                        bin: '400020'
+                        expiration:
+                          month: '01'
+                          year: '28'
+                        holderName: Jules Jackson
+                        billingAddress:
+                          postalCode: '80301'
+                        domesticPushToCard: standard
+                        domesticPullFromCard: supported
+                        cardVerification:
+                          cvv: unavailable
+                          addressLine1: unavailable
+                          postalCode: unavailable
+                          accountName:
+                            firstName: unavailable
+                            lastName: unavailable
+                            middleName: unavailable
+                            fullName: unavailable
+                        issuer: Moov Visa Sandbox
+                        issuerCountry: US
+                        cardAccountUpdater: {}
+                      cardDetails:
+                        status: confirmed
+                        dynamicDescriptor: WhlBdy *Yoga 11-12
+                        confirmedOn: '2025-01-21T21:32:16.799681237Z'
+                    destination:
+                      paymentMethodID: 3f9969cf-a1f3-4d83-8ddc-229a506651cf
+                      paymentMethodType: moov-wallet
+                      account:
+                        accountID: 34233b72-780c-4a0d-8b08-cbbe23k878f8
+                        email: john@wholebodyfitness.io
+                        displayName: Whole Body Fitness
+                      wallet:
+                        walletID: 744b2e78-8cc8-4a6a-af42-611e3b844503
+                    status: pending
+                    amount:
+                      currency: USD
+                      value: 32945
+                    description: Transfer from card to wallet
+                    createdOn: '2025-01-21T21:32:16Z'
+                Created async transfer:
+                  summary: Created async transfer
+                  value:
+                    transferID: d835gf30-4b19-4850-a9b2-c0624c41ecb3
+                    createdOn: '2025-01-21T21:32:16Z'
         '201':
           description: A transfer was successfully created but an error occurred while generating the synchronous response. The asynchronous response object will be returned.
           headers:
@@ -9443,6 +9506,7 @@ paths:
         - $ref: '#/components/parameters/TransferListFilters.startDateTime'
         - $ref: '#/components/parameters/TransferListFilters.endDateTime'
         - $ref: '#/components/parameters/TransferListFilters.groupID'
+        - $ref: '#/components/parameters/TransferListFilters.scheduleID'
         - $ref: '#/components/parameters/TransferListFilters.refunded'
         - $ref: '#/components/parameters/TransferListFilters.disputed'
         - $ref: '#/components/parameters/TransferListFilters.skip'
@@ -13490,7 +13554,9 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ReceiptResponse'
+                type: array
+                items:
+                  $ref: '#/components/schemas/ReceiptResponse'
         '400':
           description: The server could not understand the request due to invalid syntax.
           headers:
@@ -13556,7 +13622,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ReceiptValidationError'
+                $ref: '#/components/schemas/ReceiptValidationErrorResponse'
         '429':
           description: Request was refused due to rate limiting.
           headers:
@@ -13598,7 +13664,7 @@ paths:
     get:
       operationId: listReceipts
       description: |-
-        List receipts by trasnferID, scheduleID, or occurrenceID.
+        List receipts by transferID, scheduleID, or occurrenceID.
 
         To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
         you'll need to specify the `/accounts/{accountID}/transfers.read` scope.
@@ -13606,8 +13672,8 @@ paths:
         - $ref: '#/components/parameters/VersionHeader'
         - name: id
           in: query
-          required: false
-          description: The unique identifier to filter receipts by.
+          required: true
+          description: The transfer, schedule, or transfer occurrence ID to filter receipts by.
           schema:
             type: string
             format: uuid
@@ -14798,6 +14864,15 @@ components:
       schema:
         type: boolean
       explode: false
+    TransferListFilters.scheduleID:
+      name: scheduleID
+      in: query
+      required: false
+      description: Optional ID to filter for transfer occurrences belonging to the same schedule.
+      schema:
+        type: string
+        format: uuid
+      explode: false
     TransferListFilters.skip:
       name: skip
       in: query
@@ -14985,6 +15060,7 @@ components:
     ACHTransactionStatus:
       type: string
       enum:
+        - ''
         - initiated
         - originated
         - corrected
@@ -16987,7 +17063,7 @@ components:
           type: string
           format: binary
           description: |-
-            The file to upload as evidence. Valid types are [jpeg, tiff, pdf].
+            The file to upload as evidence. Valid types are [jpeg, tiff, pdf] with a limit of 4MB per file.
 
             The `Content-Type` header for this form part must be one of the following:
               - `image/jpeg`
@@ -17286,7 +17362,7 @@ components:
         description:
           type: string
           maxLength: 256
-          description: An optional description of the transfer for your own internal use.
+          description: An optional description of the transfer that is used on receipts and for your own internal use.
           example: Pay Instructor for May 15 Class
         metadata:
           $ref: '#/components/schemas/Metadata'
@@ -17349,7 +17425,7 @@ components:
           type: string
           format: uuid
           description: |-
-            A `transferID` is used to create a [transfer group](https://docs.moov.io/guides/money-movement/transfer-groups/), 
+            A `transferID` is used to create a [transfer group](https://docs.moov.io/guides/money-movement/transfer-groups/),
             associating the new transfer with a parent transfer.
         paymentMethodID:
           type: string
@@ -17379,6 +17455,77 @@ components:
           $ref: '#/components/schemas/CardDynamicDescriptor'
         transactionSource:
           $ref: '#/components/schemas/TransactionSource'
+    CreatedTransfer:
+      type: object
+      required:
+        - transferID
+        - createdOn
+      properties:
+        transferID:
+          type: string
+          format: uuid
+        createdOn:
+          type: string
+          format: date-time
+        source:
+          $ref: '#/components/schemas/TransferSource'
+        destination:
+          $ref: '#/components/schemas/TransferDestination'
+        completedOn:
+          type: string
+          format: date-time
+        status:
+          $ref: '#/components/schemas/TransferStatus'
+        failureReason:
+          $ref: '#/components/schemas/TransferFailureReason'
+        amount:
+          $ref: '#/components/schemas/Amount'
+        description:
+          type: string
+          maxLength: 128
+          description: An optional description of the transfer that is used on receipts and for your own internal use.
+          example: Pay Instructor for May 15 Class
+        metadata:
+          $ref: '#/components/schemas/Metadata'
+        facilitatorFee:
+          $ref: '#/components/schemas/FacilitatorFee'
+        moovFee:
+          type: integer
+          format: int64
+          description: Fees charged to your platform account for transfers.
+        moovFeeDecimal:
+          type: string
+          description: Same as `moovFee`, but a decimal-formatted numerical string that represents up to 9 decimal place precision.
+        moovFeeDetails:
+          $ref: '#/components/schemas/MoovFeeDetails'
+        groupID:
+          type: string
+        cancellations:
+          type: array
+          items:
+            $ref: '#/components/schemas/Cancellation'
+        refundedAmount:
+          $ref: '#/components/schemas/Amount'
+        refunds:
+          type: array
+          items:
+            $ref: '#/components/schemas/CardAcquiringRefund'
+        disputedAmount:
+          $ref: '#/components/schemas/Amount'
+        disputes:
+          type: array
+          items:
+            $ref: '#/components/schemas/CardAcquiringDispute'
+        sweepID:
+          type: string
+        scheduleID:
+          type: string
+        occurrenceID:
+          type: string
+        salesTaxAmount:
+          allOf:
+            - $ref: '#/components/schemas/Amount'
+          description: Optional sales tax amount. `transfer.amount.value` should be inclusive of any sales tax and represents the total amount charged.
     Currency:
       type: string
       pattern: ^[A-Za-z]{3}$
@@ -17823,7 +17970,7 @@ components:
           type: string
           pattern: ^\d+\.\d{1,9}$
           description: |-
-            Same as `total`, but a decimal-formatted numerical string that represents up to 9 decimal place precision. 
+            Same as `total`, but a decimal-formatted numerical string that represents up to 9 decimal place precision.
 
             Only either `total` or `totalDecimal` can be set. Set this field if you expect the fee to be in fractions of a cent.
           example: '12.987654321'
@@ -17835,7 +17982,7 @@ components:
           type: string
           pattern: ^\d+\.\d{1,9}$
           description: |-
-            Same as `markup`, but a decimal-formatted numerical string that represents up to 9 decimal place precision. 
+            Same as `markup`, but a decimal-formatted numerical string that represents up to 9 decimal place precision.
             Only either `markup` or `markupDecimal` can be set. Set this field if you expect the fee to be in fractions of a cent.
           example: '0.987654321'
       description: Total or markup fee.
@@ -20185,7 +20332,6 @@ components:
         - receiptID
         - createdBy
         - kind
-        - sentFor
       properties:
         receiptID:
           type: string
@@ -20199,7 +20345,7 @@ components:
           type: string
           format: date-time
           description: The date and time the receipt was disabled.
-          example: '2009-11-10T23:00:00Z'
+          example: 2025-11-10T23:00:000Z
         kind:
           allOf:
             - $ref: '#/components/schemas/ReceiptKind'
@@ -20239,6 +20385,16 @@ components:
           items:
             $ref: '#/components/schemas/SentReceipt'
           description: The list of receipts that have been sent.
+      example:
+        createdBy: 25a02396-1048-48f9-bf93-102d2fb7895e
+        receiptID: 4925c8a5-3b9a-4488-a514-9fd992546aca
+        forTransferID: 193ceb53-94c7-41c4-9272-c90c2832cb4c
+        kind: sale.customer.v1
+        email: jordan.lee@classbooker.dev
+        sentFor:
+          - idempotencyKey: 0c14c6a6-6f50-4d1e-b0c4-b46ff43ba6a1
+            receiptID: 4925c8a5-3b9a-4488-a514-9fd992546aca
+            sentOn: '2025-01-16T17:52:14.219311143Z'
     ReceiptValidationError:
       type: object
       properties:
@@ -20254,6 +20410,13 @@ components:
           type: string
         forOccurrenceID:
           type: string
+    ReceiptValidationErrorResponse:
+      type: object
+      additionalProperties:
+        $ref: '#/components/schemas/ReceiptValidationError'
+      example:
+        '0':
+          kind: cannot be blank
     Recur:
       type: object
       required:
@@ -20779,7 +20942,7 @@ components:
           type: string
           format: date-time
           description: When the receipt was sent.
-          example: '2009-11-10T23:00:00Z'
+          example: 2025-11-10T23:00:000Z
     Settings:
       type: object
       properties:
@@ -21130,7 +21293,7 @@ components:
         description:
           type: string
           maxLength: 128
-          description: An optional description of the transfer for your own internal use.
+          description: An optional description of the transfer that is used on receipts and for your own internal use.
           example: Pay Instructor for May 15 Class
         metadata:
           $ref: '#/components/schemas/Metadata'
@@ -21311,10 +21474,6 @@ components:
         - destination
         - partner
       description: Indicates whether an account was the source or destination of a transfer.
-    TransferResponse:
-      oneOf:
-        - $ref: '#/components/schemas/Transfer'
-        - $ref: '#/components/schemas/AsyncTransfer'
     TransferSource:
       type: object
       required:

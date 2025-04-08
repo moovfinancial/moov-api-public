@@ -59,12 +59,13 @@ enum SECCode {
 
 @doc("Status of a transaction within the ACH lifecycle.")
 enum ACHTransactionStatus {
-  initiated,
-  originated,
-  corrected,
-  returned,
-  completed,
-  canceled,
+  uninitiated: "",
+  initiated: "initiated",
+  originated: "originated",
+  corrected: "corrected",
+  returned: "returned",
+  completed: "completed",
+  canceled: "canceled",
 }
 
 @doc("An optional override of the default NACHA company entry description for a transfer.")

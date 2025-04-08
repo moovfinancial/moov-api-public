@@ -18,15 +18,15 @@
     "@typespec/compiler": "0.66.0"
   },
   "devDependencies": {
-    "@types/node": "22.13.14",
-    "@typescript-eslint/eslint-plugin": "8.28.0",
-    "@typescript-eslint/parser": "8.28.0",
+    "@types/node": "22.14.0",
+    "@typescript-eslint/eslint-plugin": "8.29.0",
+    "@typescript-eslint/parser": "8.29.0",
     "@typespec/library-linter": "0.66.0",
-    "eslint": "9.23.0",
+    "eslint": "9.24.0",
     "prettier": "3.5.3",
-    "typescript": "5.8.2",
-    "typescript-eslint": "8.28.0",
-    "vitest": "3.0.9"
+    "typescript": "5.8.3",
+    "typescript-eslint": "8.29.0",
+    "vitest": "3.1.1"
   },
   "scripts": {
     "build": "npm run clean && tsc && npm run build:tsp",

@@ -25,10 +25,45 @@ using TypeSpec.Versioning;
 
 namespace MoovAPI;
 
-@oneOf
-union TransferResponse {
-  Transfer,
-  AsyncTransfer,
+model CreatedTransfer {
+  @format("uuid")
+  transferID: string;
+
+  createdOn: utcDateTime;
+  source?: TransferSource;
+  destination?: TransferDestination;
+  completedOn?: utcDateTime;
+  status?: TransferStatus;
+  failureReason?: TransferFailureReason;
+  amount?: Amount;
+
+  @doc("An optional description of the transfer that is used on receipts and for your own internal use.")
+  @example("Pay Instructor for May 15 Class")
+  @maxLength(128)
+  description?: string;
+
+  metadata?: Metadata;
+  facilitatorFee?: FacilitatorFee;
+
+  @doc("Fees charged to your platform account for transfers.")
+  moovFee?: int64;
+
+  @doc("Same as `moovFee`, but a decimal-formatted numerical string that represents up to 9 decimal place precision.")
+  moovFeeDecimal?: string;
+
+  moovFeeDetails?: MoovFeeDetails;
+  groupID?: string;
+  cancellations?: Cancellation[];
+  refundedAmount?: Amount;
+  refunds?: CardAcquiringRefund[];
+  disputedAmount?: Amount;
+  disputes?: CardAcquiringDispute[];
+  sweepID?: string;
+  scheduleID?: string;
+  occurrenceID?: string;
+
+  @doc("Optional sales tax amount. `transfer.amount.value` should be inclusive of any sales tax and represents the total amount charged.")
+  salesTaxAmount?: Amount;
 }
 
 @summary("Sync")
@@ -46,7 +81,7 @@ model Transfer {
   failureReason?: TransferFailureReason;
   amount: Amount;
 
-  @doc("An optional description of the transfer for your own internal use.")
+  @doc("An optional description of the transfer that is used on receipts and for your own internal use.")
   @example("Pay Instructor for May 15 Class")
   @maxLength(128)
   description?: string;
@@ -133,7 +168,7 @@ model CreateTransfer {
   amount: Amount;
   facilitatorFee?: FacilitatorFee;
 
-  @doc("An optional description of the transfer for your own internal use.")
+  @doc("An optional description of the transfer that is used on receipts and for your own internal use.")
   @example("Pay Instructor for May 15 Class")
   @maxLength(256)
   description?: string;
@@ -186,7 +221,7 @@ model TransferValidationError {
 @doc("Where funds for a transfer originate. For the source, you must include either a `paymentMethodID` or a `transferID`.")
 model CreateTransferSource {
   @doc("""
-    A `transferID` is used to create a [transfer group](https://docs.moov.io/guides/money-movement/transfer-groups/), 
+    A `transferID` is used to create a [transfer group](https://docs.moov.io/guides/money-movement/transfer-groups/),
     associating the new transfer with a parent transfer.
     """)
   @format("uuid")
@@ -217,7 +252,7 @@ model FacilitatorFee {
   total?: int64;
 
   @doc("""
-    Same as `total`, but a decimal-formatted numerical string that represents up to 9 decimal place precision. 
+    Same as `total`, but a decimal-formatted numerical string that represents up to 9 decimal place precision.
     
     Only either `total` or `totalDecimal` can be set. Set this field if you expect the fee to be in fractions of a cent.
     """)
@@ -229,7 +264,7 @@ model FacilitatorFee {
   markup?: int64;
 
   @doc("""
-    Same as `markup`, but a decimal-formatted numerical string that represents up to 9 decimal place precision. 
+    Same as `markup`, but a decimal-formatted numerical string that represents up to 9 decimal place precision.
     Only either `markup` or `markupDecimal` can be set. Set this field if you expect the fee to be in fractions of a cent.
     """)
   @example("0.987654321")
@@ -303,6 +338,12 @@ model TransferListFilters {
   @example("683660e3-218c-4f5a-b193-930bd6d2f98e")
   @query
   groupID?: string;
+
+  @doc("Optional ID to filter for transfer occurrences belonging to the same schedule.")
+  @format("uuid")
+  @example("b7aa2ee2-8783-4fc9-9fa6-a4720b30b20d")
+  @query
+  scheduleID?: string;
 
   @doc("Optional parameter to only return refunded transfers.")
   @query

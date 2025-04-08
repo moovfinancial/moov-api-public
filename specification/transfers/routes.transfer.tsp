@@ -23,6 +23,11 @@ namespace MoovAPI;
   you'll need to specify the `/accounts/{accountID}/transfers.write` scope.
   """)
 // @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/transfers.write"]>)
+@opExample(ExampleCreateTransferAsync, #{ title: "Created async transfer" })
+@opExample(
+  ExampleCreateTransferSync,
+  #{ title: "Created synchronous transfer" }
+)
 @extension("x-speakeasy-name-override", "create")
 op createTransfer(
   ...CommonRequestHeaders,
@@ -46,7 +51,7 @@ op createTransfer(
 
   @body body: CreateTransfer,
 ):
-  | OkResponse<TransferResponse>
+  | OkResponse<CreatedTransfer>
   | CreatedTransferSyncErrorResponse
   | CreateTransferTimeoutResponse
   | BadRequestResponse
