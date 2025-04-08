@@ -20307,7 +20307,6 @@ components:
         - receiptID
         - createdBy
         - kind
-        - sentFor
       properties:
         receiptID:
           type: string

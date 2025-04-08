@@ -123,7 +123,7 @@ model ReceiptResponse {
   forOccurrenceID?: string;
 
   @doc("The list of receipts that have been sent.")
-  sentFor: SentReceipt[];
+  sentFor?: SentReceipt[];
 }
 
 @error
