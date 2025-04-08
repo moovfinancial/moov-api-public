@@ -19169,6 +19169,31 @@ components:
       allOf:
         - $ref: '#/components/schemas/AmountDecimal'
       description: Fixed recurring amount paid in the billing period regardless of usage.
+    MoovFee:
+      type: object
+      required:
+        - accountID
+        - transferParty
+        - totalAmount
+        - feeIDs
+      properties:
+        accountID:
+          type: string
+          description: ID of the account that fees were charged to.
+        transferParty:
+          allOf:
+            - $ref: '#/components/schemas/TransferParty'
+          description: Indicates whether the account charged is the source, destination, or partner account.
+        totalAmount:
+          allOf:
+            - $ref: '#/components/schemas/AmountDecimal'
+          description: The total amount of fees charged to the account.
+        feeIDs:
+          type: array
+          items:
+            type: string
+          description: List of fee IDs that sum to the totalAmount.
+      description: Moov fee charged to an account involved in a transfer.
     MoovFeeDetails:
       type: object
       required:
@@ -21283,6 +21308,11 @@ components:
           description: Same as `moovFee`, but a decimal-formatted numerical string that represents up to 9 decimal place precision.
         moovFeeDetails:
           $ref: '#/components/schemas/MoovFeeDetails'
+        moovFees:
+          type: array
+          items:
+            $ref: '#/components/schemas/MoovFee'
+          description: Fees charged to accounts involved in the transfer.
         groupID:
           type: string
         cancellations:
@@ -21437,6 +21467,13 @@ components:
           type: string
         destination:
           type: string
+    TransferParty:
+      type: string
+      enum:
+        - source
+        - destination
+        - partner
+      description: Indicates whether an account was the source or destination of a transfer.
     TransferSource:
       type: object
       required:

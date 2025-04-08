@@ -96,6 +96,10 @@ model Transfer {
   moovFeeDecimal?: string;
 
   moovFeeDetails?: MoovFeeDetails;
+
+  @doc("Fees charged to accounts involved in the transfer.")
+  moovFees?: MoovFee[];
+
   groupID?: string;
   cancellations?: Cancellation[];
   refundedAmount?: Amount;
@@ -281,6 +285,28 @@ model MoovFeeDetails {
 
   @doc("Moov processing fee. String type represents dollars with up to 9 decimal place precision.")
   moovProcessing: string;
+}
+
+@doc("Moov fee charged to an account involved in a transfer.")
+model MoovFee {
+  @doc("ID of the account that fees were charged to.")
+  accountID: string;
+
+  @doc("Indicates whether the account charged is the source, destination, or partner account.")
+  transferParty: TransferParty;
+
+  @doc("The total amount of fees charged to the account.")
+  totalAmount: AmountDecimal;
+
+  @doc("List of fee IDs that sum to the totalAmount.")
+  feeIDs: string[];
+}
+
+@doc("Indicates whether an account was the source or destination of a transfer.")
+enum TransferParty {
+  source,
+  destination,
+  partner,
 }
 
 model TransferListFilters {
