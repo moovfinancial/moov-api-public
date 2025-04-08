@@ -76,5 +76,4 @@ model SweepConfig {
 
   createdOn: utcDateTime;
   updatedOn: utcDateTime;
-  disabledOn?: utcDateTime;
 }
