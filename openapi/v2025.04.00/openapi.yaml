@@ -8868,7 +8868,6 @@ paths:
                   statementDescriptor: swp_012345
                   createdOn: '2024-05-06T12:20:38.184Z'
                   updatedOn: '2024-05-06T12:20:38.184Z'
-                  disabledOn: '2024-05-06T12:20:38.184Z'
         '401':
           description: The request contained missing or expired authentication.
           headers:
@@ -9067,7 +9066,6 @@ paths:
                 statementDescriptor: swp_012345
                 createdOn: '2024-05-06T12:20:38.184Z'
                 updatedOn: '2024-05-06T12:20:38.184Z'
-                disabledOn: '2024-05-06T12:20:38.184Z'
         '400':
           description: The server could not understand the request due to invalid syntax.
           headers:
@@ -21074,9 +21072,6 @@ components:
           type: string
           format: date-time
         updatedOn:
-          type: string
-          format: date-time
-        disabledOn:
           type: string
           format: date-time
     SweepConfigID:

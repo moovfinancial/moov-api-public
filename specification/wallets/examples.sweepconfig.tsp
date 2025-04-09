@@ -26,5 +26,4 @@ const ExampleDisabledSweepConfig: SweepConfig = #{
   statementDescriptor: "swp_012345",
   createdOn: ExampleUtcDateTime,
   updatedOn: ExampleUtcDateTime,
-  disabledOn: ExampleUtcDateTime,
 };
