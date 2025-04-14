@@ -186,7 +186,7 @@ model CreatedTransferSyncErrorResponse {
   @body body: AsyncTransfer;
 }
 
-@doc("A transfer was successfully created but a timeout occurred while waiting for a synchronous response. Rail-specific details may be missing from the response object.")
+@doc("A transfer was successfully created but a timeout occurred while waiting for a synchronous response. A timeout will occur after 25 seconds. Rail-specific details may be missing from the response object.")
 model CreateTransferTimeoutResponse {
   ...CommonResponseHeaders;
   @statusCode statusCode: HttpStatusAccepted;

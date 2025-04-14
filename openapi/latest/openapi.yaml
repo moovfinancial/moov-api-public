@@ -9286,7 +9286,7 @@ paths:
           required: false
           description: |-
             Optional header that indicates whether to return a synchronous response that includes full transfer and rail-specific details or an 
-            asynchronous response indicating the transfer was created (this is the default response if the header is omitted).
+            asynchronous response indicating the transfer was created (this is the default response if the header is omitted). A timeout will occur after 25 seconds.
           schema:
             $ref: '#/components/schemas/TransferWaitFor'
         - name: accountID
@@ -9387,7 +9387,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/AsyncTransfer'
         '202':
-          description: A transfer was successfully created but a timeout occurred while waiting for a synchronous response. Rail-specific details may be missing from the response object.
+          description: A transfer was successfully created but a timeout occurred while waiting for a synchronous response. A timeout will occur after 25 seconds. Rail-specific details may be missing from the response object.
           headers:
             x-request-id:
               required: true
@@ -10037,7 +10037,7 @@ paths:
           required: false
           description: |-
             Optional header that indicates whether to return a synchronous response that includes full transfer and rail-specific details or an 
-            asynchronous response indicating the transfer was created (this is the default response if the header is omitted).
+            asynchronous response indicating the transfer was created (this is the default response if the header is omitted). A timeout will occur after 25 seconds.
           schema:
             $ref: '#/components/schemas/TransferWaitFor'
         - name: accountID
