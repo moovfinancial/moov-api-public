@@ -186,7 +186,7 @@ model CreatedTransferSyncErrorResponse {
   @body body: AsyncTransfer;
 }
 
-@doc("The transfer was created, but rail-specific details may not be available within the 10 second timeout window.")
+@doc("The transfer was created, but rail-specific details may not be available within the 15 second timeout window.")
 model CreateTransferTimeoutResponse {
   ...CommonResponseHeaders;
   @statusCode statusCode: HttpStatusAccepted;
