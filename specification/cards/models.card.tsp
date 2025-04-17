@@ -1,6 +1,7 @@
 import "@typespec/http";
 import "@typespec/openapi3";
 import "@typespec/versioning";
+import "./examples.card.tsp";
 import "../common/examples.id.tsp";
 import "../end2end/models.end2end.tsp";
 import "../paymentmethods/models.paymentmethod.tsp";
@@ -15,45 +16,6 @@ namespace MoovAPI;
 @format("uuid")
 @example(ExampleID)
 scalar CardID extends string;
-
-const exampleCard = #{
-  cardID: ExampleID,
-  fingerprint: exampleCardFingerprint,
-  brand: CardBrand.visa,
-  cardType: CardType.credit,
-  cardCategory: "CLASSIC",
-  lastFourCardNumber: "1234",
-  bin: "123456",
-  expiration: exampleCardExpiration,
-  holderName: "Jules Jackson",
-  billingAddress: exampleCardAddress,
-  cardVerification: exampleCardVerification,
-  issuer: "GRINGOTTS BANK",
-  issuerCountry: "US",
-  issuerURL: "HTTPS://WWW.EXAMPLE.COM/",
-  issuerPhone: "8185551212",
-  commercial: false,
-  regulated: false,
-  cardOnFile: true,
-  merchantAccountID: ExampleID,
-  cardAccountUpdater: exampleCardAccountUpdater,
-  domesticPushToCard: DomesticPushToCard.standard,
-  domesticPullFromCard: DomesticPullFromCard.supported,
-  paymentMethods: #[
-    #{
-      paymentMethodID: ExampleID,
-      paymentMethodType: PaymentMethodType.cardPayment,
-    },
-    #{
-      paymentMethodID: ExampleID,
-      paymentMethodType: PaymentMethodType.pushToCard,
-    },
-    #{
-      paymentMethodID: ExampleID,
-      paymentMethodType: PaymentMethodType.pullFromCard,
-    }
-  ],
-};
 
 @doc("Describes a card on a Moov account.")
 @example(exampleCard)
@@ -121,6 +83,12 @@ model Card {
   cardAccountUpdater?: CardAccountUpdater;
   domesticPushToCard?: DomesticPushToCard;
   domesticPullFromCard?: DomesticPullFromCard;
+
+  @doc("""
+      Includes any payment methods created as a result of linking a card with the `x-wait-for` header set to `payment-method`.
+    
+      Only returned by the link card endpoint; not included when getting or listing cards.
+    """)
   paymentMethods?: BasicPaymentMethod[];
 }
 

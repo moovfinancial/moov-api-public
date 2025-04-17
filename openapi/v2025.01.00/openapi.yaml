@@ -3489,6 +3489,54 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Card'
+              example:
+                cardID: 01234567-89ab-cdef-0123-456789abcdef
+                fingerprint: 9948962d92a1ce40c9f918cd9ece3a22bde62fb325a2f1fe2e833969de672ba3
+                brand: Visa
+                cardType: credit
+                cardCategory: CLASSIC
+                lastFourCardNumber: '1111'
+                bin: '411111'
+                expiration:
+                  month: '01'
+                  year: '21'
+                holderName: Jules Jackson
+                billingAddress:
+                  addressLine1: 123 Main Street
+                  addressLine2: Apt 302
+                  city: Boulder
+                  stateOrProvince: CO
+                  postalCode: '80301'
+                  country: US
+                cardVerification:
+                  cvv: match
+                  addressLine1: match
+                  postalCode: match
+                  accountName:
+                    firstName: match
+                    lastName: match
+                    middleName: match
+                    fullName: match
+                issuer: GRINGOTTS BANK
+                issuerCountry: US
+                issuerURL: HTTPS://WWW.EXAMPLE.COM/
+                issuerPhone: '8185551212'
+                commercial: false
+                regulated: false
+                cardOnFile: true
+                merchantAccountID: 01234567-89ab-cdef-0123-456789abcdef
+                cardAccountUpdater:
+                  updatedOn: '2024-05-06T12:20:38.184Z'
+                  updateType: number-update
+                domesticPushToCard: standard
+                domesticPullFromCard: supported
+                paymentMethods:
+                  - paymentMethodID: 01234567-89ab-cdef-0123-456789abcdef
+                    paymentMethodType: card-payment
+                  - paymentMethodID: 01234567-89ab-cdef-0123-456789abcdef
+                    paymentMethodType: push-to-card
+                  - paymentMethodID: 01234567-89ab-cdef-0123-456789abcdef
+                    paymentMethodType: pull-from-card
         '400':
           description: The server could not understand the request due to invalid syntax.
           headers:
@@ -3590,6 +3638,15 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/LinkCard'
+            example:
+              cardNumber: '4111111111111111'
+              cardCvv: '123'
+              expiration:
+                month: '01'
+                year: '21'
+              holderName: Jules Jackson
+              billingAddress:
+                postalCode: '80301'
       x-speakeasy-name-override: link
     get:
       operationId: listCards
@@ -16399,6 +16456,10 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/BasicPaymentMethod'
+          description: |2-
+              Includes any payment methods created as a result of linking a card with the `x-wait-for` header set to `payment-method`.
+
+              Only returned by the link card endpoint; not included when getting or listing cards.
       description: Describes a card on a Moov account.
       example:
         cardID: 01234567-89ab-cdef-0123-456789abcdef
@@ -16406,8 +16467,8 @@ components:
         brand: Visa
         cardType: credit
         cardCategory: CLASSIC
-        lastFourCardNumber: '1234'
-        bin: '123456'
+        lastFourCardNumber: '1111'
+        bin: '411111'
         expiration:
           month: '01'
           year: '21'
@@ -16441,13 +16502,6 @@ components:
           updateType: number-update
         domesticPushToCard: standard
         domesticPullFromCard: supported
-        paymentMethods:
-          - paymentMethodID: 01234567-89ab-cdef-0123-456789abcdef
-            paymentMethodType: card-payment
-          - paymentMethodID: 01234567-89ab-cdef-0123-456789abcdef
-            paymentMethodType: push-to-card
-          - paymentMethodID: 01234567-89ab-cdef-0123-456789abcdef
-            paymentMethodType: pull-from-card
     CardAccountUpdater:
       type: object
       properties:

@@ -34,6 +34,7 @@ namespace MoovAPI;
   To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
   you'll need to specify the `/accounts/{accountID}/cards.write` scope.
   """)
+@opExample(exampleLinkCardOperation)
 // @useAuth(BasicAuth | OAuth2<["/accounts/{accountID}/cards.write"]>)
 @extension("x-speakeasy-name-override", "link")
 op linkCard(
