@@ -15,7 +15,7 @@ namespace MoovAPI;
 
 @get
 @route("/accounts/{accountID}/terminal-applications/{terminalApplicationID}/configuration")
-@tag("Terminal Configurations")
+@tag("Terminal Applications")
 @doc("""
   Fetch the configuration for a given Terminal Application
   
@@ -31,5 +31,6 @@ op getTerminalConfiguration(
   accountID: string,
 
   @path
-  terminalApplicationID: TerminalApplicationID,
+  @format("uuid")
+  terminalApplicationID: string,
 ): GetResponses<TerminalConfiguration>;
