@@ -44,9 +44,7 @@ const exampleTerminalApplication = #{
 @doc("Describes a terminal application.")
 @example(exampleTerminalApplication)
 model TerminalApplication {
-  @format("uuid")
-  terminalApplicationID: string;
-
+  terminalApplicationID: TerminalApplicationID;
   status: TerminalApplicationStatus;
   platform: TerminalApplicationPlatform;
 

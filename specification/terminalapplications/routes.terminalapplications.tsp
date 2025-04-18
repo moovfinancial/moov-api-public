@@ -53,9 +53,8 @@ op listTerminalApplications(
 op getTerminalApplication(
   ...CommonRequestHeaders,
 
-  @format("uuid")
   @path
-  terminalApplicationID: string,
+  terminalApplicationID: TerminalApplicationID,
 ): GetResponses<TerminalApplication>;
 
 @delete
@@ -72,6 +71,5 @@ op deleteTerminalApplication(
   ...CommonRequestHeaders,
 
   @path
-  @format("uuid")
-  terminalApplicationID: string,
+  terminalApplicationID: TerminalApplicationID,
 ): DisableResponses;
