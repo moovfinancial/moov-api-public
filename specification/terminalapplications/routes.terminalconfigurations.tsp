@@ -26,11 +26,9 @@ namespace MoovAPI;
 op getTerminalConfiguration(
   ...CommonRequestHeaders,
 
-  @format("uuid")
   @path
-  accountID: string,
+  accountID: MerchantAccountID,
 
   @path
-  @format("uuid")
-  terminalApplicationID: string,
+  terminalApplicationID: TerminalApplicationID,
 ): GetResponses<TerminalConfiguration>;

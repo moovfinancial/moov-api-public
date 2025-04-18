@@ -24,12 +24,11 @@ namespace MoovAPI;
 op linkAccountTerminalApplication(
   ...CommonRequestHeaders,
 
-  @format("uuid")
   @path
-  accountID: string,
+  accountID: MerchantAccountID,
 
   @body body: LinkAccountTerminalApplication,
-): PostResponses<AccountTerminalApplication, AccountTerminalApplicationError>;
+): PostResponses<TerminalApplication, AccountTerminalApplicationError>;
 
 @get
 @route("/accounts/{accountID}/terminal-applications/{terminalApplicationID}")
@@ -44,14 +43,12 @@ op linkAccountTerminalApplication(
 op getAccountTerminalApplication(
   ...CommonRequestHeaders,
 
-  @format("uuid")
   @path
-  accountID: string,
+  accountID: MerchantAccountID,
 
-  @format("uuid")
   @path
-  terminalApplicationID: string,
-): GetResponses<AccountTerminalApplication>;
+  terminalApplicationID: TerminalApplicationID,
+): GetResponses<TerminalApplication>;
 
 @get
 @route("/accounts/{accountID}/terminal-applications")
@@ -66,7 +63,6 @@ op getAccountTerminalApplication(
 op listAccountTerminalApplications(
   ...CommonRequestHeaders,
 
-  @format("uuid")
   @path
-  accountID: string,
-): ListResponses<AccountTerminalApplication>;
+  accountID: MerchantAccountID,
+): ListResponses<TerminalApplication>;

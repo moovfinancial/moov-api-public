@@ -10,35 +10,19 @@ using TypeSpec.Versioning;
 
 namespace MoovAPI;
 
-const exampleAccountTerminalApplication = #{
-  accountID: "12345678-1234-1234-1234-123456789012",
-  terminalApplicationID: "9506dbf6-4208-44c3-ad8a-e4431660e1f2",
-};
-
-@doc("Describes an link between account and terminal application.")
-@example(exampleAccountTerminalApplication)
-model AccountTerminalApplication {
-  @format("uuid")
-  accountID: string;
-
-  @format("uuid")
-  terminalApplicationID: string;
-}
-
-const exampleLinkAccountTerminalApplication = #{
-  terminalApplicationID: "9506dbf6-4208-44c3-ad8a-e4431660e1f2",
-};
+@doc("ID of the merchant account.")
+@format("uuid")
+@example("76d4c8a0-1f2b-4e3b-8f5c-7a9e1b2c3d4e")
+scalar MerchantAccountID extends string;
 
 @doc("Describes a request to link an account with a terminal application.")
-@example(exampleLinkAccountTerminalApplication)
 model LinkAccountTerminalApplication {
-  @format("uuid")
-  terminalApplicationID: string;
+  terminalApplicationID: TerminalApplicationID;
 }
 
 @doc("Describes a list of account terminal applications.")
-@example(#[exampleAccountTerminalApplication])
-model AccountTerminalApplicationList is Array<AccountTerminalApplication>;
+@example(#[exampleTerminalApplication])
+model AccountTerminalApplicationList is Array<TerminalApplication>;
 
 // Errors
 model AccountTerminalApplicationError {

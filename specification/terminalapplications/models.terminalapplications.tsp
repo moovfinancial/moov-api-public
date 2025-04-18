@@ -9,12 +9,10 @@ using TypeSpec.Versioning;
 
 namespace MoovAPI;
 
-/*
 @doc("ID of the terminal application.")
 @format("uuid")
-@example(ExampleID)
+@example("12345678-1234-1234-1234-123456789012")
 scalar TerminalApplicationID extends string;
-*/
 
 @doc("Status of the terminal application.")
 @example(TerminalApplicationStatus.enabled)
