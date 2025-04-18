@@ -18,7 +18,7 @@ namespace MoovAPI;
   Create a new terminal application.
   
   To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
-  you'll need to specify the `/terminalApplications.write` scope.
+  you'll need to specify the `/terminal-applications.write` scope.
   """)
 @extension("x-speakeasy-name-override", "create")
 op createTerminalApplication(
@@ -33,7 +33,7 @@ op createTerminalApplication(
   List all the terminal applications for a Moov Account.
   
   To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
-  you'll need to specify the `/terminalApplications.read` scope.
+  you'll need to specify the `/terminal-applications.read` scope.
   """)
 @extension("x-speakeasy-name-override", "list")
 op listTerminalApplications(
@@ -47,7 +47,7 @@ op listTerminalApplications(
   Fetch a specific terminal application.
   
   To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
-  you'll need to specify the `/terminalApplications.read` scope.
+  you'll need to specify the `/terminal-applications.read` scope.
   """)
 @extension("x-speakeasy-name-override", "get")
 op getTerminalApplication(
@@ -64,7 +64,7 @@ op getTerminalApplication(
   Delete a specific terminal application.
   
   To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
-  you'll need to specify the `/terminalApplications.write` scope.
+  you'll need to specify the `/terminal-applications.write` scope.
   """)
 @extension("x-speakeasy-name-override", "delete")
 op deleteTerminalApplication(
