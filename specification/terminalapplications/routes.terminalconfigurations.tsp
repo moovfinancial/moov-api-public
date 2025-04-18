@@ -15,14 +15,14 @@ namespace MoovAPI;
 
 @get
 @route("/accounts/{accountID}/terminal-applications/{terminalApplicationID}/configuration")
-@tag("Terminal Applications")
+@tag("Account Terminal Applications")
 @doc("""
-  Fetch the configuration for a given Terminal Application
+  Fetch the configuration for a given Terminal Application linked to a specific Account.
   
   To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
   you'll need to specify the `/accounts/{accountID}/terminal-configuration.read` scope.
   """)
-@extension("x-speakeasy-name-override", "get")
+@extension("x-speakeasy-name-override", "getConfiguration")
 op getTerminalConfiguration(
   ...CommonRequestHeaders,
 

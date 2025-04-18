@@ -13,14 +13,14 @@ namespace MoovAPI;
 
 @post
 @route("/accounts/{accountID}/terminal-applications")
-@tag("Terminal Applications")
+@tag("Account Terminal Applications")
 @doc("""
   Link an account with a terminal application.
   
   To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
   you'll need to specify the `/accounts/{accountID}/terminal-applications.write` scope.
   """)
-@extension("x-speakeasy-name-override", "create")
+@extension("x-speakeasy-name-override", "link")
 op linkAccountTerminalApplication(
   ...CommonRequestHeaders,
 
