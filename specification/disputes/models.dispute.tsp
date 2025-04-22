@@ -33,6 +33,7 @@ model Dispute {
   status: DisputeStatus;
   phase: DisputePhase;
   createdOn: utcDateTime;
+  submittedOn?: utcDateTime;
 }
 
 model DisputeTransferDetails {
