@@ -30,6 +30,9 @@ model DisputeEvidenceResponse {
 
   createdOn: utcDateTime;
   updatedOn: utcDateTime;
+
+  @doc("When the evidence was submitted for review.")
+  submittedOn?: utcDateTime;
 }
 
 model CreateEvidenceFile {

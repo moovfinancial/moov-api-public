@@ -18088,6 +18088,10 @@ components:
         updatedOn:
           type: string
           format: date-time
+        submittedOn:
+          type: string
+          format: date-time
+          description: When the evidence was submitted for review.
     DisputePhase:
       type: string
       enum:
