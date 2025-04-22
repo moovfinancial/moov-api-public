@@ -2,14 +2,17 @@ namespace MoovAPI;
 
 model Address {
   @example("123 Main Street")
+  @pattern(ValidStringPattern)
   @maxLength(60)
   addressLine1: string;
 
   @example("Apt 302")
+  @pattern(ValidStringPattern)
   @maxLength(32)
   addressLine2?: string;
 
   @example("Boulder")
+  @pattern(ValidStringPattern)
   @maxLength(32)
   city: string;
 

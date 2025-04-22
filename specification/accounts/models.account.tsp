@@ -19,6 +19,8 @@ using TypeSpec.Versioning;
 
 namespace MoovAPI;
 
+const ValidStringPattern = "[a-zA-Z0-9,./?:'\"|~!@#$%^&*()-+_= ]+";
+
 @example(
   ExampleCreateIndividualAccount,
   #{ title: "Minimal individual account" }
@@ -34,6 +36,7 @@ model CreateAccount {
 
   @doc("Optional alias from a foreign/external system which can be used to reference this resource.")
   @maxLength(64)
+  @pattern(ValidStringPattern)
   foreignID?: string;
 
   customerSupport?: CustomerSupport;
@@ -85,6 +88,7 @@ model Account {
 
   @doc("Optional alias from a foreign/external system which can be used to reference this resource.")
   @maxLength(64)
+  @pattern(ValidStringPattern)
   foreignID?: string;
 
   customerSupport?: CustomerSupport;
@@ -244,6 +248,7 @@ model AccountsQuery {
       Serves as an optional alias from a foreign/external system which can be used to reference this resource.
     """)
   @example("4528aba-b9a1-11eb-8529-0242ac13003")
+  @pattern(ValidStringPattern)
   @query
   foreignID?: string;
 

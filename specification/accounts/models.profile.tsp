@@ -77,24 +77,30 @@ model BirthDateError {
   year?: string;
 }
 
+const NameStringPattern = "[À-ÖØ-öø-ÿ\"'(),-.0-9A-Za-z~ &!]*";
+
 model IndividualName {
   @doc("The individual's first given name.")
   @example("Jordan")
+  @pattern(NameStringPattern)
   @maxLength(64)
   firstName: string;
 
   @doc("The individual's second given name, if any.")
   @example("Reese")
+  @pattern(NameStringPattern)
   @maxLength(64)
   middleName?: string;
 
   @doc("The individual's family name.")
   @example("Lee")
+  @pattern(NameStringPattern)
   @maxLength(64)
   lastName: string;
 
   @doc("Suffix of a given name.")
   @example("Jr")
+  @pattern(NameStringPattern)
   @maxLength(20)
   suffix?: string;
 }
@@ -109,11 +115,13 @@ model IndividualNameError {
 model CreateBusinessProfile {
   @doc("The legal name under which the entity is registered.")
   @example("Classbooker, LLC")
+  @pattern(ValidStringPattern)
   @maxLength(64)
   legalBusinessName: string;
 
   @doc("A registered trade name under which the business operates, if different from its legal name.")
   @maxLength(64)
+  @pattern(ValidStringPattern)
   doingBusinessAs?: string;
 
   businessType?: BusinessType;
@@ -125,6 +133,7 @@ model CreateBusinessProfile {
   website?: url;
 
   @example("Local fitness gym paying out instructors")
+  @pattern(ValidStringPattern)
   @minLength(10)
   @maxLength(100)
   description?: string;
@@ -160,11 +169,13 @@ model CreateBusinessError {
 model BusinessProfile {
   @doc("The legal name under which the entity is registered.")
   @example("Classbooker, LLC")
+  @pattern(ValidStringPattern)
   @maxLength(64)
   legalBusinessName: string;
 
   @doc("A registered trade name under which the business operates, if different from its legal name.")
   @maxLength(64)
+  @pattern(ValidStringPattern)
   doingBusinessAs?: string;
 
   businessType?: BusinessType;
@@ -176,6 +187,7 @@ model BusinessProfile {
   website?: url;
 
   @example("Local fitness gym paying out instructors")
+  @pattern(ValidStringPattern)
   @minLength(10)
   @maxLength(100)
   description?: string;
@@ -210,9 +222,11 @@ model PatchIndividual {
 
 model PatchBusiness {
   @maxLength(64)
+  @pattern(ValidStringPattern)
   legalBusinessName?: string;
 
   @maxLength(64)
+  @pattern(ValidStringPattern)
   doingBusinessAs?: string;
 
   businessType?: BusinessType;
@@ -225,6 +239,7 @@ model PatchBusiness {
 
   @minLength(10)
   @maxLength(100)
+  @pattern(ValidStringPattern)
   description?: string;
 
   taxID?: TaxID;

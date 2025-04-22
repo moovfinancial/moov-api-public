@@ -44,6 +44,7 @@ model RepresentativeResponsibilities {
   ownershipPercentage?: integer;
 
   @example("CEO")
+  @pattern(ValidStringPattern)
   @maxLength(64)
   jobTitle?: string;
 }
