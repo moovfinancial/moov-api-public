@@ -22573,6 +22573,571 @@ components:
         - top-up
         - wallet-transfer
         - adjustment
+    WebhookData:
+      oneOf:
+        - $ref: '#/components/schemas/WebhookDataAccountCreated'
+        - $ref: '#/components/schemas/WebhookDataAccountUpdated'
+        - $ref: '#/components/schemas/WebhookDataAccountDeleted'
+        - $ref: '#/components/schemas/WebhookDataBalanceUpdated'
+        - $ref: '#/components/schemas/WebhookDataBankAccountCreated'
+        - $ref: '#/components/schemas/WebhookDataBankAccountUpdated'
+        - $ref: '#/components/schemas/WebhookDataBankAccountDeleted'
+        - $ref: '#/components/schemas/WebhookDataCancellationCreated'
+        - $ref: '#/components/schemas/WebhookDataCancellationUpdated'
+        - $ref: '#/components/schemas/WebhookDataCardAutoUpdated'
+        - $ref: '#/components/schemas/WebhookDataCapabilityRequested'
+        - $ref: '#/components/schemas/WebhookDataCapabilityUpdated'
+        - $ref: '#/components/schemas/WebhookDataDisputeCreated'
+        - $ref: '#/components/schemas/WebhookDataDisputeUpdated'
+        - $ref: '#/components/schemas/WebhookDataNetworkIDUpdated'
+        - $ref: '#/components/schemas/WebhookDataPaymentMethodEnabled'
+        - $ref: '#/components/schemas/WebhookDataPaymentMethodDisabled'
+        - $ref: '#/components/schemas/WebhookDataRefundCreated'
+        - $ref: '#/components/schemas/WebhookDataRefundUpdated'
+        - $ref: '#/components/schemas/WebhookDataRepresentativeCreated'
+        - $ref: '#/components/schemas/WebhookDataRepresentativeUpdated'
+        - $ref: '#/components/schemas/WebhookDataRepresentativeDisabled'
+        - $ref: '#/components/schemas/WebhookDataSweepCreated'
+        - $ref: '#/components/schemas/WebhookDataSweepUpdated'
+        - $ref: '#/components/schemas/WebhookDataTerminalApplicationCreated'
+        - $ref: '#/components/schemas/WebhookDataTerminalApplicationUpdated'
+        - $ref: '#/components/schemas/WebhookDataTransferCreated'
+        - $ref: '#/components/schemas/WebhookDataTransferUpdated'
+        - $ref: '#/components/schemas/WebhookDataWalletTransactionUpdated'
+      description: The data for the webhook event. The contents are based on the event type.
+    WebhookDataAccountCreated:
+      type: object
+      required:
+        - accountID
+      properties:
+        accountID:
+          type: string
+          format: uuid
+        foreignID:
+          type: string
+          format: uuid
+    WebhookDataAccountDeleted:
+      type: object
+      required:
+        - accountID
+      properties:
+        accountID:
+          type: string
+          format: uuid
+        foreignID:
+          type: string
+          format: uuid
+    WebhookDataAccountUpdated:
+      type: object
+      required:
+        - accountID
+      properties:
+        accountID:
+          type: string
+          format: uuid
+        foreignID:
+          type: string
+          format: uuid
+    WebhookDataBalanceUpdated:
+      type: object
+      required:
+        - accountID
+        - walletID
+      properties:
+        accountID:
+          type: string
+          format: uuid
+        walletID:
+          type: string
+          format: uuid
+    WebhookDataBankAccountCreated:
+      type: object
+      required:
+        - bankAccountID
+        - accountID
+      properties:
+        bankAccountID:
+          type: string
+          format: uuid
+        accountID:
+          type: string
+          format: uuid
+    WebhookDataBankAccountDeleted:
+      type: object
+      required:
+        - bankAccountID
+        - accountID
+      properties:
+        bankAccountID:
+          type: string
+          format: uuid
+        accountID:
+          type: string
+          format: uuid
+    WebhookDataBankAccountUpdated:
+      type: object
+      required:
+        - bankAccountID
+        - accountID
+        - status
+        - statusReason
+      properties:
+        bankAccountID:
+          type: string
+          format: uuid
+        accountID:
+          type: string
+          format: uuid
+        status:
+          $ref: '#/components/schemas/BankAccountStatus'
+        statusReason:
+          $ref: '#/components/schemas/BankAccountStatusReason'
+        exceptionDetails:
+          $ref: '#/components/schemas/BankAccountException'
+    WebhookDataCancellationCreated:
+      type: object
+      required:
+        - cancellationID
+        - transferID
+        - status
+      properties:
+        cancellationID:
+          type: string
+          format: uuid
+        transferID:
+          type: string
+          format: uuid
+        status:
+          $ref: '#/components/schemas/CancellationStatus'
+    WebhookDataCancellationUpdated:
+      type: object
+      required:
+        - cancellationID
+        - transferID
+        - status
+      properties:
+        cancellationID:
+          type: string
+          format: uuid
+        transferID:
+          type: string
+          format: uuid
+        status:
+          $ref: '#/components/schemas/CancellationStatus'
+    WebhookDataCapabilityRequested:
+      type: object
+      required:
+        - accountID
+        - capabilityID
+      properties:
+        accountID:
+          type: string
+          format: uuid
+        foreignID:
+          type: string
+          format: uuid
+        capabilityID:
+          $ref: '#/components/schemas/CapabilityID'
+    WebhookDataCapabilityUpdated:
+      type: object
+      required:
+        - accountID
+        - capabilityID
+        - status
+      properties:
+        accountID:
+          type: string
+          format: uuid
+        foreignID:
+          type: string
+          format: uuid
+        capabilityID:
+          $ref: '#/components/schemas/CapabilityID'
+        status:
+          $ref: '#/components/schemas/CapabilityStatus'
+    WebhookDataCardAutoUpdated:
+      type: object
+      required:
+        - cardID
+        - accountID
+        - updateType
+      properties:
+        cardID:
+          type: string
+          format: uuid
+        accountID:
+          type: string
+          format: uuid
+        updateType:
+          $ref: '#/components/schemas/CardUpdateReason'
+    WebhookDataDisputeCreated:
+      type: object
+      required:
+        - accountID
+        - transferID
+        - transactionID
+        - disputeID
+        - status
+        - phase
+      properties:
+        accountID:
+          type: string
+          format: uuid
+        transferID:
+          type: string
+          format: uuid
+        transactionID:
+          type: string
+          format: uuid
+        disputeID:
+          type: string
+          format: uuid
+        status:
+          $ref: '#/components/schemas/DisputeStatus'
+        phase:
+          $ref: '#/components/schemas/DisputePhase'
+    WebhookDataDisputeUpdated:
+      type: object
+      required:
+        - accountID
+        - transferID
+        - transactionID
+        - disputeID
+        - status
+        - phase
+      properties:
+        accountID:
+          type: string
+          format: uuid
+        transferID:
+          type: string
+          format: uuid
+        transactionID:
+          type: string
+          format: uuid
+        disputeID:
+          type: string
+          format: uuid
+        status:
+          $ref: '#/components/schemas/DisputeStatus'
+        phase:
+          $ref: '#/components/schemas/DisputePhase'
+    WebhookDataNetworkIDUpdated:
+      type: object
+      required:
+        - accountID
+      properties:
+        accountID:
+          type: string
+          format: uuid
+        visaMid:
+          type: string
+        mastercardMid:
+          type: string
+        discoverMid:
+          type: string
+        amexMid:
+          type: string
+        updatedOn:
+          type: string
+          format: date-time
+    WebhookDataPaymentMethodDisabled:
+      type: object
+      required:
+        - accountID
+        - paymentMethodID
+        - sourceID
+      properties:
+        accountID:
+          type: string
+          format: uuid
+        paymentMethodID:
+          type: string
+          format: uuid
+        sourceID:
+          type: string
+          format: uuid
+    WebhookDataPaymentMethodEnabled:
+      type: object
+      required:
+        - accountID
+        - paymentMethodID
+        - sourceID
+      properties:
+        accountID:
+          type: string
+          format: uuid
+        paymentMethodID:
+          type: string
+          format: uuid
+        sourceID:
+          type: string
+          format: uuid
+    WebhookDataRefundCreated:
+      type: object
+      required:
+        - accountID
+        - transferID
+        - refundID
+      properties:
+        accountID:
+          type: string
+          format: uuid
+        transferID:
+          type: string
+          format: uuid
+        refundID:
+          type: string
+          format: uuid
+    WebhookDataRefundUpdated:
+      type: object
+      required:
+        - accountID
+        - transferID
+        - refundID
+        - status
+      properties:
+        accountID:
+          type: string
+          format: uuid
+        transferID:
+          type: string
+          format: uuid
+        refundID:
+          type: string
+          format: uuid
+        status:
+          $ref: '#/components/schemas/RefundStatus'
+    WebhookDataRepresentativeCreated:
+      type: object
+      required:
+        - accountID
+        - representativeID
+      properties:
+        accountID:
+          type: string
+          format: uuid
+        representativeID:
+          type: string
+          format: uuid
+    WebhookDataRepresentativeDisabled:
+      type: object
+      required:
+        - accountID
+        - representativeID
+      properties:
+        accountID:
+          type: string
+          format: uuid
+        representativeID:
+          type: string
+          format: uuid
+    WebhookDataRepresentativeUpdated:
+      type: object
+      required:
+        - accountID
+        - representativeID
+      properties:
+        accountID:
+          type: string
+          format: uuid
+        representativeID:
+          type: string
+          format: uuid
+    WebhookDataSweepCreated:
+      type: object
+      required:
+        - walletID
+        - sweepID
+      properties:
+        walletID:
+          type: string
+          format: uuid
+        sweepID:
+          type: string
+          format: uuid
+    WebhookDataSweepUpdated:
+      type: object
+      required:
+        - walletID
+        - sweepID
+        - status
+      properties:
+        walletID:
+          type: string
+          format: uuid
+        sweepID:
+          type: string
+          format: uuid
+        transferID:
+          type: string
+          format: uuid
+        status:
+          $ref: '#/components/schemas/SweepStatus'
+    WebhookDataTerminalApplicationCreated:
+      type: object
+      required:
+        - terminalApplicationID
+        - status
+      properties:
+        terminalApplicationID:
+          type: string
+          format: uuid
+        status:
+          $ref: '#/components/schemas/TerminalApplicationStatus'
+    WebhookDataTerminalApplicationUpdated:
+      type: object
+      required:
+        - terminalApplicationID
+        - status
+      properties:
+        terminalApplicationID:
+          type: string
+          format: uuid
+        status:
+          $ref: '#/components/schemas/TerminalApplicationStatus'
+    WebhookDataTransferCreated:
+      type: object
+      required:
+        - accountID
+        - transferID
+        - status
+      properties:
+        accountID:
+          type: string
+          format: uuid
+          description: The accountID which facilitated the transfer.
+        transferID:
+          type: string
+          format: uuid
+        status:
+          $ref: '#/components/schemas/TransferStatus'
+    WebhookDataTransferUpdated:
+      type: object
+      required:
+        - accountID
+        - transferID
+        - status
+        - source
+        - destination
+      properties:
+        accountID:
+          type: string
+          format: uuid
+          description: The accountID which facilitated the transfer.
+        transferID:
+          type: string
+          format: uuid
+        status:
+          $ref: '#/components/schemas/TransferStatus'
+        source:
+          $ref: '#/components/schemas/WebhookTransferPaymentMethodDetails'
+        destination:
+          $ref: '#/components/schemas/WebhookTransferPaymentMethodDetails'
+    WebhookDataWalletTransactionUpdated:
+      type: object
+      required:
+        - accountID
+        - walletID
+        - transactionID
+        - status
+      properties:
+        accountID:
+          type: string
+          format: uuid
+        walletID:
+          type: string
+          format: uuid
+        transactionID:
+          type: string
+          format: uuid
+        status:
+          $ref: '#/components/schemas/WalletTransactionStatus'
+        availableBalance:
+          $ref: '#/components/schemas/WebhookWalletAvailableBalance'
+    WebhookEvent:
+      type: object
+      required:
+        - eventID
+        - type
+        - data
+        - createdOn
+      properties:
+        eventID:
+          type: string
+          format: uuid
+          description: Unique identifier for the webhook event.
+        type:
+          $ref: '#/components/schemas/WebhookEventType'
+        data:
+          $ref: '#/components/schemas/WebhookData'
+        createdOn:
+          type: string
+          format: date-time
+      description: Webhook events are sent to your webhook URL when certain actions occur in the Moov API. You can subscribe to these events to receive real-time notifications.
+      x-speakeasy-include: 'true'
+    WebhookEventType:
+      type: string
+      enum:
+        - account.created
+        - account.updated
+        - account.deleted
+        - balance.updated
+        - bankAccount.created
+        - bankAccount.updated
+        - bankAccount.deleted
+        - cancellation.created
+        - cancellation.updated
+        - card.autoUpdated
+        - capability.requested
+        - capability.updated
+        - dispute.created
+        - dispute.updated
+        - networkID.updated
+        - paymentMethod.enabled
+        - paymentMethod.disabled
+        - refund.created
+        - refund.updated
+        - representative.created
+        - representative.updated
+        - representative.deleted
+        - sweep.created
+        - sweep.updated
+        - terminalApplication.created
+        - terminalApplication.updated
+        - transfer.created
+        - transfer.updated
+        - walletTransaction.updated
+      description: The type of event that occurred.
+    WebhookTransferPaymentMethodDetails:
+      type: object
+      required:
+        - accountID
+        - paymentMethodID
+      properties:
+        accountID:
+          type: string
+          format: uuid
+        paymentMethodID:
+          type: string
+          format: uuid
+      description: Payment method details for the source or destination of a transfer.
+    WebhookWalletAvailableBalance:
+      type: object
+      required:
+        - currency
+        - value
+        - valueDecimal
+      properties:
+        currency:
+          type: string
+        value:
+          type: integer
+          format: int64
+        valueDecimal:
+          type: string
+          pattern: ^\d+\.\d{1,9}$
+      description: The available balance of a wallet.
     uuid:
       type: string
       format: uuid
