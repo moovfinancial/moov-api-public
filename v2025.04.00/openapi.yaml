@@ -23075,7 +23075,7 @@ components:
           type: string
           format: date-time
       description: Webhook events are sent to your webhook URL when certain actions occur in the Moov API. You can subscribe to these events to receive real-time notifications.
-      x-speakeasy-include: 'true'
+      x-speakeasy-include: true
     WebhookEventType:
       type: string
       enum:
