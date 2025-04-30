@@ -7133,7 +7133,7 @@ paths:
     delete:
       operationId: disablePaymentLink
       description: |-
-        Disable an active payment link.
+        Disable a payment link.
 
         To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
         you'll need to specify the `/accounts/{accountID}/transfers.write` scope.
@@ -7187,19 +7187,6 @@ paths:
               schema:
                 type: string
                 format: uuid
-        '409':
-          description: The request conflicted with the current state of the target resource.
-          headers:
-            x-request-id:
-              required: true
-              description: A unique identifier used to trace requests.
-              schema:
-                type: string
-                format: uuid
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericError'
         '429':
           description: Request was refused due to rate limiting.
           headers:
