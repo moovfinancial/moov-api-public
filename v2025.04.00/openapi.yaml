@@ -22431,6 +22431,8 @@ components:
         - v2024.01.00
         - v2025.01.00
         - v2025.04.00
+        - v2025.07.00
+        - v2025.10.00
         - latest
       description: |-
         Moov API versions. 
