@@ -19668,7 +19668,9 @@ components:
           type: string
           description: ID of the account that fees were charged to.
         transferParty:
-          $ref: '#/components/schemas/TransferParty'
+          allOf:
+            - $ref: '#/components/schemas/TransferParty'
+          description: Indicates whether the account charged was the partner, source, or destination of the transfer.
         totalAmount:
           allOf:
             - $ref: '#/components/schemas/AmountDecimal'
@@ -22007,7 +22009,6 @@ components:
         - source
         - destination
         - partner
-      description: Indicates whether an account was the partner, source, or destination of a transfer.
     TransferSource:
       type: object
       required:
