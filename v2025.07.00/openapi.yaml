@@ -207,6 +207,7 @@ paths:
         - $ref: '#/components/parameters/AccountsQuery.name'
         - $ref: '#/components/parameters/AccountsQuery.email'
         - $ref: '#/components/parameters/AccountsQuery.type'
+        - $ref: '#/components/parameters/AccountsQuery.includeGuest'
         - $ref: '#/components/parameters/AccountsQuery.foreignID'
         - $ref: '#/components/parameters/AccountsQuery.includeDisconnected'
         - $ref: '#/components/parameters/AccountsQuery.capability'
@@ -14793,6 +14794,17 @@ components:
       schema:
         type: boolean
       explode: false
+    AccountsQuery.includeGuest:
+      name: includeGuest
+      in: query
+      required: false
+      description: |2-
+          Filter accounts with AccountType guest.
+          
+          If true, the response will include guest accounts.
+      schema:
+        type: boolean
+      explode: false
     AccountsQuery.name:
       name: name
       in: query
@@ -15624,6 +15636,7 @@ components:
       enum:
         - individual
         - business
+        - guest
       description: The type of entity represented by this account.
       example: business
     AccountVerificationStatus:
@@ -16343,6 +16356,7 @@ components:
       enum:
         - individual
         - business
+        - guest
       description: The type of holder on a funding source.
     BankAccountIntegration:
       type: object
@@ -17323,7 +17337,7 @@ components:
         - profile
       properties:
         accountType:
-          $ref: '#/components/schemas/AccountType'
+          $ref: '#/components/schemas/CreateAccountType'
         profile:
           $ref: '#/components/schemas/CreateProfile'
         metadata:
@@ -17384,6 +17398,11 @@ components:
           properties:
             companyName:
               type: string
+    CreateAccountType:
+      type: string
+      enum:
+        - individual
+        - business
     CreateApplePaySession:
       type: object
       required:
@@ -18888,6 +18907,24 @@ components:
 
           - `client_credentials`: A grant type used by clients to obtain an access token
           - `refresh_token`: A grant type used by clients to obtain a new access token using a refresh token
+    GuestProfile:
+      type: object
+      required:
+        - name
+      properties:
+        name:
+          type: string
+          maxLength: 64
+          pattern: '[a-zA-Z0-9,./?:''"|~!@#$%^&*()-+_= ]+'
+          description: |-
+            The name associated with the guest account.
+            This will default to "Guest {accountIDfirst8}" if no other name is provided.
+          example: Guest 75e5fbb8
+        phone:
+          $ref: '#/components/schemas/PhoneNumber'
+        email:
+          $ref: '#/components/schemas/Email'
+      description: Describes a guest account profile.
     IncurredFee:
       type: object
       properties:
@@ -20665,6 +20702,8 @@ components:
           $ref: '#/components/schemas/IndividualProfile'
         business:
           $ref: '#/components/schemas/BusinessProfile'
+        guest:
+          $ref: '#/components/schemas/GuestProfile'
       description: Describes a Moov account profile. A profile will have a business or an individual, depending on the account's type.
     PullFromCardPaymentMethod:
       type: object
