@@ -9703,7 +9703,7 @@ paths:
         - name: accountID
           in: path
           required: true
-          description: The merchant's Moov account ID.
+          description: Your Moov account ID.
           schema:
             type: string
             format: uuid
