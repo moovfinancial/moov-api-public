@@ -11462,6 +11462,17 @@ paths:
                   currency: USD
                   status: accruing
                   sweepID: 01234567-89ab-cdef-0123-456789abcdef
+                  subtotals:
+                    - type: moov-fee
+                      count: 1
+                      amount:
+                        valueDecimal: '50.00'
+                        currency: USD
+                    - type: account-funding
+                      count: 1
+                      amount:
+                        valueDecimal: '50.00'
+                        currency: USD
         '401':
           description: The request contained missing or expired authentication.
           headers:
@@ -11565,6 +11576,17 @@ paths:
                     sweepID: 01234567-89ab-cdef-0123-456789abcdef
                     transferAmount: '12.98'
                     transferID: 01234567-89ab-cdef-0123-456789abcdef
+                    subtotals:
+                      - type: moov-fee
+                        count: 1
+                        amount:
+                          valueDecimal: '50.00'
+                          currency: USD
+                      - type: account-funding
+                        count: 1
+                        amount:
+                          valueDecimal: '50.00'
+                          currency: USD
                 Accrued sweep:
                   summary: Accrued sweep
                   value:
@@ -11573,6 +11595,17 @@ paths:
                     currency: USD
                     status: accruing
                     sweepID: 01234567-89ab-cdef-0123-456789abcdef
+                    subtotals:
+                      - type: moov-fee
+                        count: 1
+                        amount:
+                          valueDecimal: '50.00'
+                          currency: USD
+                      - type: account-funding
+                        count: 1
+                        amount:
+                          valueDecimal: '50.00'
+                          currency: USD
         '401':
           description: The request contained missing or expired authentication.
           headers:
@@ -21508,6 +21541,11 @@ components:
           description: Amount that is transferred.
         statementDescriptor:
           $ref: '#/components/schemas/SweepStatementDescriptor'
+        subtotals:
+          type: array
+          items:
+            $ref: '#/components/schemas/SweepSubtotal'
+          description: The subtotal of each transaction type contributing to the sweep's accrued amount.
     SweepConfig:
       type: object
       required:
@@ -21584,6 +21622,25 @@ components:
         - closed
         - failed
         - paid
+    SweepSubtotal:
+      type: object
+      required:
+        - type
+        - count
+        - amount
+      properties:
+        type:
+          allOf:
+            - $ref: '#/components/schemas/WalletTransactionType'
+          description: The type of wallet transaction the subtotal is for.
+        count:
+          type: integer
+          format: int32
+          description: The number of transactions of this type accrued in the sweep.
+        amount:
+          allOf:
+            - $ref: '#/components/schemas/AmountDecimal'
+          description: The value of transactions of this type accrued in the sweep.
     TaxID:
       type: object
       required:
