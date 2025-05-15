@@ -3579,7 +3579,7 @@ paths:
                 type: string
                 format: uuid
         '409':
-          description: The request conflicted with the current state of the target resource.
+          description: Attempted to link card that already exists on the account.
           headers:
             x-request-id:
               required: true
@@ -3587,10 +3587,6 @@ paths:
               schema:
                 type: string
                 format: uuid
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericError'
         '422':
           description: The request was well-formed, but the contents failed validation. Check the request for missing or invalid fields.
           headers:
