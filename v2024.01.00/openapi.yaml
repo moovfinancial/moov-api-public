@@ -18597,6 +18597,10 @@ components:
           allOf:
             - $ref: '#/components/schemas/AmountDecimal'
           description: Specifies the maximum allowable spending for a single transaction, working as a transaction ceiling.
+        volumeRanges:
+          type: array
+          items:
+            $ref: '#/components/schemas/VolumeRanges'
       description: Defines the specific parameters used for fee calculation.
       example:
         fixedAmount:
@@ -22444,6 +22448,28 @@ components:
           type: string
         consumerToBusinessPercentage:
           type: string
+    VolumeRanges:
+      type: object
+      required:
+        - fromValue
+        - flatAmount
+        - perUnitAmount
+      properties:
+        fromValue:
+          type: integer
+          description: Specifies the lower value of a tier for the fee.
+        toValue:
+          type: integer
+          description: Specifies the highest value of a tier for the fee.
+        flatAmount:
+          allOf:
+            - $ref: '#/components/schemas/AmountDecimal'
+          description: The flat amount for a whole tier of the fee.
+        perUnitAmount:
+          allOf:
+            - $ref: '#/components/schemas/AmountDecimal'
+          description: The unit price for a specific tier of the fee.
+      description: Defines the volume ranges for tiered pricing models.
     Wallet:
       type: object
       required:
