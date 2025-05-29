@@ -19049,18 +19049,13 @@ components:
     IndustryTaxonomy:
       type: object
       required:
-        - id
-        - slug
+        - industry
         - displayName
         - category
         - categoryDisplayName
         - defaultMcc
       properties:
-        id:
-          type: string
-          description: Unique identifier for the taxonomy entry
-          example: 550e8400-e29b-41d4-a716-446655440000
-        slug:
+        industry:
           type: string
           description: URL-safe identifier for the industry
           example: clothing-accessories

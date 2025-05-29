@@ -12302,7 +12302,7 @@ paths:
                 $ref: '#/components/schemas/EnrichedIndustries'
       tags:
         - Industries
-      x-speakeasy-name-override: listIndustries
+      x-speakeasy-name-override: list
   /institutions/ach/search:
     get:
       operationId: listInstitutions
