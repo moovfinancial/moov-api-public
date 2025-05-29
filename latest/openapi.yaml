@@ -28,7 +28,6 @@ tags:
   - name: End to End Encryption
   - name: Enriched address
   - name: Enriched profile
-  - name: Industries
   - name: Avatars
   - name: Institutions
   - name: Files
@@ -49,6 +48,33 @@ tags:
   - name: Wallet transactions
   - name: Wallets
 paths:
+  /:
+    get:
+      operationId: listIndustryTaxonomies
+      description: |2-
+          Returns a structured list of industries by taxonomy.
+
+          This response format is returned when the `X-Moov-Version: v2025.07.00` header is included.
+
+          To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/),
+          you'll need to specify the `/profile-enrichment.read` scope.
+      parameters:
+        - $ref: '#/components/parameters/VersionHeader'
+      responses:
+        '200':
+          description: The request completed successfully.
+          headers:
+            x-request-id:
+              required: true
+              description: A unique identifier used to trace requests.
+              schema:
+                type: string
+                format: uuid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IndustryTaxonomies'
+      x-speakeasy-name-override: listTaxonomies
   /accounts:
     post:
       operationId: createAccount
@@ -12277,78 +12303,6 @@ paths:
       tags:
         - Enriched profile
       x-speakeasy-name-override: get
-  /industries:
-    get:
-      operationId: listIndustries
-      description: |-
-        Returns a list of all industry titles and their corresponding MCC/SIC/NAICS codes. Results are ordered by title.    
-
-        To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
-        you'll need to specify the `/profile-enrichment.read` scope.
-      parameters:
-        - $ref: '#/components/parameters/VersionHeader'
-      responses:
-        '200':
-          description: The request completed successfully.
-          headers:
-            x-request-id:
-              required: true
-              description: A unique identifier used to trace requests.
-              schema:
-                type: string
-                format: uuid
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/EnrichedIndustries'
-        '401':
-          description: The request contained missing or expired authentication.
-          headers:
-            x-request-id:
-              required: true
-              description: A unique identifier used to trace requests.
-              schema:
-                type: string
-                format: uuid
-        '403':
-          description: The user is not authorized to make the request.
-          headers:
-            x-request-id:
-              required: true
-              description: A unique identifier used to trace requests.
-              schema:
-                type: string
-                format: uuid
-        '429':
-          description: Request was refused due to rate limiting.
-          headers:
-            x-request-id:
-              required: true
-              description: A unique identifier used to trace requests.
-              schema:
-                type: string
-                format: uuid
-        '500':
-          description: The request failed due to an unexpected error.
-          headers:
-            x-request-id:
-              required: true
-              description: A unique identifier used to trace requests.
-              schema:
-                type: string
-                format: uuid
-        '504':
-          description: The request failed because a downstream service failed to respond.
-          headers:
-            x-request-id:
-              required: true
-              description: A unique identifier used to trace requests.
-              schema:
-                type: string
-                format: uuid
-      tags:
-        - Industries
-      x-speakeasy-name-override: list
   /institutions/ach/search:
     get:
       operationId: listInstitutions
@@ -19082,6 +19036,52 @@ components:
           minLength: 4
           maxLength: 4
           example: '7997'
+    IndustryTaxonomies:
+      type: object
+      required:
+        - industries
+      properties:
+        industries:
+          type: array
+          items:
+            $ref: '#/components/schemas/IndustryTaxonomy'
+      description: A list of structured industries mapped to default MCC codes.
+    IndustryTaxonomy:
+      type: object
+      required:
+        - id
+        - slug
+        - displayName
+        - category
+        - categoryDisplayName
+        - defaultMcc
+      properties:
+        id:
+          type: string
+          description: Unique identifier for the taxonomy entry
+          example: 550e8400-e29b-41d4-a716-446655440000
+        slug:
+          type: string
+          description: URL-safe identifier for the industry
+          example: clothing-accessories
+        displayName:
+          type: string
+          description: Display name of the industry
+          example: Clothing & Accessories
+        category:
+          type: string
+          description: Category slug
+          example: retail
+        categoryDisplayName:
+          type: string
+          description: Human-readable category label
+          example: Retail
+        defaultMcc:
+          type: string
+          maxLength: 4
+          description: Default Merchant Category Code
+          example: '5651'
+      description: A structured industry taxonomy entry with category and mapped to a default MCC code.
     InstitutionLogo:
       type: object
       required:
