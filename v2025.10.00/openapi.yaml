@@ -49,33 +49,6 @@ tags:
   - name: Wallet transactions
   - name: Wallets
 paths:
-  /:
-    get:
-      operationId: listIndustryTaxonomies
-      description: |2-
-          Returns a structured list of industries by taxonomy.
-
-          This response format is returned when the `X-Moov-Version: v2025.07.00` header is included.
-
-          To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/),
-          you'll need to specify the `/profile-enrichment.read` scope.
-      parameters:
-        - $ref: '#/components/parameters/VersionHeader'
-      responses:
-        '200':
-          description: The request completed successfully.
-          headers:
-            x-request-id:
-              required: true
-              description: A unique identifier used to trace requests.
-              schema:
-                type: string
-                format: uuid
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/IndustryTaxonomies'
-      x-speakeasy-name-override: listTaxonomies
   /accounts:
     post:
       operationId: createAccount
@@ -18384,7 +18357,7 @@ components:
         industries:
           type: array
           items:
-            $ref: '#/components/schemas/EnrichedIndustry'
+            $ref: '#/components/schemas/IndustryTaxonomy'
     EnrichedIndustry:
       type: object
       required:
