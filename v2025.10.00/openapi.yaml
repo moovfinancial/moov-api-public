@@ -28,6 +28,7 @@ tags:
   - name: End to End Encryption
   - name: Enriched address
   - name: Enriched profile
+  - name: Industries
   - name: Avatars
   - name: Institutions
   - name: Files
@@ -12303,6 +12304,33 @@ paths:
       tags:
         - Enriched profile
       x-speakeasy-name-override: get
+  /industries:
+    get:
+      operationId: listIndustries
+      description: |2-
+          Returns a list of all industry titles and their corresponding MCC/SIC/NAICS codes. Results are ordered by title.
+
+          To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/)
+          you'll need to specify the `/profile-enrichment.read` scope.
+      parameters:
+        - $ref: '#/components/parameters/VersionHeader'
+      responses:
+        '200':
+          description: The request completed successfully.
+          headers:
+            x-request-id:
+              required: true
+              description: A unique identifier used to trace requests.
+              schema:
+                type: string
+                format: uuid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EnrichedIndustries'
+      tags:
+        - Industries
+      x-speakeasy-name-override: list
   /institutions/ach/search:
     get:
       operationId: listInstitutions
