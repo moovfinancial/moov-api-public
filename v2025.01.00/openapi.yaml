@@ -19594,6 +19594,7 @@ components:
           type: string
           format: uri
       description: Describes the acceptance of the Terms of Service. All data is required, and must be from the user.
+      title: Manual
     ManualTermsOfServiceUpdate:
       type: object
       properties:
@@ -19615,6 +19616,7 @@ components:
           type: string
           format: uri
       description: Describes the acceptance of the Terms of Service. All data is required, and must be from the user.
+      title: Manual
     ManualToSError:
       type: object
       properties:
@@ -21757,6 +21759,7 @@ components:
           type: string
           example: kgT1uxoMAk7QKuyJcmQE8nqW_HjpyuXBabiXPi6T83fUQoxsyWYPcYzuHQTqrt7YRp4gCwyDQvb6U5REM9Pgl2EloCe35t-eiMAbUWGo3Kerxme6aqNcKrP_6-v0MTXViOEJ96IBxPFTvMV7EROI2dq3u4e-x4BbGSCedAX-ViAQND6hcreCDXwrO6sHuzh5Xi2IzSqZHxaovnWEboaxuZKRJkA3dsFID6fzitMpm2qrOh4
       description: An encrypted value used to record acceptance of Moov's Terms of Service.
+      title: Token
     TermsOfServiceTokenUpdate:
       type: object
       properties:
@@ -21764,6 +21767,7 @@ components:
           type: string
           example: kgT1uxoMAk7QKuyJcmQE8nqW_HjpyuXBabiXPi6T83fUQoxsyWYPcYzuHQTqrt7YRp4gCwyDQvb6U5REM9Pgl2EloCe35t-eiMAbUWGo3Kerxme6aqNcKrP_6-v0MTXViOEJ96IBxPFTvMV7EROI2dq3u4e-x4BbGSCedAX-ViAQND6hcreCDXwrO6sHuzh5Xi2IzSqZHxaovnWEboaxuZKRJkA3dsFID6fzitMpm2qrOh4
       description: An encrypted value used to record acceptance of Moov's Terms of Service.
+      title: Token
     TokenType:
       type: string
       enum:
