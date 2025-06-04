@@ -9911,6 +9911,7 @@ paths:
         - $ref: '#/components/parameters/TransferListFilters.endDateTime'
         - $ref: '#/components/parameters/TransferListFilters.groupID'
         - $ref: '#/components/parameters/TransferListFilters.scheduleID'
+        - $ref: '#/components/parameters/TransferListFilters.paymentLinkID'
         - $ref: '#/components/parameters/TransferListFilters.refunded'
         - $ref: '#/components/parameters/TransferListFilters.disputed'
         - $ref: '#/components/parameters/TransferListFilters.skip'
@@ -15290,6 +15291,15 @@ components:
       in: query
       required: false
       description: Optional ID to filter for transfers in the same group.
+      schema:
+        type: string
+        format: uuid
+      explode: false
+    TransferListFilters.paymentLinkID:
+      name: paymentLinkID
+      in: query
+      required: false
+      description: Optional ID to filter for transfers associated with the payment link.
       schema:
         type: string
         format: uuid
@@ -21856,6 +21866,8 @@ components:
         scheduleID:
           type: string
         occurrenceID:
+          type: string
+        paymentLinkID:
           type: string
         salesTaxAmount:
           allOf:
