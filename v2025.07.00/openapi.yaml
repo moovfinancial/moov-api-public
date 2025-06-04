@@ -12282,9 +12282,9 @@ paths:
     get:
       operationId: listIndustries
       description: |-
-        Returns a list of all industry titles and their corresponding MCC/SIC/NAICS codes. Results are ordered by title.    
+        Returns a list of industries relevant to merchant profile enrichment.  Results are ordered by industry name.
 
-        To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/) 
+        To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/),
         you'll need to specify the `/profile-enrichment.read` scope.
       parameters:
         - $ref: '#/components/parameters/VersionHeader'
@@ -18367,7 +18367,7 @@ components:
         industries:
           type: array
           items:
-            $ref: '#/components/schemas/EnrichedIndustry'
+            $ref: '#/components/schemas/IndustryTaxonomy'
     EnrichedIndustry:
       type: object
       required:
@@ -19092,6 +19092,47 @@ components:
           minLength: 4
           maxLength: 4
           example: '7997'
+    IndustryTaxonomies:
+      type: object
+      required:
+        - industries
+      properties:
+        industries:
+          type: array
+          items:
+            $ref: '#/components/schemas/IndustryTaxonomy'
+      description: A list of structured industries mapped to default MCC codes.
+    IndustryTaxonomy:
+      type: object
+      required:
+        - industry
+        - displayName
+        - category
+        - categoryDisplayName
+        - defaultMcc
+      properties:
+        industry:
+          type: string
+          description: URL-safe identifier for the industry
+          example: clothing-accessories
+        displayName:
+          type: string
+          description: Display name of the industry
+          example: Clothing & Accessories
+        category:
+          type: string
+          description: Category slug
+          example: retail
+        categoryDisplayName:
+          type: string
+          description: Human-readable category label
+          example: Retail
+        defaultMcc:
+          type: string
+          maxLength: 4
+          description: Default Merchant Category Code
+          example: '5651'
+      description: A structured industry taxonomy entry with category and mapped to a default MCC code.
     InstitutionLogo:
       type: object
       required:
@@ -19662,6 +19703,7 @@ components:
           type: string
           format: uri
       description: Describes the acceptance of the Terms of Service. All data is required, and must be from the user.
+      title: Manual
     ManualTermsOfServiceUpdate:
       type: object
       properties:
@@ -19683,6 +19725,7 @@ components:
           type: string
           format: uri
       description: Describes the acceptance of the Terms of Service. All data is required, and must be from the user.
+      title: Manual
     ManualToSError:
       type: object
       properties:
@@ -21875,6 +21918,7 @@ components:
           type: string
           example: kgT1uxoMAk7QKuyJcmQE8nqW_HjpyuXBabiXPi6T83fUQoxsyWYPcYzuHQTqrt7YRp4gCwyDQvb6U5REM9Pgl2EloCe35t-eiMAbUWGo3Kerxme6aqNcKrP_6-v0MTXViOEJ96IBxPFTvMV7EROI2dq3u4e-x4BbGSCedAX-ViAQND6hcreCDXwrO6sHuzh5Xi2IzSqZHxaovnWEboaxuZKRJkA3dsFID6fzitMpm2qrOh4
       description: An encrypted value used to record acceptance of Moov's Terms of Service.
+      title: Token
     TermsOfServiceTokenUpdate:
       type: object
       properties:
@@ -21882,6 +21926,7 @@ components:
           type: string
           example: kgT1uxoMAk7QKuyJcmQE8nqW_HjpyuXBabiXPi6T83fUQoxsyWYPcYzuHQTqrt7YRp4gCwyDQvb6U5REM9Pgl2EloCe35t-eiMAbUWGo3Kerxme6aqNcKrP_6-v0MTXViOEJ96IBxPFTvMV7EROI2dq3u4e-x4BbGSCedAX-ViAQND6hcreCDXwrO6sHuzh5Xi2IzSqZHxaovnWEboaxuZKRJkA3dsFID6fzitMpm2qrOh4
       description: An encrypted value used to record acceptance of Moov's Terms of Service.
+      title: Token
     TokenType:
       type: string
       enum:
