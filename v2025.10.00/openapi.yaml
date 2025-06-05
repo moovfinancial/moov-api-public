@@ -12350,6 +12350,93 @@ paths:
       tags:
         - Industries
       x-speakeasy-name-override: list
+  /institutions:
+    get:
+      operationId: searchInstitutions
+      description: |-
+        Search for financial institutions by name or routing number.
+
+        This endpoint returns metadata about each matched institution, including basic identifying details (such as name, routing number, and address) and information about which payment services they support (e.g., ACH, RTP, and Wire).
+
+        This can be used to validate a financial institution before initiating payment activity, or to check which payment rails are available for a given routing number.
+
+        To access this endpoint using an [access token](https://docs.moov.io/api/authentication/access-tokens/)
+        you'll need to specify the `/institutions.read` scope.
+      parameters:
+        - $ref: '#/components/parameters/VersionHeader'
+        - $ref: '#/components/parameters/InstitutionSearchFilters.name'
+        - $ref: '#/components/parameters/InstitutionSearchFilters.routingNumber'
+        - $ref: '#/components/parameters/InstitutionSearchFilters.limit'
+      responses:
+        '200':
+          description: The request completed successfully.
+          headers:
+            x-request-id:
+              required: true
+              description: A unique identifier used to trace requests.
+              schema:
+                type: string
+                format: uuid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InstitutionsSearchResponse'
+        '401':
+          description: The request contained missing or expired authentication.
+          headers:
+            x-request-id:
+              required: true
+              description: A unique identifier used to trace requests.
+              schema:
+                type: string
+                format: uuid
+        '403':
+          description: The user is not authorized to make the request.
+          headers:
+            x-request-id:
+              required: true
+              description: A unique identifier used to trace requests.
+              schema:
+                type: string
+                format: uuid
+        '404':
+          description: The requested resource was not found.
+          headers:
+            x-request-id:
+              required: true
+              description: A unique identifier used to trace requests.
+              schema:
+                type: string
+                format: uuid
+        '429':
+          description: Request was refused due to rate limiting.
+          headers:
+            x-request-id:
+              required: true
+              description: A unique identifier used to trace requests.
+              schema:
+                type: string
+                format: uuid
+        '500':
+          description: The request failed due to an unexpected error.
+          headers:
+            x-request-id:
+              required: true
+              description: A unique identifier used to trace requests.
+              schema:
+                type: string
+                format: uuid
+        '504':
+          description: The request failed because a downstream service failed to respond.
+          headers:
+            x-request-id:
+              required: true
+              description: A unique identifier used to trace requests.
+              schema:
+                type: string
+                format: uuid
+      tags:
+        - Institutions
   /institutions/ach/search:
     get:
       operationId: listInstitutions
@@ -15060,6 +15147,30 @@ components:
       schema:
         type: string
       explode: false
+    InstitutionSearchFilters.limit:
+      name: limit
+      in: query
+      required: false
+      description: Maximum results returned by a search.
+      schema:
+        type: integer
+      explode: false
+    InstitutionSearchFilters.name:
+      name: name
+      in: query
+      required: false
+      description: Name of the financial institution. Either `name` or `routingNumber` is required.
+      schema:
+        type: string
+      explode: false
+    InstitutionSearchFilters.routingNumber:
+      name: routingNumber
+      in: query
+      required: false
+      description: Routing number for a financial institution. Either `routingNumber` or `name` is required.
+      schema:
+        type: string
+      explode: false
     InstitutionsFilters.limit:
       name: limit
       in: query
@@ -15392,6 +15503,24 @@ components:
           type: string
         description:
           type: string
+    ACHInstitution:
+      type: object
+      required:
+        - name
+        - routingNumber
+      properties:
+        name:
+          type: string
+          description: Name of the financial institution.
+          example: First Citizens
+        routingNumber:
+          type: string
+          maxLength: 9
+          example: '123456789'
+        address:
+          $ref: '#/components/schemas/Address'
+        contact:
+          $ref: '#/components/schemas/Contact'
     ACHOriginatingCompanyName:
       type: string
       minLength: 4
@@ -17355,6 +17484,11 @@ components:
       properties:
         status:
           $ref: '#/components/schemas/MicroDepositStatus'
+    Contact:
+      type: object
+      properties:
+        phone:
+          $ref: '#/components/schemas/PhoneNumber'
     Count:
       type: integer
       format: int64
@@ -19143,6 +19277,25 @@ components:
           type: string
         url:
           type: string
+    InstitutionsSearchResponse:
+      type: object
+      required:
+        - ach
+        - rtp
+        - wire
+      properties:
+        ach:
+          type: array
+          items:
+            $ref: '#/components/schemas/ACHInstitution'
+        rtp:
+          type: array
+          items:
+            $ref: '#/components/schemas/RTPInstitution'
+        wire:
+          type: array
+          items:
+            $ref: '#/components/schemas/WireInstitution'
     IssuedCard:
       type: object
       required:
@@ -20842,6 +20995,23 @@ components:
         - customer-deceased
         - other
       description: Status codes for RTP failures.
+    RTPInstitution:
+      type: object
+      required:
+        - name
+        - routingNumber
+        - services
+      properties:
+        name:
+          type: string
+          description: Name of the financial institution.
+          example: First Citizens
+        routingNumber:
+          type: string
+          maxLength: 9
+          example: '123456789'
+        services:
+          $ref: '#/components/schemas/RTPServices'
     RTPRejectionCode:
       type: string
       enum:
@@ -20862,6 +21032,20 @@ components:
         - AG01: Transactions Forbidden On Account
         - AG03: Transaction Type Not Supported
         - MD07: Customer Deceased
+    RTPServices:
+      type: object
+      required:
+        - receivePayments
+        - receiveRequestForPayment
+      properties:
+        receivePayments:
+          type: boolean
+          description: Can the institution receive payments
+          example: true
+        receiveRequestForPayment:
+          type: boolean
+          description: Can the institution receive request for payment messages
+          example: true
     RTPTransactionDetails:
       type: object
       required:
@@ -23342,6 +23526,44 @@ components:
           type: string
           pattern: ^\d+\.\d{1,9}$
       description: The available balance of a wallet.
+    WireInstitution:
+      type: object
+      required:
+        - name
+        - routingNumber
+        - services
+      properties:
+        name:
+          type: string
+          description: Name of the financial institution.
+          example: First Citizens
+        routingNumber:
+          type: string
+          maxLength: 9
+          example: '123456789'
+        address:
+          $ref: '#/components/schemas/Address'
+        services:
+          $ref: '#/components/schemas/WireServices'
+    WireServices:
+      type: object
+      required:
+        - fundsTransferStatus
+        - fundsSettlementOnlyStatus
+        - bookEntrySecuritiesTransferStatus
+      properties:
+        fundsTransferStatus:
+          type: boolean
+          description: The institution's capability to process standard Fedwire funds transfers.
+          example: true
+        fundsSettlementOnlyStatus:
+          type: boolean
+          description: The institution's capability for settlement-only transfers.
+          example: false
+        bookEntrySecuritiesTransferStatus:
+          type: boolean
+          description: The institution's capability to handle transfers of securities.
+          example: false
     uuid:
       type: string
       format: uuid
